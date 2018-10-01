@@ -4,8 +4,8 @@ export const routes = [
     {
       path: "/",
       exact: true,
-      sidebar: () => <div>Home</div>,
-      main: () => <h2>Home</h2>
+      sidebar: () => <div>Overview</div>,
+      main: () => <h2>Overview</h2>
     },
     {
       path: "/blackoutDates",

@@ -15,7 +15,7 @@ class Sidebar extends Component {
         >
           <ul style={{ listStyleType: "none", padding: 0 }}>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">Overview</Link>
             </li>
             <li>
               <Link to="/blackoutDates">Blackout Dates</Link>
