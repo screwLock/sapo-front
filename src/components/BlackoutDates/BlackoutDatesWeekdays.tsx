@@ -36,9 +36,9 @@ class BlackoutDatesWeekdays extends React.Component<{},any> {
     
       private handleCheckedChange = (index: number) => (e: React.FormEvent<HTMLInputElement>) => {
         this.setState(
-          produce(draft => {
+          produce(this.state, draft => {
             draft.weekdays[index].checked = !draft.weekdays[index].checked;
-          })) 
+          }));
       }
   }
 
