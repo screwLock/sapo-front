@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@blueprintjs/core";
 import React, { Component } from 'react';
 import BlackoutDatesSingleDatePicker from './BlackoutDatesSingleDatePicker.js';
 import BlackoutDatesRangeDatePicker from './BlackoutDatesRangeDatePicker.js';
-import BlackoutDatesWeekdays from './BlackoutDatesWeekdays.js';
+import BlackoutDatesWeekdays from './BlackoutDatesWeekdays';
 import 'normalize.css/normalize.css';
 import "@blueprintjs/core/lib/css/blueprint.css";
 
