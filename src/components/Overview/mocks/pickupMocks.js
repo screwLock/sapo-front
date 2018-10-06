@@ -5,7 +5,8 @@ const pickupMocks = [
         "capacity": 90000,
         "priceCurrency": "EUR",
         "lat": 51.556181,
-        "lng": -0.279465
+        "lng": -0.279465,
+        "date": new Date()
     },
     {
         "name": "Old Trafford",
