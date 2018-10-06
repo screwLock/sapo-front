@@ -19,6 +19,7 @@ class OverviewPickups extends Component {
                                           innerRef={provided.innerRef}
                                           provided={provided}
                                           handleClick={this.props.handleClick}
+                                          selected={pickup === this.props.selectedPickup}
                             /> 
                         )}
                     </Draggable>

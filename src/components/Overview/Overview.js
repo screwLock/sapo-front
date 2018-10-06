@@ -29,7 +29,7 @@ class Overview extends Component {
       <Grid columns={12}>
         <Cell width={12}><OverviewMap pickups={this.state.pickups} selectedPickup={this.state.selectedPickup}/></Cell>
         <Cell width={4}><OverviewDatePicker /></Cell>
-        <Cell width={6}><OverviewPickups pickups={this.state.pickups} handleClick={this.selectPickup}/></Cell>
+        <Cell width={6}><OverviewPickups pickups={this.state.pickups} handleClick={this.selectPickup} /></Cell>
         </Grid>
     );
   }

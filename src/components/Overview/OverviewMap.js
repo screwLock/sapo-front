@@ -44,6 +44,7 @@ class OverviewMap extends React.Component {
               lat={pickup.lat}
               lng={pickup.lng}
               name={pickup.name}
+              selectedPickup={pickup === this.props.selectedPickup}
             ></PickupMarker>
           })}
         </GoogleMapReact>
