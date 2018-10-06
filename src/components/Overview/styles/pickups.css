@@ -1,0 +1,6 @@
+.pickups {
+    overflow-y: auto;
+    height: 250px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

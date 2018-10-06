@@ -26,11 +26,6 @@ class OverviewDatePicker extends Component {
           selectedDays={this.props.selectedDate}
           disabledDays={{ daysOfWeek: [0] }}
         />
-        {this.props.selectedDate ? (
-          <p>You clicked {this.props.selectedDate.toLocaleDateString()}</p>
-        ) : (
-            <p>Please select a day.</p>
-          )}
       </div>
     );
   }

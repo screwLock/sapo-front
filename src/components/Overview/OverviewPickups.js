@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Grid, Cell } from "styled-css-grid";
-import { isSameDay } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
+import './styles/pickups.css';
 
 import OverviewCard from './OverviewCard.js';
 
@@ -13,30 +14,33 @@ class OverviewPickups extends Component {
     renderCards = () => {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
         return datePickups.map((pickup) => {
-                return (
-                    <Cell height={1} width={4} left={2}>
-                        <Draggable key={pickup.lat} draggableId={pickup.lat}>
-                            {(provided) => (
-                                <OverviewCard pickup={pickup}
-                                    innerRef={provided.innerRef}
-                                    provided={provided}
-                                    handleClick={this.props.handleClick}
-                                />
-                            )}
-                        </Draggable>
-                    </Cell>
-                );
-            });
-        }
-
-        onDragEnd = () => {
-            //TODO
-        };
-
-        render() {
             return (
+                <Cell height={1} width={4} left={2}>
+                    <Draggable key={pickup.lat} draggableId={pickup.lat}>
+                        {(provided) => (
+                            <OverviewCard pickup={pickup}
+                                innerRef={provided.innerRef}
+                                provided={provided}
+                                handleClick={this.props.handleClick}
+                            />
+                        )}
+                    </Draggable>
+                </Cell>
+            );
+        });
+    }
+
+    onDragEnd = () => {
+        //TODO
+    };
+
+    render() {
+        return (
+            <div>
+                <h3>Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</h3>
+                <div className="pickups">
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Droppable droppableId="dropabble" >
+                    <Droppable droppableId="dropabble">
                         {(provided) => (
                             <div innerRef={provided.innerRef} ref={provided.innerRef}>
                                 <Grid columns={6}>
@@ -47,8 +51,10 @@ class OverviewPickups extends Component {
                         )}
                     </Droppable>
                 </DragDropContext>
-            );
-        }
+                </div>
+            </div>
+        );
     }
+}
 
-    export default OverviewPickups;
+export default OverviewPickups;
