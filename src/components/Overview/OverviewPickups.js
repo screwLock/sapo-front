@@ -10,7 +10,7 @@ class OverviewPickups extends Component {
         super(props);
     };
 
-    renderCards() {
+    renderCards = () => {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
         return datePickups.map((pickup) => {
                 return (
