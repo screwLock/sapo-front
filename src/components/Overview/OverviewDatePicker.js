@@ -12,8 +12,8 @@ class OverviewDatePicker extends Component {
       return;
     }
     if (selected) {
-      // Unselect the day if already selected
-      this.props.handleClick(undefined);
+      // Keep day selected if alread selected
+      this.props.handleClick(day);
       return;
     }
     this.props.handleClick(day);

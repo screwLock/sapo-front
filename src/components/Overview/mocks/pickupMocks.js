@@ -14,7 +14,8 @@ const pickupMocks = [
         "capacity": 75653,
         "priceCurrency": "EUR",
         "lat": 53.463219,
-        "lng": -2.291297
+        "lng": -2.291297,
+        "date": new Date()
     },
     {
         "name": "Emirates Stadium",
@@ -22,7 +23,8 @@ const pickupMocks = [
         "capacity": 60260 ,
         "priceCurrency": "EUR",
         "lat": 51.555015,
-        "lng": -0.108384
+        "lng": -0.108384,
+        "date": new Date()
     },
     {
         "name": "London Stadium",
@@ -30,7 +32,8 @@ const pickupMocks = [
         "capacity": 57000,
         "priceCurrency": "EUR",
         "lat": 51.538870,
-        "lng": -0.016550
+        "lng": -0.016550,
+        "date": new Date()
     },
     {
         "name": "City of Manchester Stadium",
@@ -38,7 +41,8 @@ const pickupMocks = [
         "capacity": 55097,
         "priceCurrency": "EUR",
         "lat": 53.481759,
-        "lng": -2.202540
+        "lng": -2.202540,
+        "date": new Date()
     },
     {
         "name": "Anfield",
@@ -46,7 +50,8 @@ const pickupMocks = [
         "capacity": 54074,
         "priceCurrency": "EUR",
         "lat": 53.431066,
-        "lng": -2.960819
+        "lng": -2.960819,
+        "date": new Date()
     }
  ];
 

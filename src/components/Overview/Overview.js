@@ -13,7 +13,7 @@ class Overview extends Component {
       pickups: [],
       allPickups: [],
       selectedPickup: null,
-      selectedDate: undefined,
+      selectedDate: new Date(),
       search: ''
     }
   }
@@ -22,7 +22,6 @@ class Overview extends Component {
     this.setState({
       pickups: pickupMocks,
       allPickups: pickupMocks,
-      selectedDate: new Date()
     })
   }
   render() {
@@ -30,7 +29,7 @@ class Overview extends Component {
       <Grid columns={12}>
         <Cell width={12}><OverviewMap pickups={this.state.pickups} selectedPickup={this.state.selectedPickup}/></Cell>
         <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate} handleClick={this.selectDate}/></Cell>
-        <Cell width={6}><OverviewPickups pickups={this.state.pickups} handleClick={this.selectPickup} /></Cell>
+        <Cell width={6}><OverviewPickups pickups={this.state.pickups} handleClick={this.selectPickup} selectedDate={this.state.selectedDate}/></Cell>
         </Grid>
     );
   }
