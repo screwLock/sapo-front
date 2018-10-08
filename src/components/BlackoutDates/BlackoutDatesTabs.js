@@ -12,7 +12,7 @@ class BlackoutDatesTabs extends Component {
 
     render(){
       return(
-        <Tabs id="TabsExample"  defaultSelectedTabId="singleDatePicker">
+        <Tabs id="blackoutDatesTab"  defaultSelectedTabId="singleDatePicker">
           <Tab id="singleDatePicker" title="Single Date" panel={<BlackoutDatesSingleDatePicker />} />
           <Tab id="rangeDatePicker" title="Date Range"  panel={ <BlackoutDatesRangeDatePicker />}/>
           <Tab id="weekdays" title="Weekdays" panel={ <BlackoutDatesWeekdays />}/>

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { NavLink, Switch, Route } from 'react-router-dom';
-import Overview from './Overview/Overview.js';
-import BlackoutDates from './BlackoutDates/BlackoutDates.js';
-import Zipcodes from './Zipcodes/Zipcodes.js';
-import Employees from './Employees/Employees.js';
-import DonorPage from './DonorPage/DonorPage.js'
+import Overview from './Overview/Overview';
+import BlackoutDates from './BlackoutDates/BlackoutDates';
+import Zipcodes from './Zipcodes/Zipcodes';
+import Employees from './Employees/Employees';
+import DonorPage from './DonorPage/DonorPage'
 
 class Main extends Component {
     render(){
