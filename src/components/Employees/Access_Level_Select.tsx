@@ -1,13 +1,12 @@
-import { Component } from "react";
 import * as React from "react";
 import { Button } from "@blueprintjs/core";
 import { Select } from "@blueprintjs/select";
-import { accessLevelSelectProps, IAccessLevel, ACCESS_LEVELS } from "./access_levels"
+import { accessLevelSelectProps, IAccessLevel, ACCESS_LEVELS } from "./types/access_levels"
 
 const Levels = Select.ofType<IAccessLevel>();
 
 
-class AccessLevelSelect extends Component {
+class AccessLevelSelect extends React.Component {
 
     public state = {
         level: ACCESS_LEVELS[0] as IAccessLevel,

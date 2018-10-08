@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Cell } from "styled-css-grid";
 
-import ZipcodeWeekdays from './ZipcodeWeekdays.js';
+import ZipcodeWeekdays from './ZipcodeWeekdays.tsx';
 import ZipcodeInput from './ZipcodeInput.js';
 
 

@@ -1,11 +1,9 @@
 import { Checkbox } from "@blueprintjs/core";
 import * as React from 'react';
-import produce from 'immer';
-import { weekdays,IWeekday } from "../common_types/checkedWeekdays"
+import { produce } from 'immer';
+import { weekdays,IWeekday } from "../common_types/checkedWeekdays";
 
-
-
-class BlackoutDatesWeekdays extends React.Component<{},any> {
+class ZipcodeWeekdays extends React.Component<{},any> {
   constructor(props: any) {
     super(props)
      this.state = { 
@@ -39,6 +37,5 @@ class BlackoutDatesWeekdays extends React.Component<{},any> {
           }));
       }
   }
-
-
-export default BlackoutDatesWeekdays;
+  
+export default ZipcodeWeekdays;

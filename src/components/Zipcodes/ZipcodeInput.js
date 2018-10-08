@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, InputGroup } from "@blueprintjs/core";
-import 'normalize.css/normalize.css';
-import "@blueprintjs/core/lib/css/blueprint.css";
+
 
 class ZipcodeInput extends Component {
     render() {
