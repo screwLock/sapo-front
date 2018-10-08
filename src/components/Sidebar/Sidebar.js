@@ -1,19 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { routes } from './routes.js';
+import { StyledSidebar, StyledList } from "./styles/sidebar.js";
 
 class Sidebar extends Component {
     render(){
       return(
-        <div style={{ display: "flex" }}>
-        <div
-          style={{
-            padding: "10px",
-            width: "5%",
-            background: "#f0f0f0"
-          }}
-        >
-          <ul style={{ listStyleType: "none", padding: 0 }}>
+        <StyledSidebar>
+          <StyledList>
             <li>
               <Link to="/">Overview</Link>
             </li>
@@ -32,7 +26,7 @@ class Sidebar extends Component {
             <li>
               <Link to="/emails">Emails</Link>
             </li>
-          </ul>
+          </StyledList>
   
           {routes.map((route, index) => (
             // You can render a <Route> in as many places
@@ -49,8 +43,7 @@ class Sidebar extends Component {
               component={route.sidebar}
             />
           ))}
-        </div>
-  
+        {/*
         <div style={{ flex: 1, padding: "10px" }}>
           {routes.map((route, index) => (
             // Render more <Route>s with the same paths as
@@ -61,9 +54,9 @@ class Sidebar extends Component {
               exact={route.exact}
               component={route.main}
             />
-          ))}
-        </div>
-      </div>
+          ))
+        </div>*/}
+      </StyledSidebar>
       );
     }
   }
