@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <div>
         <Grid
-          columns={"100px 1fr 100px"}
+          columns={"150px 1fr 50px"}
           rows={"45px 1fr 45px"}
           areas={[
             "header header  header",
