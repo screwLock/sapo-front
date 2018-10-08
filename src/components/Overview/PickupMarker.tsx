@@ -1,13 +1,12 @@
 import * as React from 'react';
 import Pickup from './Pickup';
-import "./styles/pickupMarker.css"
 
 interface IPickupMarkerProps {
     name: string;
     selectedPickup: Pickup;
 }
 
-class PickupMarker extends React.Component<IPickupMarkerProps, any> {    
+class PickupMarker extends React.Component<IPickupMarkerProps, any> {
     constructor(props: IPickupMarkerProps) {
         super(props)
     }
@@ -15,14 +14,17 @@ class PickupMarker extends React.Component<IPickupMarkerProps, any> {
 
 
     public render() {
-        let classes='marker';
-        if(this.props.selectedPickup){
-            classes+= ' selected';
+        let classes = 'marker';
+        if (this.props.selectedPickup) {
+            classes += ' selected';
         }
+
         return (
-            <div className={classes}>
-                {this.props.name}
+            <div>
+                <div className={classes} />
+                <div className="pulse" />
             </div>
+
         );
     }
 }
