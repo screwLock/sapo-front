@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, InputGroup } from "@blueprintjs/core";
-import 'normalize.css/normalize.css';
-import "@blueprintjs/core/lib/css/blueprint.css";
+
 // import * as EmailValidator from 'email-validator';
 import AccessLevelSelect from "./Access_Level_Select"
 
@@ -11,21 +10,21 @@ class NewEmployee extends Component {
         return (
             <div>
                 <FormGroup
-                    label="Add "
+                    label="First Name"
                     labelFor="text-input"
                     labelInfo="(required)"
                 >
                     <InputGroup id="employeeFirstName" placeholder="First Name" />
                 </FormGroup>
                 <FormGroup
-                    label="Add "
+                    label="Last Name"
                     labelFor="text-input"
                     labelInfo="(required)"
                 >
                     <InputGroup id="employeeLastName" placeholder="Last Name" />
                 </FormGroup>
                 <FormGroup
-                    label="Add "
+                    label="Email"
                     labelFor="text-input"
                     labelInfo="(required)"
                 >

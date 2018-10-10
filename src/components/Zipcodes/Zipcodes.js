@@ -9,7 +9,7 @@ class Zipcodes extends Component {
     render() {
         return (
             <Grid columns={12}>
-                <Cell width={2}><ZipcodeInput /></Cell>
+                <Cell width={4}><ZipcodeInput /></Cell>
                 <Cell width={12}><ZipcodeWeekdays /></Cell>
             </Grid>
                 );
