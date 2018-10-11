@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Button, Card, Elevation } from "@blueprintjs/core";
+import { Button, Card, Collapse, Elevation, H5 } from "@blueprintjs/core";
 import { Draggable } from 'react-beautiful-dnd';
-import Pickup from './Pickup';
 
 class OverviewCard extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isOpen: false
+        }
     };
     render() {
         const { provided, innerRef, pickup } = this.props;
-
+        const open = this.props.openAll || this.state.isOpen;
         return (
             <div
                 {...provided.draggableProps}
@@ -18,18 +20,21 @@ class OverviewCard extends Component {
                 onClick={this.handleClick}
             >
                 <Card interactive={true} elevation={Elevation.TWO} >
-                    <Pickup name ={pickup.name}
-                            lat = {pickup.lat}
-                            lng = {pickup.lng}
-                    />
-
+                    <H5>{this.props.pickup.name}</H5>
+                    <Collapse isOpen={open} transitionDuration={1}>
+                        <pre>
+                            {this.props.pickup.name}
+                        </pre>
+                    </Collapse>
                 </Card>
             </div>
         );
     }
-    handleClick=()=>{
-        this.props.handleClick(this.props.pickup)
+    handleClick = ()=> {
+        this.setState({ isOpen: !this.state.isOpen });
+        this.props.handleClick(this.props.pickup);
      };
+
 }
 
 export default OverviewCard;

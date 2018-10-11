@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Grid, Cell } from "styled-css-grid";
 import { format, isSameDay } from 'date-fns';
 import './styles/pickups.css';
-
 import OverviewCard from './OverviewCard.js';
+import { Button } from '@blueprintjs/core';
 
-class OverviewPickups extends Component {
+class OverviewPickups extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            openAll: false
+        }
     };
 
     renderCards = () => {
@@ -22,6 +25,7 @@ class OverviewPickups extends Component {
                                 innerRef={provided.innerRef}
                                 provided={provided}
                                 handleClick={this.props.handleClick}
+                                openAll={this.state.openAll}
                             />
                         )}
                     </Draggable>
@@ -30,28 +34,50 @@ class OverviewPickups extends Component {
         });
     }
 
+    renderHeader = () => {
+        return (
+            <div className="header">
+                <h3>Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</h3>
+                <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="eye-open" id="openAll">Open All</Button>
+            </div>
+        )
+    }
+
+    renderFooter = () => {
+        return (
+            <div className="footer">
+                <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="document">Convert to PDF</Button>
+            </div>
+        )
+    }
+
+    handleOpenAllClick = () => {
+        this.setState({ openAll: !this.state.openAll });
+    }
+
     onDragEnd = () => {
         //TODO
     };
 
     render() {
         return (
-            <div>
-                <h3>Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</h3>
-                <div className="pickups">
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Droppable droppableId="dropabble">
-                        {(provided) => (
-                            <div innerRef={provided.innerRef} ref={provided.innerRef}>
-                                <Grid columns={6}>
-                                    {this.renderCards()}
-                                    {provided.placeholder}
-                                </Grid>
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+            <div className="pickups">
+                {this.renderHeader()}
+                <div className="cards">
+                    <DragDropContext onDragEnd={this.onDragEnd}>
+                        <Droppable droppableId="dropabble">
+                            {(provided) => (
+                                <div innerRef={provided.innerRef} ref={provided.innerRef}>
+                                    <Grid columns={6}>
+                                        {this.renderCards()}
+                                        {provided.placeholder}
+                                    </Grid>
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 </div>
+                {this.renderFooter()}
             </div>
         );
     }

@@ -40,7 +40,7 @@ class Overview extends Component {
                                       />
         </Cell>
         <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate} handleClick={this.selectDate}/></Cell>
-        <Cell width={6}><OverviewPickups pickups={this.state.pickups} handleClick={this.selectPickup} selectedDate={this.state.selectedDate}/></Cell>
+        <Cell width={7}><OverviewPickups pickups={this.state.pickups} handleClick={this.selectPickup} selectedDate={this.state.selectedDate}/></Cell>
         </Grid>
     );
   }
