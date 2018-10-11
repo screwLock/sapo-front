@@ -9,12 +9,6 @@ class OverviewMap extends React.Component {
     super(props);
   }
 
-
-  static defaultProps = {
-    center: { lat: 40.7446790, lng: -73.9485420 },
-    zoom: 3
-  };
-
   getCenter = (selectedPickup, defaultCenter) => {
     let selectedCenter = null;
     if (selectedPickup){
@@ -33,12 +27,14 @@ class OverviewMap extends React.Component {
   render() {
     const center = this.getCenter(this.props.selectedPickup, this.props.center);
     const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
+    const user = this.props.user;
+    const zoom = this.props.zoom;
     return (
       <div className='google-map' style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
           bootstrapURLKeys={{ key: 'AIzaSyDOs_VPiyP8PWQ70b7uNtPhKftBgwsFhw8' }}
-          defaultCenter={this.props.center}
-          defaultZoom={this.props.zoom}
+          defaultCenter={{'lat': user.lat, 'lng': user.lng}}
+          defaultZoom={zoom}
           center={center}
         >
           {datePickups.map((pickup) => {
@@ -47,7 +43,9 @@ class OverviewMap extends React.Component {
               lat={pickup.lat}
               lng={pickup.lng}
               name={pickup.name}
-              selectedPickup={pickup === this.props.selectedPickup}
+              selectedPickup={this.props.selectedPickup}
+              pickup={pickup}
+              onClick={this.props.onClick}
             ></PickupMarker>
           })}
         </GoogleMapReact>
