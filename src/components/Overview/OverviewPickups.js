@@ -5,6 +5,7 @@ import { format, isSameDay } from 'date-fns';
 import './styles/pickups.css';
 import OverviewCard from './OverviewCard.js';
 import { Button } from '@blueprintjs/core';
+import { makeDailyPickupsPDF } from './PickupPDFMake';
 
 class OverviewPickups extends React.Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class OverviewPickups extends React.Component {
     renderFooter = () => {
         return (
             <div className="footer">
-                <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="document">Convert to PDF</Button>
+                <Button minimal="false" onClick={makeDailyPickupsPDF} rightIcon="document" id="createPDF">Convert to PDF</Button>
             </div>
         )
     }
