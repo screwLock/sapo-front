@@ -47,7 +47,8 @@ class OverviewMap extends React.Component {
               pickup={pickup}
               onClick={this.props.onClick}
             ></PickupMarker>
-          })}
+          })
+          }
         </GoogleMapReact>
       </div>
     );

@@ -1,17 +1,19 @@
-import * as React from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Grid, Cell } from "styled-css-grid";
-import { format, isSameDay } from 'date-fns';
-import './styles/pickups.css';
-import OverviewCard from './OverviewCard.js';
-import { Button } from '@blueprintjs/core';
-import { makeDailyPickupsPDF } from './PickupPDFMake';
+import * as React from 'react'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { Grid, Cell } from "styled-css-grid"
+import { format, isSameDay } from 'date-fns'
+import './styles/pickups.css'
+import OverviewCard from './OverviewCard.js'
+import { Card, Button, Overlay, Classes, Elevation } from '@blueprintjs/core'
+import { makeDailyPickupsPDF } from './PickupPDFMake'
+import { CustomerCallIn } from './CustomerCallIn'
 
 class OverviewPickups extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            openAll: false
+            openAll: false,
+            isOverlayOpen: false
         }
     };
 
@@ -47,6 +49,8 @@ class OverviewPickups extends React.Component {
     renderFooter = () => {
         return (
             <div className="footer">
+                <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
+                    <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay}/>
                 <Button minimal="false" onClick={makeDailyPickupsPDF} rightIcon="document" id="createPDF">Convert to PDF</Button>
             </div>
         )
@@ -54,6 +58,10 @@ class OverviewPickups extends React.Component {
 
     handleOpenAllClick = () => {
         this.setState({ openAll: !this.state.openAll });
+    }
+
+    toggleOverlay = () => {
+        this.setState({isOverlayOpen: !this.state.isOverlayOpen})
     }
 
     onDragEnd = () => {

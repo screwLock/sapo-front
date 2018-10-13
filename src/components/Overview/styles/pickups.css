@@ -20,5 +20,5 @@
     margin: 10px;
     display: flex;
     flex-direction: row;
-    align-self: flex-end;
+    align-self: flex-start;
 }
