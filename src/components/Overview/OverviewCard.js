@@ -9,9 +9,14 @@ class OverviewCard extends Component {
             isOpen: false
         }
     };
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.isOpen !== this.props.isOpen){
+            this.setState({isOpen: this.props.isOpen});
+        }
+    }
     render() {
         const { provided, innerRef, pickup } = this.props;
-        const open = this.props.openAll || this.state.isOpen;
         return (
             <div
                 {...provided.draggableProps}
@@ -21,7 +26,7 @@ class OverviewCard extends Component {
             >
                 <Card interactive={true} elevation={Elevation.TWO} >
                     <H5>{this.props.pickup.name}</H5>
-                    <Collapse isOpen={open} transitionDuration={1}>
+                    <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
                         <pre>
                             {this.props.pickup.name}
                         </pre>

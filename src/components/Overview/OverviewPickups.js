@@ -12,7 +12,7 @@ class OverviewPickups extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            openAll: false,
+            isOpen: false,
             isOverlayOpen: false
         }
     };
@@ -28,7 +28,7 @@ class OverviewPickups extends React.Component {
                                 innerRef={provided.innerRef}
                                 provided={provided}
                                 handleClick={this.props.handleClick}
-                                openAll={this.state.openAll}
+                                isOpen={this.state.isOpen}
                             />
                         )}
                     </Draggable>
@@ -41,9 +41,18 @@ class OverviewPickups extends React.Component {
         return (
             <div className="header">
                 <h3>Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</h3>
-                <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="eye-open" id="openAll">Open All</Button>
+                <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="eye-open" id="openAll">
+                    {this.renderOpenAllButton()}
+                </Button>
             </div>
         )
+    }
+
+    renderOpenAllButton = () => {
+        if(this.state.isOpen) {
+            return "Close All"
+        }
+        return "Open All"
     }
 
     renderFooter = () => {
@@ -57,7 +66,7 @@ class OverviewPickups extends React.Component {
     }
 
     handleOpenAllClick = () => {
-        this.setState({ openAll: !this.state.openAll });
+        this.setState({ isOpen: !this.state.isOpen });
     }
 
     toggleOverlay = () => {
