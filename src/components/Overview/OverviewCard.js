@@ -24,7 +24,7 @@ class OverviewCard extends Component {
                 ref={innerRef}
                 onClick={this.handleClick}
             >
-                <Card interactive={true} elevation={Elevation.TWO} >
+                <Card interactive={true} elevation={Elevation.TWO} className={'card'}>
                     <H5>{this.props.pickup.name}</H5>
                     <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
                         <pre>

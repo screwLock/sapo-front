@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Card, Elevation, Overlay } from '@blueprintjs/core'
+import './styles/customerCallIn.css'
 
 export class CustomerCallIn extends React.Component {
     constructor(props) {
@@ -11,11 +12,13 @@ export class CustomerCallIn extends React.Component {
             <Overlay elevation={Elevation.TWO} 
                      isOpen={this.props.isOverlayOpen} 
                      onClose={this.props.onClose} 
-                     transitionDuration={1}
+                     transitionDuration={100}
             >
-                <Card>
-                    <h2>Customer Call-In</h2>
-                </Card>
+                <div className='container'>
+                    <Card className='customerCallIn'>
+                        <h2>Customer Call-In</h2>
+                    </Card>
+                </div>
             </Overlay>
         )
     }

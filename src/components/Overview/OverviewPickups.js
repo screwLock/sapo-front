@@ -19,10 +19,10 @@ class OverviewPickups extends React.Component {
 
     renderCards = () => {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
-        return datePickups.map((pickup) => {
+        return datePickups.map((pickup, index) => {
             return (
                 <Cell height={1} width={4} left={2}>
-                    <Draggable key={pickup.lat} draggableId={pickup.lat}>
+                    <Draggable draggableId={pickup.id} index={index}>
                         {(provided) => (
                             <OverviewCard pickup={pickup}
                                 innerRef={provided.innerRef}
@@ -49,7 +49,7 @@ class OverviewPickups extends React.Component {
     }
 
     renderOpenAllButton = () => {
-        if(this.state.isOpen) {
+        if (this.state.isOpen) {
             return "Close All"
         }
         return "Open All"
@@ -59,8 +59,8 @@ class OverviewPickups extends React.Component {
         return (
             <div className="footer">
                 <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
-                    <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay}/>
-                <Button minimal="false" onClick={makeDailyPickupsPDF} rightIcon="document" id="createPDF">Convert to PDF</Button>
+                <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} />
+                <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups)} rightIcon="document" id="createPDF">Convert to PDF</Button>
             </div>
         )
     }
@@ -70,11 +70,30 @@ class OverviewPickups extends React.Component {
     }
 
     toggleOverlay = () => {
-        this.setState({isOverlayOpen: !this.state.isOverlayOpen})
+        this.setState({ isOverlayOpen: !this.state.isOverlayOpen })
     }
 
-    onDragEnd = () => {
-        //TODO
+    onDragEnd = result => {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+
+        const pickups = this.reorder(
+            this.props.pickups,
+            result.source.index,
+            result.destination.index
+        );
+
+        this.props.onDragEnd(pickups);
+    };
+
+    reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+
+        return result;
     };
 
     render() {

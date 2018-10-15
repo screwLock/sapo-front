@@ -6,7 +6,8 @@ const pickupMocks = [
         "priceCurrency": "EUR",
         "lat": 51.556181,
         "lng": -0.279465,
-        "date": new Date()
+        "date": new Date(),
+        "id": Math.floor(Math.random() * 10000)
     },
     {
         "name": "Old Trafford",
@@ -15,7 +16,8 @@ const pickupMocks = [
         "priceCurrency": "EUR",
         "lat": 53.463219,
         "lng": -2.291297,
-        "date": new Date()
+        "date": new Date(),
+        "id": Math.floor(Math.random() * 10000)
     },
     {
         "name": "Emirates Stadium",
@@ -24,7 +26,8 @@ const pickupMocks = [
         "priceCurrency": "EUR",
         "lat": 51.555015,
         "lng": -0.108384,
-        "date": new Date()
+        "date": new Date(),
+        "id": Math.floor(Math.random() * 10000)
     },
     {
         "name": "London Stadium",
@@ -33,7 +36,8 @@ const pickupMocks = [
         "priceCurrency": "EUR",
         "lat": 51.538870,
         "lng": -0.016550,
-        "date": new Date()
+        "date": new Date(),
+        "id": Math.floor(Math.random() * 10000)
     },
     {
         "name": "City of Manchester Stadium",
@@ -42,7 +46,8 @@ const pickupMocks = [
         "priceCurrency": "EUR",
         "lat": 53.481759,
         "lng": -2.202540,
-        "date": new Date()
+        "date": new Date(),
+        "id": Math.floor(Math.random() * 10000)
     },
     {
         "name": "Anfield",
@@ -51,7 +56,8 @@ const pickupMocks = [
         "priceCurrency": "EUR",
         "lat": 53.431066,
         "lng": -2.960819,
-        "date": new Date()
+        "date": new Date(),
+        "id": Math.floor(Math.random() * 10000)
     }
  ];
 
