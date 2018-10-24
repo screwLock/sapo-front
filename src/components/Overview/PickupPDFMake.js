@@ -4,7 +4,9 @@ import { format } from 'date-fns'
 
 
 
-export const makeDailyPickupsPDF = (data) => () => {
+export const makeDailyPickupsPDF = (pickups, user) => () => {
+    const routePickups = pickups.filter(pickup => pickup.inRoute === true)
+
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
     const document = {
@@ -12,16 +14,18 @@ export const makeDailyPickupsPDF = (data) => () => {
             text: `Pickups for ${format(new Date(), 'MMMM Do YYYY')}`,
             fontStyle: 15,
             lineHeight: 4
-        }]
+        },
+        {text:"Google Map Directions", link:`${makeURL(user)}`, decoration:"underline", fontSize:12}]
     }
-    data.forEach(employee => {
+    routePickups.forEach(pickup => {
         document.content.push({
             columns: [
-                { text: 'firstname', width: 60, fonStyle: 10 },
+                { text: 'Name', width: 60, fonStyle: 10 },
                 { text: ':', width: 10 },
-                { text: employee.name, width: 50 },
+                { text: pickup.name, width: 50 },
                 { text: 'lastName', width: 60 },
-                { text: ':', width: 10 }, { text: employee.id, width: 50 }
+                { text: ':', width: 10 }, 
+                { text: pickup.id, width: 50 }
             ],
             lineHeight: 2
         });
@@ -29,3 +33,9 @@ export const makeDailyPickupsPDF = (data) => () => {
     pdfMake.createPdf(document).download();
 }
 
+const makeURL = (user) => {
+    const url = "https://www.google.com/maps/dir/?api=1";
+    const origin = "&origin=" + user.lat + "," + user.lng;
+    const destination = "&destination=" + user.lat + "," + user.lng;
+    return new URL(url + origin + destination);
+}

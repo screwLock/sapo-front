@@ -3,4 +3,5 @@ export interface IPickup {
     lat: number;
     lng: number;
     date: Date;
+    inRoute?: boolean;
 }

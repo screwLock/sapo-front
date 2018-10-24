@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Card, Collapse, Elevation, H5 } from "@blueprintjs/core";
+import { Button, Card, Checkbox, Collapse, Elevation, H5 } from "@blueprintjs/core";
 import { Draggable } from 'react-beautiful-dnd';
 
 class OverviewCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            isChecked: this.props.pickup.inRoute
         }
     };
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.isOpen !== this.props.isOpen){
-            this.setState({isOpen: this.props.isOpen});
+        if (prevProps.isAllOpen !== this.props.isAllOpen) {
+            this.setState({ isOpen: this.props.isAllOpen });
         }
     }
     render() {
@@ -22,10 +23,15 @@ class OverviewCard extends Component {
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={innerRef}
-                onClick={this.handleClick}
             >
                 <Card interactive={true} elevation={Elevation.TWO} className={'card'}>
-                    <H5>{this.props.pickup.name}</H5>
+                    <H5 onClick={this.handleClick}>{this.props.pickup.name}</H5>
+                    <Checkbox
+                        label="Include In Route"
+                        checked={this.state.isChecked}
+                        inline={true}
+                        onChange={this.handleCheckedChange}
+                    />
                     <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
                         <pre>
                             {this.props.pickup.name}
@@ -35,10 +41,15 @@ class OverviewCard extends Component {
             </div>
         );
     }
-    handleClick = ()=> {
+    handleClick = () => {
         this.setState({ isOpen: !this.state.isOpen });
         this.props.handleClick(this.props.pickup);
-     };
+    }
+
+    handleCheckedChange = ()  => {
+        this.setState({isChecked: !this.state.isChecked})
+        this.props.handleRouteChange(this.props.index);       
+    }
 
 }
 

@@ -12,7 +12,7 @@ class OverviewPickups extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: false,
+            isAllOpen: false,
             isOverlayOpen: false
         }
     };
@@ -25,10 +25,13 @@ class OverviewPickups extends React.Component {
                     <Draggable draggableId={pickup.id} index={index}>
                         {(provided) => (
                             <OverviewCard pickup={pickup}
+                                index={index}
+                                routes={this.props.routes}
                                 innerRef={provided.innerRef}
                                 provided={provided}
                                 handleClick={this.props.handleClick}
-                                isOpen={this.state.isOpen}
+                                isAllOpen={this.state.isAllOpen}
+                                handleRouteChange={this.props.handleRouteChange}
                             />
                         )}
                     </Draggable>
@@ -49,7 +52,7 @@ class OverviewPickups extends React.Component {
     }
 
     renderOpenAllButton = () => {
-        if (this.state.isOpen) {
+        if (this.state.isAllOpen) {
             return "Close All"
         }
         return "Open All"
@@ -60,13 +63,15 @@ class OverviewPickups extends React.Component {
             <div className="footer">
                 <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                 <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} />
-                <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups)} rightIcon="document" id="createPDF">Convert to PDF</Button>
+                <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups,this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
+                <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
             </div>
         )
     }
 
+
     handleOpenAllClick = () => {
-        this.setState({ isOpen: !this.state.isOpen });
+        this.setState({ isAllOpen: !this.state.isAllOpen });
     }
 
     toggleOverlay = () => {
