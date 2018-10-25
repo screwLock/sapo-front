@@ -7,6 +7,10 @@ import { format } from 'date-fns'
 export const makeDailyPickupsPDF = (pickups, user) => () => {
     const routePickups = pickups.filter(pickup => pickup.inRoute === true)
 
+    if(routePickups.length === 0) {
+        return false;
+    }
+
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
     const document = {
