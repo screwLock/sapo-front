@@ -39,9 +39,14 @@ export const filterCategory: ItemPredicate<ICategory> = (query, category) => {
     return `${category.name.toLowerCase()}`.indexOf(query.toLowerCase()) >= 0;
 };
 
+
+
+
 export const categorySelectProps = {
     itemPredicate: filterCategory,
     itemRenderer: renderCategory,
-    items: PREPACKAGED_CATEGORIES,
+    items: PREPACKAGED_CATEGORIES
 };
+
+
 

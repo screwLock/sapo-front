@@ -4,6 +4,7 @@ import { Select } from '@blueprintjs/select';
 import * as Categories from "./types/Categories";
 import * as Donatables from "./types/Donatables";
 import { produce } from 'immer';
+import '@blueprintjs/select/lib/css/blueprint-select.css'
 
 class DonorPageCategories extends React.Component<{}, any> {
     constructor(props: any) {
@@ -31,7 +32,6 @@ class DonorPageCategories extends React.Component<{}, any> {
                     itemRenderer={Categories.categorySelectProps.itemRenderer}
                     noResults={<MenuItem disabled={true} text="No results." />}
                     onItemSelect={this.handleValueChange}
-                    filterable={true}
                 >
                     <Button
                         icon="small-plus"
@@ -45,7 +45,6 @@ class DonorPageCategories extends React.Component<{}, any> {
                     itemRenderer={Donatables.donatableSelectProps.itemRenderer}
                     noResults={<MenuItem disabled={true} text="No results." />}
                     onItemSelect={this.handleDonatableValueChange}
-                    filterable={true}
                 >
                     <Button
                         icon="small-plus"

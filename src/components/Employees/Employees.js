@@ -1,16 +1,28 @@
 import * as React from 'react';
 import NewEmployee from './NewEmployee';
-import { H3 } from '@blueprintjs/core';
+import { Button, H3 } from '@blueprintjs/core';
+import { AppToaster} from '../Toaster'
 
 class Employees extends React.Component {
-    render(){
-      return(
-        <div>
-          <H3>Add a New Employee</H3>
-          <NewEmployee />
-        </div>
-      );
-    }
+
+  handleClick = () => {
+    this.showToast(`Enter an Employee`);
+    //database call
   }
-  
-  export default Employees;
+
+  showToast = (message) => {
+    AppToaster.show({ message: message });
+  }
+
+  render() {
+    return (
+      <div>
+        <H3>Add a New Employee</H3>
+        <NewEmployee />
+        <div><Button onClick={this.handleClick}>Submit</Button></div>
+      </div>
+    );
+  }
+}
+
+export default Employees;
