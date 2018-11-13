@@ -1,69 +1,74 @@
 import * as React from 'react'
-import { Grid, Cell } from "styled-css-grid"
-import { Button } from '@blueprintjs/core'
+import styled from 'styled-components'
+import { Button, H3, Intent } from '@blueprintjs/core'
 import { produce } from 'immer';
-import { postalCodeValidator} from './postalCodeValidator'
-import ZipcodeWeekdays from './ZipcodeWeekdays'
-import ZipcodeInput from './ZipcodeInput'
-import { weekdays,IWeekday } from "../common_types/checkedWeekdays";
+import NewZipcode from './NewZipcode'
+import ZipcodesTable from './ZipcodesTable'
 import { AppToaster } from '../Toaster'
-
-
+import columns from './columns'
 
 class Zipcodes extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
-            zipcode: '',
-            weekdays: weekdays
+            zipcodes: [],
+            isZipcodeOpen: false,
         }
     }
 
+    addZipcode = (zipcode) => {
+        this.showToast(`Enter a Zipcode`);
+        this.setState(
+          produce(draft => {
+            draft.zipcodes.push(zipcode)
+          })
+        ) 
+        //save to database
+      }
+
+      showToast = (message) => {
+        AppToaster.show({ message: message });
+      }
 
     handleBlur = (e) => {
-        this.setState({zipcode: e.target.value})
+        this.setState({ zipcode: e.target.value })
     }
 
-    handleCheckedChange = (index) => (e) => {
-        this.setState(
-          produce(this.state, draft => {
-            draft.weekdays[index].checked = !draft.weekdays[index].checked;
-          }));
-      }
-    
+
     handleClick = () => {
-        if(!postalCodeValidator(this.state.zipcode)){
-            this.showToast(`Enter a valid postal code`);
-        }
-        else if(weekdays.length === 0){
-            this.showToast(`Please select at least one weekday`);
-        }
-        //database call
+        this.setState({ isZipcodeOpen: !this.state.isZipcodeOpen })
     }
 
-    showToast = (message) => {
-        AppToaster.show({ message: message });
+    handleZipcodeOpen = () => {
+        this.setState({ isZipcodeOpen: !this.state.isZipcodeOpen })
     }
-    
 
     render() {
         return (
-            <Grid columns={12}>
-                <Cell width={4}><ZipcodeInput 
-                                 onBlur={this.handleBlur}
-                                 onChange={this.handleChange} 
-                                 value={this.state.zipcode}
-                                 />
-                </Cell>
-                <Cell width={12}><ZipcodeWeekdays 
-                                  onChange={this.handleCheckedChange}
-                                  weekdays={this.state.weekdays}
-                                 />
-                </Cell>
-                <Cell width={12}><Button onClick={this.handleClick}>Submit</Button></Cell>
-            </Grid>
-                );
-              }
-            }
-            
-  export default Zipcodes;
+            <Container>
+                <H3>Manage Zipcodes</H3>
+                <ButtonRow>
+                    <Button intent={Intent.PRIMARY} onClick={this.handleClick}>Add New Zipcode</Button>
+                </ButtonRow>
+                <NewZipcode addZipcode={this.addZipcode}
+                    zipcodes={this.state.zipcodes}
+                    isOpen={this.state.isZipcodeOpen}
+                    handleClose={this.handleZipcodeOpen}
+                />
+                <ZipcodesTable data={this.state.zipcodes} columns={columns}/>
+            </Container>
+        );
+    }
+}
+
+const Container = styled.div`
+  margin: 25px;
+`
+
+const ButtonRow = styled.div`
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
+
+export default Zipcodes;

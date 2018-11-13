@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Button } from '@blueprintjs/core'
+import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
 import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
+import { InputContainer } from './styles/inputContainer'
 import { AppToaster } from '../Toaster'
 
 class BlackoutDatesSingleDatePicker extends React.Component {
@@ -10,6 +11,7 @@ class BlackoutDatesSingleDatePicker extends React.Component {
     this.handleDayClick = this.handleDayClick.bind(this);
     this.state = {
       selectedDay: undefined,
+      reason: ''
     };
   }
 
@@ -50,7 +52,16 @@ class BlackoutDatesSingleDatePicker extends React.Component {
               <p>Please select a day.</p>
             )}
         </div>
-        <div><Button onClick={this.handleClick}>Submit</Button></div>
+        <InputContainer>
+          <FormGroup
+            label="Enter a Reason"
+            labelFor="text-input"
+            labelInfo="(required)"
+          >
+            <InputGroup id="singleDateReason" placeholder="Enter a Reason" />
+          </FormGroup>
+          <div><Button onClick={this.handleClick}>Submit</Button></div>
+        </InputContainer>
       </div>
     );
   }

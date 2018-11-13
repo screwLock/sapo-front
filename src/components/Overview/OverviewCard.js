@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import { Button, Card, Checkbox, Collapse, Elevation, H5 } from "@blueprintjs/core";
-import { Draggable } from 'react-beautiful-dnd';
+import React, { Component } from 'react'
+import { Button, Card, Checkbox, Collapse, Elevation, H5 } from "@blueprintjs/core"
+import { StyledCard} from './styles/StyledCard'
+import { Draggable } from 'react-beautiful-dnd'
 
 class OverviewCard extends Component {
     constructor(props) {
@@ -24,8 +25,8 @@ class OverviewCard extends Component {
                 {...provided.dragHandleProps}
                 ref={innerRef}
             >
-                <Card interactive={true} elevation={Elevation.TWO} className={'card'}>
-                    <H5 onClick={this.handleClick}>{this.props.pickup.name}</H5>
+                <StyledCard interactive={true} elevation={Elevation.TWO} className={'card'}>
+                    <H5 className={'cardHeader'} onClick={this.handleClick}>{this.props.pickup.name}</H5>
                     <Checkbox
                         label="Include In Route"
                         checked={this.state.isChecked}
@@ -33,11 +34,12 @@ class OverviewCard extends Component {
                         onChange={this.handleCheckedChange}
                     />
                     <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
-                        <pre>
-                            {this.props.pickup.name}
-                        </pre>
+                        <div>{this.props.pickup.name}</div>
+                        <div>Contact: </div>
+                        <div>Address: </div>
+                        <div>Order: </div>
                     </Collapse>
-                </Card>
+                </StyledCard>
             </div>
         );
     }

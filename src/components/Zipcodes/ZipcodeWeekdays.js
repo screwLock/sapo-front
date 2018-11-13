@@ -6,13 +6,13 @@ class ZipcodeWeekdays extends React.Component{
     super(props)
   }
 
-
     render(){
       const days = this.props.weekdays;
       return(
         <div>
           <H5>Select applicable weekdays</H5>
-          {days.map( (weekday, index) => 
+          {days.map( (weekday, index) =>
+            <div>
               <Checkbox 
                   label={weekday.day}
                   key={index}
@@ -20,6 +20,7 @@ class ZipcodeWeekdays extends React.Component{
                   inline={true}
                   onChange={this.props.onChange(index)}
               />
+            </div>
             )}
         </div>
  
