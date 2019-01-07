@@ -8,11 +8,11 @@ import { weekdays, IWeekday } from "../common_types/checkedWeekdays";
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
 
-class NewZipcode extends React.Component {
+class EditZipcode extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            newZipcode: '',
+            zipcode: '',
             weekdays: [],
         }
     }
@@ -20,7 +20,7 @@ class NewZipcode extends React.Component {
     componentDidMount = () => {
         this.setState({weekdays: weekdays.slice()})
     }
-    
+
     countCheckedDays= () => {
         return this.state.weekdays.filter(weekday => {
             return weekday.checked === true
@@ -28,7 +28,7 @@ class NewZipcode extends React.Component {
     }
 
     handleBlur = (e) => {
-        this.setState({ newZipcode: e.target.value });
+        this.setState({ zipcode: e.target.value });
     }
     
     handleCheckedChange = (index) => (e) => {
@@ -44,17 +44,18 @@ class NewZipcode extends React.Component {
     }
 
     handleSubmit = () => {
-        if (!postalCodeValidator(this.state.newZipcode)) {
+        if (!postalCodeValidator(this.state.zipcode)) {
             this.showToast(`Enter a valid postal code`);
         }
         else if (this.countCheckedDays() === 0) {
             this.showToast(`Please select at least one weekday`);
         }
         else {
-            this.props.addZipcode({zipcode: this.state.newZipcode, weekdays: this.state.weekdays});
+            this.props.editZipcode({zipcode: this.state.zipcode, weekdays: this.state.weekdays});
             //reset the checked weekday values
-            this.setState({newZipcode: '', weekdays: weekdays.slice()});
+            this.setState({zipcode:'', weekdays: weekdays.slice()});
             this.props.handleClose();
+            console.log(this.props.index)
             //database call
             //show toast if save successful
         }
@@ -97,4 +98,4 @@ const DialogContainer = styled.div`
     margin-top: 10px;
 `
 
-export default NewZipcode;
+export default EditZipcode;

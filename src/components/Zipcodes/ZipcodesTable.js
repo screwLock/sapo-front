@@ -7,25 +7,41 @@ class ZipcodesTable extends React.Component {
 
     columns = [
         {
+            Header: 'ID',
+            accessor: 'zipcode',
+            width: 100,
+            show: true,
+            Cell: (row) => {
+                return <div>{row.index}</div>;
+            }
+        },
+        {
             Header: 'Zipcode',
             accessor: 'zipcode',
             width: 200
         }, {
             Header: 'Weekdays',
             accessor: 'weekdays',
+            Cell: row => {
+                return (
+                  <div>
+                    <span>{this.filterSelectedWeekdays(row.row.weekdays)}</span>
+                  </div>
+                )
+            },
             width: 500
         },
         {
             Header: 'Actions',
-            Cell: row => (
+            Cell: (row) => (
                 <div>
-                    <Button intent={Intent.PRIMARY} 
-                            icon="edit" 
-                            onClick={() => this.props.delete(row.index)}
+                    <Button intent={Intent.PRIMARY}
+                        icon="edit"
+                        onClick={() => this.props.editZipcode(row.index)}
                     />
-                    <Button intent={Intent.DANGER} 
-                            icon="trash" 
-                            onClick={() => this.props.delete(row.index)}
+                    <Button intent={Intent.DANGER}
+                        icon="trash"
+                        onClick={() => this.props.delete(row.index)}
                     />
                 </div>
             ),
@@ -36,6 +52,16 @@ class ZipcodesTable extends React.Component {
     tableStyle = {
         'border': 'none',
     }
+
+    filterSelectedWeekdays = (weekdays) => {
+        let selectedWeekdays = weekdays.filter(weekday => {
+            return weekday.checked === true
+        })
+        selectedWeekdays = selectedWeekdays.map(weekday => {
+            return weekday.day
+        })
+        return `${selectedWeekdays} `;
+    };
 
     getTHeadStyle = () => {
         return {
