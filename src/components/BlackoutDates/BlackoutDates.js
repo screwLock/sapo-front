@@ -1,14 +1,75 @@
-import React, { Component } from 'react';
-import BlackoutDatesTabs from './BlackoutDatesTabs.js';
+import * as React from 'react'
+import styled from 'styled-components'
+import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import NewBlackoutDate from './NewBlackoutDate'
+import columns from './columns'
+import BlackoutDatesTable from './BlackoutDatesTable'
 
-class BlackoutDates extends Component {
-    render(){
-      return(
-        <div>
-          <BlackoutDatesTabs />
-        </div>
-      );
+class BlackoutDates extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      dates: [],
+      isDatesOpen: false,
+      selection: '',
     }
   }
-  
-  export default BlackoutDates;
+
+  addDate = (date) => {
+    this.showToast(`Enter a Date`);
+    this.setState(
+      produce(draft => {
+        draft.zipcodes.push(date)
+      })
+    )
+    //save to database
+  }
+
+  handleClick = (event) => {
+    this.setState({
+      selection: event.target.textContent,
+      isDatesOpen: !this.state.isDatesOpen })
+  }
+
+  handleDatesOpen = () => {
+    this.setState({ isDatesOpen: !this.state.isDatesOpen })
+  }
+
+  render() {
+    const DateSelectMenu = (
+      <Menu>
+          <MenuItem text="Select A Single Date" onClick={this.handleClick}/>
+          <MenuItem text="Select A Date Range" onClick={this.handleClick}/>
+          <MenuItem text="Select Weekdays" onClick={this.handleClick}/>
+      </Menu>
+  );
+    return (
+      <Container>
+        <H3>Manage Blackout Dates</H3>
+        <ButtonRow>
+          <Popover content={DateSelectMenu} position={Position.RIGHT}>
+            <Button intent={Intent.PRIMARY}>Add New Blackout Dates</Button>
+          </Popover>
+        </ButtonRow>
+        <NewBlackoutDate addDate={this.addDate}
+                         dates={this.state.dates}
+                         isOpen={this.state.isDatesOpen}
+                         handleClose={this.handleDatesOpen}
+                         selection={this.state.selection}
+        />
+        <BlackoutDatesTable data={this.dates} columns={columns} />
+      </Container>
+    );
+  }
+}
+
+const Container = styled.div`
+  margin: 25px;
+`
+
+const ButtonRow = styled.div`
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
+export default BlackoutDates;

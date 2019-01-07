@@ -3,11 +3,11 @@ const columns = [{
     accessor: 'zipcodeID',
     width: 100
 }, {
-    Header: 'Zipcode',
-    accessor: 'zipcode'
+    Header: 'Date',
+    accessor: 'date'
 }, {
-    Header: 'Weekdays',
-    accessor: 'weekdays'
+    Header: 'Reason',
+    accessor: 'reason'
 
 }, 
 {

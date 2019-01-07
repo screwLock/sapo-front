@@ -2,7 +2,7 @@ import * as React from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
 import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
 import { AppToaster } from '../Toaster'
-import { InputContainer } from './styles/inputContainer'
+import styled from 'styled-components'
 import 'react-day-picker/lib/style.css'
 import './styles/blackoutDatesRange.css'
 
@@ -110,11 +110,15 @@ class BlackoutDatesRangeDatePicker extends React.Component {
           >
             <InputGroup id="dateRangeReason" placeholder="Enter a Reason" />
           </FormGroup>
-          <div><Button onClick={this.handleClick}>Submit</Button></div>
         </InputContainer>
       </div>
     );
   }
 }
+
+
+const InputContainer = styled.div`
+    width: 250px;
+`
 
 export default BlackoutDatesRangeDatePicker;

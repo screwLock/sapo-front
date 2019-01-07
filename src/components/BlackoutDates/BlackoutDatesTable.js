@@ -1,38 +1,11 @@
 import * as React from 'react'
 import ReactTable from 'react-table'
-import { Button, Intent } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import "react-table/react-table.css"
+import { INTENT_PRIMARY, INTENT_DANGER } from '@blueprintjs/core/lib/esm/common/classes';
 
-class ZipcodesTable extends React.Component {
-
-    columns = [
-        {
-            Header: 'Zipcode',
-            accessor: 'zipcode',
-            width: 200
-        }, {
-            Header: 'Weekdays',
-            accessor: 'weekdays',
-            width: 500
-        },
-        {
-            Header: 'Actions',
-            Cell: row => (
-                <div>
-                    <Button intent={Intent.PRIMARY} 
-                            icon="edit" 
-                            onClick={() => this.props.delete(row.index)}
-                    />
-                    <Button intent={Intent.DANGER} 
-                            icon="trash" 
-                            onClick={() => this.props.delete(row.index)}
-                    />
-                </div>
-            ),
-            width: 200
-        }
-    ];
-
+class BlackoutDatesTable extends React.Component {
+   
     tableStyle = {
         'border': 'none',
     }
@@ -42,7 +15,7 @@ class ZipcodesTable extends React.Component {
             style: {
                 'box-shadow': 'none',
                 'border': 'none',
-                'font-weight': 'bold'
+                'font-weight' : 'bold'
             }
         }
     }
@@ -67,9 +40,9 @@ class ZipcodesTable extends React.Component {
     render() {
         return (
             <div>
-                <ReactTable
+            <ReactTable
                     data={this.props.data}
-                    columns={this.columns}
+                    columns={this.props.columns}
                     className="-highlight"
                     defaultPageSize={15}
                     showPageSizeOptions={false}
@@ -86,4 +59,4 @@ class ZipcodesTable extends React.Component {
     }
 }
 
-export default ZipcodesTable;
+export default BlackoutDatesTable;

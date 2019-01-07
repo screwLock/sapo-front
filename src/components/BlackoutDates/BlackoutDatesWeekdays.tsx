@@ -1,8 +1,6 @@
-import { Checkbox, Button } from "@blueprintjs/core";
+import { Checkbox } from "@blueprintjs/core";
 import * as React from 'react';
 import produce from 'immer';
-import { AppToaster } from '../Toaster'
-
 import { weekdays, IWeekday } from "../common_types/checkedWeekdays"
 
 
@@ -31,9 +29,6 @@ class BlackoutDatesWeekdays extends React.Component<{}, any> {
             />
           )}
         </div>
-        <div>
-          <Button onClick={this.handleClick}>Submit</Button>
-        </div>
       </div>
 
     );
@@ -46,16 +41,6 @@ class BlackoutDatesWeekdays extends React.Component<{}, any> {
       }));
   }
 
-  private showToast = (message: string) => {
-    AppToaster.show({message});
-  }
-
-  private handleClick = () => {
-    this.showToast('weekdays sent')
-  }
 }
-
-
-
 
 export default BlackoutDatesWeekdays;

@@ -5,6 +5,7 @@ import BlackoutDates from './BlackoutDates/BlackoutDates';
 import Zipcodes from './Zipcodes/Zipcodes';
 import Employees from './Employees/Employees';
 import DonorPage from './DonorPage/DonorPage'
+import Emails from './Emails/Emails'
 
 class Main extends Component {
     render(){
@@ -15,6 +16,7 @@ class Main extends Component {
           <Route path='/zipcodes' component={Zipcodes}></Route>
           <Route path='/employees' component={Employees}></Route>
           <Route path='/donorPage' component={DonorPage}></Route>
+          <Route path='/emails' component={Emails}></Route>
         </Switch>
       );
     }

@@ -5,42 +5,43 @@ import { produce } from 'immer';
 import NewZipcode from './NewZipcode'
 import ZipcodesTable from './ZipcodesTable'
 import { AppToaster } from '../Toaster'
-import columns from './columns'
 
 class Zipcodes extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             zipcodes: [],
-            isZipcodeOpen: false,
+            isNewZipcodeOpen: false,
         }
     }
 
     addZipcode = (zipcode) => {
-        this.showToast(`Enter a Zipcode`);
         this.setState(
-          produce(draft => {
-            draft.zipcodes.push(zipcode)
-          })
-        ) 
+            produce(draft => {
+                draft.zipcodes.push(zipcode)
+            })
+        )
         //save to database
-      }
-
-      showToast = (message) => {
-        AppToaster.show({ message: message });
-      }
-
-    handleBlur = (e) => {
-        this.setState({ zipcode: e.target.value })
     }
 
+    showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
 
     handleClick = () => {
-        this.setState({ isZipcodeOpen: !this.state.isZipcodeOpen })
+        this.setState({ isNewZipcodeOpen: !this.state.isNewZipcodeOpen })
     }
 
+    handleDeleteZipcode = (i) => {
+        let zipcodes = [...this.state.zipcodes]
+        zipcodes.splice(i, 1)
+        this.setState({ 
+          zipcodes: zipcodes
+        })
+      }
+
     handleZipcodeOpen = () => {
-        this.setState({ isZipcodeOpen: !this.state.isZipcodeOpen })
+        this.setState({ isNewZipcodeOpen: !this.state.isNewZipcodeOpen })
     }
 
     render() {
@@ -52,10 +53,12 @@ class Zipcodes extends React.Component {
                 </ButtonRow>
                 <NewZipcode addZipcode={this.addZipcode}
                     zipcodes={this.state.zipcodes}
-                    isOpen={this.state.isZipcodeOpen}
+                    isOpen={this.state.isNewZipcodeOpen}
                     handleClose={this.handleZipcodeOpen}
                 />
-                <ZipcodesTable data={this.state.zipcodes} columns={columns}/>
+                <ZipcodesTable data={this.state.zipcodes} 
+                               delete={this.handleDeleteZipcode}
+                />
             </Container>
         );
     }

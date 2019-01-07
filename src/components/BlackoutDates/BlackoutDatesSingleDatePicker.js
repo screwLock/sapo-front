@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
 import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
-import { InputContainer } from './styles/inputContainer'
+import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
 
 class BlackoutDatesSingleDatePicker extends React.Component {
@@ -66,5 +66,10 @@ class BlackoutDatesSingleDatePicker extends React.Component {
     );
   }
 }
+
+const InputContainer = styled.div`
+    width: 250px;
+`
+
 
 export default BlackoutDatesSingleDatePicker;
