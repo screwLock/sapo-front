@@ -2,7 +2,7 @@ import * as React from 'react'
 import Home from './Home'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
-import { Route, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { Auth } from "aws-amplify"
 
 class Authenticator extends React.Component {
@@ -42,17 +42,19 @@ class Authenticator extends React.Component {
         };
 
         return (
-            <Switch>
-                <Route exact path='/' render={() => {
-                    if (this.state.authState === 'authenticated') {
-                        return <Home {...props} />
-                    }
-                    else {
-                        return <Redirect to="/signIn" />
-                    }
-                }} />
-                <Route path='/signIn' render={() => (<SignIn {...props}/>)} />
-            </Switch>
+            <Router>
+                <div>
+                    <Route path='/' render={() => {
+                        if (this.state.authState === 'authenticated') {
+                            return <Home {...props} />
+                        }
+                        else {
+                            return <Redirect to="/signIn" />
+                        }
+                    }} />
+                    <Route path='/signIn' render={() => (<SignIn {...props} />)} />
+                </div>
+            </Router>
         )
         /*
         switch (this.state.authState) {

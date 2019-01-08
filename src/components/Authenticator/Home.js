@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Grid, Cell } from "styled-css-grid"
+import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Sidebar from '../Sidebar/Sidebar'
 import Header from '../Header/Header'
@@ -47,4 +48,4 @@ class Home extends React.Component {
     }
 }
 
-export default Home;
+export default withRouter(Home);

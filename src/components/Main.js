@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink, Switch, Route } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import Overview from './Overview/Overview';
 import BlackoutDates from './BlackoutDates/BlackoutDates';
 import Zipcodes from './Zipcodes/Zipcodes';
@@ -22,4 +22,4 @@ class Main extends Component {
     }
   }
   
-  export default Main;
+  export default withRouter(Main);
