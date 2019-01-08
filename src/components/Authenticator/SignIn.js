@@ -2,12 +2,12 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
-import { Redirect, withRouter } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
 
 class SignIn extends React.Component {
     static defaultProps = {
         authData: {},
-        authState: 'SignIn',
+        authState: 'false',
         onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
     };
 
@@ -34,7 +34,7 @@ class SignIn extends React.Component {
             if (data.signInUserSession === null) {
                 this.setState({ user: data, loading: false, modalShowing: true });
             } else {
-                this.props.onAuthStateChange('authenticated', data);
+                this.props.onAuthStateChange(true, data);
                 this.props.history.push('/')
             }
         } catch (err) {
@@ -50,7 +50,7 @@ class SignIn extends React.Component {
             const data = await Auth.confirmSignIn(this.state.user, token);
             console.log(`onConfirmSignIn::Response#2: ${JSON.stringify(data, null, 2)}`);
             const profile = await Auth.currentUser();
-            this.props.onAuthStateChange('authenticated', profile);
+            this.props.onAuthStateChange(true, profile);
         } catch (err) {
             console.log('Error: ', err);
             this.setState({ error: err.message, loading: false });
@@ -58,17 +58,7 @@ class SignIn extends React.Component {
         }
     }
 
-    onSignUpClick = () => {
-        this.props.onAuthStateChange('signUp', {});
-    }
-
-
     render() {
-        let settings = {
-            // Fill in props for individual components here
-            // submitButtonLoading: {}
-        };
-
         const errorComponent = this.state.error !== null
             ? this.state.error
             : false;
@@ -92,14 +82,15 @@ class SignIn extends React.Component {
                     </FormGroup>
                     <ButtonRow>
                         <Button
-                            {...(this.state.loading ? settings.submitButtonLoading : settings.submitButton)}
+                            loading={this.state.loading}
                             onClick={this.onSignIn}
                         >
                             Sign In
                         </Button>
                     </ButtonRow>
-                    <SignUpContainer>Don't have an account?  <a onClick={this.onSignUpClick}>
-                        Sign Up</a>
+                    <SignUpContainer>Don't have an account?
+                        <Link to='/signUp'> Sign Up</Link>
+                        <div><Link to='/forgotPassword'>Forgot Password?</Link></div>
                     </SignUpContainer>
                 </FormContainer>
             </Container>

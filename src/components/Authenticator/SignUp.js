@@ -6,7 +6,7 @@ import { Auth } from "aws-amplify"
 class SignUp extends React.Component {
     static defaultProps = {
       authData: {},
-      authState: 'signUp',
+      authState: false,
       onAuthStateChange: (next, data) => { console.log(`SignUp:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
     };
    

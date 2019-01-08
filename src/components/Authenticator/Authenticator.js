@@ -2,12 +2,13 @@ import * as React from 'react'
 import Home from './Home'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
+import ForgotPassword from './ForgotPassword'
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { Auth } from "aws-amplify"
 
 class Authenticator extends React.Component {
     static defaultProps = {
-        initialState: '',
+        initialState: false,
         initialData: {},
         onAuthenticated: (authData) => { console.log(`onAuthenticated(${JSON.stringify(authData, null, 2)}`); }
     };
@@ -22,13 +23,13 @@ class Authenticator extends React.Component {
 
     handleLogout = async event => {
         await Auth.signOut();
-        this.onAuthStateChange('signIn', null);
+        this.onAuthStateChange(false, null);
     }
 
     onAuthStateChange = (newState, newData) => {
         const data = Object.assign({}, this.state.authData, newData);
         this.setState({ authState: newState, authData: data });
-        if (newState === 'authenticated') {
+        if (newState === true) {
             this.props.onAuthenticated(data);
         }
     }
@@ -43,17 +44,19 @@ class Authenticator extends React.Component {
 
         return (
             <Router>
-                <div>
+                <Switch>
+                    <Route path='/signIn' render={() => (<SignIn {...props} />)} />
+                    <Route path='/signUp' render={() => (<SignUp {...props} />)} />
+                    <Route path='/forgotPassword' render={() => (<ForgotPassword {...props} />)} />
                     <Route path='/' render={() => {
-                        if (this.state.authState === 'authenticated') {
+                        if (this.state.authState === true) {
                             return <Home {...props} />
                         }
                         else {
                             return <Redirect to="/signIn" />
                         }
                     }} />
-                    <Route path='/signIn' render={() => (<SignIn {...props} />)} />
-                </div>
+                </Switch>
             </Router>
         )
         /*
