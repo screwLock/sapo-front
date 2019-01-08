@@ -2,10 +2,12 @@ import * as React from 'react'
 import LoggedIn from './LoggedIn'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
+import { Route, Switch } from "react-router-dom";
+import { Auth } from "aws-amplify"
 
 class Authenticator extends React.Component {
     static defaultProps = {
-        initialState: 'signedIn',
+        initialState: '',
         initialData: {},
         onAuthenticated: (authData) => { console.log(`onAuthenticated(${JSON.stringify(authData, null, 2)}`); }
     };
@@ -18,6 +20,10 @@ class Authenticator extends React.Component {
         };
     }
 
+    handleLogout = async event => {
+        await Auth.signOut();
+        this.onAuthStateChange('signIn', null);
+    }
 
     onAuthStateChange = (newState, newData) => {
         const data = Object.assign({}, this.state.authData, newData);
@@ -31,7 +37,8 @@ class Authenticator extends React.Component {
         const props = {
             authData: this.state.authData,
             authState: this.state.authState,
-            onAuthStateChange: (s, d) => this.onAuthStateChange(s, d)
+            onAuthStateChange: (s, d) => this.onAuthStateChange(s, d),
+            handleLogout: this.handleLogout,
         };
 
         switch (this.state.authState) {
@@ -40,7 +47,8 @@ class Authenticator extends React.Component {
             case 'signUp':
                 return <SignUp {...props} />;
             case 'signIn':
-            case 'signedIn':
+                return <SignIn {...props} />;
+            case 'authenticated':
                 return <LoggedIn {...props} />;
             default:
                 return <SignIn {...props} />;

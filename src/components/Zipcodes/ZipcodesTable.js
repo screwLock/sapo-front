@@ -7,15 +7,6 @@ class ZipcodesTable extends React.Component {
 
     columns = [
         {
-            Header: 'ID',
-            accessor: 'zipcode',
-            width: 100,
-            show: true,
-            Cell: (row) => {
-                return <div>{row.index}</div>;
-            }
-        },
-        {
             Header: 'Zipcode',
             accessor: 'zipcode',
             width: 200
@@ -66,9 +57,9 @@ class ZipcodesTable extends React.Component {
     getTHeadStyle = () => {
         return {
             style: {
-                'box-shadow': 'none',
+                'boxShadow': 'none',
                 'border': 'none',
-                'font-weight': 'bold'
+                'fontWeight': 'bold'
             }
         }
     }
@@ -76,8 +67,8 @@ class ZipcodesTable extends React.Component {
     getPaginationStyle = () => {
         return {
             style: {
-                'background-color': 'white',
-                'box-shadow': 'none'
+                'backgroundColor': 'white',
+                'boxShadow': 'none'
             }
         }
     }
@@ -85,7 +76,7 @@ class ZipcodesTable extends React.Component {
     getTdStyle = () => {
         return {
             style: {
-                'text-align': 'center'
+                'textAlign': 'center'
             }
         }
     }

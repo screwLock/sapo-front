@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Auth } from "aws-amplify"
 
 class SignIn extends React.Component {
     static defaultProps = {
@@ -14,19 +15,20 @@ class SignIn extends React.Component {
         this.state = {
             authData: this.props.authData,
             authState: this.props.authState,
-            modalShowing: false,
             loading: false,
             error: null,
-            username: this.props.authData.username || '',
+            email: this.props.authData.email || '',
             password: this.props.authData.password || '',
             user: null
         };
     }
 
-    async onSignIn() {
+    onChange = e => this.setState({ [e.target.name]: e.target.value })
+
+    onSignIn = async () => {
         this.setState({ loading: true });
         try {
-            const data = await Auth.signIn(this.state.username, this.state.password);
+            const data = await Auth.signIn(this.state.email, this.state.password);
             console.log(`onSignIn::Response#1: ${JSON.stringify(data, null, 2)}`);
             if (data.signInUserSession === null) {
                 this.setState({ user: data, loading: false, modalShowing: true });
@@ -39,17 +41,18 @@ class SignIn extends React.Component {
         }
     }
 
-    async onConfirmSignin(token) {
+    onConfirmSignin = async (token) =>  {
         this.setState({ loading: true });
         try {
-            console.log(`onConfirmSignIn:: ${this.state.username}, ${token}`);
+            console.log(`onConfirmSignIn:: ${this.state.email}, ${token}`);
             const data = await Auth.confirmSignIn(this.state.user, token);
             console.log(`onConfirmSignIn::Response#2: ${JSON.stringify(data, null, 2)}`);
             const profile = await Auth.currentUser();
             this.props.onAuthStateChange('authenticated', profile);
         } catch (err) {
             console.log('Error: ', err);
-            this.setState({ error: err.message, loading: false, modalShowing: false });
+            this.setState({ error: err.message, loading: false });
+            this.setErrorText(err.code);
         }
     }
 
@@ -57,9 +60,11 @@ class SignIn extends React.Component {
         this.props.onAuthStateChange('signUp', {});
     }
 
+
     render() {
         let settings = {
             // Fill in props for individual components here
+            // submitButtonLoading: {}
         };
 
         const errorComponent = this.state.error !== null
@@ -75,17 +80,18 @@ class SignIn extends React.Component {
                         label="Email"
                         labelFor="text-input"
                     >
-                        <InputGroup id="email" placeholder="youremail@example.org" />
+                        <InputGroup name="email" placeholder="youremail@example.org" onChange={this.onChange} />
                     </FormGroup>
                     <FormGroup
                         label="Password"
                         labelFor="text-input"
                     >
-                        <InputGroup id="password" type="password" placeholder="********" />
+                        <InputGroup name="password" type="password" placeholder="********" onChange={this.onChange}/>
                     </FormGroup>
                     <ButtonRow>
                         <Button
                             {...(this.state.loading ? settings.submitButtonLoading : settings.submitButton)}
+                            onClick={this.onSignIn}
                         >
                             Sign In
                         </Button>

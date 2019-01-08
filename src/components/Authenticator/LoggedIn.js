@@ -38,9 +38,9 @@ class LoggedIn extends React.Component {
                         "footer footer  footer"
                     ]}
                 >
-                    <Cell area="header"><Header /></Cell>
-                    <Cell area="menu"><NavBar /></Cell>
-                    <Cell area="content"><Main /></Cell>
+                    <Cell area="header"><Header {...this.props}/></Cell>
+                    <Cell area="menu"><NavBar {...this.props}/></Cell>
+                    <Cell area="content"><Main {...this.props}/></Cell>
                 </Grid>
             </div>
         )

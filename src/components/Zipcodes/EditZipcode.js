@@ -66,9 +66,10 @@ class EditZipcode extends React.Component {
     }
 
     render() {
+        let title = 'Edit Zipcode';
         return (
             <Dialog isOpen={this.props.isOpen}
-                title='Add a New Zipcode'
+                title={title}
                 onClose={this.handleClose}
             >
                 <DialogContainer>

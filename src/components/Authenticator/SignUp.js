@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Auth } from "aws-amplify"
 
 class SignUp extends React.Component {
     static defaultProps = {
@@ -20,23 +21,26 @@ class SignUp extends React.Component {
         firstName: '',
         lastName: '',
         organization: '',
-        emailaddress: '',
+        email: '',
         phone: '',
-        password: ''
+        password: '',
+        password2: '',
       };
     }
+
+    onChange = e => this.setState({ [e.target.name]: e.target.value })
    
-    async onSignUp() {
+    onSignUp = async () => {
       try {
         this.setState({ loading: true });
         const response = await Auth.signUp({
-          username: this.state.username, 
+          username: this.state.email, 
           password: this.state.password, 
-          attributes: {
-            email: this.state.emailaddress, 
+          /* attributes: {
+            email: this.state.email, 
             phone_number: this.state.phone
           }
-        });
+        */});
         console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
         if (response.userConfirmed === false) {
           this.setState({ authData: response, modalShowing: true, loading: false });
@@ -49,14 +53,14 @@ class SignUp extends React.Component {
       }
     }
    
-    async onConfirmSubmitted(token) {
+    onConfirmSubmitted = async (token) => {
       try {
         this.setState({ loading: true });
-        const response = await Auth.confirmSignUp(this.state.username, token);
+        const response = await Auth.confirmSignUp(this.state.email, token);
         console.log(`SignUp::onConfirmSubmitted(): Response#2 = ${JSON.stringify(response, null, 2)}`);
         this.setState({ loading: false });
         if (response === 'SUCCESS') {
-          this.props.onAuthStateChange('default', { username: this.state.username });
+          this.props.onAuthStateChange('default', { email: this.state.email });
         }
       } catch (err) {
         console.log(`SignUp::onConfirmSubmitted(): Error ${JSON.stringify(err, null, 2)}`);
@@ -82,42 +86,49 @@ class SignUp extends React.Component {
                         label="First Name"
                         labelFor="text-input"
                     >
-                        <InputGroup id="firstName" placeholder="youremail@example.org" />
+                        <InputGroup name="firstName" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Last Name"
                         labelFor="text-input"
                     >
-                        <InputGroup id="lastName" placeholder="youremail@example.org" />
+                        <InputGroup name="lastName" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Email"
                         labelFor="text-input"
                     >
-                        <InputGroup id="email" placeholder="youremail@example.org" />
+                        <InputGroup name="email" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Organization"
                         labelFor="text-input"
                     >
-                        <InputGroup id="organization" placeholder="********" />
+                        <InputGroup name="organization" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
-                        label="Organization"
+                        label="Phone"
                         labelFor="text-input"
                     >
-                        <InputGroup id="organization" placeholder="********" />
+                        <InputGroup name="phone" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Password"
                         labelFor="text-input"
                     >
-                        <InputGroup id="password" placeholder="********" />
+                        <InputGroup name="password" onChange={this.onChange}/>
+                    </FormGroup>
+                    <FormGroup
+                        label="Re-enter Password"
+                        labelFor="text-input"
+                    >
+                        <InputGroup name="password2" onChange={this.onChange}/>
                     </FormGroup>
                     <TermsContainer>I accept the SAPO terms of service.</TermsContainer>
                     <ButtonRow>
                         <Button
                             {...(this.state.loading ? settings.submitButtonLoading : settings.submitButton)}
+                            onClick={this.onSignUp}
                         >
                             Sign Up
                         </Button>

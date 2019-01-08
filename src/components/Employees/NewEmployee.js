@@ -21,6 +21,9 @@ class NewEmployee extends React.Component {
         this.props.handleEmployeeOpen();
     }
 
+    onChange = e => this.setState({ [e.target.name]: e.target.value })
+
+
     render() {
         return (
             <Dialog isOpen={this.props.isEmployeeOpen}
@@ -33,7 +36,7 @@ class NewEmployee extends React.Component {
                         labelFor="text-input"
                         labelInfo="(required)"
                     >
-                        <InputGroup id="employeeFirstName" placeholder="First Name" />
+                        <InputGroup onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Last Name"
