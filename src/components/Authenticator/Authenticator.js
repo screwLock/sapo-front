@@ -1,8 +1,8 @@
 import * as React from 'react'
-import LoggedIn from './LoggedIn'
+import Home from './Home'
 import SignIn from './SignIn'
 import SignUp from './SignUp'
-import { Route, Switch } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import { Auth } from "aws-amplify"
 
 class Authenticator extends React.Component {
@@ -41,6 +41,20 @@ class Authenticator extends React.Component {
             handleLogout: this.handleLogout,
         };
 
+        return (
+            <Switch>
+                <Route exact path='/' render={() => {
+                    if (this.state.authState === 'authenticated') {
+                        return <Home {...props} />
+                    }
+                    else {
+                        return <Redirect to="/signIn" />
+                    }
+                }} />
+                <Route path='/signIn' render={() => (<SignIn {...props}/>)} />
+            </Switch>
+        )
+        /*
         switch (this.state.authState) {
             case 'forgotPassword':
                 return <ForgotPassword {...props} />;
@@ -49,12 +63,12 @@ class Authenticator extends React.Component {
             case 'signIn':
                 return <SignIn {...props} />;
             case 'authenticated':
-                return <LoggedIn {...props} />;
+                return <Home {...props} />;
             default:
                 return <SignIn {...props} />;
         };
+        */
     }
-
 }
 
 

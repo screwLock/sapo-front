@@ -8,7 +8,7 @@ class NavBar extends Component {
       <StyledNavbar>
       <nav>
         <ul>
-          <li><StyledNavLink exact to='/overview' activeClassName="selected">Overview</StyledNavLink></li>
+          <li><StyledNavLink exact to='/' activeClassName="selected">Overview</StyledNavLink></li>
           <li><StyledNavLink to='/blackoutDates' activeClassName="selected">Blackout Dates</StyledNavLink></li>
           <li><StyledNavLink to='/zipcodes' activeClassName="selected">Zipcodes</StyledNavLink></li>
           <li><StyledNavLink to='/employees' activeClassName="selected">Employees</StyledNavLink></li>

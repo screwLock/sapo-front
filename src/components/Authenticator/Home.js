@@ -5,7 +5,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import Header from '../Header/Header'
 import Main from '../Main'
 
-class LoggedIn extends React.Component {
+class Home extends React.Component {
     static defaultProps = {
         authData: {},
         authState: 'LoggedIn',
@@ -47,4 +47,4 @@ class LoggedIn extends React.Component {
     }
 }
 
-export default LoggedIn;
+export default Home;

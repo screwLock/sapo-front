@@ -5,11 +5,12 @@ import { StyledSidebar, StyledList } from "./styles/sidebar.js";
 
 class Sidebar extends Component {
     render(){
+      const { match } = this.props;
       return(
         <StyledSidebar>
           <StyledList>
             <li>
-              <Link to="/">Overview</Link>
+              <Link to="/overview">Overview</Link>
             </li>
             <li>
               <Link to="/blackoutDates">Blackout Dates</Link>
@@ -43,19 +44,6 @@ class Sidebar extends Component {
               component={route.sidebar}
             />
           ))}
-        {/*
-        <div style={{ flex: 1, padding: "10px" }}>
-          {routes.map((route, index) => (
-            // Render more <Route>s with the same paths as
-            // above, but different components this time.
-            <Route
-              key={index}
-              path={route.path}
-              exact={route.exact}
-              component={route.main}
-            />
-          ))
-        </div>*/}
       </StyledSidebar>
       );
     }

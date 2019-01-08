@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
+import { Redirect, withRouter } from "react-router-dom";
 
 class SignIn extends React.Component {
     static defaultProps = {
@@ -34,6 +35,7 @@ class SignIn extends React.Component {
                 this.setState({ user: data, loading: false, modalShowing: true });
             } else {
                 this.props.onAuthStateChange('authenticated', data);
+                this.props.history.push('/')
             }
         } catch (err) {
             console.log(`Error: ${JSON.stringify(err, null, 2)}`);
@@ -41,7 +43,7 @@ class SignIn extends React.Component {
         }
     }
 
-    onConfirmSignin = async (token) =>  {
+    onConfirmSignin = async (token) => {
         this.setState({ loading: true });
         try {
             console.log(`onConfirmSignIn:: ${this.state.email}, ${token}`);
@@ -86,7 +88,7 @@ class SignIn extends React.Component {
                         label="Password"
                         labelFor="text-input"
                     >
-                        <InputGroup name="password" type="password" placeholder="********" onChange={this.onChange}/>
+                        <InputGroup name="password" type="password" placeholder="********" onChange={this.onChange} />
                     </FormGroup>
                     <ButtonRow>
                         <Button
@@ -139,4 +141,4 @@ const SignUpContainer = styled.div`
     margin-top: 10px;
 `;
 
-export default SignIn;
+export default withRouter(SignIn);
