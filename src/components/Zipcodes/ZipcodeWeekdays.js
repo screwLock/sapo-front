@@ -1,26 +1,33 @@
-import { Checkbox } from "@blueprintjs/core";
-import React, { Component } from 'react';
-import 'normalize.css/normalize.css';
-import "@blueprintjs/core/lib/css/blueprint.css";
+import { Checkbox, H5 } from "@blueprintjs/core";
+import * as React from 'react';
 
-
-
-class ZipcodeWeekdays extends Component {
+class ZipcodeWeekdays extends React.Component{
+  constructor(props) {
+    super(props)
+  }
 
     render(){
+      const days = this.props.weekdays;
       return(
         <div>
-          <Checkbox label="Sunday" inline="true"/>
-          <Checkbox label="Monday" inline="true"/>
-          <Checkbox label="Tuesday" inline="true"/>
-          <Checkbox label="Wednesday" inline="true"/>
-          <Checkbox label="Thursday" inline="true"/>
-          <Checkbox label="Friday" inline="true"/>
-          <Checkbox label="Saturday" inline="true"/>
+          <H5>Select applicable weekdays</H5>
+          {days.map( (weekday, index) =>
+            <div>
+              <Checkbox 
+                  label={weekday.day}
+                  key={index}
+                  checked={weekday.checked}
+                  inline={true}
+                  onChange={this.props.onChange(index)}
+              />
+            </div>
+            )}
         </div>
  
       );
     }
+    
+
   }
   
 export default ZipcodeWeekdays;

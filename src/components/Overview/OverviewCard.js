@@ -1,35 +1,58 @@
-import React, { Component } from 'react';
-import { Button, Card, Elevation } from "@blueprintjs/core";
-import { Draggable } from 'react-beautiful-dnd';
-import Pickup from './Pickup';
+import React, { Component } from 'react'
+import { Button, Card, Checkbox, Collapse, Elevation, H5 } from "@blueprintjs/core"
+import { StyledCard} from './styles/StyledCard'
+import { Draggable } from 'react-beautiful-dnd'
 
 class OverviewCard extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isOpen: false,
+            isChecked: this.props.pickup.inRoute
+        }
     };
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.isAllOpen !== this.props.isAllOpen) {
+            this.setState({ isOpen: this.props.isAllOpen });
+        }
+    }
     render() {
         const { provided, innerRef, pickup } = this.props;
-
         return (
             <div
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={innerRef}
-                onClick={this.handleClick}
             >
-                <Card interactive={true} elevation={Elevation.TWO} >
-                    <Pickup name ={pickup.name}
-                            lat = {pickup.lat}
-                            lng = {pickup.lng}
+                <StyledCard interactive={true} elevation={Elevation.TWO} className={'card'}>
+                    <H5 className={'cardHeader'} onClick={this.handleClick}>{this.props.pickup.name}</H5>
+                    <Checkbox
+                        label="Include In Route"
+                        checked={this.state.isChecked}
+                        inline={true}
+                        onChange={this.handleCheckedChange}
                     />
-
-                </Card>
+                    <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
+                        <div>{this.props.pickup.name}</div>
+                        <div>Contact: </div>
+                        <div>Address: </div>
+                        <div>Order: </div>
+                    </Collapse>
+                </StyledCard>
             </div>
         );
     }
-    handleClick=()=>{
-        this.props.handleClick(this.props.pickup)
-     };
+    handleClick = () => {
+        this.setState({ isOpen: !this.state.isOpen });
+        this.props.handleClick(this.props.pickup);
+    }
+
+    handleCheckedChange = ()  => {
+        this.setState({isChecked: !this.state.isChecked})
+        this.props.handleRouteChange(this.props.index);       
+    }
+
 }
 
 export default OverviewCard;

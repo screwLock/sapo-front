@@ -1,31 +1,33 @@
-import React, { Component } from 'react';
-
-import Helmet from 'react-helmet';
-
+import * as React from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
+import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
+import { AppToaster } from '../Toaster'
+import styled from 'styled-components'
+import 'react-day-picker/lib/style.css'
+import './styles/blackoutDatesRange.css'
 
-class BlackoutDatesRangeDatePicker extends Component {
+class BlackoutDatesRangeDatePicker extends React.Component {
   constructor(props) {
     super(props);
-    this.handleDayClick = this.handleDayClick.bind(this);
-    this.handleDayMouseEnter = this.handleDayMouseEnter.bind(this);
-    this.handleResetClick = this.handleResetClick.bind(this);
     this.state = this.getInitialState();
   }
-  getInitialState() {
+
+  getInitialState = () => {
     return {
       from: null,
       to: null,
       enteredTo: null, // Keep track of the last day for mouseEnter.
+      reason: ''
     };
   }
-  isSelectingFirstDay(from, to, day) {
+
+  isSelectingFirstDay = (from, to, day) => {
     const isBeforeFirstDay = from && DateUtils.isDayBefore(day, from);
     const isRangeSelected = from && to;
     return !from || isBeforeFirstDay || isRangeSelected;
   }
-  handleDayClick(day) {
+
+  handleDayClick = (day) => {
     const { from, to } = this.state;
     if (from && to && day >= from && day <= to) {
       this.handleResetClick();
@@ -44,7 +46,8 @@ class BlackoutDatesRangeDatePicker extends Component {
       });
     }
   }
-  handleDayMouseEnter(day) {
+
+  handleDayMouseEnter = (day) => {
     const { from, to } = this.state;
     if (!this.isSelectingFirstDay(from, to, day)) {
       this.setState({
@@ -52,9 +55,20 @@ class BlackoutDatesRangeDatePicker extends Component {
       });
     }
   }
-  handleResetClick() {
+
+  handleResetClick = () => {
     this.setState(this.getInitialState());
   }
+
+  handleClick = () => {
+    this.showToast(`Pick a range of dates`);
+    //database call
+  }
+
+  showToast = (message) => {
+    AppToaster.show({ message: message });
+  }
+
   render() {
     const { from, to, enteredTo } = this.state;
     const modifiers = { start: from, end: enteredTo };
@@ -73,33 +87,38 @@ class BlackoutDatesRangeDatePicker extends Component {
           onDayMouseEnter={this.handleDayMouseEnter}
         />
         <div>
-          {!from && !to && 'Please select the first day.'}
-          {from && !to && 'Please select the last day.'}
-          {from &&
-            to &&
-            `Selected from ${from.toLocaleDateString()} to
+          <p>
+            {!from && !to && 'Please select the first day.'}
+            {from && !to && 'Please select the last day.'}
+            {from &&
+              to &&
+              `Selected from ${from.toLocaleDateString()} to
                 ${to.toLocaleDateString()}`}{' '}
-          {from &&
-            to && (
-              <button className="link" onClick={this.handleResetClick}>
-                Reset
+            {from &&
+              to && (
+                <button className="link" onClick={this.handleResetClick}>
+                  Reset
               </button>
-            )}
+              )}
+          </p>
         </div>
-        <Helmet>
-          <style>{`
-  .Range .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
-    background-color: #f0f8ff !important;
-    color: #4a90e2;
-  }
-  .Range .DayPicker-Day {
-    border-radius: 0 !important;
-  }
-`}</style>
-        </Helmet>
+        <InputContainer>
+          <FormGroup
+            label="Enter a Reason"
+            labelFor="text-input"
+            labelInfo="(required)"
+          >
+            <InputGroup id="dateRangeReason" placeholder="Enter a Reason" />
+          </FormGroup>
+        </InputContainer>
       </div>
     );
   }
 }
+
+
+const InputContainer = styled.div`
+    width: 250px;
+`
 
 export default BlackoutDatesRangeDatePicker;

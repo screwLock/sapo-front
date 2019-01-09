@@ -1,20 +1,40 @@
-import React, { Component } from 'react';
-import { FormGroup, InputGroup } from "@blueprintjs/core";
-import 'normalize.css/normalize.css';
-import "@blueprintjs/core/lib/css/blueprint.css";
+import React, { Component } from 'react'
+import { FormGroup, InputGroup, H3 } from "@blueprintjs/core"
+import styled from 'styled-components'
+
 
 class ZipcodeInput extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            inputField: ''
+        }
+    }
+
+    handleChange = (e) => {
+        this.setState({inputField :e.target.value})
+    } 
+
+
     render() {
         return (
-            <FormGroup
-                label="New Zipcode"
-                labelFor="text-input"
-                labelInfo="(US or Canadian)"
-            >
-                <InputGroup id="text-input" placeholder="Enter a Zipcode" />
-            </FormGroup>
-        );
+                <FormGroup
+                    labelFor="text-input"
+                >
+                    <H3>US or Canadian Postal Code</H3>
+                    <ZipcodeInputGroup id="zipcode-value" 
+                                placeholder="Enter a Zipcode" 
+                                value={this.state.value}
+                                onBlur={this.props.onBlur}
+                                onChange={this.handleChange}
+                    />
+                </FormGroup>
+        )
     }
 }
+
+const ZipcodeInputGroup = styled(InputGroup)`
+    width: 150px;
+`
 
 export default ZipcodeInput;

@@ -1,13 +1,15 @@
 import * as React from 'react';
-import Pickup from './Pickup';
-import "./styles/pickupMarker.css"
+import { Popover, PopoverInteractionKind } from '@blueprintjs/core';
+import { IPickup } from './types/pickup';
 
 interface IPickupMarkerProps {
     name: string;
-    selectedPickup: Pickup;
+    pickup: IPickup;
+    selectedPickup: IPickup;
+    onClick: any;
 }
 
-class PickupMarker extends React.Component<IPickupMarkerProps, any> {    
+class PickupMarker extends React.Component<IPickupMarkerProps, any> {
     constructor(props: IPickupMarkerProps) {
         super(props)
     }
@@ -15,16 +17,23 @@ class PickupMarker extends React.Component<IPickupMarkerProps, any> {
 
 
     public render() {
-        let classes='marker';
-        if(this.props.selectedPickup){
-            classes+= ' selected';
+        let classes = 'marker';
+        if (this.props.pickup === this.props.selectedPickup) {
+            classes += ' selected';
         }
+
         return (
-            <div className={classes}>
-                {this.props.name}
-            </div>
+            <Popover interactionKind={PopoverInteractionKind.HOVER}>
+                <div onClick={this.handleClick}><div className={classes} /><div className="pulse" /></div>
+                <div>{this.props.name}</div>
+            </Popover>
+
         );
     }
+
+    public handleClick=()=>{
+        this.props.onClick(this.props.pickup)
+     };
 }
 
 export default PickupMarker;

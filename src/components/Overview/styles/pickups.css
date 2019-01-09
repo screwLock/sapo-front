@@ -1,6 +1,24 @@
 .pickups {
+    display: flex;
+    flex-direction: column;
+}
+.cards {
     overflow-y: auto;
     height: 250px;
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.header {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.footer {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    align-self: flex-start;
 }
