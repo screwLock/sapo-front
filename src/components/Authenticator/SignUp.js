@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
+import { Redirect, withRouter } from "react-router-dom";
 
 class SignUp extends React.Component {
     static defaultProps = {
@@ -18,17 +19,34 @@ class SignUp extends React.Component {
         modalShowing: false,
         error: null,
         loading: false,
+        successShowing: false,
         firstName: '',
         lastName: '',
         organization: '',
         email: '',
         phone: '',
         password: '',
-        password2: '',
+        confirmPassword: '',
       };
     }
 
-    onChange = e => this.setState({ [e.target.name]: e.target.value })
+    handleBack = () => {
+        this.props.history.push('/')
+    }
+
+    handleChange = e => this.setState({ [e.target.name]: e.target.value })
+
+    handleSignUp = () => {
+        if(this.validateForms() === false){
+            this.setState({error: 'All fields are required'})
+        }
+        else if(this.validatePasswords() === false){
+            this.setState({error: 'Passwords do not match'})
+        }
+        else {
+            this.onSignUp()
+        }
+    }
    
     onSignUp = async () => {
       try {
@@ -43,7 +61,7 @@ class SignUp extends React.Component {
         */});
         console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
         if (response.userConfirmed === false) {
-          this.setState({ authData: response, modalShowing: true, loading: false });
+          this.setState({ authData: response, modalShowing: true, loading: false, successShowing: true });
         } else {
           this.onAuthStateChange('default', { username: response.username });
         }
@@ -68,14 +86,31 @@ class SignUp extends React.Component {
       }
     }
 
-    render() {
-        let settings = {
-            // Fill in props for individual components here
-        };
+    validateForms = () => {
+        return this.state.email.length > 0 && 
+               this.state.password.length > 0 &&
+               this.state.confirmPassword.length > 0 &&
+               this.state.firstName.length > 0 &&
+               this.state.lastName.length > 0 &&
+               this.state.phone.length > 0 &&
+               this.state.organization.length > 0
+    }
 
+    validatePasswords = () => {
+        return this.state.password === this.state.confirmPassword
+    }
+
+    showSuccessMessage = () => {
+        if(this.state.successShowing){
+            return 'Sign up successful.  Please check your email and click the confirmation link to login.';
+        }
+    }
+
+    render() {
         const errorComponent = this.state.error !== null
             ? this.state.error
-            : false;
+            : '';
+        
 
         return (
             <Container>
@@ -86,53 +121,59 @@ class SignUp extends React.Component {
                         label="First Name"
                         labelFor="text-input"
                     >
-                        <InputGroup name="firstName" onChange={this.onChange}/>
+                        <InputGroup name="firstName" onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Last Name"
                         labelFor="text-input"
                     >
-                        <InputGroup name="lastName" onChange={this.onChange}/>
+                        <InputGroup name="lastName" onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Email"
                         labelFor="text-input"
                     >
-                        <InputGroup name="email" onChange={this.onChange}/>
+                        <InputGroup name="email" onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Organization"
                         labelFor="text-input"
                     >
-                        <InputGroup name="organization" onChange={this.onChange}/>
+                        <InputGroup name="organization" onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Phone"
                         labelFor="text-input"
                     >
-                        <InputGroup name="phone" onChange={this.onChange}/>
+                        <InputGroup name="phone" onChange={this.handleChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Password"
                         labelFor="text-input"
                     >
-                        <InputGroup name="password" onChange={this.onChange}/>
+                        <InputGroup name="password" onChange={this.handleChange} type='password'/>
                     </FormGroup>
                     <FormGroup
-                        label="Re-enter Password"
+                        label="Confirm Password"
                         labelFor="text-input"
                     >
-                        <InputGroup name="password2" onChange={this.onChange}/>
+                        <InputGroup name="confirmPassword" onChange={this.handleChange} type='password'/>
                     </FormGroup>
                     <TermsContainer>I accept the SAPO terms of service.</TermsContainer>
                     <ButtonRow>
                         <Button
-                            {...(this.state.loading ? settings.submitButtonLoading : settings.submitButton)}
-                            onClick={this.onSignUp}
-                        >
-                            Sign Up
-                        </Button>
+                            loading={this.state.loading}
+                            onClick={this.handleSignUp}
+                            text='Sign Up'
+                        />
+                        <Button
+                            loading={this.state.loading}
+                            onClick={this.handleBack}
+                            text='Back'
+                        />
                     </ButtonRow>
+                    <ErrorContainer>{`${errorComponent}`}</ErrorContainer>
+                    <SuccessContainer>{this.showSuccessMessage()}</SuccessContainer>
                 </FormContainer>
             </Container>
         );
@@ -169,8 +210,16 @@ const ButtonRow = styled.div`
     margin-top: 10px;
 `;
 
+const ErrorContainer = styled.p`
+    color:red;
+`;
+
+const SuccessContainer = styled.p`
+    color:blue;
+`;
+
 const TermsContainer = styled.div`
     margin-top: 10px;
 `;
 
-export default SignUp;
+export default withRouter(SignUp);

@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, Icon, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 class ForgotPassword extends React.Component {
   constructor(props) {
@@ -31,6 +31,10 @@ class ForgotPassword extends React.Component {
       this.state.password === this.state.confirmPassword
     );
   }
+
+  handleBack = () => {
+    this.props.history.push('/')
+}
 
   handleChange = event => {
     this.setState({
@@ -84,6 +88,11 @@ class ForgotPassword extends React.Component {
             onClick={this.handleSendCodeClick}
             text="Send Confirmation"
           />
+          <Button
+            loading={this.state.isConfirming}
+            onClick={this.handleBack}
+            text="Back"
+          />
         </ButtonRow>
       </div>
     );
@@ -93,23 +102,23 @@ class ForgotPassword extends React.Component {
     return (
       <div>
         <FormGroup
-          label="password"
+          label="Enter The Confirmation Code"
           labelFor="text-input"
         >
-          <InputGroup name="code" placeholder="youremail@example.org" onChange={this.handleChange} />
+          <InputGroup name="code" value={this.state.code} onChange={this.handleChange} />
         </FormGroup>
         <hr />
         <FormGroup
           label="Enter Password"
           labelFor="text-input"
         >
-          <InputGroup name="password" onChange={this.handleChange} />
+          <InputGroup name="password" onChange={this.handleChange} type='password' />
         </FormGroup>
         <FormGroup
           label="Confirm Password"
           labelFor="text-input"
         >
-          <InputGroup name="confirmPassword" onChange={this.handleChange} />
+          <InputGroup name="confirmPassword" onChange={this.handleChange} type='password'/>
         </FormGroup>
 
         <ButtonRow>
@@ -126,8 +135,7 @@ class ForgotPassword extends React.Component {
   renderSuccessMessage() {
     return (
       <div>
-        <Icon icon='thumbs-up' />
-        <p>Your password has been reset.</p>
+        <p><Icon icon='thumbs-up' /> Your password has been reset.</p>
         <p>
           <Link to="/signIn">
             Click here to login with your new credentials.
@@ -183,4 +191,4 @@ const ButtonRow = styled.div`
     margin-top: 10px;
 `;
 
-export default ForgotPassword;
+export default withRouter(ForgotPassword);

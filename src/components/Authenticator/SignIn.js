@@ -43,6 +43,15 @@ class SignIn extends React.Component {
         }
     }
 
+    handleSignIn = () => {
+        if(this.validateForms() === false) {
+            this.setState({error: 'Please Enter a Username and Password'})
+        }
+        else{
+            this.onSignIn();
+        }
+    }
+
     onConfirmSignin = async (token) => {
         this.setState({ loading: true });
         try {
@@ -58,14 +67,17 @@ class SignIn extends React.Component {
         }
     }
 
+    validateForms = () => {
+        return this.state.email.length > 0 && this.state.password.length > 0
+    }
+
     render() {
         const errorComponent = this.state.error !== null
             ? this.state.error
-            : false;
+            : '';
 
         return (
             <Container>
-                {/*this.state.error !== null && errorComponent*/}
                 <FormContainer>
                     <Logo>SAPO</Logo>
                     <FormGroup
@@ -83,11 +95,12 @@ class SignIn extends React.Component {
                     <ButtonRow>
                         <Button
                             loading={this.state.loading}
-                            onClick={this.onSignIn}
+                            onClick={this.handleSignIn}
                         >
                             Sign In
                         </Button>
                     </ButtonRow>
+                    <ErrorContainer>{`${errorComponent}`}</ErrorContainer>
                     <SignUpContainer>Don't have an account?
                         <Link to='/signUp'> Sign Up</Link>
                         <div><Link to='/forgotPassword'>Forgot Password?</Link></div>
@@ -130,6 +143,10 @@ const ButtonRow = styled.div`
 
 const SignUpContainer = styled.div`
     margin-top: 10px;
+`;
+
+const ErrorContainer = styled.p`
+    color:red;
 `;
 
 export default withRouter(SignIn);
