@@ -76,7 +76,7 @@ class ForgotPassword extends React.Component {
           label="Enter Your Email"
           labelFor="text-input"
         >
-          <InputGroup name="email" onChange={this.onChange} />
+          <InputGroup name="email" onChange={this.handleChange} />
         </FormGroup>
         <ButtonRow>
           <Button
