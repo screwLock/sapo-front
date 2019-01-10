@@ -7,7 +7,7 @@ import { IDonatable } from './Donatables';
 export interface ICategory {
     name: string;
     donatables: IDonatable[];
-    comments?: string;
+    minAmount?: number;
 }
 
 const CATEGORY_NAMES: string[] = [

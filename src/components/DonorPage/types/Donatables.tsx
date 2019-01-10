@@ -5,9 +5,6 @@ import * as React from "react";
 
 export interface IDonatable {
     name: string;
-    comments?: string;
-    minAmount?: number;
-    maxAmount?: number;
 }
 
 const NAMES: string[] = [
@@ -35,8 +32,7 @@ const NAMES: string[] = [
 ];
 
 export const PREPACKAGED_DONATABLES: IDonatable[] = NAMES.map((name) => ({
-    name,
-    comments: ''
+    name
 })).sort(dynamicSort('name'));
 
 

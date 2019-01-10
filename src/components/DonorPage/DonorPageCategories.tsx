@@ -15,7 +15,6 @@ class DonorPageCategories extends React.Component<{}, any> {
             selectedDonatable: Donatables.PREPACKAGED_DONATABLES[0] as Donatables.IDonatable,
             categoryName: '',
             categoryDonatables: [],
-            categoryComments: '',
             radioCategory: 'one',
             radioDonatable: 'one',
             showDonatables: false,
@@ -117,7 +116,6 @@ class DonorPageCategories extends React.Component<{}, any> {
                     </DonatableSelect>
                     <Button
                         rightIcon="add"
-                        text="add"
                         onClick={this.addDonatable}
                     />
                 </div>
@@ -128,12 +126,8 @@ class DonorPageCategories extends React.Component<{}, any> {
                 <div>
                     <ControlGroup>
                         <InputGroup placeholder="Donatable Name" name='donatable' onBlur={this.handleDonatableBlur} />
+                        <Button rightIcon="add" onClick={this.addCustomDonatable} />
                     </ControlGroup>
-                    <Button
-                        rightIcon="add"
-                        text="add"
-                        onClick={this.addCustomDonatable}
-                    />
                 </div>
             )
         }
@@ -158,17 +152,27 @@ class DonorPageCategories extends React.Component<{}, any> {
     }
 
     protected addDonatable = () => {
-        this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }))
+        if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.selectedDonatable.name)).length > 0)) {
+            this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }))
+            return true
+        }
+        else {
+            return false;
+        }
     }
 
     protected addCustomDonatable = () => {
-        const customDonatable = {
-            name: this.state.donatableName,
-            comments: '',
-            minAmount: 0,
-            maxAmount: 0,
+        if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.donatableName)).length > 0)
+            && !(this.state.donatableName === '')) {
+            const customDonatable = {
+                name: this.state.donatableName,
+            }
+            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
+            return true;
         }
-        this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
+        else {
+            return false;
+        }
     }
 
     protected handleCategoryBlur = (e: any) => {
@@ -186,8 +190,6 @@ class DonorPageCategories extends React.Component<{}, any> {
     protected handleRadioDonatableChange = (e: any) => {
         this.setState({ radioDonatable: e.currentTarget.value })
     }
-
-
 
 }
 

@@ -7,19 +7,32 @@ class NewCategory extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            newCategory: {}
+            submittable: {},
+            submitDisabled: true,
         }
     }
 
-    addCategory = () => {
-        this.props.addCategory(this.state.newCategory);
+    addDonorItem = ( value ) => {
+        //this.props.addCategory(this.state.newCategory);
+        this.setState({ submittable: value })
+    }
+
+
+
+    handleSubmit = () => {
+        //database stuff
+        this.setState({ submittable: {} })
         this.props.handleClose();
+    }
+
+    enableSubmit = () => {
+        this.setState({ submitDisabled: true })
     }
 
     renderSelection = (selection) => {
         if( selection === "Add A New Category" ){
             return(
-                <DonorPageCategories />
+                <DonorPageCategories onSubmit={this.addDonorItem} enableSubmit={this.enableSubmit}/>
             )
         }
         else if( selection === "Add A New Pickup Detail"){
@@ -49,7 +62,7 @@ class NewCategory extends React.Component {
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                         <Button onClick={this.props.handleClose}>Cancel</Button>
-                        <Button onClick={this.addCategory} intent={Intent.PRIMARY}>Submit</Button>
+                        <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>
             </Dialog>
