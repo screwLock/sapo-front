@@ -41,6 +41,7 @@ class NewCategory extends React.Component {
             <Dialog isOpen={this.props.isOpen}
                 title={selection}
                 onClose={this.props.handleClose}
+                enforceFocus={false}
             >
                 <DialogContainer>
                     {this.renderSelection(selection)}
