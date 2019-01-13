@@ -59,20 +59,6 @@ class Authenticator extends React.Component {
                 </Switch>
             </Router>
         )
-        /*
-        switch (this.state.authState) {
-            case 'forgotPassword':
-                return <ForgotPassword {...props} />;
-            case 'signUp':
-                return <SignUp {...props} />;
-            case 'signIn':
-                return <SignIn {...props} />;
-            case 'authenticated':
-                return <Home {...props} />;
-            default:
-                return <SignIn {...props} />;
-        };
-        */
     }
 }
 

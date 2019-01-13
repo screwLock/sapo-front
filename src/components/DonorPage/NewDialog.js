@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
-import DonorPageCategories from './DonorPageCategories'
+import NewCategory from './NewCategory'
 
-class NewCategory extends React.Component {
+class NewDialog extends React.Component {
     constructor(props){
         super(props)
         this.state = {
             submittable: {},
-            submitDisabled: true,
+            canSubmit: false,
         }
     }
 
@@ -24,19 +24,20 @@ class NewCategory extends React.Component {
         this.handleClose();
     }
 
-    enableSubmit = () => {
-        this.setState({ submitDisabled: false })
+    canSubmit = (boolval) => {
+        this.setState({ canSubmit: boolval })
     }
 
+
     handleClose = () => {
-        this.setState({ submitDisabled: true});
+        this.setState({ canSubmit: false});
         this.props.handleClose();
     }
 
     renderSelection = (selection) => {
         if( selection === "Add A New Category" ){
             return(
-                <DonorPageCategories createSubmittable={this.createSubmittable} enableSubmit={this.enableSubmit}/>
+                <NewCategory createSubmittable={this.createSubmittable} canSubmit={this.canSubmit}/>
             )
         }
         else if( selection === "Add A New Pickup Detail"){
@@ -66,7 +67,7 @@ class NewCategory extends React.Component {
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                         <Button onClick={this.handleClose}>Cancel</Button>
-                        <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled} intent={Intent.PRIMARY}>Submit</Button>
+                        <Button onClick={this.handleSubmit} disabled={!this.state.canSubmit} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>
             </Dialog>
@@ -79,4 +80,4 @@ const DialogContainer = styled.div`
     maxHeight: 500px;
     margin: 20px;
 `
-export default NewCategory;
+export default NewDialog;

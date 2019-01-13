@@ -7,7 +7,7 @@ import { produce } from 'immer'
 import styled from 'styled-components'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 
-class DonorPageCategories extends React.Component<any, any> {
+class NewCategory extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
@@ -77,6 +77,8 @@ class DonorPageCategories extends React.Component<any, any> {
     }
 
     protected renderDonatables = () => {
+        const liStyle = {width: '200px'}
+        const ulStyle={ listStyleType: 'none', padding: '0px'}
         if (this.state.showDonatables && (this.state.categoryName !== '')) {
             return (
                 <BlockContainer>
@@ -90,7 +92,12 @@ class DonorPageCategories extends React.Component<any, any> {
                         <Radio inline={true} label="Create A Custom Donatable" value='two' />
                     </RadioGroup>
                     {this.renderRadioDonatableChoice()}
-                    {this.state.categoryDonatables.map((donatable: any) => <li key={donatable.name}>{donatable.name}</li>)}
+                    <ul style={ulStyle}>
+                    {this.state.categoryDonatables.map(
+                        (donatable: any, index: number) => 
+                            (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteDonatable(index)}/>{donatable.name}</li>)
+                        )}
+                    </ul>
                 </BlockContainer>
             )
         }
@@ -163,7 +170,7 @@ class DonorPageCategories extends React.Component<any, any> {
             this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }), () => {
                 this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
             })
-            this.props.enableSubmit();
+            this.props.canSubmit(true);
             return true
         }
         else {
@@ -178,12 +185,24 @@ class DonorPageCategories extends React.Component<any, any> {
                 name: this.state.donatableName,
             }
             this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
-            this.props.enableSubmit();
+            this.props.canSubmit(true);
             this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
             return true;
         }
         else {
             return false;
+        }
+    }
+
+    protected handleDeleteDonatable = (index:number) => () => {
+        const donatables = [...this.state.categoryDonatables];
+        donatables.splice(index, 1)
+        if(this.state.categoryDonatables.length > 1) {
+            this.setState({categoryDonatables: donatables})
+        }
+        else {
+            this.props.canSubmit(false);
+            this.setState({categoryDonatables: donatables});
         }
     }
 
@@ -215,4 +234,4 @@ const BlockContainer = styled.div`
     margin-bottom: 5px;
 `;
 
-export default DonorPageCategories;
+export default NewCategory;
