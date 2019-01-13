@@ -12,27 +12,31 @@ class NewCategory extends React.Component {
         }
     }
 
-    addDonorItem = ( value ) => {
+    createSubmittable = ( value ) => {
         //this.props.addCategory(this.state.newCategory);
         this.setState({ submittable: value })
     }
 
-
-
     handleSubmit = () => {
+        //console.log(this.state.submittable)
         //database stuff
         this.setState({ submittable: {} })
-        this.props.handleClose();
+        this.handleClose();
     }
 
     enableSubmit = () => {
-        this.setState({ submitDisabled: true })
+        this.setState({ submitDisabled: false })
+    }
+
+    handleClose = () => {
+        this.setState({ submitDisabled: true});
+        this.props.handleClose();
     }
 
     renderSelection = (selection) => {
         if( selection === "Add A New Category" ){
             return(
-                <DonorPageCategories onSubmit={this.addDonorItem} enableSubmit={this.enableSubmit}/>
+                <DonorPageCategories createSubmittable={this.createSubmittable} enableSubmit={this.enableSubmit}/>
             )
         }
         else if( selection === "Add A New Pickup Detail"){
@@ -53,7 +57,7 @@ class NewCategory extends React.Component {
         return (
             <Dialog isOpen={this.props.isOpen}
                 title={selection}
-                onClose={this.props.handleClose}
+                onClose={this.handleClose}
                 enforceFocus={false}
             >
                 <DialogContainer>
@@ -61,7 +65,7 @@ class NewCategory extends React.Component {
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.props.handleClose}>Cancel</Button>
+                        <Button onClick={this.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>

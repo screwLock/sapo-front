@@ -59,7 +59,7 @@ class DonorPage extends React.Component {
                          isOpen={this.state.isCategoriesOpen}
                          handleClose={this.handleCategoriesOpen}
                          selection={this.state.selection}
-        />
+            />
           </Container>
         );
       }

@@ -7,7 +7,7 @@ import { produce } from 'immer'
 import styled from 'styled-components'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 
-class DonorPageCategories extends React.Component<{}, any> {
+class DonorPageCategories extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
@@ -46,6 +46,7 @@ class DonorPageCategories extends React.Component<{}, any> {
 
     protected renderRadioCategoryChoice = () => {
         const CategorySelect = Select.ofType<Categories.ICategory>();
+        const selectStyle = {width: '200px'}
         if (this.state.radioCategory === 'one') {
             return (
                 <CategorySelect
@@ -57,6 +58,7 @@ class DonorPageCategories extends React.Component<{}, any> {
                 >
                     <Button
                         rightIcon="caret-down"
+                        style={selectStyle}
                         text={this.state.selectedCategory ? `${this.state.selectedCategory.name}` : "(No selection)"}
                     />
                 </CategorySelect>
@@ -75,7 +77,7 @@ class DonorPageCategories extends React.Component<{}, any> {
     }
 
     protected renderDonatables = () => {
-        if (this.state.showDonatables) {
+        if (this.state.showDonatables && (this.state.categoryName !== '')) {
             return (
                 <BlockContainer>
                     <H5>Now Add Donatables to {this.state.categoryName}</H5>
@@ -98,6 +100,7 @@ class DonorPageCategories extends React.Component<{}, any> {
     }
 
     protected renderRadioDonatableChoice = () => {
+        const selectStyle = {width: '200px'}
         const DonatableSelect = Select.ofType<Donatables.IDonatable>();
         if (this.state.radioDonatable === 'one') {
             return (
@@ -111,12 +114,15 @@ class DonorPageCategories extends React.Component<{}, any> {
                     >
                         <Button
                             rightIcon="caret-down"
+                            fill={true}
                             text={this.state.selectedDonatable ? `${this.state.selectedDonatable.name}` : "(No selection)"}
+                            style={selectStyle}
                         />
                     </DonatableSelect>
                     <Button
                         rightIcon="add"
                         onClick={this.addDonatable}
+                        minimal={true}
                     />
                 </div>
             )
@@ -151,9 +157,13 @@ class DonorPageCategories extends React.Component<{}, any> {
         )
     }
 
+
     protected addDonatable = () => {
         if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.selectedDonatable.name)).length > 0)) {
-            this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }))
+            this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }), () => {
+                this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
+            })
+            this.props.enableSubmit();
             return true
         }
         else {
@@ -168,6 +178,8 @@ class DonorPageCategories extends React.Component<{}, any> {
                 name: this.state.donatableName,
             }
             this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
+            this.props.enableSubmit();
+            this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
             return true;
         }
         else {
