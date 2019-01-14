@@ -24,7 +24,7 @@ class BlackoutDatesWeekdays extends React.Component<{}, any> {
               label={weekday.day}
               key={index}
               checked={weekday.checked}
-              inline={true}
+              inline={false}
               onChange={this.handleCheckedChange(index)}
             />
           )}

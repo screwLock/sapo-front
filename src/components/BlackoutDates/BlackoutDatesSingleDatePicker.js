@@ -60,7 +60,6 @@ class BlackoutDatesSingleDatePicker extends React.Component {
           >
             <InputGroup id="singleDateReason" placeholder="Enter a Reason" />
           </FormGroup>
-          <div><Button onClick={this.handleClick}>Submit</Button></div>
         </InputContainer>
       </div>
     );

@@ -9,19 +9,40 @@ class NewEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            employee: {
-                lastName: 'gay'
-            }
+            firstName: '',
+            lastName: '',
+            email: '',
+            phoneNumber: '',
+            employeeID: '',
+            access: 'Volunteer',
         }
     }
 
     addEmployee = () => {
-
-        this.props.addEmployee(this.state.employee);
+        this.props.addEmployee({
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            email: this.state.email,
+            phoneNumber: this.state.phoneNumber,
+            employeeID: this.state.employeeID,
+            access: this.state.access
+        });
+        this.setState({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phoneNumber: '',
+            employeeID: '',
+            access: 'Volunteer',
+        })
         this.props.handleEmployeeOpen();
     }
 
     onChange = e => this.setState({ [e.target.name]: e.target.value })
+
+    handleAccess = (access) => {
+        this.setState({access: access})
+    }
 
 
     render() {
@@ -36,37 +57,37 @@ class NewEmployee extends React.Component {
                         labelFor="text-input"
                         labelInfo="(required)"
                     >
-                        <InputGroup onChange={this.onChange}/>
+                        <InputGroup name='firstName' onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Last Name"
                         labelFor="text-input"
                         labelInfo="(required)"
                     >
-                        <InputGroup id="employeeLastName" placeholder="Last Name" />
+                        <InputGroup name="lastName" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Email"
                         labelFor="text-input"
                         labelInfo="(required)"
                     >
-                        <InputGroup id="employeeEmail" placeholder="Email" />
+                        <InputGroup name="email" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Phone Number"
                         labelFor="text-input"
                         labelInfo="(required)"
                     >
-                        <InputGroup id="employeePhoneNumber" placeholder="Phone Number" />
+                        <InputGroup name="phoneNumber" onChange={this.onChange}/>
                     </FormGroup>
                     <FormGroup
                         label="Employee ID"
                         labelFor="text-input"
                         labelInfo="(optional)"
                     >
-                        <InputGroup id="employeeID" placeholder="Employee ID" />
+                        <InputGroup name="employeeID" onChange={this.onChange}/>
                     </FormGroup>
-                    <AccessLevelSelect />
+                    <AccessLevelSelect onSelect={this.handleAccess}/>
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>

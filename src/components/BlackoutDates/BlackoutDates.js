@@ -1,8 +1,9 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import { AppToaster } from '../Toaster'
+import { produce } from 'immer';
 import NewBlackoutDate from './NewBlackoutDate'
-import columns from './columns'
 import BlackoutDatesTable from './BlackoutDatesTable'
 
 class BlackoutDates extends React.Component {
@@ -19,7 +20,7 @@ class BlackoutDates extends React.Component {
     this.showToast(`Enter a Date`);
     this.setState(
       produce(draft => {
-        draft.zipcodes.push(date)
+        draft.dates.push(date)
       })
     )
     //save to database
@@ -34,6 +35,19 @@ class BlackoutDates extends React.Component {
   handleDatesOpen = () => {
     this.setState({ isDatesOpen: !this.state.isDatesOpen })
   }
+
+  handleDeleteDate = (i) => {
+    let dates = [...this.state.dates]
+    //delete from database
+    dates.splice(i, 1)
+    this.setState({ 
+      dates: dates
+    })
+}
+
+showToast = (message) => {
+  AppToaster.show({ message: message });
+}
 
   render() {
     const DateSelectMenu = (
@@ -57,7 +71,10 @@ class BlackoutDates extends React.Component {
                          handleClose={this.handleDatesOpen}
                          selection={this.state.selection}
         />
-        <BlackoutDatesTable data={this.dates} columns={columns} />
+        <BlackoutDatesTable data={this.dates} 
+                            delete={this.handleDeleteZipcode}
+
+        />
       </Container>
     );
   }

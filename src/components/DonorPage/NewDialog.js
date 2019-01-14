@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import NewCategory from './NewCategory'
+import NewRestriction from './NewRestriction'
+import NewServiceDetail from './NewServiceDetail'
 
 class NewDialog extends React.Component {
     constructor(props){
@@ -40,14 +42,14 @@ class NewDialog extends React.Component {
                 <NewCategory createSubmittable={this.createSubmittable} canSubmit={this.canSubmit}/>
             )
         }
-        else if( selection === "Add A New Pickup Detail"){
+        else if( selection === "Add A New Item Restriction"){
             return(
-                <div>b</div>
+                <NewRestriction createSubmittable={this.createSubmittable} canSubmit={this.canSubmit} />
             )
         }
-        else if( selection === "Add A New Item Restriction"){
+        else if( selection === "Add A New Service Detail"){
             return ( 
-                <div>c</div>
+                <NewServiceDetail createSubmittable={this.createSubmittable} canSubmit={this.canSubmit} />
             )
         }
         return selection;

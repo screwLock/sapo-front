@@ -43,8 +43,8 @@ class DonorPage extends React.Component {
         const DonorSelectMenu = (
           <Menu>
               <MenuItem text="Add A New Category" onClick={this.handleClick}/>
-              <MenuItem text="Add A New Pickup Detail" onClick={this.handleClick}/>
               <MenuItem text="Add A New Item Restriction" onClick={this.handleClick}/>
+              <MenuItem text="Add A New Service Detail" onClick={this.handleClick}/>
           </Menu>
       );
         return (

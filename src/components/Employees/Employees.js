@@ -5,7 +5,6 @@ import { Button, H3, Intent } from '@blueprintjs/core';
 import { AppToaster} from '../Toaster'
 import { produce } from 'immer'
 import EmployeesTable from './EmployeesTables'
-import columns from './columns'
 
 class Employees extends React.Component {
   constructor(props){
@@ -17,13 +16,23 @@ class Employees extends React.Component {
   }
 
   addEmployee = (employee) => {
-    this.showToast(`Enter an Employee`);
     this.setState(
       produce(draft => {
         draft.employees.push(employee)
       })
     ) 
     //save to database
+    this.showToast(`Employee Saved`);
+  }
+
+  
+  handleDeleteEmployees = (i) => {
+    let employees = [...this.state.employees]
+    //delete from database
+    employees.splice(i, 1)
+    this.setState({ 
+      employees: employees
+    })
   }
 
   handleEmployeeOpen = () => {
@@ -46,7 +55,7 @@ class Employees extends React.Component {
                      isEmployeeOpen={this.state.isEmployeeOpen}
                      handleEmployeeOpen={this.handleEmployeeOpen}
         />
-        <EmployeesTable data={this.state.employees} columns={columns}/>
+        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees}/>
       </Container>
     );
   }

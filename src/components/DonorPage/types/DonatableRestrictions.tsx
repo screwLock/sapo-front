@@ -5,7 +5,7 @@ import * as React from "react";
 
 export interface IDonatableRestriction {
     name: string;
-    comments: string;
+    comments?: string;
 }
 
 export const PREPACKAGED_RESTRICTIONS_NAMES: string[] = [
@@ -35,7 +35,7 @@ export const filterRestriction: ItemPredicate<IDonatableRestriction> = (query, r
     return `${restriction.name.toLowerCase()}`.indexOf(query.toLowerCase()) >= 0;
 };
 
-export const donatableSelectProps = {
+export const restrictionSelectProps = {
     itemPredicate: filterRestriction,
     itemRenderer: renderRestriction,
     items: PREPACKAGED_RESTRICTIONS,
