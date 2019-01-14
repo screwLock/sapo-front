@@ -54,7 +54,6 @@ showToast = (message) => {
       <Menu>
           <MenuItem text="Select A Single Date" onClick={this.handleClick}/>
           <MenuItem text="Select A Date Range" onClick={this.handleClick}/>
-          <MenuItem text="Select Weekdays" onClick={this.handleClick}/>
       </Menu>
   );
     return (

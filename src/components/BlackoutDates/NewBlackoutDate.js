@@ -3,7 +3,6 @@ import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@bluepri
 import styled from 'styled-components'
 import BlackoutDatesSingleDatePicker from './BlackoutDatesSingleDatePicker';
 import BlackoutDatesRangeDatePicker from './BlackoutDatesRangeDatePicker';
-import BlackoutDatesWeekdays from './BlackoutDatesWeekdays';
 
 class NewBlackoutDate extends React.Component {
     constructor(props){
@@ -28,11 +27,6 @@ class NewBlackoutDate extends React.Component {
         else if( selection === "Select A Date Range"){
             return(
                 <BlackoutDatesRangeDatePicker /> 
-            )
-        }
-        else if( selection === "Select Weekdays"){
-            return ( 
-                <BlackoutDatesWeekdays />
             )
         }
         return selection;
