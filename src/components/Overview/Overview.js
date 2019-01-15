@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Cell } from "styled-css-grid";
 import produce from 'immer';
-import OverviewMap from './OverviewMap.js';
+import OverviewMap from './OLD_OverviewMap.js';
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
 import pickupMocks from './mocks/pickupMocks';

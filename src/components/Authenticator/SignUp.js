@@ -37,14 +37,11 @@ class SignUp extends React.Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
     handleSignUp = () => {
-        if(this.validateForms() === false){
-            this.setState({error: 'All fields are required'})
-        }
-        else if(this.validatePasswords() === false){
-            this.setState({error: 'Passwords do not match'})
+        if(this.validateForms()){
+            this.onSignUp()
         }
         else {
-            this.onSignUp()
+            return false
         }
     }
    
@@ -87,18 +84,40 @@ class SignUp extends React.Component {
     }
 
     validateForms = () => {
-        return this.state.email.length > 0 && 
-               this.state.password.length > 0 &&
-               this.state.confirmPassword.length > 0 &&
-               this.state.firstName.length > 0 &&
-               this.state.lastName.length > 0 &&
-               this.state.phone.length > 0 &&
-               this.state.organization.length > 0
+        const phoneValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+        const passwordTest = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+        if (this.state.email.length > 0 && 
+            this.state.password.length > 0 &&
+            this.state.confirmPassword.length > 0 &&
+            this.state.firstName.length > 0 &&
+            this.state.lastName.length > 0 &&
+            this.state.phone.length > 0 &&
+            this.state.organization.length > 0
+        ) {
+            this.setState({error: 'Required fields are missing'})
+            return false
+        }
+        else if(!EmailValidator.validate(this.state.email)){
+            this.setState({error: 'Enter a valid email address'})
+            return false
+        }
+        else if(!phoneValidate.test(this.state.phoneNumber)){
+            this.setState({error: 'Enter a valid phone number'})
+            return false
+        }
+        else if(this.state.password === this.state.confirmPassword){
+            this.setState({error: 'Your passwords do not match'})
+            return false
+        }
+        else if(passwordTest(this.state.password)){
+            this.setState({error: 'Your password does not meet the requirements'})
+            return false
+        }
+        else {
+            return true
+        }
     }
 
-    validatePasswords = () => {
-        return this.state.password === this.state.confirmPassword
-    }
 
     showSuccessMessage = () => {
         if(this.state.successShowing){

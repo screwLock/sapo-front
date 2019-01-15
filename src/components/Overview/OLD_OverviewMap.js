@@ -9,6 +9,32 @@ class OverviewMap extends React.Component {
     super(props);
   }
 
+  apiIsLoaded = (map, maps, pickups) => {
+    if (map && (pickups && pickups.length)) {
+        const directionsService = new google.maps.DirectionsService();
+        const directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        directionsDisplay.setDirections({routes: []});
+        directionsService.route({
+          origin: {lat: this.props.user.lat, lng: this.props.user.lng},
+          destination: {lat: this.props.user.lat, lng: this.props.user.lng},
+          travelMode: 'DRIVING',
+          waypoints: pickups.map(pickup => ({
+            location: {lat: pickup.lat, lng: pickup.lng},
+            stopover: true
+          })),
+          //optimizeWaypoints: true,
+        }, (response, status) => {
+          if (status === 'OK') {
+            directionsDisplay.setMap(map);
+            directionsDisplay.setDirections(response);
+            console.log(response.routes[0])
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+    }
+
   getCenter = (selectedPickup, defaultCenter) => {
     let selectedCenter = null;
     if (selectedPickup){
@@ -59,4 +85,6 @@ class OverviewMap extends React.Component {
 }
 
 export default OverviewMap;
+
+
 
