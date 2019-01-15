@@ -2,7 +2,8 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom"
+import * as EmailValidator from 'email-validator'
 
 class SignUp extends React.Component {
     static defaultProps = {
@@ -86,13 +87,13 @@ class SignUp extends React.Component {
     validateForms = () => {
         const phoneValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
         const passwordTest = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
-        if (this.state.email.length > 0 && 
-            this.state.password.length > 0 &&
-            this.state.confirmPassword.length > 0 &&
-            this.state.firstName.length > 0 &&
-            this.state.lastName.length > 0 &&
-            this.state.phone.length > 0 &&
-            this.state.organization.length > 0
+        if (this.state.email.length === 0 || 
+            this.state.password.length === 0 ||
+            this.state.confirmPassword.length === 0 ||
+            this.state.firstName.length === 0 ||
+            this.state.lastName.length === 0 ||
+            this.state.phone.length === 0 ||
+            this.state.organization.length === 0
         ) {
             this.setState({error: 'Required fields are missing'})
             return false
@@ -101,15 +102,15 @@ class SignUp extends React.Component {
             this.setState({error: 'Enter a valid email address'})
             return false
         }
-        else if(!phoneValidate.test(this.state.phoneNumber)){
+        else if(!phoneValidate.test(this.state.phone)){
             this.setState({error: 'Enter a valid phone number'})
             return false
         }
-        else if(this.state.password === this.state.confirmPassword){
+        else if(this.state.password !== this.state.confirmPassword){
             this.setState({error: 'Your passwords do not match'})
             return false
         }
-        else if(passwordTest(this.state.password)){
+        else if(!passwordTest.test(this.state.password)){
             this.setState({error: 'Your password does not meet the requirements'})
             return false
         }
@@ -169,6 +170,7 @@ class SignUp extends React.Component {
                     <FormGroup
                         label="Password"
                         labelFor="text-input"
+                        helperText="Passwords need to be a minimum of 8 characters, contain 1 special character, 1 upper case letter, 1 lower case letter, and 1 number"
                     >
                         <InputGroup name="password" onChange={this.handleChange} type='password'/>
                     </FormGroup>
@@ -200,7 +202,6 @@ class SignUp extends React.Component {
 }
 
 const Container = styled.div`
-    overflow: hidden;
     position: absolute;
     width: 100%;
     height: 100%;
