@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
-import NewBlackoutDate from './NewBlackoutDate'
+import BlackoutDatesSingleDatePicker from './BlackoutDatesSingleDatePicker'
+import BlackoutDatesRangeDatePicker from './BlackoutDatesRangeDatePicker'
 import BlackoutDatesTable from './BlackoutDatesTable'
 
 class BlackoutDates extends React.Component {
@@ -11,51 +12,49 @@ class BlackoutDates extends React.Component {
     super(props)
     this.state = {
       dates: [],
-      isDatesOpen: false,
-      selection: '',
+      isSingleOpen: false,
+      isRangeOpen: false,
     }
   }
 
   addDate = (date) => {
-    this.showToast(`Enter a Date`);
     this.setState(
       produce(draft => {
         draft.dates.push(date)
       })
-    )
+    , () => console.log(`${this.state.dates}`))
     //save to database
   }
 
   handleClick = (event) => {
-    this.setState({
-      selection: event.target.textContent,
-      isDatesOpen: !this.state.isDatesOpen })
+    if (event.target.textContent === "Select A Single Date") {
+      this.setState({ isSingleOpen: true })
+    }
+    else if (event.target.textContent === "Select A Date Range") {
+      this.setState({ isRangeOpen: true })
+    }
   }
 
-  handleDatesOpen = () => {
-    this.setState({ isDatesOpen: !this.state.isDatesOpen })
+  handleOpen = (menuType) => () => {
+    this.setState({ [menuType]: !this.state[menuType] })
   }
 
   handleDeleteDate = (i) => {
     let dates = [...this.state.dates]
     //delete from database
     dates.splice(i, 1)
-    this.setState({ 
+    this.setState({
       dates: dates
     })
-}
-
-showToast = (message) => {
-  AppToaster.show({ message: message });
-}
+  }
 
   render() {
     const DateSelectMenu = (
       <Menu>
-          <MenuItem text="Select A Single Date" onClick={this.handleClick}/>
-          <MenuItem text="Select A Date Range" onClick={this.handleClick}/>
+        <MenuItem text="Select A Single Date" onClick={this.handleClick} />
+        <MenuItem text="Select A Date Range" onClick={this.handleClick} />
       </Menu>
-  );
+    );
     return (
       <Container>
         <H3>Manage Blackout Dates</H3>
@@ -64,14 +63,18 @@ showToast = (message) => {
             <Button intent={Intent.PRIMARY}>Add New Blackout Dates</Button>
           </Popover>
         </ButtonRow>
-        <NewBlackoutDate addDate={this.addDate}
-                         dates={this.state.dates}
-                         isOpen={this.state.isDatesOpen}
-                         handleClose={this.handleDatesOpen}
-                         selection={this.state.selection}
+        <BlackoutDatesSingleDatePicker addDate={this.addDate}
+          dates={this.state.dates}
+          isOpen={this.state.isSingleOpen}
+          handleClose={this.handleOpen('isSingleOpen')}
         />
-        <BlackoutDatesTable data={this.dates} 
-                            delete={this.handleDeleteZipcode}
+        <BlackoutDatesRangeDatePicker addDate={this.addDate}
+          dates={this.state.dates}
+          isOpen={this.state.isRangeOpen}
+          handleClose={this.handleOpen('isRangeOpen')}
+        />
+        <BlackoutDatesTable data={this.state.dates}
+          delete={this.handleDeleteZipcode}
 
         />
       </Container>

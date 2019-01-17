@@ -1,8 +1,7 @@
 import * as React from 'react'
 import ReactTable from 'react-table'
-import { Button } from '@blueprintjs/core'
+import { Button, Intent } from '@blueprintjs/core'
 import "react-table/react-table.css"
-import { INTENT_PRIMARY, INTENT_DANGER } from '@blueprintjs/core/lib/esm/common/classes';
 
 class BlackoutDatesTable extends React.Component {
    
@@ -12,7 +11,12 @@ class BlackoutDatesTable extends React.Component {
         width: 100
     }, {
         Header: 'Date',
-        accessor: 'date'
+        accessor: 'date',
+        Cell: (row) => (
+            <div>
+                {`${row.value.toLocaleDateString()}`}
+            </div>
+        )
     }, {
         Header: 'Reason',
         accessor: 'reason'

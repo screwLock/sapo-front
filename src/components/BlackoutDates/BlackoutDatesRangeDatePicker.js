@@ -1,6 +1,7 @@
 import * as React from 'react';
 import DayPicker, { DateUtils } from 'react-day-picker';
-import { Button, FormGroup, InputGroup } from '@blueprintjs/core'
+import { eachDay } from 'date-fns'
+import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from '@blueprintjs/core'
 import { AppToaster } from '../Toaster'
 import styled from 'styled-components'
 import 'react-day-picker/lib/style.css'
@@ -17,7 +18,8 @@ class BlackoutDatesRangeDatePicker extends React.Component {
       from: null,
       to: null,
       enteredTo: null, // Keep track of the last day for mouseEnter.
-      reason: ''
+      reason: '',
+      dates: [],
     };
   }
 
@@ -43,8 +45,14 @@ class BlackoutDatesRangeDatePicker extends React.Component {
       this.setState({
         to: day,
         enteredTo: day,
+        dates: eachDay(this.state.from, day)
       });
     }
+  }
+
+  handleClose = () => {
+    this.setState(this.getInitialState())
+    this.props.handleClose()
   }
 
   handleDayMouseEnter = (day) => {
@@ -60,9 +68,20 @@ class BlackoutDatesRangeDatePicker extends React.Component {
     this.setState(this.getInitialState());
   }
 
-  handleClick = () => {
-    this.showToast(`Pick a range of dates`);
-    //database call
+  handleSubmit = () => {
+    if (!this.state.from || !this.state.to) {
+      this.showToast('Select A Date')
+    }
+    else if (this.state.reason === '') {
+      this.showToast('Enter A Reason')
+    }
+    else {
+      this.state.dates.forEach(date => {
+        this.props.addDate({ date: date, reason: this.state.reason })
+      })
+      this.setState(this.getInitialState())
+      this.props.handleClose()
+    }
   }
 
   showToast = (message) => {
@@ -75,43 +94,59 @@ class BlackoutDatesRangeDatePicker extends React.Component {
     const disabledDays = { before: this.state.from };
     const selectedDays = [from, { from, to: enteredTo }];
     return (
-      <div>
-        <DayPicker
-          className="Range"
-          numberOfMonths={2}
-          fromMonth={from}
-          selectedDays={selectedDays}
-          disabledDays={disabledDays}
-          modifiers={modifiers}
-          onDayClick={this.handleDayClick}
-          onDayMouseEnter={this.handleDayMouseEnter}
-        />
-        <div>
-          <p>
-            {!from && !to && 'Please select the first day.'}
-            {from && !to && 'Please select the last day.'}
-            {from &&
-              to &&
-              `Selected from ${from.toLocaleDateString()} to
+      <Dialog isOpen={this.props.isOpen}
+        title={'Add A Range of Dates'}
+        onClose={this.props.handleClose}
+      >
+        <DialogContainer>
+          <div>
+            <DayPicker
+              className="Range"
+              numberOfMonths={2}
+              fromMonth={from}
+              selectedDays={selectedDays}
+              disabledDays={disabledDays}
+              modifiers={modifiers}
+              onDayClick={this.handleDayClick}
+              onDayMouseEnter={this.handleDayMouseEnter}
+            />
+            <div>
+              <p>
+                {!from && !to && 'Please select the first day.'}
+                {from && !to && 'Please select the last day.'}
+                {from &&
+                  to &&
+                  `Selected from ${from.toLocaleDateString()} to
                 ${to.toLocaleDateString()}`}{' '}
-            {from &&
-              to && (
-                <button className="link" onClick={this.handleResetClick}>
-                  Reset
+                {from &&
+                  to && (
+                    <button className="link" onClick={this.handleResetClick}>
+                      Reset
               </button>
-              )}
-          </p>
+                  )}
+              </p>
+            </div>
+            <InputContainer>
+              <FormGroup
+                label="Enter a Reason"
+                labelFor="text-input"
+                labelInfo="(required)"
+              >
+                <InputGroup id="dateRangeReason"
+                  placeholder="Enter a Reason"
+                  onBlur={(e) => { this.setState({ reason: e.target.value }) }}
+                />
+              </FormGroup>
+            </InputContainer>
+          </div>
+        </DialogContainer>
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            <Button onClick={this.handleClose}>Cancel</Button>
+            <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
+          </div>
         </div>
-        <InputContainer>
-          <FormGroup
-            label="Enter a Reason"
-            labelFor="text-input"
-            labelInfo="(required)"
-          >
-            <InputGroup id="dateRangeReason" placeholder="Enter a Reason" />
-          </FormGroup>
-        </InputContainer>
-      </div>
+      </Dialog>
     );
   }
 }
@@ -119,6 +154,11 @@ class BlackoutDatesRangeDatePicker extends React.Component {
 
 const InputContainer = styled.div`
     width: 250px;
+`
+const DialogContainer = styled.div`
+    maxWidth: 700px;
+    maxHeight: 500px;
+    margin: 20px;
 `
 
 export default BlackoutDatesRangeDatePicker;

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { postalCodeValidator } from './postalCodeValidator'
 import ZipcodeWeekdays from './ZipcodeWeekdays'
 import ZipcodeInput from './ZipcodeInput'
-import { weekdays, IWeekday } from "../common_types/checkedWeekdays";
+import { weekdays, IWeekday } from "./checkedWeekdays";
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
 

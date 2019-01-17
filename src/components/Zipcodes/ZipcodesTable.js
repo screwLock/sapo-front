@@ -16,7 +16,7 @@ class ZipcodesTable extends React.Component {
             Cell: row => {
                 return (
                   <div>
-                    <span>{this.filterSelectedWeekdays(row.row.weekdays)}</span>
+                    <span>{/*this.filterSelectedWeekdays(row.row.weekdays)*/}</span>
                   </div>
                 )
             },
