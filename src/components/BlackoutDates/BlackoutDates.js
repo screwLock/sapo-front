@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
-import BlackoutDatesSingleDatePicker from './BlackoutDatesSingleDatePicker'
-import BlackoutDatesRangeDatePicker from './BlackoutDatesRangeDatePicker'
+import BlackoutDatesPicker from './BlackoutDatesPicker'
 import BlackoutDatesTable from './BlackoutDatesTable'
 
 class BlackoutDates extends React.Component {
@@ -12,8 +11,7 @@ class BlackoutDates extends React.Component {
     super(props)
     this.state = {
       dates: [],
-      isSingleOpen: false,
-      isRangeOpen: false,
+      isDialogOpen: false,
     }
   }
 
@@ -22,21 +20,16 @@ class BlackoutDates extends React.Component {
       produce(draft => {
         draft.dates.push(date)
       })
-    , () => console.log(`${this.state.dates}`))
+      , () => console.log(`${this.state.dates}`))
     //save to database
   }
 
-  handleClick = (event) => {
-    if (event.target.textContent === "Select A Single Date") {
-      this.setState({ isSingleOpen: true })
-    }
-    else if (event.target.textContent === "Select A Date Range") {
-      this.setState({ isRangeOpen: true })
-    }
+  handleClick = () => {
+    this.setState({ isDialogOpen: true })
   }
 
-  handleOpen = (menuType) => () => {
-    this.setState({ [menuType]: !this.state[menuType] })
+  handleClose = () => {
+    this.setState({ isDialogOpen: false})
   }
 
   handleDeleteDate = (i) => {
@@ -49,29 +42,17 @@ class BlackoutDates extends React.Component {
   }
 
   render() {
-    const DateSelectMenu = (
-      <Menu>
-        <MenuItem text="Select A Single Date" onClick={this.handleClick} />
-        <MenuItem text="Select A Date Range" onClick={this.handleClick} />
-      </Menu>
-    );
     return (
       <Container>
         <H3>Manage Blackout Dates</H3>
-        <ButtonRow>
-          <Popover content={DateSelectMenu} position={Position.RIGHT}>
-            <Button intent={Intent.PRIMARY}>Add New Blackout Dates</Button>
-          </Popover>
-        </ButtonRow>
-        <BlackoutDatesSingleDatePicker addDate={this.addDate}
-          dates={this.state.dates}
-          isOpen={this.state.isSingleOpen}
-          handleClose={this.handleOpen('isSingleOpen')}
+        <Button intent={Intent.PRIMARY}
+          text='Add New Blackout Dates'
+          onClick={this.handleClick}
         />
-        <BlackoutDatesRangeDatePicker addDate={this.addDate}
+        <BlackoutDatesPicker addDate={this.addDate}
           dates={this.state.dates}
-          isOpen={this.state.isRangeOpen}
-          handleClose={this.handleOpen('isRangeOpen')}
+          isOpen={this.state.isDialogOpen}
+          handleClose={this.handleClose}
         />
         <BlackoutDatesTable data={this.state.dates}
           delete={this.handleDeleteZipcode}

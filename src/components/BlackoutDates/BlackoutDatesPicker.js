@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from '@blueprintjs/core'
-import DayPicker from 'react-day-picker'
+import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css'
 import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
 
-class BlackoutDatesSingleDatePicker extends React.Component {
+class BlackoutDatesPicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState()
@@ -13,22 +13,22 @@ class BlackoutDatesSingleDatePicker extends React.Component {
 
   getInitialState = () => {
     return {
-      selectedDay: undefined,
+      selectedDays: [],
       reason: '',
     };
   }
 
-  handleDayClick = (day, { selected, disabled }) => {
-    if (disabled) {
-      // Day is disabled, do nothing
-      return;
-    }
+  handleDayClick = (day, { selected }) => {
+    const { selectedDays } = this.state;
     if (selected) {
-      // Unselect the day if already selected
-      this.setState({ selectedDay: undefined });
-      return;
+      const selectedIndex = selectedDays.findIndex(selectedDay =>
+        DateUtils.isSameDay(selectedDay, day)
+      );
+      selectedDays.splice(selectedIndex, 1);
+    } else {
+      selectedDays.push(day);
     }
-    this.setState({ selectedDay: day })
+    this.setState({ selectedDays });
   }
 
   showToast = (message) => {
@@ -56,7 +56,7 @@ class BlackoutDatesSingleDatePicker extends React.Component {
   render() {
     return (
       <Dialog isOpen={this.props.isOpen}
-        title={'Add A Single Blackout Date'}
+        title='Add Blackout Dates'
         onClose={this.props.handleClose}
       >
         <DialogContainer>
@@ -64,10 +64,10 @@ class BlackoutDatesSingleDatePicker extends React.Component {
             <div>
               <DayPicker
                 onDayClick={this.handleDayClick}
-                selectedDays={this.state.selectedDay}
+                selectedDays={this.state.selectedDays}
               />
-              {this.state.selectedDay ? (
-                <p>You clicked {this.state.selectedDay.toLocaleDateString()}</p>
+              {this.state.selectedDays.length > 0 ? (
+                <p>You clicked {this.state.selectedDays.forEach(day => `${day.toLocaleDateString()}, `)}</p>
               ) : (
                   <p>Please select a day.</p>
                 )}
@@ -107,4 +107,4 @@ const InputContainer = styled.div`
     width: 250px;
 `
 
-export default BlackoutDatesSingleDatePicker;
+export default BlackoutDatesPicker;
