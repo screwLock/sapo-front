@@ -20,7 +20,7 @@ class BlackoutDates extends React.Component {
       produce(draft => {
         draft.dates.push(date)
       })
-      , () => console.log(`${this.state.dates}`))
+    )
     //save to database
   }
 
@@ -55,7 +55,7 @@ class BlackoutDates extends React.Component {
           handleClose={this.handleClose}
         />
         <BlackoutDatesTable data={this.state.dates}
-          delete={this.handleDeleteZipcode}
+          delete={this.handleDeleteDate}
 
         />
       </Container>

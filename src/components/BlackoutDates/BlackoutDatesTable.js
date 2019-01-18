@@ -5,11 +5,8 @@ import "react-table/react-table.css"
 
 class BlackoutDatesTable extends React.Component {
    
-    columns = [{
-        Header: 'ID',
-        accessor: 'zipcodeID',
-        width: 100
-    }, {
+    columns = [
+    {
         Header: 'Date',
         accessor: 'date',
         Cell: (row) => (

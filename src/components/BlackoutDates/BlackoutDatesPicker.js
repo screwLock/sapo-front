@@ -41,14 +41,16 @@ class BlackoutDatesPicker extends React.Component {
   }
 
   handleSubmit = () => {
-    if (this.state.selectedDay === undefined) {
+    if (!(this.state.selectedDays.length > 0) ) {
       this.showToast('Select A Date')
     }
     else if (this.state.reason === '') {
       this.showToast('Enter A Reason')
     }
     else {
-      this.props.addDate({date: this.state.selectedDay, reason: this.state.reason});
+      this.state.selectedDays.forEach((day) => {
+        this.props.addDate({date: day, reason: this.state.reason})
+      })
       this.handleClose();
     }
   }
@@ -67,7 +69,7 @@ class BlackoutDatesPicker extends React.Component {
                 selectedDays={this.state.selectedDays}
               />
               {this.state.selectedDays.length > 0 ? (
-                <p>You clicked {this.state.selectedDays.forEach(day => `${day.toLocaleDateString()}, `)}</p>
+                <p>You clicked {this.state.selectedDays.map(day => `${day.toLocaleDateString()}, `)}</p>
               ) : (
                   <p>Please select a day.</p>
                 )}
