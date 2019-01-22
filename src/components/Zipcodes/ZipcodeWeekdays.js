@@ -18,7 +18,7 @@ class ZipcodeWeekdays extends React.Component {
               label='All'
               key='All'
               name='all'
-              checked={weekday.all && !weekday.all}
+              checked={weekday.all}
               inline={true}
               disabled={false}
               onChange={this.props.onChange(index)}

@@ -1,7 +1,6 @@
 
 export interface IWeekday {
     day: string;
-    frequency: number;
     all: boolean;
     first: boolean;
     second: boolean;
@@ -14,7 +13,6 @@ export interface IWeekday {
 export const weekdays: IWeekday[] = [ 
     {
       day: 'Sunday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
@@ -24,7 +22,6 @@ export const weekdays: IWeekday[] = [
     }, 
     {
       day: 'Monday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
@@ -34,7 +31,6 @@ export const weekdays: IWeekday[] = [
     }, 
     {
       day: 'Tuesday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
@@ -44,7 +40,6 @@ export const weekdays: IWeekday[] = [
     },
     {
       day: 'Wednesday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
@@ -54,7 +49,6 @@ export const weekdays: IWeekday[] = [
     },
     {
       day: 'Thursday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
@@ -64,7 +58,6 @@ export const weekdays: IWeekday[] = [
     },
     {
       day: 'Friday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
@@ -74,7 +67,6 @@ export const weekdays: IWeekday[] = [
     },
     {
       day: 'Saturday',
-      frequency: 0,
       all: false,
       first: false,
       second: false,
