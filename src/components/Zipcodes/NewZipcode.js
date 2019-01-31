@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { postalCodeValidator } from './postalCodeValidator'
 import ZipcodeWeekdays from './ZipcodeWeekdays'
 import ZipcodeInput from './ZipcodeInput'
-import { weekdays, IWeekday } from "../common_types/checkedWeekdays";
+import { weekdays, IWeekday } from "./checkedWeekdays";
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
 
@@ -17,13 +17,31 @@ class NewZipcode extends React.Component {
         }
     }
 
+    isAllChecked = (index) => {
+        if(this.state.weekdays[index].all === true){
+            produce(this.state, draft => {
+                draft.weekdays[index].disabledCheckbox = true;
+            })
+        }
+        else if(this.state.weekdays[index].all === false){
+            produce(this.state, draft => {
+                draft.weekdays[index].disabledCheckbox = false;
+            })
+        }
+    }
+
     componentDidMount = () => {
         this.setState({weekdays: weekdays.slice()})
     }
     
     countCheckedDays= () => {
         return this.state.weekdays.filter(weekday => {
-            return weekday.checked === true
+            return weekday.all === true
+            || weekday.first === true
+            || weekday.second === true
+            || weekday.third === true
+            || weekday.fourth === true
+            || weekday.fifth === true
         }).length
     }
 
@@ -34,8 +52,8 @@ class NewZipcode extends React.Component {
     handleCheckedChange = (index) => (e) => {
         this.setState(
             produce(this.state, draft => {
-                draft.weekdays[index].checked = !draft.weekdays[index].checked;
-            }));
+                draft.weekdays[index][e.target.name] = !draft.weekdays[index][e.target.name]
+            }), () => this.isAllChecked(index))
     }
 
     handleClose = () => {
@@ -46,6 +64,9 @@ class NewZipcode extends React.Component {
     handleSubmit = () => {
         if (!postalCodeValidator(this.state.newZipcode)) {
             this.showToast(`Enter a valid postal code`);
+        }
+        else if(this.props.zipcodes.some(zipcode => zipcode.zipcode === this.state.newZipcode)){
+            this.showToast(`Zipcode is already present`)
         }
         else if (this.countCheckedDays() === 0) {
             this.showToast(`Please select at least one weekday`);
@@ -69,6 +90,7 @@ class NewZipcode extends React.Component {
             <Dialog isOpen={this.props.isOpen}
                 title='Add a New Zipcode'
                 onClose={this.handleClose}
+                style={{width: '750px'}}
             >
                 <DialogContainer>
                     <ZipcodeInput
@@ -92,7 +114,7 @@ class NewZipcode extends React.Component {
 }
 
 const DialogContainer = styled.div`
-    width: 400px;
+    width: 750px;
     margin: 20px;
     margin-top: 10px;
 `

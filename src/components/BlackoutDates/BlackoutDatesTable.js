@@ -1,11 +1,42 @@
 import * as React from 'react'
 import ReactTable from 'react-table'
-import { Button } from '@blueprintjs/core'
+import { Button, Intent } from '@blueprintjs/core'
 import "react-table/react-table.css"
-import { INTENT_PRIMARY, INTENT_DANGER } from '@blueprintjs/core/lib/esm/common/classes';
 
 class BlackoutDatesTable extends React.Component {
    
+    columns = [
+    {
+        Header: 'Date',
+        accessor: 'date',
+        Cell: (row) => (
+            <div>
+                {`${row.value.toLocaleDateString()}`}
+            </div>
+        )
+    }, {
+        Header: 'Reason',
+        accessor: 'reason'
+    
+    }, 
+    {
+        Header: 'Actions',
+        Cell: (row) => (
+            <div>
+                <Button intent={Intent.PRIMARY}
+                    icon="edit"
+                    onClick={() => this.props.editBlackoutDate(row.index)}
+                />
+                <Button intent={Intent.DANGER}
+                    icon="trash"
+                    onClick={() => this.props.delete(row.index)}
+                />
+            </div>
+        ),
+        width: 200
+    }
+    ]
+
     tableStyle = {
         'border': 'none',
     }
@@ -13,9 +44,9 @@ class BlackoutDatesTable extends React.Component {
     getTHeadStyle = () => {
         return {
             style: {
-                'box-shadow': 'none',
+                'boxShadow': 'none',
                 'border': 'none',
-                'font-weight' : 'bold'
+                'fontWeight' : 'bold'
             }
         }
     }
@@ -23,8 +54,8 @@ class BlackoutDatesTable extends React.Component {
     getPaginationStyle = () => {
         return {
             style: {
-                'background-color': 'white',
-                'box-shadow': 'none'
+                'backgroundColor': 'white',
+                'boxShadow': 'none'
             }
         }
     }
@@ -32,7 +63,7 @@ class BlackoutDatesTable extends React.Component {
     getTdStyle = () => {
         return {
             style: {
-                'text-align': 'center'
+                'textAlign': 'center'
             }
         }
     }
@@ -42,7 +73,7 @@ class BlackoutDatesTable extends React.Component {
             <div>
             <ReactTable
                     data={this.props.data}
-                    columns={this.props.columns}
+                    columns={this.columns}
                     className="-highlight"
                     defaultPageSize={15}
                     showPageSizeOptions={false}

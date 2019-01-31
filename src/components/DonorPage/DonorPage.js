@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import produce from 'immer'
-import NewCategory from './NewCategory'
+import NewDialog from './NewDialog'
 
 
 class DonorPage extends React.Component {
@@ -43,8 +43,8 @@ class DonorPage extends React.Component {
         const DonorSelectMenu = (
           <Menu>
               <MenuItem text="Add A New Category" onClick={this.handleClick}/>
-              <MenuItem text="Add A New Pickup Detail" onClick={this.handleClick}/>
               <MenuItem text="Add A New Item Restriction" onClick={this.handleClick}/>
+              <MenuItem text="Add A New Service Detail" onClick={this.handleClick}/>
           </Menu>
       );
         return (
@@ -55,11 +55,11 @@ class DonorPage extends React.Component {
                 <Button intent={Intent.PRIMARY}>Add A New ...</Button>
               </Popover>
             </ButtonRow>
-            <NewCategory addCategory={this.addCategory}
+            <NewDialog addCategory={this.addCategory}
                          isOpen={this.state.isCategoriesOpen}
                          handleClose={this.handleCategoriesOpen}
                          selection={this.state.selection}
-        />
+            />
           </Container>
         );
       }

@@ -5,6 +5,7 @@ import { produce } from 'immer';
 import NewZipcode from './NewZipcode'
 import ZipcodesTable from './ZipcodesTable'
 import EditZipcode from './EditZipcode'
+import PreviewDates from './PreviewDates'
 import { AppToaster } from '../Toaster'
 
 class Zipcodes extends React.Component {
@@ -14,7 +15,8 @@ class Zipcodes extends React.Component {
             zipcodes: [],
             isNewZipcodeOpen: false,
             isEditZipcodeOpen: false,
-            editIndex: 0
+            previewDisabledDates: [],
+            isPreviewOpen: false,
         }
     }
 
@@ -31,9 +33,7 @@ class Zipcodes extends React.Component {
         let zipcodes = [...this.state.zipcodes]
         let index = this.state.editIndex
         //update in database
-        console.log(zipcodes[index])
         zipcodes[index] = edit;
-        console.log(zipcodes[index]);
         this.setState({ 
           zipcodes: zipcodes
         })
@@ -62,12 +62,20 @@ class Zipcodes extends React.Component {
 
     handleEditZipcodeOpen = (index) => {
         this.handleEditIndexChange(index);
-        console.log(this.state.editIndex)
         this.setState({isEditZipcodeOpen: !this.state.isEditZipcodeOpen});
     }
 
     handleEditIndexChange = (index) => {
         this.setState({editIndex: index})
+    }
+
+    handlePreviewClose = () => {
+        this.setState({ isPreviewOpen: false })
+    }
+
+    handlePreviewOpen = (dates) => {
+        this.setState({ previewDisabledDates: dates })
+        this.setState({ isPreviewOpen: true })
     }
 
     render() {
@@ -87,10 +95,16 @@ class Zipcodes extends React.Component {
                         handleClose={this.handleEditZipcodeOpen}
                         index={this.state.editIndex}
                         zipcodes={this.state.zipcodes}
+                        key={this.state.zipcodes}
                 />
                 <ZipcodesTable data={this.state.zipcodes}
                                editZipcode={this.handleEditZipcodeOpen} 
                                delete={this.handleDeleteZipcode}
+                               isPreviewOpen={this.handlePreviewOpen}
+                />
+                <PreviewDates isOpen={this.state.isPreviewOpen}
+                              disabledDates={this.state.previewDisabledDates}
+                              handleClose={this.handlePreviewClose}
                 />
             </Container>
         );

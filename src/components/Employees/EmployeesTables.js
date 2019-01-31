@@ -5,6 +5,46 @@ import "react-table/react-table.css"
 
 class EmployeesTable extends React.Component {
 
+    columns = [{
+        Header: 'ID',
+        accessor: 'employeeID',
+        width: 100
+    }, {
+        Header: 'Last Name',
+        accessor: 'lastName'
+    }, {
+        Header: 'First Name',
+        accessor: 'firstName'
+    
+    }, {
+        Header: 'Email',
+        accessor: 'email'
+    }, {
+        Header: 'Phone Number',
+        accessor: 'phoneNumber'
+    }, {
+        Header: 'Access',
+        accessor: 'access',
+        width: 125,
+    }, 
+    {
+        Header: 'Actions',
+        Cell: (row) => (
+            <div>
+                <Button intent={Intent.PRIMARY}
+                    icon="edit"
+                    onClick={() => this.props.editEmployee(row.index)}
+                />
+                <Button intent={Intent.DANGER}
+                    icon="trash"
+                    onClick={() => this.props.delete(row.index)}
+                />
+            </div>
+        ),
+        width: 200
+    }
+    ]
+
     tableStyle = {
         'border': 'none',
     }
@@ -12,9 +52,9 @@ class EmployeesTable extends React.Component {
     getTHeadStyle = () => {
         return {
             style: {
-                'box-shadow': 'none',
+                'boxShadow': 'none',
                 'border': 'none',
-                'font-weight' : 'bold'
+                'fontWeight' : 'bold'
             }
         }
     }
@@ -22,8 +62,8 @@ class EmployeesTable extends React.Component {
     getPaginationStyle = () => {
         return {
             style: {
-                'background-color': 'white',
-                'box-shadow': 'none'
+                'backgroundColor': 'white',
+                'boxShadow': 'none'
             }
         }
     }
@@ -31,7 +71,7 @@ class EmployeesTable extends React.Component {
     getTdStyle = () => {
         return {
             style: {
-                'text-align': 'center'
+                'textAlign': 'center'
             }
         }
     }
@@ -41,7 +81,7 @@ class EmployeesTable extends React.Component {
             <div>
                 <ReactTable
                     data={this.props.data}
-                    columns={this.props.columns}
+                    columns={this.columns}
                     className="-highlight"
                     defaultPageSize={15}
                     showPageSizeOptions={false}

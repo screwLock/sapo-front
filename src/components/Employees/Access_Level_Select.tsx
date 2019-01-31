@@ -6,11 +6,13 @@ import { accessLevelSelectProps, IAccessLevel, ACCESS_LEVELS } from "./types/acc
 const Levels = Select.ofType<IAccessLevel>();
 
 
-class AccessLevelSelect extends React.Component {
-
-    public state = {
-        level: ACCESS_LEVELS[0] as IAccessLevel,
-    };
+class AccessLevelSelect extends React.Component<any, any> {
+    constructor(props){
+        super(props)
+        this.state = {
+            level: ACCESS_LEVELS[0] as IAccessLevel,
+        }
+    }
 
     public render() {
         return (
@@ -29,7 +31,11 @@ class AccessLevelSelect extends React.Component {
         );
     }
 
-    private handleValueChange = (level: IAccessLevel) => this.setState({ level });
+    private handleValueChange = (level: IAccessLevel) => {
+        this.setState({ level }, () => {
+            this.props.onSelect(level.accessLevel)
+        });
+    }
 }
 
 export default AccessLevelSelect;

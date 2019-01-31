@@ -7,7 +7,7 @@ import { IDonatable } from './Donatables';
 export interface ICategory {
     name: string;
     donatables: IDonatable[];
-    comments?: string;
+    minAmount?: number;
 }
 
 const CATEGORY_NAMES: string[] = [
@@ -17,9 +17,9 @@ const CATEGORY_NAMES: string[] = [
     "Lawn Equipment", "Appliances", "Office", "Tv and Home Theatre", "Computers and Tablets",
     "Commercial Office", "Fitness Equipment", "Commercial Appliances", "Restaurant Appliances and Equipment"
 ]
-export const PREPACKAGED_CATEGORIES: ICategory[] = CATEGORY_NAMES.map( name => ({
+export const PREPACKAGED_CATEGORIES: ICategory[] = CATEGORY_NAMES.map( (name) => ({
     name,
-    donatables: []
+    donatables: [],
 })).sort(dynamicSort('name'));
 
 export const renderCategory: ItemRenderer<ICategory> = (category, { handleClick, modifiers, query }) => {
@@ -31,6 +31,7 @@ export const renderCategory: ItemRenderer<ICategory> = (category, { handleClick,
             active={modifiers.active}
             onClick={handleClick}
             text={highlightText(category.name, query)}
+            key={category.name}
         />
     );
 };

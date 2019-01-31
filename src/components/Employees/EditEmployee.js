@@ -6,7 +6,7 @@ import { AppToaster } from '../Toaster'
 import AccessLevelSelect from "./Access_Level_Select"
 
 
-class NewEmployee extends React.Component {
+class EditEmployee extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -138,4 +138,4 @@ const DialogContainer = styled.div`
     margin: 20px;
 `
 
-export default NewEmployee;
+export default EditEmployee;
