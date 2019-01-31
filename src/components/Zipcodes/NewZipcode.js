@@ -40,7 +40,7 @@ class NewZipcode extends React.Component {
             || weekday.first === true
             || weekday.second === true
             || weekday.third === true
-            || weekday.forth === true
+            || weekday.fourth === true
             || weekday.fifth === true
         }).length
     }
@@ -64,6 +64,9 @@ class NewZipcode extends React.Component {
     handleSubmit = () => {
         if (!postalCodeValidator(this.state.newZipcode)) {
             this.showToast(`Enter a valid postal code`);
+        }
+        else if(this.props.zipcodes.some(zipcode => zipcode.zipcode === this.state.newZipcode)){
+            this.showToast(`Zipcode is already present`)
         }
         else if (this.countCheckedDays() === 0) {
             this.showToast(`Please select at least one weekday`);

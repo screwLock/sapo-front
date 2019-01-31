@@ -28,6 +28,7 @@ class SignUp extends React.Component {
         phone: '',
         password: '',
         confirmPassword: '',
+        access: 'admin'
       };
     }
 
@@ -52,11 +53,14 @@ class SignUp extends React.Component {
         const response = await Auth.signUp({
           username: this.state.email, 
           password: this.state.password, 
-          /* attributes: {
-            email: this.state.email, 
-            phone_number: this.state.phone
+           attributes: {
+            'custom:first_name': this.state.firstName,
+            'custom:last_name': this.state.lastName, 
+            'custom:phone': this.state.phone,
+            'custom:organization': this.state.organization,
+            'custom:access': this.state.access,
           }
-        */});
+        });
         console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
         if (response.userConfirmed === false) {
           this.setState({ authData: response, modalShowing: true, loading: false, successShowing: true });

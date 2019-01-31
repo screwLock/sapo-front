@@ -17,13 +17,31 @@ class EditZipcode extends React.Component {
         }
     }
 
+    isAllChecked = (index) => {
+        if(this.state.weekdays[index].all === true){
+            produce(this.state, draft => {
+                draft.weekdays[index].disabledCheckbox = true;
+            })
+        }
+        else if(this.state.weekdays[index].all === false){
+            produce(this.state, draft => {
+                draft.weekdays[index].disabledCheckbox = false;
+            })
+        }
+    }
+
     componentDidMount = () => {
         this.setState({weekdays: weekdays.slice()})
     }
 
     countCheckedDays= () => {
         return this.state.weekdays.filter(weekday => {
-            return weekday.checked === true
+            return weekday.all === true
+            || weekday.first === true
+            || weekday.second === true
+            || weekday.third === true
+            || weekday.fourth === true
+            || weekday.fifth === true
         }).length
     }
 
@@ -34,8 +52,8 @@ class EditZipcode extends React.Component {
     handleCheckedChange = (index) => (e) => {
         this.setState(
             produce(this.state, draft => {
-                draft.weekdays[index].checked = !draft.weekdays[index].checked;
-            }));
+                draft.weekdays[index][e.target.name] = !draft.weekdays[index][e.target.name]
+            }), () => this.isAllChecked(index))
     }
 
     handleClose = () => {
@@ -71,11 +89,12 @@ class EditZipcode extends React.Component {
             <Dialog isOpen={this.props.isOpen}
                 title={title}
                 onClose={this.handleClose}
+                style={{width: '750px'}}
             >
                 <DialogContainer>
                     <ZipcodeInput
                         onBlur={this.handleBlur}
-                        value={this.state.newZipcode}
+                        value={this.state.zipcode}
                     />
                     <ZipcodeWeekdays
                         onChange={this.handleCheckedChange}
@@ -94,7 +113,7 @@ class EditZipcode extends React.Component {
 }
 
 const DialogContainer = styled.div`
-    width: 400px;
+    width: 750px;
     margin: 20px;
     margin-top: 10px;
 `
