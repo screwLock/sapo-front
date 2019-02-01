@@ -27,8 +27,6 @@ class Employees extends React.Component {
         draft.employees.push(employee)
       }), async () => await this.saveEmployees()
     )
-    //save to database
-    this.showToast(`Employee Saved`);
   }
 
   saveEmployees = () => {
@@ -37,16 +35,6 @@ class Employees extends React.Component {
         employees: this.state.employees
       }
     });
-  }
-
-  editEmployee = (edit) => {
-    let employees = [...this.state.employees]
-    let index = this.state.editIndex
-    //update in database
-    employees[index] = edit;
-    this.setState({
-      employees: employees
-    })
   }
 
   componentDidMount = async () => {
@@ -70,7 +58,7 @@ class Employees extends React.Component {
     return API.get("sapo", '/users');
   }
 
-  getEditZipcode = (index) => {
+  getEditEmployee = (index) => {
     if (this.state.employees[index]) {
       this.setState({ editEmployee: this.state.employees[index] })
     }
@@ -119,14 +107,14 @@ class Employees extends React.Component {
           isEmployeeOpen={this.state.isEmployeeOpen}
           handleEmployeeOpen={this.handleEmployeeOpen}
         />
-        <EditEmployee editEmployee={this.editEmployee}
+        <EditEmployee addEmployee={this.addEmployee}
           employees={this.state.employees}
           isOpen={this.state.isEditEmployeeOpen}
           handleClose={this.handleEditEmployeeOpen}
           index={this.state.editIndex}
           employee={this.state.editEmployee}
         />
-        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} />
+        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} editEmployee={this.handleEditEmployeeOpen}/>
       </Container>
     );
   }
