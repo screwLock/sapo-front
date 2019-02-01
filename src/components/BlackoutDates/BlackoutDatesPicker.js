@@ -51,6 +51,7 @@ class BlackoutDatesPicker extends React.Component {
       this.state.selectedDays.forEach((day) => {
         this.props.addDate({date: day, reason: this.state.reason})
       })
+      this.props.save();
       this.handleClose();
     }
   }

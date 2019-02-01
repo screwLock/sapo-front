@@ -2,7 +2,8 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { AppToaster } from '../Toaster'
-import { produce } from 'immer';
+import { produce } from 'immer'
+import { API } from "aws-amplify"
 import BlackoutDatesPicker from './BlackoutDatesPicker'
 import BlackoutDatesTable from './BlackoutDatesTable'
 
@@ -12,7 +13,28 @@ class BlackoutDates extends React.Component {
     this.state = {
       dates: [],
       isDialogOpen: false,
+      userConfig: {}
     }
+  }
+
+  componentDidMount = async () => {
+    // if (!this.props.authState) {
+    //    return;
+    //}
+
+    try {
+      const userConfig = await this.getUserConfig();
+      this.setState({ userConfig });
+      console.log(userConfig)
+    } catch (e) {
+      alert(e);
+    }
+
+    // this.setState({ isLoading: false });
+  }
+
+  getUserConfig = () => {
+    return API.get("sapo", '/users');
   }
 
   addDate = (date) => {
@@ -21,7 +43,14 @@ class BlackoutDates extends React.Component {
         draft.dates.push(date)
       })
     )
-    //save to database
+  }
+
+  saveDates = () => {
+    API.post("sapo", "/users", {
+      body: {
+        blackoutDates: this.state.dates
+      }
+    });
   }
 
   handleClick = () => {
@@ -29,7 +58,7 @@ class BlackoutDates extends React.Component {
   }
 
   handleClose = () => {
-    this.setState({ isDialogOpen: false})
+    this.setState({ isDialogOpen: false })
   }
 
   handleDeleteDate = (i) => {
@@ -50,6 +79,7 @@ class BlackoutDates extends React.Component {
           onClick={this.handleClick}
         />
         <BlackoutDatesPicker addDate={this.addDate}
+          save={this.saveDates}
           dates={this.state.dates}
           isOpen={this.state.isDialogOpen}
           handleClose={this.handleClose}

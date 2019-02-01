@@ -11,12 +11,24 @@ class Main extends Component {
     render(){
       return(
         <Switch>
-          <Route exact path='/' component={Overview}></Route>
-          <Route path='/blackoutDates' component={BlackoutDates}></Route>
-          <Route path='/zipcodes' component={Zipcodes}></Route>
-          <Route path='/employees' component={Employees}></Route>
-          <Route path='/donorPage' component={DonorPage}></Route>
-          <Route path='/emails' component={Emails}></Route>
+          <Route exact path='/'
+                 render = {() => <Overview {...this.props} />}
+          />
+          <Route exact path='/blackoutDates'
+                 render = {() => <BlackoutDates {...this.props} />}
+          />
+          <Route exact path='/zipcodes'
+                 render = {() => <Zipcodes {...this.props} />}
+          />
+          <Route exact path='/employees'
+                 render = {() => <Employees {...this.props} />}
+          />
+          <Route exact path='/donorPage'
+                 render = {() => <DonorPage {...this.props} />}
+          />
+          <Route exact path='/emails'
+                 render = {() => <Emails {...this.props} />}
+          />
         </Switch>
       );
     }
