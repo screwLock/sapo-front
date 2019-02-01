@@ -11,7 +11,7 @@ class BlackoutDatesTable extends React.Component {
         accessor: 'date',
         Cell: (row) => (
             <div>
-                {`${row.value.toLocaleDateString()}`}
+                {`${new Date(row.value).toLocaleDateString()}`}
             </div>
         )
     }, {

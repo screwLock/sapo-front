@@ -18,14 +18,17 @@ class BlackoutDates extends React.Component {
   }
 
   componentDidMount = async () => {
-    // if (!this.props.authState) {
-    //    return;
-    //}
-
+    if (!this.props.authState) {
+      return;
+    }
     try {
       const userConfig = await this.getUserConfig();
-      this.setState({ userConfig });
-      console.log(userConfig)
+      if (userConfig.blackoutDates !== null) {
+        this.setState({ userConfig, dates: userConfig.blackoutDates });
+      }
+      else {
+        this.setState({ userConfig })
+      }
     } catch (e) {
       alert(e);
     }
@@ -37,12 +40,22 @@ class BlackoutDates extends React.Component {
     return API.get("sapo", '/users');
   }
 
-  addDate = (date) => {
-    this.setState(
-      produce(draft => {
-        draft.dates.push(date)
-      })
-    )
+  addDates = (newDates, newReason) => {
+    const datesWithReason = newDates.map((dateWithoutReason) => { return { date: dateWithoutReason.toISOString(), reason: newReason } })
+    if (this.state.dates) {
+      this.setState(
+        produce(draft => {
+          draft.dates = [...draft.dates, ...datesWithReason]
+        }), async () => await this.saveDates()
+      )
+    }
+    else {
+      this.setState(
+        produce(draft => {
+          draft.dates = [...datesWithReason]
+        }), async () => await this.saveDates()
+      )
+    }
   }
 
   saveDates = () => {
@@ -63,11 +76,11 @@ class BlackoutDates extends React.Component {
 
   handleDeleteDate = (i) => {
     let dates = [...this.state.dates]
-    //delete from database
     dates.splice(i, 1)
+    //save new dates array with removed dates in DB
     this.setState({
       dates: dates
-    })
+    }, async () => await this.saveDates())
   }
 
   render() {
@@ -78,9 +91,8 @@ class BlackoutDates extends React.Component {
           text='Add New Blackout Dates'
           onClick={this.handleClick}
         />
-        <BlackoutDatesPicker addDate={this.addDate}
-          save={this.saveDates}
-          dates={this.state.dates}
+        <BlackoutDatesPicker addDates={this.addDates}
+          dates={this.state.dates.map((date) => { return date.date })}
           isOpen={this.state.isDialogOpen}
           handleClose={this.handleClose}
         />
