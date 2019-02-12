@@ -186,7 +186,7 @@ class NewCategory extends React.Component<any, any> {
             }
             this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
             this.props.canSubmit(true);
-            this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
+            this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
             return true;
         }
         else {

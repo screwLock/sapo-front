@@ -15,13 +15,22 @@ class NewDialog extends React.Component {
     }
 
     createSubmittable = ( value ) => {
-        //this.props.addCategory(this.state.newCategory);
         this.setState({ submittable: value })
     }
 
     handleSubmit = () => {
-        //console.log(this.state.submittable)
+        let listingType = '';
+        if(this.props.selection === "Add A New Category"){
+            listingType = 'categories'
+        }
+        else if (this.props.selection === "Add A New Item Restriction"){
+            listingType = 'restrictions'
+        }
+        else if (this.props.selection === "Add A New Service Detail"){
+            listingType = 'serviceDetails'
+        }
         //database stuff
+        this.props.addListing(this.state.submittable, listingType);
         this.setState({ submittable: {} })
         this.handleClose();
     }
