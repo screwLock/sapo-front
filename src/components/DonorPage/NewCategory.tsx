@@ -199,10 +199,14 @@ class NewCategory extends React.Component<any, any> {
         donatables.splice(index, 1)
         if(this.state.categoryDonatables.length > 1) {
             this.setState({categoryDonatables: donatables})
+            // this prevents the deleted item from showing up in the rendered list of categories
+            this.props.createSubmittable({ category: this.state.categoryName, donatables}, 'categories');
         }
         else {
             this.props.canSubmit(false);
             this.setState({categoryDonatables: donatables});
+            // this prevents the deleted item from showing up in the rendered list of categories
+            this.props.createSubmittable({ category: this.state.categoryName, donatables}, 'categories');
         }
     }
 

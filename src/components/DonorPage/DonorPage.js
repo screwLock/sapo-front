@@ -24,11 +24,33 @@ class DonorPage extends React.Component {
     }
 
     addListing = (listing, listingType) => {
-        this.setState(
-            produce(draft => {
-                draft[listingType].push(listing)
-            })
-        )
+        //for categories, if the categories type already exists, merge donatables arrays
+        if (listingType === 'categories') {
+            if (this.state.categories.some(category => category.category === listing.category)) {
+                let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.category)
+                this.setState(
+                    produce(draft => {
+                        draft[listingType][categoryIndex].donatables.concat(...listing.donatables)
+                    })
+                )
+            }
+            //else if the category type is new, add the listing as is
+            else {
+                this.setState(
+                    produce(draft => {
+                        draft[listingType].push(listing)
+                    })
+                )
+            }
+        }
+        //no checks needed for other listings types
+        else {
+            this.setState(
+                produce(draft => {
+                    draft[listingType].push(listing)
+                })
+            )
+        }
     };
 
     handleClick = (event) => {
@@ -45,18 +67,27 @@ class DonorPage extends React.Component {
     handleDelete = (index, listingType) => () => {
         const newListings = [...this.state[listingType]];
         newListings.splice(index, 1)
-        this.setState({[listingType]: newListings})
+        this.setState({ [listingType]: newListings })
     }
 
     renderListings = () => {
-        const liStyle = { width: '200px' }
+        const liStyle = { width: '500px' }
         const ulStyle = { listStyleType: 'none', padding: '0px' }
+        const donatableStyle = { marginLeft: '20px'}
         return (
             <div>
                 <H5>Categories</H5>
                 <ul style={ulStyle}>
                     {this.state.categories.map((category, index) => {
-                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'categories')} />{category.category}</li>)
+                        return (<li style={liStyle} key={index}>
+                            <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'categories')} />
+                            {category.category}
+                            <ul style={{listStyleType: 'disc'}}>
+                                {category.donatables.map((donatable, index) => {
+                                    return(<li style={donatableStyle} key={index}>{donatable.name}</li>)
+                                })}
+                            </ul>
+                        </li>)
                     })}
                 </ul>
                 <H5>Restrictions</H5>
