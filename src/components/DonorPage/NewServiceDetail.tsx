@@ -79,6 +79,7 @@ class NewServiceDetail extends React.Component<any, any> {
     protected handleDeleteServiceDetail = (index:number) => () => {
         const newServiceDetails = [...this.state.serviceDetails];
         newServiceDetails.splice(index, 1)
+        // need to ensure delete is reflected in service detail listings 
         this.props.createSubmittable(newServiceDetails)
         if(this.state.serviceDetails.length > 1) {
             this.setState({serviceDetails: newServiceDetails})

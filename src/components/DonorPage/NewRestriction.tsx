@@ -79,6 +79,7 @@ class NewRestriction extends React.Component<any, any> {
     protected handleDeleteRestriction = (index:number) => () => {
         const newRestrictions = [...this.state.restrictions];
         newRestrictions.splice(index, 1)
+        // need to ensure delete is reflected in restriction listings 
         this.props.createSubmittable(newRestrictions)
         if(this.state.restrictions.length > 1) {
             this.setState({restrictions: newRestrictions})
