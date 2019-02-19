@@ -60,14 +60,15 @@ class NewServiceDetail extends React.Component<any, any> {
     }
 
     protected addCustomServiceDetail = () => {
-        if (!(this.state.serviceDetails.filter((d: any) => (d.name === this.state.serviceDetail)).length > 0)
+        if (!(this.state.serviceDetails.filter( (sd: any) => (sd.name === this.state.serviceDetail) ).length > 0)
             && !(this.state.serviceDetail === '')) {
             const customServiceDetail = {
                 name: this.state.serviceDetail,
             }
-            this.setState(produce(draft => { draft.serviceDetails.push(customServiceDetail) }))
+            this.setState(produce(draft => { draft.serviceDetails.push(customServiceDetail) }), () => {
+                this.props.createSubmittable(this.state.serviceDetails)
+            })
             this.props.canSubmit(true);
-            this.props.createSubmittable(this.state.serviceDetails);
             return true;
         }
         else {
@@ -78,6 +79,7 @@ class NewServiceDetail extends React.Component<any, any> {
     protected handleDeleteServiceDetail = (index:number) => () => {
         const newServiceDetails = [...this.state.serviceDetails];
         newServiceDetails.splice(index, 1)
+        this.props.createSubmittable(newServiceDetails)
         if(this.state.serviceDetails.length > 1) {
             this.setState({serviceDetails: newServiceDetails})
         }
@@ -88,7 +90,7 @@ class NewServiceDetail extends React.Component<any, any> {
     }
 
     protected handleServiceDetailBlur = (e) => {
-        this.setState({ restriction: e.target.value });
+        this.setState({ serviceDetail: e.target.value });
     }
 
     protected handleServiceDetailValueChange = (serviceDetail) => {
