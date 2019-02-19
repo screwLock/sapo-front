@@ -157,6 +157,10 @@ class NewCategory extends React.Component<any, any> {
                 draft.categoryName = category.name
         })
         )
+        // if category name is changed after donatables added, we need to change this in the submittable
+        if(this.state.categoryDonatables.length > 0){
+            this.props.createSubmittable({ category: category.name, donatables: this.state.categoryDonatables});
+        }
     }
 
     protected handleDonatableValueChange = (donatable: Donatables.IDonatable) => {
@@ -212,6 +216,10 @@ class NewCategory extends React.Component<any, any> {
 
     protected handleCategoryBlur = (e: any) => {
         this.setState({ categoryName: e.target.value, showDonatables: true });
+        // if category name is changed after donatables added, we need to change this in the submittable
+        if(this.state.categoryDonatables.length > 0){
+            this.props.createSubmittable({ category: e.target.value, donatables: this.state.categoryDonatables});
+        }
     }
 
     protected handleDonatableBlur = (e: any) => {
