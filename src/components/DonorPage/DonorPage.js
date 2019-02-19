@@ -30,7 +30,7 @@ class DonorPage extends React.Component {
                 let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.category)
                 this.setState(
                     produce(draft => {
-                        draft[listingType][categoryIndex].donatables.concat(...listing.donatables)
+                        draft[listingType][categoryIndex].donatables=[...listing.donatables, ...draft[listingType][categoryIndex].donatables]
                     })
                 )
             }
