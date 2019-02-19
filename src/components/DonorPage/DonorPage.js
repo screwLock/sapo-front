@@ -47,7 +47,7 @@ class DonorPage extends React.Component {
         else {
             this.setState(
                 produce(draft => {
-                    draft[listingType].push(listing)
+                    draft[listingType]=[...draft[listingType], ...listing]
                 })
             )
         }
@@ -93,13 +93,13 @@ class DonorPage extends React.Component {
                 <H5>Restrictions</H5>
                 <ul style={ulStyle}>
                     {this.state.restrictions.map((restriction, index) => {
-                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'restrictions')} />{restriction.restriction}</li>)
+                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'restrictions')} />{restriction.name}</li>)
                     })}
                 </ul>
                 <H5>Service Details</H5>
                 <ul style={ulStyle}>
                     {this.state.serviceDetails.map((serviceDetail, index) => {
-                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.serviceDetail}</li>)
+                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}</li>)
                     })}
                 </ul>
             </div>
@@ -107,6 +107,8 @@ class DonorPage extends React.Component {
     }
 
     render() {
+        console.log(this.state.restrictions)
+        console.log(this.state.serviceDetails)
         const DonorSelectMenu = (
             <Menu>
                 <MenuItem text="Add A New Category" onClick={this.handleClick} />
