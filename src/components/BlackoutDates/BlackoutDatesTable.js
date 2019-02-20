@@ -11,7 +11,7 @@ class BlackoutDatesTable extends React.Component {
         accessor: 'date',
         Cell: (row) => (
             <div>
-                {`${row.value.toLocaleDateString()}`}
+                {`${new Date(row.value).toLocaleDateString()}`}
             </div>
         )
     }, {
@@ -23,10 +23,6 @@ class BlackoutDatesTable extends React.Component {
         Header: 'Actions',
         Cell: (row) => (
             <div>
-                <Button intent={Intent.PRIMARY}
-                    icon="edit"
-                    onClick={() => this.props.editBlackoutDate(row.index)}
-                />
                 <Button intent={Intent.DANGER}
                     icon="trash"
                     onClick={() => this.props.delete(row.index)}

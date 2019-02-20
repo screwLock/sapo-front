@@ -12,43 +12,55 @@ class EditZipcode extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            zipcode: '',
-            weekdays: [],
+            zipcode: this.getInitialState.zipcode,
+            weekdays: this.getInitialState.weekdays,
         }
     }
 
+    getInitialState = () => {
+        if (this.props.zipcode) {
+            return {
+                zipcode: this.props.zipcode.zipcode,
+                weekdays: this.props.zipcode.weekdays,
+            }
+        }
+        else {
+            return {
+                zipcode: '',
+                weekdays: weekdays
+            }
+        }
+    }
+
+
     isAllChecked = (index) => {
-        if(this.state.weekdays[index].all === true){
+        if (this.state.weekdays[index].all === true) {
             produce(this.state, draft => {
                 draft.weekdays[index].disabledCheckbox = true;
             })
         }
-        else if(this.state.weekdays[index].all === false){
+        else if (this.state.weekdays[index].all === false) {
             produce(this.state, draft => {
                 draft.weekdays[index].disabledCheckbox = false;
             })
         }
     }
 
-    componentDidMount = () => {
-        this.setState({weekdays: weekdays.slice()})
-    }
-
-    countCheckedDays= () => {
+    countCheckedDays = () => {
         return this.state.weekdays.filter(weekday => {
             return weekday.all === true
-            || weekday.first === true
-            || weekday.second === true
-            || weekday.third === true
-            || weekday.fourth === true
-            || weekday.fifth === true
+                || weekday.first === true
+                || weekday.second === true
+                || weekday.third === true
+                || weekday.fourth === true
+                || weekday.fifth === true
         }).length
     }
 
     handleBlur = (e) => {
         this.setState({ zipcode: e.target.value });
     }
-    
+
     handleCheckedChange = (index) => (e) => {
         this.setState(
             produce(this.state, draft => {
@@ -57,7 +69,7 @@ class EditZipcode extends React.Component {
     }
 
     handleClose = () => {
-        this.setState({zipcode:'', weekdays: weekdays.slice()});
+        this.setState({ zipcode: '', weekdays: weekdays.slice() });
         this.props.handleClose();
     }
 
@@ -69,9 +81,9 @@ class EditZipcode extends React.Component {
             this.showToast(`Please select at least one weekday`);
         }
         else {
-            this.props.editZipcode({zipcode: this.state.zipcode, weekdays: this.state.weekdays});
+            this.props.editZipcode({ zipcode: this.state.zipcode, weekdays: this.state.weekdays });
             //reset the checked weekday values
-            this.setState({zipcode:'', weekdays: weekdays.slice()});
+            this.setState({ zipcode: '', weekdays: weekdays.slice() });
             this.props.handleClose();
             console.log(this.props.index)
             //database call
@@ -89,7 +101,7 @@ class EditZipcode extends React.Component {
             <Dialog isOpen={this.props.isOpen}
                 title={title}
                 onClose={this.handleClose}
-                style={{width: '750px'}}
+                style={{ width: '750px' }}
             >
                 <DialogContainer>
                     <ZipcodeInput

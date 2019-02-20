@@ -19,7 +19,7 @@ class EditEmployee extends React.Component {
         }
     }
 
-    addEmployee = () => {
+    handleSubmit = () => {
         if (!this.validateForms()) {
             return false;
         }
@@ -80,9 +80,9 @@ class EditEmployee extends React.Component {
 
     render() {
         return (
-            <Dialog isOpen={this.props.isEmployeeOpen}
+            <Dialog isOpen={this.props.isOpen}
                 title='Add a New Employee'
-                onClose={this.props.handleEmployeeOpen}
+                onClose={this.props.handleClose}
             >
                 <DialogContainer>
                     <FormGroup
@@ -124,8 +124,8 @@ class EditEmployee extends React.Component {
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.props.handleEmployeeOpen}>Cancel</Button>
-                        <Button onClick={this.addEmployee} intent={Intent.PRIMARY}>Submit</Button>
+                        <Button onClick={this.props.isOpen}>Cancel</Button>
+                        <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>
             </Dialog>

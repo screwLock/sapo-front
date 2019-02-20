@@ -1,17 +1,23 @@
 import * as React from 'react';
 import styled from 'styled-components'
 import NewEmployee from './NewEmployee';
+import EditEmployee from './EditEmployee'
 import { Button, H3, Intent } from '@blueprintjs/core';
-import { AppToaster} from '../Toaster'
+import { AppToaster } from '../Toaster'
 import { produce } from 'immer'
 import EmployeesTable from './EmployeesTables'
+import { API } from "aws-amplify"
 
 class Employees extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       employees: [],
-      isEmployeeOpen: false
+      isEmployeeOpen: false,
+      isEditEmployeeOpen: false,
+      editIndex: '',
+      editEmployee: '',
+      userConfig: {}
     }
   }
 
@@ -19,24 +25,70 @@ class Employees extends React.Component {
     this.setState(
       produce(draft => {
         draft.employees.push(employee)
-      })
-    ) 
-    //save to database
-    this.showToast(`Employee Saved`);
+      }), async () => await this.saveEmployees()
+    )
   }
 
-  
+  saveEmployees = () => {
+    API.post("sapo", "/users", {
+      body: {
+        employees: this.state.employees
+      }
+    });
+  }
+
+  componentDidMount = async () => {
+    if (!this.props.authState) {
+      return;
+    }
+    try {
+      const userConfig = await this.getUserConfig();
+      if (userConfig.employees !== null) {
+        this.setState({ userConfig, employees: userConfig.employees });
+      }
+      else {
+        this.setState({ userConfig })
+      }
+    } catch (e) {
+      alert(e);
+    }
+  }
+
+  getUserConfig = () => {
+    return API.get("sapo", '/users');
+  }
+
+  getEditEmployee = (index) => {
+    if (this.state.employees[index]) {
+      this.setState({ editEmployee: this.state.employees[index] })
+    }
+    else {
+      this.setState({ editEmployee: {} })
+    }
+  }
+
+
   handleDeleteEmployees = (i) => {
     let employees = [...this.state.employees]
     //delete from database
     employees.splice(i, 1)
-    this.setState({ 
+    this.setState({
       employees: employees
-    })
+    }, async () => this.saveEmployees())
   }
 
   handleEmployeeOpen = () => {
-    this.setState({isEmployeeOpen: !this.state.isEmployeeOpen})
+    this.setState({ isEmployeeOpen: !this.state.isEmployeeOpen })
+  }
+
+  handleEditEmployeeOpen = (index) => {
+    this.handleEditIndexChange(index);
+    this.getEditEmployee(index)
+    this.setState({ isEditEmployeeOpen: !this.state.isEditEmployeeOpen })
+  }
+
+  handleEditIndexChange = (index) => {
+    this.setState({ editIndex: index })
   }
 
   showToast = (message) => {
@@ -50,12 +102,19 @@ class Employees extends React.Component {
         <ButtonRow>
           <Button intent={Intent.PRIMARY} onClick={this.handleEmployeeOpen}>Add a New Employee</Button>
         </ButtonRow>
-        <NewEmployee addEmployee={this.addEmployee} 
-                     employees={this.state.employees} 
-                     isEmployeeOpen={this.state.isEmployeeOpen}
-                     handleEmployeeOpen={this.handleEmployeeOpen}
+        <NewEmployee addEmployee={this.addEmployee}
+          employees={this.state.employees}
+          isEmployeeOpen={this.state.isEmployeeOpen}
+          handleEmployeeOpen={this.handleEmployeeOpen}
         />
-        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees}/>
+        <EditEmployee addEmployee={this.addEmployee}
+          employees={this.state.employees}
+          isOpen={this.state.isEditEmployeeOpen}
+          handleClose={this.handleEditEmployeeOpen}
+          index={this.state.editIndex}
+          employee={this.state.editEmployee}
+        />
+        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} editEmployee={this.handleEditEmployeeOpen}/>
       </Container>
     );
   }

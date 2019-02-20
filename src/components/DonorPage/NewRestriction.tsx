@@ -65,9 +65,10 @@ class NewRestriction extends React.Component<any, any> {
             const customRestriction = {
                 name: this.state.restriction,
             }
-            this.setState(produce(draft => { draft.restrictions.push(customRestriction) }))
+            this.setState(produce(draft => { draft.restrictions.push(customRestriction) }), () => {
+                this.props.createSubmittable(this.state.restrictions)
+            })
             this.props.canSubmit(true);
-            this.props.createSubmittable(this.state.restrictions);
             return true;
         }
         else {
@@ -78,6 +79,8 @@ class NewRestriction extends React.Component<any, any> {
     protected handleDeleteRestriction = (index:number) => () => {
         const newRestrictions = [...this.state.restrictions];
         newRestrictions.splice(index, 1)
+        // need to ensure delete is reflected in restriction listings 
+        this.props.createSubmittable(newRestrictions)
         if(this.state.restrictions.length > 1) {
             this.setState({restrictions: newRestrictions})
         }

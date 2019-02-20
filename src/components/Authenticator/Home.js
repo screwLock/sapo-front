@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
 import Main from '../Main'
+import { API, Auth } from "aws-amplify";
 
 class Home extends React.Component {
     static defaultProps = {
@@ -22,8 +23,29 @@ class Home extends React.Component {
             error: null,
             username: this.props.authData.username || '',
             password: this.props.authData.password || '',
-            user: null
+            user: null,
+            userConfig: {},
         };
+    }
+
+    componentDidMount = async () => {
+        if (!this.props.authState) {
+          return;
+        }
+      
+        try {
+          const userConfig = await this.getUserConfig();
+          this.setState({ userConfig });
+          console.log(userConfig)
+        } catch (e) {
+          alert(e);
+        }
+      
+        // this.setState({ isLoading: false });
+      }
+      
+    getUserConfig = () => {
+        return API.get("sapo", '/users');
     }
 
     render() {

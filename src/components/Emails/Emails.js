@@ -2,6 +2,9 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, FormGroup, InputGroup, H3, Intent, Menu, MenuItem, Popover, Position, TextArea } from '@blueprintjs/core'
 import produce from 'immer'
+import * as EmailValidator from 'email-validator'
+import { AppToaster } from '../Toaster'
+import { API } from "aws-amplify"
 
 
 class Emails extends React.Component {
@@ -13,31 +16,162 @@ class Emails extends React.Component {
             subjectLine: '',
             ccAddress: '',
             ccAddresses: [],
+            bccAddress: '',
+            bccAddresses: [],
+            userConfig: {}
         }
     }
 
-    componentDidMount() {
-        this.setState({
-            email: []
-        })
+    componentDidMount = async () => {
+        if (!this.props.authState) {
+            return;
+        }
+        try {
+            const userConfig = await this.getUserConfig();
+            if (userConfig.emails !== null) {
+                this.setState({ userConfig, 
+                    emails: userConfig.emails,
+                    fromAddress: userConfig.emails.fromAddress,
+                    ccAddresses: userConfig.emails.ccAddresses,
+                    bccAddresses: userConfig.emails.bccAddresses,
+                    subjectLine: userConfig.emails.subjectLine,
+                    messageBody: userConfig.emails.messageBody
+                })
+            }
+            else {
+                this.setState({ userConfig })
+            }
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+    getUserConfig = () => {
+        return API.get("sapo", '/users');
+    }
+
+    saveEmail = () => {
+        return API.post("sapo", "/users", {
+            body: {
+                emails: {
+                    fromAddress: this.state.fromAddress,
+                    ccAddresses: this.state.ccAddresses,
+                    bccAddresses: this.state.bccAddresses,
+                    subjectLine: this.state.subjectLine,
+                    messageBody: this.state.messageBody,
+                }
+            }
+        });
     }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    saveSettings = () => {
-        console.log('saved')
+    saveSettings = async () => {
+        if (this.state.fromAddress.length === 0) {
+            this.showToast('FROM email address required')
+        }
+        else if (this.state.subjectLine.length === 0) {
+            this.showToast('Subject line required')
+        }
+        else if (!EmailValidator.validate(this.state.fromAddress)) {
+            this.showToast('FROM address is not a valid email address')
+        }
+        else {
+            try {
+                await this.saveEmail().then(this.showToast('Settings successfully saved.'))
+            }
+            catch (e) {
+                this.showToast(e)
+            }
+        }
     }
 
-    handleAddClick = () => {
-        if (!(this.state.ccAddresses.filter((cc) => (cc === this.state.ccAddress)).length > 0) && 
+    handleCCAddClick = () => {
+        if (!EmailValidator.validate(this.state.ccAddress)) {
+            this.showToast('CC email is not a valid email address')
+        }
+        else if(!this.state.ccAddresses){
+            this.setState({ccAddresses: [this.state.ccAddress]})
+        }
+        else if (!(this.state.ccAddresses.filter((cc) => (cc === this.state.ccAddress)).length > 0) &&
             !(this.state.ccAddress === '')) {
             this.setState(produce(draft => { draft.ccAddresses.push(draft.ccAddress) }))
         }
     }
 
+    handleBCCAddClick = () => {
+        if (!EmailValidator.validate(this.state.bccAddress)) {
+            this.showToast('BCC email is not a valid email address')
+        }
+        else if(!this.state.ccAddresses){
+            this.setState({bccAddresses: [this.state.bccAddress]})
+        }
+        else if (!(this.state.bccAddresses.filter((bcc) => (bcc === this.state.bccAddress)).length > 0) &&
+            !(this.state.bccAddress === '')) {
+            this.setState(produce(draft => { draft.bccAddresses.push(draft.bccAddress) }))
+        }
+    }
+
+    handleCCDelete = (index) => {
+        this.setState({
+            ccAddresses: this.state.ccAddresses.filter(function (e, i) {
+                return i !== index;
+            })
+        })
+    }
+
+    handleBCCDelete = (index) => {
+        this.setState({
+            bccAddresses: this.state.bccAddresses.filter(function (e, i) {
+                return i !== index;
+            })
+        })
+    }
+
+    showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
+
+    renderCCListItem = (data) => {
+        if (data) {
+            return (
+                <div>
+                    {data.map((d, index) => {
+                        return (<li key={index}>{d}
+                            <Button intent={Intent.NONE}
+                                icon="cross"
+                                minimal={true}
+                                onClick={() => this.handleCCDelete(index)}
+                            /></li>)
+                    })}
+                </div>
+            )
+        }
+    }
+
+    renderBCCListItem = (data) => {
+        if (data) {
+            return (
+                <div>
+                    {data.map((d, index) => {
+                        return (<li key={index}>{d}
+                            <Button intent={Intent.NONE}
+                                icon="cross"
+                                minimal={true}
+                                onClick={() => this.handleBCCDelete(index)}
+                            /></li>)
+                    })}
+                </div>
+            )
+        }
+    }
+
     render() {
         const renderAddCC = (
-            <Button minimal={true} text='Add Address' onClick={this.handleAddClick}/>
+            <Button minimal={true} text='Add Address' onClick={this.handleCCAddClick} />
+        )
+        const renderAddBCC = (
+            <Button minimal={true} text='Add Address' onClick={this.handleBCCAddClick} />
         )
         return (
             <Container>
@@ -46,18 +180,24 @@ class Emails extends React.Component {
                     <FormGroup
                         label="FROM address"
                     >
-                        <InputGroup name="fromAddress" onChange={this.handleChange} />
+                        <InputGroup name="fromAddress" onChange={this.handleChange} value={this.state.fromAddress} />
                     </FormGroup>
                     <FormGroup
                         label="CC addresses"
                     >
-                        <InputGroup name="ccAddress" onChange={this.handleChange} rightElement={renderAddCC}/>
+                        <InputGroup name="ccAddress" onChange={this.handleChange} rightElement={renderAddCC} />
                     </FormGroup>
-                    <div>{ this.state.ccAddresses.map( cc => {return (<li>{cc}</li>)} ) }</div>
+                    {this.renderCCListItem(this.state.ccAddresses)}
+                    <FormGroup
+                        label="BCC addresses"
+                    >
+                        <InputGroup name="bccAddress" onChange={this.handleChange} rightElement={renderAddBCC} />
+                    </FormGroup>
+                    {this.renderBCCListItem(this.state.bccAddresses)}
                     <FormGroup
                         label="Subject Line"
                     >
-                        <InputGroup name="subjectLine" onChange={this.handleChange} />
+                        <InputGroup name="subjectLine" onChange={this.handleChange} value={this.state.subjectLine} />
                     </FormGroup>
                     <FormGroup
                         label='Message Body'
@@ -66,7 +206,7 @@ class Emails extends React.Component {
                             small={true}
                             intent={Intent.PRIMARY}
                             onChange={this.handleChange}
-                            value={this.state.emailBody}
+                            value={this.state.messageBody}
                             fill={true}
                             name='messageBody'
                         />

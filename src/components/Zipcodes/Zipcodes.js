@@ -7,6 +7,7 @@ import ZipcodesTable from './ZipcodesTable'
 import EditZipcode from './EditZipcode'
 import PreviewDates from './PreviewDates'
 import { AppToaster } from '../Toaster'
+import { API } from "aws-amplify"
 
 class Zipcodes extends React.Component {
     constructor(props) {
@@ -17,26 +18,66 @@ class Zipcodes extends React.Component {
             isEditZipcodeOpen: false,
             previewDisabledDates: [],
             isPreviewOpen: false,
+            editIndex: '',
+            editZipcode: { zipcode: '', weekdays: []},
+            userConfig: {}
         }
+    }
+
+    componentDidMount = async () => {
+        if (!this.props.authState) {
+          return;
+        }
+        try {
+          const userConfig = await this.getUserConfig();
+          if (userConfig.zipcodes !== null) {
+            this.setState({ userConfig, zipcodes: userConfig.zipcodes });
+          }
+          else {
+            this.setState({ userConfig })
+          }
+        } catch (e) {
+          alert(e);
+        }
+    }
+
+    getUserConfig = () => {
+        return API.get("sapo", '/users');
     }
 
     addZipcode = (zipcode) => {
         this.setState(
             produce(draft => {
                 draft.zipcodes.push(zipcode)
-            })
+            }), async () => await this.saveZipcodes()
         )
-        //save to database
     }
+
+    saveZipcodes = () => {
+        API.post("sapo", "/users", {
+          body: {
+            zipcodes: this.state.zipcodes
+          }
+        });
+      }
 
     editZipcode = (edit) => {
         let zipcodes = [...this.state.zipcodes]
         let index = this.state.editIndex
         //update in database
         zipcodes[index] = edit;
-        this.setState({ 
-          zipcodes: zipcodes
+        this.setState({
+            zipcodes: zipcodes
         })
+    }
+
+    getEditZipcode = (index) => {
+        if (this.state.zipcodes[index]) {
+            this.setState({ editZipcode: { weekdays: this.state.zipcodes[index].weekdays.slice(), zipcode: this.state.zipcodes[index].zipcode }})
+        }
+        else {
+            this.setState({ editZipcode: { weekdays: [], zipcode: '' } })
+        }
     }
 
     showToast = (message) => {
@@ -51,9 +92,9 @@ class Zipcodes extends React.Component {
         let zipcodes = [...this.state.zipcodes]
         //delete from database
         zipcodes.splice(i, 1)
-        this.setState({ 
-          zipcodes: zipcodes
-        })
+        this.setState({
+            zipcodes: zipcodes
+        }, async () => await this.saveZipcodes())
     }
 
     handleNewZipcodeOpen = () => {
@@ -62,11 +103,12 @@ class Zipcodes extends React.Component {
 
     handleEditZipcodeOpen = (index) => {
         this.handleEditIndexChange(index);
-        this.setState({isEditZipcodeOpen: !this.state.isEditZipcodeOpen});
+        this.getEditZipcode(index)
+        this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen });
     }
 
     handleEditIndexChange = (index) => {
-        this.setState({editIndex: index})
+        this.setState({ editIndex: index })
     }
 
     handlePreviewClose = () => {
@@ -91,20 +133,20 @@ class Zipcodes extends React.Component {
                     handleClose={this.handleNewZipcodeOpen}
                 />
                 <EditZipcode editZipcode={this.editZipcode}
-                        isOpen={this.state.isEditZipcodeOpen}
-                        handleClose={this.handleEditZipcodeOpen}
-                        index={this.state.editIndex}
-                        zipcodes={this.state.zipcodes}
-                        key={this.state.zipcodes}
+                    isOpen={this.state.isEditZipcodeOpen}
+                    handleClose={this.handleEditZipcodeOpen}
+                    index={this.state.editIndex}
+                    zipcode={this.state.editZipcode}
+                    key={this.state.zipcodes}
                 />
                 <ZipcodesTable data={this.state.zipcodes}
-                               editZipcode={this.handleEditZipcodeOpen} 
-                               delete={this.handleDeleteZipcode}
-                               isPreviewOpen={this.handlePreviewOpen}
+                    editZipcode={this.handleEditZipcodeOpen}
+                    delete={this.handleDeleteZipcode}
+                    isPreviewOpen={this.handlePreviewOpen}
                 />
                 <PreviewDates isOpen={this.state.isPreviewOpen}
-                              disabledDates={this.state.previewDisabledDates}
-                              handleClose={this.handlePreviewClose}
+                    disabledDates={this.state.previewDisabledDates}
+                    handleClose={this.handlePreviewClose}
                 />
             </Container>
         );

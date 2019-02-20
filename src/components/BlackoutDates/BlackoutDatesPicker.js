@@ -25,7 +25,7 @@ class BlackoutDatesPicker extends React.Component {
         DateUtils.isSameDay(selectedDay, day)
       );
       selectedDays.splice(selectedIndex, 1);
-    } else {
+    } else if(!this.props.dates.includes(day.toISOString())){
       selectedDays.push(day);
     }
     this.setState({ selectedDays });
@@ -41,17 +41,15 @@ class BlackoutDatesPicker extends React.Component {
   }
 
   handleSubmit = () => {
-    if (!(this.state.selectedDays.length > 0) ) {
+    if (!(this.state.selectedDays.length > 0)) {
       this.showToast('Select A Date')
     }
     else if (this.state.reason === '') {
       this.showToast('Enter A Reason')
     }
     else {
-      this.state.selectedDays.forEach((day) => {
-        this.props.addDate({date: day, reason: this.state.reason})
-      })
-      this.handleClose();
+      this.props.addDates(this.state.selectedDays, this.state.reason)
+      this.handleClose()
     }
   }
 
@@ -80,9 +78,9 @@ class BlackoutDatesPicker extends React.Component {
                 labelFor="text-input"
                 labelInfo="(required)"
               >
-                <InputGroup id="singleDateReason" 
-                            placeholder="Enter a Reason" 
-                            onBlur = {(e) => {this.setState({reason: e.target.value })}}
+                <InputGroup id="singleDateReason"
+                  placeholder="Enter a Reason"
+                  onBlur={(e) => { this.setState({ reason: e.target.value }) }}
                 />
               </FormGroup>
             </InputContainer>

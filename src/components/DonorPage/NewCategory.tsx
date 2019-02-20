@@ -157,6 +157,10 @@ class NewCategory extends React.Component<any, any> {
                 draft.categoryName = category.name
         })
         )
+        // if category name is changed after donatables added, we need to change this in the submittable
+        if(this.state.categoryDonatables.length > 0){
+            this.props.createSubmittable({ category: category.name, donatables: this.state.categoryDonatables});
+        }
     }
 
     protected handleDonatableValueChange = (donatable: Donatables.IDonatable) => {
@@ -186,7 +190,7 @@ class NewCategory extends React.Component<any, any> {
             }
             this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
             this.props.canSubmit(true);
-            this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
+            this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
             return true;
         }
         else {
@@ -199,15 +203,23 @@ class NewCategory extends React.Component<any, any> {
         donatables.splice(index, 1)
         if(this.state.categoryDonatables.length > 1) {
             this.setState({categoryDonatables: donatables})
+            // this prevents the deleted item from showing up in the rendered list of categories
+            this.props.createSubmittable({ category: this.state.categoryName, donatables}, 'categories');
         }
         else {
             this.props.canSubmit(false);
             this.setState({categoryDonatables: donatables});
+            // this prevents the deleted item from showing up in the rendered list of categories
+            this.props.createSubmittable({ category: this.state.categoryName, donatables}, 'categories');
         }
     }
 
     protected handleCategoryBlur = (e: any) => {
         this.setState({ categoryName: e.target.value, showDonatables: true });
+        // if category name is changed after donatables added, we need to change this in the submittable
+        if(this.state.categoryDonatables.length > 0){
+            this.props.createSubmittable({ category: e.target.value, donatables: this.state.categoryDonatables});
+        }
     }
 
     protected handleDonatableBlur = (e: any) => {
