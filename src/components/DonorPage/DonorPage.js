@@ -164,7 +164,6 @@ class DonorPage extends React.Component {
     }
 
     render() {
-        console.log(this.state.restrictions)
         const DonorSelectMenu = (
             <Menu>
                 <MenuItem text="Add A New Category" onClick={this.handleClick} />
