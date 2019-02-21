@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import produce from 'immer'
 import NewDialog from './NewDialog'
-
+import { AppToaster } from '../Toaster'
+import { API } from "aws-amplify"
 
 class DonorPage extends React.Component {
     constructor(props) {
@@ -13,14 +14,35 @@ class DonorPage extends React.Component {
             restrictions: [],
             serviceDetails: [],
             isCategoriesOpen: false,
-            selection: ''
+            selection: '',
+            userConfig: {}
         }
     }
 
-    componentDidMount() {
-        this.setState({
-            categories: []
-        })
+    componentDidMount = async () => {
+        if (!this.props.authState) {
+            return;
+        }
+        try {
+            const userConfig = await this.getUserConfig();
+            if (userConfig.categories !== null && userConfig.restrictions !== null && userConfig.serviceDetails !== null) {
+                this.setState({
+                    userConfig,
+                    categories: userConfig.categories,
+                    restrictions: userConfig.restrictions,
+                    serviceDetails: userConfig.serviceDetails
+                })
+            }
+            else {
+                this.setState({ userConfig })
+            }
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+    getUserConfig = () => {
+        return API.get("sapo", '/users');
     }
 
     addListing = (listing, listingType) => {
@@ -30,7 +52,7 @@ class DonorPage extends React.Component {
                 let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.category)
                 this.setState(
                     produce(draft => {
-                        draft[listingType][categoryIndex].donatables=[...listing.donatables, ...draft[listingType][categoryIndex].donatables]
+                        draft[listingType][categoryIndex].donatables = [...listing.donatables, ...draft[listingType][categoryIndex].donatables]
                     })
                 )
             }
@@ -47,7 +69,7 @@ class DonorPage extends React.Component {
         else {
             this.setState(
                 produce(draft => {
-                    draft[listingType]=[...draft[listingType], ...listing]
+                    draft[listingType] = [...draft[listingType], ...listing]
                 })
             )
         }
@@ -73,7 +95,7 @@ class DonorPage extends React.Component {
     renderListings = () => {
         const liStyle = { width: '500px' }
         const ulStyle = { listStyleType: 'none', padding: '0px' }
-        const donatableStyle = { marginLeft: '20px'}
+        const donatableStyle = { marginLeft: '20px' }
         return (
             <div>
                 <H5>Categories</H5>
@@ -82,9 +104,9 @@ class DonorPage extends React.Component {
                         return (<li style={liStyle} key={index}>
                             <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'categories')} />
                             {category.category}
-                            <ul style={{listStyleType: 'disc'}}>
+                            <ul style={{ listStyleType: 'disc' }}>
                                 {category.donatables.map((donatable, index) => {
-                                    return(<li style={donatableStyle} key={index}>{donatable.name}</li>)
+                                    return (<li style={donatableStyle} key={index}>{donatable.name}</li>)
                                 })}
                             </ul>
                         </li>)
@@ -106,9 +128,43 @@ class DonorPage extends React.Component {
         )
     }
 
+    saveDetails = () => {
+        return API.post("sapo", "/users", {
+            body: {
+                    categories: this.state.categories,
+                    restrictions: this.state.restrictions,
+                    serviceDetails: this.state.serviceDetails
+            }
+        });
+    }
+
+    saveSettings = async () => {
+        if (this.state.categories.length === 0) {
+            this.showToast('Add at least one donations category')
+        }
+        else if (this.state.restrictions.length === 0) {
+            this.showToast('Add at least one restricted item')
+        }
+        else if (this.state.serviceDetails.length === 0) {
+            this.showToast('Add at least one service detail')
+        }
+        else {
+            try {
+                await this.saveDetails()
+                this.showToast('Settings successfully saved.')
+            }
+            catch (e) {
+                this.showToast('There was an error saving.  Try again')
+            }
+        }
+    }
+
+    showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
+
     render() {
         console.log(this.state.restrictions)
-        console.log(this.state.serviceDetails)
         const DonorSelectMenu = (
             <Menu>
                 <MenuItem text="Add A New Category" onClick={this.handleClick} />
@@ -130,12 +186,16 @@ class DonorPage extends React.Component {
                     selection={this.state.selection}
                 />
                 {this.renderListings()}
+                <ButtonRow>
+                    <Button
+                        text='Save'
+                        onClick={this.saveSettings}
+                    />
+                </ButtonRow>
             </Container>
         );
     }
 }
-
-
 
 
 const Container = styled.div`

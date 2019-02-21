@@ -78,10 +78,11 @@ class Emails extends React.Component {
         }
         else {
             try {
-                await this.saveEmail().then(this.showToast('Settings successfully saved.'))
+                await this.saveEmail()
+                this.showToast('Settings successfully saved.')
             }
             catch (e) {
-                this.showToast(e)
+                this.showToast('There was an error saving.  Try again')
             }
         }
     }

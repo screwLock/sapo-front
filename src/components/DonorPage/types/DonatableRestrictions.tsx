@@ -14,8 +14,7 @@ export const PREPACKAGED_RESTRICTIONS_NAMES: string[] = [
 ];
 
 export const PREPACKAGED_RESTRICTIONS: IDonatableRestriction[] = PREPACKAGED_RESTRICTIONS_NAMES.map((name) => ({
-    name,
-    comments: ''
+    name
 })).sort(dynamicSort('name'));
 
 export const renderRestriction: ItemRenderer<IDonatableRestriction> = (restriction, { handleClick, modifiers, query }) => {
