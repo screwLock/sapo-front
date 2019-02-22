@@ -109,7 +109,7 @@ class OverviewPickups extends React.Component {
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         <Droppable droppableId="dropabble">
                             {(provided) => (
-                                <div innerRef={provided.innerRef} ref={provided.innerRef}>
+                                <div  ref={provided.innerRef}>
                                     <Grid columns={6}>
                                         {this.renderCards()}
                                         {provided.placeholder}
