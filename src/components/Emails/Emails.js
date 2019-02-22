@@ -204,7 +204,7 @@ class Emails extends React.Component {
                         label='Message Body'
                     >
                         <TextArea
-                            small={true}
+                            small='true'
                             intent={Intent.PRIMARY}
                             onChange={this.handleChange}
                             value={this.state.messageBody}
