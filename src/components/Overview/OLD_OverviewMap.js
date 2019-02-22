@@ -59,7 +59,6 @@ class OverviewMap extends React.Component {
       <div className='google-map' style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
           bootstrapURLKeys={{ key: 'AIzaSyDOs_VPiyP8PWQ70b7uNtPhKftBgwsFhw8' }}
-          defaultCenter={{ 'lat': user.lat, 'lng': user.lng }}
           defaultZoom={zoom}
           center={center}
           key={this.props.routeKey}
