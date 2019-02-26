@@ -21,7 +21,7 @@ class OverviewPickups extends React.Component {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
         return datePickups.map((pickup, index) => {
             return (
-                <Cell height={1} width={4} left={2} key={index}>
+                <Cell height={1} width={4} left={2} key={pickup.id}>
                     <Draggable draggableId={pickup.id} index={index}>
                         {(provided) => (
                             <OverviewCard pickup={pickup}

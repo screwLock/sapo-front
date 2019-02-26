@@ -67,7 +67,7 @@ class OverviewMap extends React.Component {
         >
           {datePickups.map((pickup, index) => {
             return <PickupMarker
-              key={index}
+              key={pickup.id}
               lat={pickup.lat}
               lng={pickup.lng}
               name={pickup.name}
