@@ -37,7 +37,7 @@ class NewRestriction extends React.Component<any, any> {
                         <ul style={ulStyle}>
                             {this.state.restrictions.map(
                                 (restriction: any, index: number) =>
-                                    (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteRestriction(index)} />{restriction.name}</li>)
+                                    (<li style={liStyle} key={restriction.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteRestriction(index)} />{restriction.name}</li>)
                             )}
                         </ul>
                     </BlockContainer>
