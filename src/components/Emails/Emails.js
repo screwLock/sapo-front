@@ -138,7 +138,7 @@ class Emails extends React.Component {
             return (
                 <div>
                     {data.map((d, index) => {
-                        return (<li key={index}>{d}
+                        return (<li key={d}>{d}
                             <Button intent={Intent.NONE}
                                 icon="cross"
                                 minimal={true}
@@ -155,7 +155,7 @@ class Emails extends React.Component {
             return (
                 <div>
                     {data.map((d, index) => {
-                        return (<li key={index}>{d}
+                        return (<li key={d}>{d}
                             <Button intent={Intent.NONE}
                                 icon="cross"
                                 minimal={true}
