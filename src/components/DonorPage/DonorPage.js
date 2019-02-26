@@ -48,7 +48,22 @@ class DonorPage extends React.Component {
     addListing = (listing, listingType) => {
         // category listings are single objects,
         // restrictions and serviceDetails are arrays of respective objects
-        //for categories, if the categories type already exists, merge donatables arrays
+        if (listingType !== 'categories') {
+            let listingNames = listing.map(ls => ls.name)
+            let currentNames = this.state[listingType].map(ls => ls.name)
+            if (!listingNames.some(ls => currentNames.includes(ls))) {
+
+                this.setState(
+                    produce(draft => {
+                        draft[listingType] = [...draft[listingType], ...listing]
+                    })
+                )
+            }
+            else {
+                this.showToast(`Entry is already present`)
+            }
+        }
+        // for categories, if the categories type already exists, merge donatables arrays
         if (listingType === 'categories') {
             if (this.state.categories.some(category => category.name === listing.name)) {
                 let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.name)
@@ -67,15 +82,7 @@ class DonorPage extends React.Component {
                 )
             }
         }
-        //no checks needed for other listings types
-        else {
-            this.setState(
-                produce(draft => {
-                    draft[listingType] = [...draft[listingType], ...listing]
-                })
-            )
-        }
-    };
+    }
 
     handleClick = (event) => {
         this.setState({
@@ -133,9 +140,9 @@ class DonorPage extends React.Component {
     saveDetails = () => {
         return API.post("sapo", "/users", {
             body: {
-                    categories: this.state.categories,
-                    restrictions: this.state.restrictions,
-                    serviceDetails: this.state.serviceDetails
+                categories: this.state.categories,
+                restrictions: this.state.restrictions,
+                serviceDetails: this.state.serviceDetails
             }
         });
     }
