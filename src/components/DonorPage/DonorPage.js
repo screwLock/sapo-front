@@ -66,10 +66,15 @@ class DonorPage extends React.Component {
         // for categories, if the categories type already exists, merge donatables arrays
         if (listingType === 'categories') {
             if (this.state.categories.some(category => category.name === listing.name)) {
-                let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.name)
+                let categoryIndex = this.state.categories.findIndex((c) => c.name === listing.name)
+                let mergedDonatables = [...listing.donatables, ...this.state.categories[categoryIndex].donatables]
+                // remove duplicate donatables
+                let key = 'name'
+                mergedDonatables = mergedDonatables.filter((e, i) => mergedDonatables.findIndex(a => a[key] === e[key]) === i);
+
                 this.setState(
                     produce(draft => {
-                        draft[listingType][categoryIndex].donatables = [...listing.donatables, ...draft[listingType][categoryIndex].donatables]
+                        draft[listingType][categoryIndex].donatables = mergedDonatables
                     })
                 )
             }
@@ -83,6 +88,7 @@ class DonorPage extends React.Component {
             }
         }
     }
+
 
     handleClick = (event) => {
         this.setState({
@@ -110,12 +116,12 @@ class DonorPage extends React.Component {
                 <H5>Categories</H5>
                 <ul style={ulStyle}>
                     {this.state.categories.map((category, index) => {
-                        return (<li style={liStyle} key={index}>
+                        return (<li style={liStyle} key={category.name}>
                             <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'categories')} />
                             {category.name}
                             <ul style={{ listStyleType: 'disc' }}>
                                 {category.donatables.map((donatable, index) => {
-                                    return (<li style={donatableStyle} key={index}>{donatable.name}</li>)
+                                    return (<li style={donatableStyle} key={donatable.name}>{donatable.name}</li>)
                                 })}
                             </ul>
                         </li>)
@@ -124,13 +130,13 @@ class DonorPage extends React.Component {
                 <H5>Restrictions</H5>
                 <ul style={ulStyle}>
                     {this.state.restrictions.map((restriction, index) => {
-                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'restrictions')} />{restriction.name}</li>)
+                        return (<li style={liStyle} key={restriction.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'restrictions')} />{restriction.name}</li>)
                     })}
                 </ul>
                 <H5>Service Details</H5>
                 <ul style={ulStyle}>
                     {this.state.serviceDetails.map((serviceDetail, index) => {
-                        return (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}</li>)
+                        return (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}</li>)
                     })}
                 </ul>
             </div>

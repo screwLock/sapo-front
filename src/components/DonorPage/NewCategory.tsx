@@ -95,7 +95,7 @@ class NewCategory extends React.Component<any, any> {
                     <ul style={ulStyle}>
                     {this.state.categoryDonatables.map(
                         (donatable: any, index: number) => 
-                            (<li style={liStyle} key={index}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteDonatable(index)}/>{donatable.name}</li>)
+                            (<li style={liStyle} key={donatable.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteDonatable(index)}/>{donatable.name}</li>)
                         )}
                     </ul>
                 </BlockContainer>

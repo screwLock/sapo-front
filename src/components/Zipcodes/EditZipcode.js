@@ -17,6 +17,9 @@ class EditZipcode extends React.Component {
         }
     }
 
+    // getInitialState and constructor are only called once, should
+    // not be given props
+
     getInitialState = () => {
         if (this.props.zipcode) {
             return {
