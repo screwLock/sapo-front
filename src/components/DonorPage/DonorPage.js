@@ -70,7 +70,7 @@ class DonorPage extends React.Component {
                 let mergedDonatables = [...listing.donatables, ...this.state.categories[categoryIndex].donatables]
                 // remove duplicate donatables
                 let key = 'name'
-                mergedDonatables = mergedDonatables.filter((e, i) => mergedDonatables.findIndex(a => a[key] === e[key]) === i);
+                mergedDonatables = mergedDonatables.filter((e, i) => mergedDonatables.findIndex(a => a[key] === e[key]) === i).sort((a,b) => a.name.localeCompare(b.name));
 
                 this.setState(
                     produce(draft => {
