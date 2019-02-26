@@ -159,7 +159,7 @@ class NewCategory extends React.Component<any, any> {
         )
         // if category name is changed after donatables added, we need to change this in the submittable
         if(this.state.categoryDonatables.length > 0){
-            this.props.createSubmittable({ category: category.name, donatables: this.state.categoryDonatables});
+            this.props.createSubmittable({ name: category.name, donatables: this.state.categoryDonatables});
         }
     }
 
@@ -172,7 +172,7 @@ class NewCategory extends React.Component<any, any> {
     protected addDonatable = () => {
         if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.selectedDonatable.name)).length > 0)) {
             this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }), () => {
-                this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables});
+                this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables});
             })
             this.props.canSubmit(true);
             return true
@@ -190,7 +190,7 @@ class NewCategory extends React.Component<any, any> {
             }
             this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
             this.props.canSubmit(true);
-            this.props.createSubmittable({ category: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
+            this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
             return true;
         }
         else {
@@ -204,13 +204,13 @@ class NewCategory extends React.Component<any, any> {
         if(this.state.categoryDonatables.length > 1) {
             this.setState({categoryDonatables: donatables})
             // this prevents the deleted item from showing up in the rendered list of categories
-            this.props.createSubmittable({ category: this.state.categoryName, donatables}, 'categories');
+            this.props.createSubmittable({ name: this.state.categoryName, donatables}, 'categories');
         }
         else {
             this.props.canSubmit(false);
             this.setState({categoryDonatables: donatables});
             // this prevents the deleted item from showing up in the rendered list of categories
-            this.props.createSubmittable({ category: this.state.categoryName, donatables}, 'categories');
+            this.props.createSubmittable({ name: this.state.categoryName, donatables}, 'categories');
         }
     }
 
@@ -218,7 +218,7 @@ class NewCategory extends React.Component<any, any> {
         this.setState({ categoryName: e.target.value, showDonatables: true });
         // if category name is changed after donatables added, we need to change this in the submittable
         if(this.state.categoryDonatables.length > 0){
-            this.props.createSubmittable({ category: e.target.value, donatables: this.state.categoryDonatables});
+            this.props.createSubmittable({ name: e.target.value, donatables: this.state.categoryDonatables});
         }
     }
 

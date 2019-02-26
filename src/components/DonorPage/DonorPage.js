@@ -46,10 +46,12 @@ class DonorPage extends React.Component {
     }
 
     addListing = (listing, listingType) => {
+        // category listings are single objects,
+        // restrictions and serviceDetails are arrays of respective objects
         //for categories, if the categories type already exists, merge donatables arrays
         if (listingType === 'categories') {
-            if (this.state.categories.some(category => category.category === listing.category)) {
-                let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.category)
+            if (this.state.categories.some(category => category.name === listing.name)) {
+                let categoryIndex = this.state.categories.findIndex((c) => c.category === listing.name)
                 this.setState(
                     produce(draft => {
                         draft[listingType][categoryIndex].donatables = [...listing.donatables, ...draft[listingType][categoryIndex].donatables]
@@ -103,7 +105,7 @@ class DonorPage extends React.Component {
                     {this.state.categories.map((category, index) => {
                         return (<li style={liStyle} key={index}>
                             <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'categories')} />
-                            {category.category}
+                            {category.name}
                             <ul style={{ listStyleType: 'disc' }}>
                                 {category.donatables.map((donatable, index) => {
                                     return (<li style={donatableStyle} key={index}>{donatable.name}</li>)
