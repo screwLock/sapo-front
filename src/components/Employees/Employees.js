@@ -16,7 +16,14 @@ class Employees extends React.Component {
       isEmployeeOpen: false,
       isEditEmployeeOpen: false,
       editIndex: '',
-      editEmployee: '',
+      editEmployee: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        employeeID: '',
+        access: 'Volunteer'
+      },
       userConfig: {}
     }
   }
@@ -58,7 +65,7 @@ class Employees extends React.Component {
     return API.get("sapo", '/users');
   }
 
-  getEditEmployee = (index) => {
+  createEditEmployee = (index) => {
     if (this.state.employees[index]) {
       this.setState({ editEmployee: this.state.employees[index] })
     }
@@ -67,6 +74,10 @@ class Employees extends React.Component {
     }
   }
 
+  getEditEmployee = () => {
+    console.log(this.state.editEmployee)
+    return this.state.editEmployee
+  }
 
   handleDeleteEmployees = (i) => {
     let employees = [...this.state.employees]
@@ -83,7 +94,7 @@ class Employees extends React.Component {
 
   handleEditEmployeeOpen = (index) => {
     this.handleEditIndexChange(index);
-    this.getEditEmployee(index)
+    this.createEditEmployee(index)
     this.setState({ isEditEmployeeOpen: !this.state.isEditEmployeeOpen })
   }
 
@@ -112,7 +123,8 @@ class Employees extends React.Component {
           isOpen={this.state.isEditEmployeeOpen}
           handleClose={this.handleEditEmployeeOpen}
           index={this.state.editIndex}
-          employee={this.state.editEmployee}
+          getEditEmployee={this.getEditEmployee}
+          key={this.state.editEmployee.email}
         />
         <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} editEmployee={this.handleEditEmployeeOpen}/>
       </Container>
