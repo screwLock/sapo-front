@@ -71,13 +71,21 @@ class Zipcodes extends React.Component {
         })
     }
 
-    getEditZipcode = (index) => {
+    createEditZipcode = (index) => {
         if (this.state.zipcodes[index]) {
-            this.setState({ editZipcode: { weekdays: this.state.zipcodes[index].weekdays.slice(), zipcode: this.state.zipcodes[index].zipcode }})
+            this.setState({ editZipcode: { weekdays: this.state.zipcodes[index].weekdays.slice(),
+                            zipcode: this.state.zipcodes[index].zipcode }
+                        })
         }
         else {
-            this.setState({ editZipcode: { weekdays: [], zipcode: '' } })
+            this.setState({ editZipcode: { weekdays: [], 
+                                           zipcode: '' } 
+                        })
         }
+    }
+
+    getEditZipcode = () => {
+        return this.state.editZipcode
     }
 
     showToast = (message) => {
@@ -103,7 +111,7 @@ class Zipcodes extends React.Component {
 
     handleEditZipcodeOpen = (index) => {
         this.handleEditIndexChange(index);
-        this.getEditZipcode(index)
+        this.createEditZipcode(index)
         this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen });
     }
 
@@ -137,7 +145,7 @@ class Zipcodes extends React.Component {
                     handleClose={this.handleEditZipcodeOpen}
                     index={this.state.editIndex}
                     zipcode={this.state.editZipcode}
-                    key={this.state.zipcodes}
+                    getEditZipcode={this.getEditZipcode}
                 />
                 <ZipcodesTable data={this.state.zipcodes}
                     editZipcode={this.handleEditZipcodeOpen}

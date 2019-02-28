@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { postalCodeValidator } from './postalCodeValidator'
 import ZipcodeWeekdays from './ZipcodeWeekdays'
-import ZipcodeInput from './ZipcodeInput'
 import { weekdays, IWeekday } from "./checkedWeekdays";
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
@@ -93,9 +92,11 @@ class NewZipcode extends React.Component {
                 style={{width: '750px'}}
             >
                 <DialogContainer>
-                    <ZipcodeInput
-                        onBlur={this.handleBlur}
-                        value={this.state.newZipcode}
+                <H3>US or Canadian Postal Code</H3>
+                    <ZipcodeInputGroup id="zipcode-value" 
+                                placeholder="Enter a Zipcode" 
+                                defaultValue=''
+                                onBlur={this.handleBlur}
                     />
                     <ZipcodeWeekdays
                         onChange={this.handleCheckedChange}
@@ -117,6 +118,10 @@ const DialogContainer = styled.div`
     width: 750px;
     margin: 20px;
     margin-top: 10px;
+`
+
+const ZipcodeInputGroup = styled(InputGroup)`
+    width: 150px;
 `
 
 export default NewZipcode;

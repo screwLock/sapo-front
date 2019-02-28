@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { postalCodeValidator } from './postalCodeValidator'
 import ZipcodeWeekdays from './ZipcodeWeekdays'
-import ZipcodeInput from './ZipcodeInput'
 import { weekdays, IWeekday } from "./checkedWeekdays";
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
@@ -12,29 +11,10 @@ class EditZipcode extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            zipcode: this.getInitialState.zipcode,
-            weekdays: this.getInitialState.weekdays,
+            zipcode: '',
+            weekdays: []
         }
     }
-
-    // getInitialState and constructor are only called once, should
-    // not be given props
-
-    getInitialState = () => {
-        if (this.props.zipcode) {
-            return {
-                zipcode: this.props.zipcode.zipcode,
-                weekdays: this.props.zipcode.weekdays,
-            }
-        }
-        else {
-            return {
-                zipcode: '',
-                weekdays: weekdays
-            }
-        }
-    }
-
 
     isAllChecked = (index) => {
         if (this.state.weekdays[index].all === true) {
@@ -73,7 +53,7 @@ class EditZipcode extends React.Component {
 
     handleClose = () => {
         this.setState({ zipcode: '', weekdays: weekdays.slice() });
-        this.props.handleClose();
+        this.props.handleClose(this.props.index);
     }
 
     handleSubmit = () => {
@@ -88,7 +68,6 @@ class EditZipcode extends React.Component {
             //reset the checked weekday values
             this.setState({ zipcode: '', weekdays: weekdays.slice() });
             this.props.handleClose();
-            console.log(this.props.index)
             //database call
             //show toast if save successful
         }
@@ -107,9 +86,12 @@ class EditZipcode extends React.Component {
                 style={{ width: '750px' }}
             >
                 <DialogContainer>
-                    <ZipcodeInput
+                    <H3>Edit Zipcode {this.props.getEditZipcode().zipcode}</H3>
+                    <ZipcodeInputGroup id="zipcode-value"
+                        placeholder="Enter a Zipcode"
+                        defaultValue = {this.props.getEditZipcode().zipcode}
+                        // we use onBlur to modify the dialog's state zipcode
                         onBlur={this.handleBlur}
-                        value={this.state.zipcode}
                     />
                     <ZipcodeWeekdays
                         onChange={this.handleCheckedChange}
@@ -131,6 +113,10 @@ const DialogContainer = styled.div`
     width: 750px;
     margin: 20px;
     margin-top: 10px;
+`
+
+const ZipcodeInputGroup = styled(InputGroup)`
+    width: 150px;
 `
 
 export default EditZipcode;
