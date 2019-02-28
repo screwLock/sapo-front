@@ -134,7 +134,7 @@ class EditEmployee extends React.Component {
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.props.isOpen}>Cancel</Button>
+                        <Button onClick={this.props.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>

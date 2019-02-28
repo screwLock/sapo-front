@@ -98,6 +98,10 @@ class Employees extends React.Component {
     this.setState({ isEditEmployeeOpen: !this.state.isEditEmployeeOpen })
   }
 
+  handleEditEmployeeClose = () => {
+    this.setState({ isEditEmployeeOpen: !this.state.isEditEmployeeOpen })
+  }
+
   handleEditIndexChange = (index) => {
     this.setState({ editIndex: index })
   }
@@ -121,7 +125,7 @@ class Employees extends React.Component {
         <EditEmployee addEmployee={this.addEmployee}
           employees={this.state.employees}
           isOpen={this.state.isEditEmployeeOpen}
-          handleClose={this.handleEditEmployeeOpen}
+          handleClose={this.handleEditEmployeeClose}
           index={this.state.editIndex}
           getEditEmployee={this.getEditEmployee}
           key={this.state.editEmployee.email}
