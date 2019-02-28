@@ -16,6 +16,10 @@ class EditZipcode extends React.Component {
         }
     }
 
+    componentDidMount = () => {
+        this.setState({ zipcode: this.props.getEditZipcode().zipcode, weekdays: this.props.getEditZipcode().weekdays })
+    }
+
     isAllChecked = (index) => {
         if (this.state.weekdays[index].all === true) {
             produce(this.state, draft => {

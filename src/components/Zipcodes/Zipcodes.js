@@ -68,7 +68,7 @@ class Zipcodes extends React.Component {
         zipcodes[index] = edit;
         this.setState({
             zipcodes: zipcodes
-        })
+        }, async () => await this.saveZipcodes())
     }
 
     createEditZipcode = (index) => {
@@ -146,6 +146,7 @@ class Zipcodes extends React.Component {
                     index={this.state.editIndex}
                     zipcode={this.state.editZipcode}
                     getEditZipcode={this.getEditZipcode}
+                    key={this.state.editZipcode.zipcode}
                 />
                 <ZipcodesTable data={this.state.zipcodes}
                     editZipcode={this.handleEditZipcodeOpen}
