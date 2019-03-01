@@ -75,7 +75,6 @@ class Employees extends React.Component {
   }
 
   getEditEmployee = () => {
-    console.log(this.state.editEmployee)
     return this.state.editEmployee
   }
 

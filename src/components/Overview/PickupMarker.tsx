@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Popover, PopoverInteractionKind } from '@blueprintjs/core';
 import { IPickup } from './types/pickup';
+import styled from 'styled-components';
 
 interface IPickupMarkerProps {
     name: string;
@@ -25,7 +26,7 @@ class PickupMarker extends React.Component<IPickupMarkerProps, any> {
         return (
             <Popover interactionKind={PopoverInteractionKind.HOVER}>
                 <div onClick={this.handleClick}><div className={classes} /><div className="pulse" /></div>
-                <div>{this.props.name}</div>
+                <Info>{this.props.name}</Info>
             </Popover>
 
         );
@@ -36,4 +37,7 @@ class PickupMarker extends React.Component<IPickupMarkerProps, any> {
      };
 }
 
+const Info = styled.div`
+    padding: 5px;
+`
 export default PickupMarker;
