@@ -6,14 +6,13 @@ class HeaderAccount extends React.Component {
 
 
   render() {
-    const email = this.props.authData.signInUserSession.idToken.payload.email;
+    const org = this.props.authData.signInUserSession.idToken.payload['custom:organization'].toUpperCase()
     return (
       <StyledHeaderAccount>
-        <Popover>
-          <Button minimal={true} large={true} icon="user" text={email} />
+        <Popover position='bottom'>
+          <Button minimal={true} large={true} icon="people" text={org} style={{fontWeight: 'bold'}}/>
           <Menu>
-            <MenuItem text="Logout" onClick={this.props.handleLogout}>
-            </MenuItem>
+            <MenuItem text="Logout" onClick={this.props.handleLogout}></MenuItem>
           </Menu>
         </Popover>
       </StyledHeaderAccount>
@@ -25,6 +24,7 @@ const StyledHeaderAccount = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
+        margin-right: 25px;
     `;
 
 export default HeaderAccount;
