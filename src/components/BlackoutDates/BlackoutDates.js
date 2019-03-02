@@ -87,10 +87,12 @@ class BlackoutDates extends React.Component {
     return (
       <Container>
         <H3>Manage Blackout Dates</H3>
-        <Button intent={Intent.PRIMARY}
-          text='Add New Blackout Dates'
-          onClick={this.handleClick}
-        />
+        <ButtonRow>
+          <Button intent={Intent.PRIMARY}
+            text='Add New Blackout Dates'
+            onClick={this.handleClick}
+          />
+        </ButtonRow>
         <BlackoutDatesPicker addDates={this.addDates}
           dates={this.state.dates.map((date) => { return date.date })}
           isOpen={this.state.isDialogOpen}
