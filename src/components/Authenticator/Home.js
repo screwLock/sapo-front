@@ -31,29 +31,48 @@ class Home extends React.Component {
 
     componentDidMount = async () => {
         if (!this.props.authState) {
-          return;
+            return;
         }
-      
+
         try {
-          const userConfig = await this.getUserConfig();
-          this.setState({ userConfig });
-          // console.log(userConfig)
+            const userConfig = await this.getUserConfig();
+            this.setState({ userConfig });
+            // console.log(userConfig)
         } catch (e) {
-          alert(e);
+            alert(e);
         }
-      
+
         // this.setState({ isLoading: false });
-      }
-      
+    }
+
     getUserConfig = () => {
         return API.get("sapo", '/users');
     }
 
     handleAdminLogin = () => {
-        this.setState({isAdminLoggedIn: true})
+        this.setState({ isAdminLoggedIn: true })
     }
 
-    render() {
+    renderAdmin = () => {
+        return (
+            <Grid
+                columns={"150px 1fr 50px"}
+                rows={"70px 1fr 45px"}
+                areas={[
+                    "header header  header",
+                    "menu   content ads   ",
+                    "footer footer  footer"
+                ]}
+            >
+                <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
+                <Cell area="menu"><NavBar {...this.props} /></Cell>
+                <Cell area="content"><Main {...this.props} /></Cell>
+            </Grid>
+        )
+
+    }
+
+    renderNonAdmin = () => {
         return (
             <div>
                 <Grid
@@ -61,16 +80,24 @@ class Home extends React.Component {
                     rows={"70px 1fr 45px"}
                     areas={[
                         "header header  header",
-                        "menu   content ads   ",
+                        "content content content",
                         "footer footer  footer"
                     ]}
                 >
-                    <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin}/></Cell>
-                    <Cell area="menu"><NavBar {...this.props}/></Cell>
-                    <Cell area="content"><Main {...this.props}/></Cell>
+                    <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
+                    <Cell area="content"><Main {...this.props} /></Cell>
                 </Grid>
             </div>
         )
+    }
+
+    render() {
+        if(this.state.isAdminLoggedIn) {
+            return this.renderAdmin()
+        }
+        else{
+            return this.renderNonAdmin()
+        }
     }
 }
 
