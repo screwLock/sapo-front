@@ -50,7 +50,7 @@ class Home extends React.Component {
     }
 
     handleAdminLogin = () => {
-        this.setState({ isAdminLoggedIn: true })
+        this.setState({ isAdminLoggedIn: !this.state.isAdminLoggedIn })
     }
 
     renderAdmin = () => {
@@ -64,7 +64,7 @@ class Home extends React.Component {
                     "footer footer  footer"
                 ]}
             >
-                <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
+                <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} isAdminLoggedIn={this.state.isAdminLoggedIn} /></Cell>
                 <Cell area="menu"><NavBar {...this.props} /></Cell>
                 <Cell area="content"><Main {...this.props} /></Cell>
             </Grid>

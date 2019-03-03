@@ -13,7 +13,15 @@ class Header extends React.Component {
     }
 
     handleOpen = () => {
-        this.setState({isAdminOpen: !this.state.isAdminOpen})
+        if(this.props.isAdminLoggedIn){
+            // Logging out
+            this.props.onAdminLogin()
+            this.setState({isAdminOpen: false})
+        }
+        else{
+            // Bring up Login Dialog
+            this.setState({isAdminOpen: true})
+        }
     }
 
     render() {
