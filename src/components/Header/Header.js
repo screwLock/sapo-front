@@ -3,6 +3,7 @@ import { Grid, Cell } from "styled-css-grid";
 import styled from 'styled-components'
 import HeaderAccount from './HeaderAccount'
 import AdminLogin from './AdminLogin'
+import { withRouter } from 'react-router'
 
 class Header extends React.Component {
     constructor(props){
@@ -17,6 +18,8 @@ class Header extends React.Component {
             // Logging out
             this.props.onAdminLogin()
             this.setState({isAdminOpen: false})
+            //Redirect back to overview page
+            this.props.history.push('/')
         }
         else{
             // Bring up Login Dialog
@@ -53,4 +56,4 @@ const Header1 = styled.h1`
 
 
 
-export default Header;
+export default withRouter(Header);
