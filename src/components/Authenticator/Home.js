@@ -10,7 +10,7 @@ class Home extends React.Component {
     static defaultProps = {
         authData: {},
         authState: 'LoggedIn',
-        onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
+        onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); },
     };
 
     constructor(props) {
@@ -25,6 +25,7 @@ class Home extends React.Component {
             password: this.props.authData.password || '',
             user: null,
             userConfig: {},
+            isAdminLoggedIn: false
         };
     }
 
@@ -36,7 +37,7 @@ class Home extends React.Component {
         try {
           const userConfig = await this.getUserConfig();
           this.setState({ userConfig });
-          console.log(userConfig)
+          // console.log(userConfig)
         } catch (e) {
           alert(e);
         }
@@ -46,6 +47,10 @@ class Home extends React.Component {
       
     getUserConfig = () => {
         return API.get("sapo", '/users');
+    }
+
+    handleAdminLogin = () => {
+        this.setState({isAdminLoggedIn: true})
     }
 
     render() {
@@ -60,7 +65,7 @@ class Home extends React.Component {
                         "footer footer  footer"
                     ]}
                 >
-                    <Cell area="header"><Header {...this.props}/></Cell>
+                    <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin}/></Cell>
                     <Cell area="menu"><NavBar {...this.props}/></Cell>
                     <Cell area="content"><Main {...this.props}/></Cell>
                 </Grid>
