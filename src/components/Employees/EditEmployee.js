@@ -33,7 +33,7 @@ class EditEmployee extends React.Component {
         if (!this.validateForms()) {
             return false;
         }
-        this.props.addEmployee({
+        this.props.editEmployee({
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
@@ -49,7 +49,7 @@ class EditEmployee extends React.Component {
             employeeID: '',
             access: 'Volunteer',
         })
-        this.props.handleEmployeeOpen();
+        this.props.handleClose();
     }
 
 

@@ -23,7 +23,7 @@ class EmployeesTable extends React.Component {
         Header: 'Phone Number',
         accessor: 'phoneNumber'
     }, {
-        Header: 'Access',
+        Header: 'Role',
         accessor: 'access',
         width: 125,
     }, 

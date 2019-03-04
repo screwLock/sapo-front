@@ -44,6 +44,16 @@ class Employees extends React.Component {
     });
   }
 
+  editEmployee = (edit) => {
+    let employees = [...this.state.employees]
+    let index = this.state.editIndex
+    //update in database
+    employees[index] = edit;
+    this.setState({
+        employees: employees
+    }, async () => await this.saveEmployees())
+}
+
   componentDidMount = async () => {
     if (!this.props.authState) {
       return;
@@ -121,7 +131,7 @@ class Employees extends React.Component {
           isEmployeeOpen={this.state.isEmployeeOpen}
           handleEmployeeOpen={this.handleEmployeeOpen}
         />
-        <EditEmployee addEmployee={this.addEmployee}
+        <EditEmployee editEmployee={this.editEmployee}
           employees={this.state.employees}
           isOpen={this.state.isEditEmployeeOpen}
           handleClose={this.handleEditEmployeeClose}

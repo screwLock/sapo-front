@@ -11,7 +11,7 @@ export const ACCESS_LEVELS: IAccessLevel[] = [
     { accessLevel: "Volunteer" },
     { accessLevel: "Contractor" },
     { accessLevel: "Employee" },
-    { accessLevel: "Admin"}
+    { accessLevel: "Manager"}
 ];
 
 export const renderAccessLevel: ItemRenderer<IAccessLevel> = (level, { handleClick, modifiers, query }) => {
