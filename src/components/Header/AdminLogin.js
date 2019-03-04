@@ -15,7 +15,6 @@ class AdminLogin extends React.Component {
     authenticateAdmin = () => {
         if(this.state.email === 'admin' && this.state.password === 'admin'){
             this.props.onAdminLogin()
-            this.showToast('Login Successful')
         }
         else {
             this.showToast('Incorrect email or password')
