@@ -52,7 +52,7 @@ class AdminLogin extends React.Component {
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.props.onOpen}>Cancel</Button>
+                        <Button onClick={this.props.onClose}>Cancel</Button>
                         <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>

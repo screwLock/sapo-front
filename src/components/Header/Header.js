@@ -27,6 +27,10 @@ class Header extends React.Component {
         }
     }
 
+    handleClose = () => {
+        this.setState({isAdminOpen: false})
+    }
+
     render() {
         const props = {...this.props}
         return (
@@ -34,6 +38,7 @@ class Header extends React.Component {
                 <AdminLogin
                     isOpen={this.state.isAdminOpen}
                     onOpen={this.handleOpen}
+                    onClose={this.handleClose}
                     {...props}
                 />
                 <Grid columns={12}>
