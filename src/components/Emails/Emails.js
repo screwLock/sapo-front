@@ -18,6 +18,7 @@ class Emails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
+            emails: {},
             userConfig: {}
         }
     }
@@ -27,7 +28,7 @@ class Emails extends React.Component {
             return;
         }
         try {
-            const userConfig = await this.getUserConfig();
+            const userConfig = await this.props.getUserConfig();
             if (userConfig.emails !== null) {
                 this.setState({ userConfig, 
                     emails: userConfig.emails,
@@ -46,24 +47,6 @@ class Emails extends React.Component {
         }
     }
 
-    getUserConfig = () => {
-        return API.get("sapo", '/users');
-    }
-
-    saveEmail = () => {
-        return API.post("sapo", "/users", {
-            body: {
-                emails: {
-                    fromAddress: this.state.fromAddress,
-                    ccAddresses: this.state.ccAddresses,
-                    bccAddresses: this.state.bccAddresses,
-                    subjectLine: this.state.subjectLine,
-                    messageBody: this.state.messageBody,
-                }
-            }
-        });
-    }
-
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
     saveSettings = async () => {
@@ -78,7 +61,23 @@ class Emails extends React.Component {
         }
         else {
             try {
-                await this.saveEmail()
+                await this.props.updateUserConfig('emails', {
+                    emails: {
+                        fromAddress: this.state.fromAddress,
+                        ccAddresses: this.state.ccAddresses,
+                        bccAddresses: this.state.bccAddresses,
+                        subjectLine: this.state.subjectLine,
+                        messageBody: this.state.messageBody,
+                    }}, 
+                    {
+                        emails: {
+                            fromAddress: this.state.fromAddress,
+                            ccAddresses: this.state.ccAddresses,
+                            bccAddresses: this.state.bccAddresses,
+                            subjectLine: this.state.subjectLine,
+                            messageBody: this.state.messageBody,
+                    }}
+                    )
                 this.showToast('Settings successfully saved.')
             }
             catch (e) {
