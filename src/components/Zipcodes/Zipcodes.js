@@ -29,7 +29,7 @@ class Zipcodes extends React.Component {
           return;
         }
         try {
-          const userConfig = await this.getUserConfig();
+          const userConfig = await this.props.getUserConfig();
           if (userConfig.zipcodes !== null) {
             this.setState({ userConfig, zipcodes: userConfig.zipcodes });
           }
@@ -41,10 +41,6 @@ class Zipcodes extends React.Component {
         }
     }
 
-    getUserConfig = () => {
-        return API.get("sapo", '/users');
-    }
-
     addZipcode = (zipcode) => {
         this.setState(
             produce(draft => {
@@ -54,11 +50,7 @@ class Zipcodes extends React.Component {
     }
 
     saveZipcodes = () => {
-        API.post("sapo", "/users", {
-          body: {
-            zipcodes: this.state.zipcodes
-          }
-        });
+        this.props.updateUserConfig('zipcodes', this.state.zipcodes, { zipcodes: this.state.zipcodes})
       }
 
     editZipcode = (edit) => {
