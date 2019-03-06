@@ -49,6 +49,22 @@ class Home extends React.Component {
         return API.get("sapo", '/users');
     }
 
+    updateUserConfig = (key, update) => {
+        this.setState(prevState => ({
+            userConfig: {
+                ...prevState.userConfig,
+                [key]: update
+            }
+        }), () =>  {
+            API.post("sapo", "/users", {
+                body: {
+                    ...this.state.userConfig,
+                    [key]: update
+                }
+            })
+        })
+    }
+
     handleAdminLogin = () => {
         this.setState({ isAdminLoggedIn: !this.state.isAdminLoggedIn })
     }
@@ -66,7 +82,7 @@ class Home extends React.Component {
             >
                 <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} isAdminLoggedIn={this.state.isAdminLoggedIn} /></Cell>
                 <Cell area="menu"><NavBar {...this.props} /></Cell>
-                <Cell area="content"><Main {...this.props} /></Cell>
+                <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
             </Grid>
         )
 
@@ -85,17 +101,17 @@ class Home extends React.Component {
                     ]}
                 >
                     <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
-                    <Cell area="content"><Main {...this.props} /></Cell>
+                    <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
                 </Grid>
             </div>
         )
     }
 
     render() {
-        if(this.state.isAdminLoggedIn) {
+        if (this.state.isAdminLoggedIn) {
             return this.renderAdmin()
         }
-        else{
+        else {
             return this.renderNonAdmin()
         }
     }
