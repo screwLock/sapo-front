@@ -6,6 +6,7 @@ import Zipcodes from './Zipcodes/Zipcodes';
 import Employees from './Employees/Employees';
 import DonorPage from './DonorPage/DonorPage'
 import Emails from './Emails/Emails'
+import Account from './Account/Account'
 
 class Main extends Component {
     render(){
@@ -28,6 +29,9 @@ class Main extends Component {
           />
           <Route exact path='/emails'
                  render = {() => <Emails {...this.props} />}
+          />
+          <Route exact path='/account'
+                 render = {() => <Account {...this.props} />}
           />
         </Switch>
       );
