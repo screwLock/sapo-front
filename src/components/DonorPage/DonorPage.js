@@ -24,7 +24,7 @@ class DonorPage extends React.Component {
             return;
         }
         try {
-            const userConfig = await this.getUserConfig();
+            const userConfig = await this.props.getUserConfig();
             if (userConfig.categories !== null && userConfig.restrictions !== null && userConfig.serviceDetails !== null) {
                 this.setState({
                     userConfig,
@@ -39,10 +39,6 @@ class DonorPage extends React.Component {
         } catch (e) {
             alert(e);
         }
-    }
-
-    getUserConfig = () => {
-        return API.get("sapo", '/users');
     }
 
     addListing = (listing, listingType) => {
@@ -143,16 +139,6 @@ class DonorPage extends React.Component {
         )
     }
 
-    saveDetails = () => {
-        return API.post("sapo", "/users", {
-            body: {
-                categories: this.state.categories,
-                restrictions: this.state.restrictions,
-                serviceDetails: this.state.serviceDetails
-            }
-        });
-    }
-
     saveSettings = async () => {
         if (this.state.categories.length === 0) {
             this.showToast('Add at least one donations category')
@@ -165,7 +151,17 @@ class DonorPage extends React.Component {
         }
         else {
             try {
-                await this.saveDetails()
+                await this.props.updateUserConfig('donorPage', {
+                    categories: this.state.categories,
+                    restrictions: this.state.restrictions,
+                    serviceDetails: this.state.serviceDetails
+                },
+                {
+                    categories: this.state.categories,
+                    restrictions: this.state.restrictions,
+                    serviceDetails: this.state.serviceDetails
+                }
+                )
                 this.showToast('Settings successfully saved.')
             }
             catch (e) {

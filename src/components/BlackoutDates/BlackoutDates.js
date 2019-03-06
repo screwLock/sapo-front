@@ -42,14 +42,18 @@ class BlackoutDates extends React.Component {
       this.setState(
         produce(draft => {
           draft.dates = [...draft.dates, ...datesWithReason]
-        }), async () => await this.props.updateUserConfig('blackoutDates', this.state.dates)
+        }), async () => await this.props.updateUserConfig('blackoutDates',
+        this.state.dates,
+        { blackoutDates: this.state.dates })
       )
     }
     else {
       this.setState(
         produce(draft => {
           draft.dates = [...datesWithReason]
-        }), async () => await this.props.updateUserConfig('blackoutDates', this.state.dates)
+        }), async () => await this.props.updateUserConfig('blackoutDates',
+          this.state.dates,
+          { blackoutDates: this.state.dates })
       )
     }
   }
@@ -68,7 +72,9 @@ class BlackoutDates extends React.Component {
     //save new dates array with removed dates in DB
     this.setState({
       dates: dates
-    }, async () => await this.props.updateUserConfig('blackoutDates', this.state.dates))
+    }, async () => await this.props.updateUserConfig('blackoutDates',
+      this.state.dates,
+      { blackoutDates: this.state.dates }))
   }
 
   render() {

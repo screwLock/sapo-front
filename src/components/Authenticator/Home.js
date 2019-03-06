@@ -49,7 +49,11 @@ class Home extends React.Component {
         return API.get("sapo", '/users');
     }
 
-    updateUserConfig = (key, update) => {
+    // only works with one key, will have to use custom function for
+    // donorPage!
+
+    updateUserConfig = (key, update, jsonBody) => {
+        jsonBody = { ...this.state.userConfig, ...jsonBody}
         this.setState(prevState => ({
             userConfig: {
                 ...prevState.userConfig,
@@ -57,10 +61,7 @@ class Home extends React.Component {
             }
         }), () =>  {
             API.post("sapo", "/users", {
-                body: {
-                    ...this.state.userConfig,
-                    [key]: update
-                }
+                body: jsonBody
             })
         })
     }
