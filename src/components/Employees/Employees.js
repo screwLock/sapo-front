@@ -37,11 +37,7 @@ class Employees extends React.Component {
   }
 
   saveEmployees = () => {
-    API.post("sapo", "/users", {
-      body: {
-        employees: this.state.employees
-      }
-    });
+    this.props.updateUserConfig('employees', this.state.employees, {employees: this.state.employees})
   }
 
   editEmployee = (edit) => {
@@ -59,7 +55,7 @@ class Employees extends React.Component {
       return;
     }
     try {
-      const userConfig = await this.getUserConfig();
+      const userConfig = await this.props.getUserConfig();
       if (userConfig.employees !== null) {
         this.setState({ userConfig, employees: userConfig.employees });
       }
@@ -69,10 +65,6 @@ class Employees extends React.Component {
     } catch (e) {
       alert(e);
     }
-  }
-
-  getUserConfig = () => {
-    return API.get("sapo", '/users');
   }
 
   createEditEmployee = (index) => {
