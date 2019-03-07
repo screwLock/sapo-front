@@ -16,6 +16,7 @@ class Overview extends Component {
       allPickups: [],
       selectedPickup: null,
       selectedDate: new Date(),
+      selectedMonth: {},
       unconfirmedDates: [],
       user: {},
       newRoute: false,
@@ -28,7 +29,8 @@ class Overview extends Component {
     this.setState({
       pickups: pickupMocks,
       allPickups: addedRoutes,
-      user: userMocks
+      user: userMocks,
+      selectedMonth: getMonth(new Date())
     })
   }
 
@@ -51,6 +53,7 @@ class Overview extends Component {
         </Cell>
         <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate} 
                                             handleClick={this.selectDate} 
+                                            handleMonthChange={this.handleMonthChange}
                                             selectedMonth={this.state.selectedMonth}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
@@ -86,13 +89,16 @@ class Overview extends Component {
       }));
   }
 
+  handleMonthChange = (month) => {
+    this.setState({selectedMonth: getMonth(month)})
+  }
+
   // for the datepicker ondayclick handler
   // unconfirmed pickups should be shown based
   // on the month of the selected day
   selectDate = (date) => {
     this.setState({
-      selectedDate: date,
-      selectedMonth: getMonth(date)
+      selectedDate: date
     })
   }
 }

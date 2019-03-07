@@ -18,7 +18,10 @@ class OverviewDatePicker extends Component {
     }
     this.props.handleClick(day);
   }
+
   render() {
+    // highlighted should be same month as selectedDate
+    // as well as !confirmed
     const modifiers = { highlighted: {
       from: new Date(2019, this.props.selectedMonth, 12), 
       to: new Date(2019, this.props.selectedMonth, 16) 
@@ -34,6 +37,7 @@ class OverviewDatePicker extends Component {
         <DayPicker
           modifiers={modifiers}
           onDayClick={this.handleDayClick}
+          onMonthChange={this.props.handleMonthChange}
           selectedDays={this.props.selectedDate}
           disabledDays={{ daysOfWeek: [0] }}
         />
