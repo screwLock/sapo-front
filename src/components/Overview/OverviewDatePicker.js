@@ -35,7 +35,7 @@ class OverviewDatePicker extends Component {
         color: red;
       }
       50% {
-        color: black;
+        color: white;
       }
       100 {
         color: red;
@@ -49,7 +49,7 @@ class OverviewDatePicker extends Component {
       animation-duration: 2s;
       animation-iteration-count: infinite;
     }`
-    
+
     return (
       <div>
         <style>{highlightedStyle}</style>

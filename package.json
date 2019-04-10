@@ -39,6 +39,7 @@
     "@types/react-dom": "^16.0.8",
     "date-fns": "^1.29.0",
     "immer": "^1.7.2",
-    "pdfmake": "^0.1.38"
+    "pdfmake": "^0.1.38",
+    "react-select": "^2.4.2"
   }
 }

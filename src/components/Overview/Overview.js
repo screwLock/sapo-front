@@ -7,6 +7,7 @@ import OverviewDatePicker from './OverviewDatePicker.js';
 import pickupMocks from './mocks/pickupMocks';
 import { userMocks } from './mocks/userMocks.js'
 import { format, getMonth } from 'date-fns'
+import { API } from "aws-amplify"
 
 class Overview extends Component {
   constructor(props) {
@@ -19,19 +20,33 @@ class Overview extends Component {
       selectedMonth: {},
       unconfirmedDates: [],
       user: {},
+      userConfig: {},
       newRoute: false,
       search: ''
     }
   }
 
-  componentDidMount() {
-    const addedRoutes = pickupMocks.map(pickup => pickup.inRoute = false)
-    this.setState({
-      pickups: pickupMocks,
-      allPickups: addedRoutes,
-      user: userMocks,
-      selectedMonth: getMonth(new Date())
-    })
+  componentDidMount = async () => {
+    if (!this.props.authState) {
+      return;
+    }
+
+    try {
+      const userConfig = await this.props.getUserConfig();
+      if (userConfig.blackoutDates !== null) {
+        this.setState({ userConfig,
+          pickups: pickupMocks,
+          allPickups: pickupMocks.map(pickup => pickup.inRoute = false),
+          user: userMocks,
+          selectedMonth: getMonth(new Date())
+        });
+      }
+      else {
+        this.setState({ userConfig })
+      }
+    } catch (e) {
+      alert(e);
+    }
   }
 
   createRoute = () => {
@@ -64,6 +79,7 @@ class Overview extends Component {
           onDragEnd={this.onDragEnd}
           handleRouteChange={this.handleRouteChange}
           createRoute={this.createRoute}
+          userConfig={this.state.userConfig}
         />
         </Cell>
       </Grid>
