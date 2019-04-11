@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AnchorButton, Button, Card, Classes, Elevation, Dialog, FormGroup, H4, InputGroup, Tooltip } from '@blueprintjs/core'
-import OverviewDatePicker from './OverviewDatePicker'
+import DayPicker, { DateUtils } from 'react-day-picker';
 import getDisabledDates from '../Zipcodes/getDisabledDates'
 import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
@@ -12,8 +12,7 @@ export class CustomerCallIn extends React.Component {
         super(props)
         this.state = {
             pickup: {},
-            selectedDate: {},
-            selectedMonth: {},
+            selectedDate: null,
             selectedZipcode: '',
             showDatePicker: false,
         }
@@ -21,14 +20,13 @@ export class CustomerCallIn extends React.Component {
 
     componentDidMount = () => {
         this.setState({
-            selectedMonth: getMonth(new Date()),
-            selectedDate: new Date(),
+            selectedDate: null,
         })
     }
 
     handleCancel = () => {
         this.setState({
-            selectedDate: {},
+            selectedDate: null,
             showDatePicker: false,
         })
         this.props.onClose()
@@ -36,14 +34,10 @@ export class CustomerCallIn extends React.Component {
 
     handleSubmit = () => {
         this.setState({
-            selectedDate: {},
+            selectedDate: null,
             showDatePicker: false
         })
         this.props.onClose()
-    }
-
-    handleMonthChange = (month) => {
-        this.setState({ selectedMonth: getMonth(month) })
     }
 
     handleZipcodeSelect = (zipcode, action) => {
@@ -64,15 +58,21 @@ export class CustomerCallIn extends React.Component {
     }
 
     renderDatePicker = () => {
+        let zipcode = this.props.userConfig.zipcodes.find(zip => zip.zipcode === this.state.selectedZipcode)
         if (this.state.showDatePicker) {
             return (
                 <BlockContainer>
                     <H4>Select A Pickup Date</H4>
-                    <OverviewDatePicker selectedDate={this.state.selectedDate}
-                        handleClick={this.selectDate}
-                        handleMonthChange={this.handleMonthChange}
-                        selectedMonth={this.state.selectedMonth}
+                    <DayPicker
+                        disabledDays={getDisabledDates(zipcode.weekdays)}
+                        onDayClick={this.handleDayClick}
+                        selectedDays={this.state.selectedDate}
                     />
+                    <p>
+                        {this.state.selectedDate
+                            ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                            : ''}
+                    </p>
                 </BlockContainer>
             )
         }
@@ -81,16 +81,17 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    selectDate = (date) => {
+    handleDayClick = (date) => {
         this.setState({
             selectedDate: date
         })
     }
 
     render() {
-        let zipcodes = []
+        let zipcodeOptions = []
         if (this.props.userConfig.zipcodes) {
-            zipcodes = this.props.userConfig.zipcodes.map(zipcode => ({ value: zipcode.zipcode, label: zipcode.zipcode }))
+            zipcodeOptions = this.props.userConfig.zipcodes.map(zipcode => ({ value: zipcode.zipcode, label: zipcode.zipcode }));
+
         }
         return (
             <Dialog isOpen={this.props.isOverlayOpen}
@@ -102,13 +103,13 @@ export class CustomerCallIn extends React.Component {
                     <H4>Select The Pickup Zipcode</H4>
                     <SelectContainer>
                         <Select
-                            value={{value: this.state.selectedZipcode, label: this.state.selectedZipcode}}
+                            value={{ value: this.state.selectedZipcode, label: this.state.selectedZipcode }}
                             onChange={this.handleZipcodeSelect}
-                            options={zipcodes}
+                            options={zipcodeOptions}
                             isClearable={true}
                         />
                     </SelectContainer>
-                    {this.renderDatePicker()}
+                    {this.props.userConfig.zipcodes ? this.renderDatePicker() : ''}
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>

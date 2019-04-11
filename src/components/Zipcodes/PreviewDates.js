@@ -9,13 +9,6 @@ class PreviewDates extends React.Component {
     }
 
     render() {
-        const modifiersStyles = {
-            selected: {
-                fontWeight: '800',
-                color: 'blue',
-                backgroundColor: 'transparent'
-            },
-        };
         return (
             <Dialog isOpen={this.props.isOpen}
                 title='Preview Dates'
@@ -23,8 +16,7 @@ class PreviewDates extends React.Component {
             >
                 <div>
                     <DayPicker
-                        selectedDays={this.props.disabledDates}
-                        modifiersStyles={modifiersStyles}
+                        disabledDays={this.props.disabledDates}
                     />
                 </div>
                 <div className={Classes.DIALOG_FOOTER}>

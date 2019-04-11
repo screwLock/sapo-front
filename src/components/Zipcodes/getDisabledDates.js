@@ -1,4 +1,5 @@
 import eachDay from 'date-fns/each_day'
+import { isSameDay } from 'date-fns';
 
 const nthWeekdayOfMonth = (weekday, n, iDate) => {
     let month = iDate.getMonth();
@@ -63,16 +64,15 @@ const convertToDates = (weekdays) => {
     return arrayOfDates
 }
 
-const getDisabledDates = (weekdays) => {
+
+const getDisabledDates = (weekdays, iDate = new Date()) => {
+    let startDate = new Date( iDate.getFullYear(), -3, 1)
+    let endDate = new Date ( iDate.getFullYear(),  14, 1)
+    let dateRange = eachDay(startDate, endDate)
     let convertedDates = convertToDates(weekdays)
 
-    //these days should match converted dates from nthWeekdayOfEveryMonth() 
-    let startDate = new Date( new Date().getFullYear, -3, 1)
-    let endDate = new Date ( new Date().getFullYear,  14, 1)
-    let disabledDates = [ ...eachDay(startDate, endDate), ...convertedDates]
-    // disabledDates = [ ...new Set(disabledDates) ]
-    console.log(startDate)
-    return disabledDates
+    //get the difference of the two date arrays
+    return [dateRange, convertedDates].sort((a,b)=> b.length - a.length).reduce((a,b)=>a.filter(o => !b.some(v => isSameDay(o,v))));
 }
 
 export default getDisabledDates;
