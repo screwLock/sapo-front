@@ -57,14 +57,14 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    renderDatePicker = () => {
+    renderDatePicker = (blackoutDates) => {
         let zipcode = this.props.userConfig.zipcodes.find(zip => zip.zipcode === this.state.selectedZipcode)
         if (this.state.showDatePicker) {
             return (
                 <BlockContainer>
                     <H4>Select A Pickup Date</H4>
                     <DayPicker
-                        disabledDays={getDisabledDates(zipcode.weekdays)}
+                        disabledDays={[...getDisabledDates(zipcode.weekdays), ...blackoutDates]}
                         onDayClick={this.handleDayClick}
                         selectedDays={this.state.selectedDate}
                     />
@@ -89,9 +89,12 @@ export class CustomerCallIn extends React.Component {
 
     render() {
         let zipcodeOptions = []
+        let blackoutDates = []
         if (this.props.userConfig.zipcodes) {
             zipcodeOptions = this.props.userConfig.zipcodes.map(zipcode => ({ value: zipcode.zipcode, label: zipcode.zipcode }));
-
+        }
+        if (this.props.userConfig.blackoutDates){
+            blackoutDates = this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date))
         }
         return (
             <Dialog isOpen={this.props.isOverlayOpen}
@@ -109,7 +112,7 @@ export class CustomerCallIn extends React.Component {
                             isClearable={true}
                         />
                     </SelectContainer>
-                    {this.props.userConfig.zipcodes ? this.renderDatePicker() : ''}
+                    {this.props.userConfig.zipcodes ? this.renderDatePicker(blackoutDates) : ''}
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
