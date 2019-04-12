@@ -12,12 +12,12 @@ class EditZipcode extends React.Component {
         super(props)
         this.state = {
             zipcode: '',
-            weekdays: []
+            weekdays: weekdays.slice(),
         }
     }
 
     componentDidMount = () => {
-        this.setState({ zipcode: this.props.getEditZipcode().zipcode, weekdays: this.props.getEditZipcode().weekdays })
+        this.setState({zipcode: this.props.zipcode.zipcode, weekdays: this.props.zipcode.weekdays })
     }
 
     isAllChecked = (index) => {
@@ -49,15 +49,13 @@ class EditZipcode extends React.Component {
     }
 
     handleCheckedChange = (index) => (e) => {
+        // console.log(index)
+        // console.log(this.state.weekdays)
+        // the above is changing like its supposed to ...
         this.setState(
             produce(this.state, draft => {
                 draft.weekdays[index][e.target.name] = !draft.weekdays[index][e.target.name]
             }), () => this.isAllChecked(index))
-    }
-
-    handleClose = () => {
-        this.setState({ zipcode: '', weekdays: weekdays.slice() });
-        this.props.handleClose(this.props.index);
     }
 
     handleSubmit = () => {
@@ -69,8 +67,6 @@ class EditZipcode extends React.Component {
         }
         else {
             this.props.editZipcode({ zipcode: this.state.zipcode, weekdays: this.state.weekdays });
-            //reset the checked weekday values
-            this.setState({ zipcode: '', weekdays: weekdays.slice() });
             this.props.handleClose();
             //database call
             //show toast if save successful
@@ -82,20 +78,20 @@ class EditZipcode extends React.Component {
     }
 
     render() {
-        let title = 'Edit Zipcode';
         return (
             <Dialog isOpen={this.props.isOpen}
-                title={title}
-                onClose={this.handleClose}
+                title='Edit Zipcode'
+                onClose={this.props.handleClose}
                 style={{ width: '750px' }}
             >
                 <DialogContainer>
-                    <H3>Edit Zipcode {this.props.getEditZipcode().zipcode}</H3>
+                    <H3>Edit Zipcode {this.props.zipcode.zipcode}</H3>
                     <ZipcodeInputGroup id="zipcode-value"
                         placeholder="Enter a Zipcode"
-                        defaultValue = {this.props.getEditZipcode().zipcode}
+                        defaultValue = {this.props.zipcode.zipcode}
                         // we use onBlur to modify the dialog's state zipcode
                         onBlur={this.handleBlur}
+                        key = {this.props.zipcode.zipcode}
                     />
                     <ZipcodeWeekdays
                         onChange={this.handleCheckedChange}
@@ -104,7 +100,7 @@ class EditZipcode extends React.Component {
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.props.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>

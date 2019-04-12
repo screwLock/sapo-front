@@ -11,7 +11,9 @@ export class CustomerCallIn extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            pickup: {},
+            name: '',
+            streetAddress: '',
+            phone: '',
             selectedDate: null,
             selectedZipcode: '',
             showDatePicker: false,
@@ -81,6 +83,27 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
+    renderPickupDetails = () => {
+        return (
+            <BlockContainer>
+                <H4>Pickup Address</H4>
+                <H4>Contact Info</H4>
+            </BlockContainer>
+        )
+    }
+
+    renderPickupItems = () => {
+        return (
+            <BlockContainer>
+                <H4>Select Donations</H4>
+            </BlockContainer>
+        )
+    }
+
+    renderServiceDetails = () => {
+        return ''
+    }
+
     handleDayClick = (date) => {
         this.setState({
             selectedDate: date
@@ -93,7 +116,7 @@ export class CustomerCallIn extends React.Component {
         if (this.props.userConfig.zipcodes) {
             zipcodeOptions = this.props.userConfig.zipcodes.map(zipcode => ({ value: zipcode.zipcode, label: zipcode.zipcode }));
         }
-        if (this.props.userConfig.blackoutDates){
+        if (this.props.userConfig.blackoutDates) {
             blackoutDates = this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date))
         }
         return (

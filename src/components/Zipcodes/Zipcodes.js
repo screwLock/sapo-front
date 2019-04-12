@@ -76,10 +76,6 @@ class Zipcodes extends React.Component {
         }
     }
 
-    getEditZipcode = () => {
-        return this.state.editZipcode
-    }
-
     showToast = (message) => {
         AppToaster.show({ message: message });
     }
@@ -102,13 +98,16 @@ class Zipcodes extends React.Component {
     }
 
     handleEditZipcodeOpen = (index) => {
-        this.handleEditIndexChange(index);
-        this.createEditZipcode(index)
-        this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen });
+        // change the Edit Index to the new index
+        this.setState({ editIndex: index }, 
+        // now change the edit zipcode to the indexed zipcode
+            () => this.createEditZipcode(index))
+        // now close the dialog (can be async)
+        this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen })
     }
 
-    handleEditIndexChange = (index) => {
-        this.setState({ editIndex: index })
+    handleEditZipcodeClose = () => {
+        this.setState({ isEditZipcodeOpen: false})
     }
 
     handlePreviewClose = () => {
@@ -116,8 +115,8 @@ class Zipcodes extends React.Component {
     }
 
     handlePreviewOpen = (dates) => {
-        this.setState({ previewDisabledDates: dates })
-        this.setState({ isPreviewOpen: true })
+        this.setState({ previewDisabledDates: dates, isPreviewOpen: true })
+        // this.setState({ isPreviewOpen: true })
     }
 
     render() {
@@ -134,10 +133,9 @@ class Zipcodes extends React.Component {
                 />
                 <EditZipcode editZipcode={this.editZipcode}
                     isOpen={this.state.isEditZipcodeOpen}
-                    handleClose={this.handleEditZipcodeOpen}
+                    handleClose={this.handleEditZipcodeClose}
                     index={this.state.editIndex}
                     zipcode={this.state.editZipcode}
-                    getEditZipcode={this.getEditZipcode}
                     key={this.state.editZipcode.zipcode}
                 />
                 <ZipcodesTable data={this.state.zipcodes}
