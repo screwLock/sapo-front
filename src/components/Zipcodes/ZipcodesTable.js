@@ -5,6 +5,7 @@ import DayPicker from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import "react-table/react-table.css"
 import getDisabledDates from './getDisabledDates'
+import styled from 'styled-components'
 
 class ZipcodesTable extends React.Component {
 
@@ -29,16 +30,18 @@ class ZipcodesTable extends React.Component {
         {
             Header: 'Actions',
             Cell: (row) => (
-                <div>
-                    <Button intent={Intent.PRIMARY}
-                        icon="edit"
-                        onClick={() => this.props.editZipcode(row.index)}
-                    />
-                    <Button intent={Intent.DANGER}
-                        icon="trash"
-                        onClick={() => this.props.delete(row.index)}
-                    />
-                </div>
+                <ActionsCell>
+                    <ActionsContainer>
+                        <Button intent={Intent.PRIMARY}
+                            icon="edit"
+                            onClick={() => this.props.editZipcode(row.index)}
+                        />
+                        <Button intent={Intent.DANGER}
+                            icon="trash"
+                            onClick={() => this.props.delete(row.index)}
+                        />
+                    </ActionsContainer>
+                </ActionsCell>
             ),
             width: 200
         }
@@ -100,5 +103,16 @@ class ZipcodesTable extends React.Component {
         )
     }
 }
+
+const ActionsCell = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
+const ActionsContainer = styled.div`
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+`
 
 export default ZipcodesTable;
