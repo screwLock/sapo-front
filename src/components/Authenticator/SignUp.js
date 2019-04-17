@@ -29,6 +29,9 @@ class SignUp extends React.Component {
             phone: '',
             password: '',
             confirmPassword: '',
+            adminEmail: '',
+            adminPassword: '',
+            adminConfirmPassword: '',
             access: 'admin',
             isChecked: false,
             isTermsOpen: false,
@@ -40,14 +43,14 @@ class SignUp extends React.Component {
     }
 
     handleCheckedChange = (e) => {
-        this.setState({isChecked: !this.state.isChecked})
+        this.setState({ isChecked: !this.state.isChecked })
     }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleTermsClose = () => this.setState({ isTermsOpen: false})
+    handleTermsClose = () => this.setState({ isTermsOpen: false })
 
-    handleTermsOpen = () => this.setState({ isTermsOpen: true})
+    handleTermsOpen = () => this.setState({ isTermsOpen: true })
 
     handleSignUp = () => {
         if (this.validateForms()) {
@@ -129,6 +132,26 @@ class SignUp extends React.Component {
             this.setState({ error: 'Your password does not meet the requirements' })
             return false
         }
+        else if (!EmailValidator.validate(this.state.adminEmail)){
+            this.setState({ error: 'Enter a valid admin email'})
+            return false
+        }
+        else if (this.state.adminEmail === this.state.email){
+            this.setState({ error: 'Login email should not be the same as the admin email'})
+            return false
+        }
+        else if (this.state.adminPassword.length <= 0){
+            this.setState({ error: 'Pleae enter an admin password'})
+            return false
+        }
+        else if (this.state.adminConfirmPassword.length <= 0){
+            this.setState({ error: 'Please confirm your admin password'})
+            return false
+        }
+        else if(this.state.adminPassword !== this.state.adminConfirmPassword){
+            this.setState({ error: 'Your admin passwords do not match'})
+            return false
+        }
         else if (!this.state.isChecked) {
             this.setState({ error: 'You must agree to the terms of service' })
             return false
@@ -172,6 +195,7 @@ class SignUp extends React.Component {
                         <FormGroup
                             label="Email"
                             labelFor="text-input"
+                            helperText="This email will be used by ALL users to log in to the main page"
                         >
                             <InputGroup name="email" onChange={this.handleChange} />
                         </FormGroup>
@@ -200,7 +224,27 @@ class SignUp extends React.Component {
                         >
                             <InputGroup name="confirmPassword" onChange={this.handleChange} type='password' />
                         </FormGroup>
-                        <TermsContainer>I accept the 
+                        <TitleRow>Administrative Login</TitleRow>
+                        <FormGroup
+                            label="Admin Email"
+                            labelFor="text-input"
+                            helperText="This email will be used for administrative login"
+                        >
+                            <InputGroup name="adminEmail" onChange={this.handleChange}/>
+                        </FormGroup>
+                        <FormGroup
+                            label="Admin Password"
+                            labelFor="text-input"
+                        >
+                            <InputGroup name="adminPassword" onChange={this.handleChange} type='password' />
+                        </FormGroup>
+                        <FormGroup
+                            label="Confirm Admin Password"
+                            labelFor="text-input"
+                        >
+                            <InputGroup name="adminConfirmPassword" onChange={this.handleChange} type='password' />
+                        </FormGroup>
+                        <TermsContainer>I accept the
                             <a onClick={this.handleTermsOpen}> SAPO terms of service.</a>
                             <TermsCheckbox checked={this.state.isChecked} inline={true} onChange={this.handleCheckedChange} />
                         </TermsContainer>
@@ -220,14 +264,13 @@ class SignUp extends React.Component {
                         <SuccessContainer>{this.showSuccessMessage()}</SuccessContainer>
                     </FormContainer>
                 </Container>
-                <Terms onClose={this.handleTermsClose} isOpen={this.state.isTermsOpen}/>
+                <Terms onClose={this.handleTermsClose} isOpen={this.state.isTermsOpen} />
             </div>
         );
     }
 }
 
 const Container = styled.div`
-    position: absolute;
     width: 100%;
     height: 100%;
     display: flex;
@@ -239,7 +282,8 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 350px;
-    margin-top: 150px;
+    margin-top: 25px;
+    margin-bottom: 50px;
 `;
 
 const Logo = styled.div`
@@ -250,10 +294,16 @@ const Logo = styled.div`
     margin:0;
 `;
 
+const TitleRow = styled.div`
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 15px;
+`;
+
 const ButtonRow = styled.div`
     display: flex;
     justify-content: flex-end;
-    margin-top: 10px;
+    margin-top: 25px;
 `;
 
 const ErrorContainer = styled.p`

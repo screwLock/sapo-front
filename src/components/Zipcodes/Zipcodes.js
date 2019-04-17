@@ -29,7 +29,7 @@ class Zipcodes extends React.Component {
           return;
         }
         try {
-          const userConfig = await this.getUserConfig();
+          const userConfig = await this.props.getUserConfig();
           if (userConfig.zipcodes !== null) {
             this.setState({ userConfig, zipcodes: userConfig.zipcodes });
           }
@@ -41,10 +41,6 @@ class Zipcodes extends React.Component {
         }
     }
 
-    getUserConfig = () => {
-        return API.get("sapo", '/users');
-    }
-
     addZipcode = (zipcode) => {
         this.setState(
             produce(draft => {
@@ -54,11 +50,7 @@ class Zipcodes extends React.Component {
     }
 
     saveZipcodes = () => {
-        API.post("sapo", "/users", {
-          body: {
-            zipcodes: this.state.zipcodes
-          }
-        });
+        this.props.updateUserConfig('zipcodes', this.state.zipcodes, { zipcodes: this.state.zipcodes})
       }
 
     editZipcode = (edit) => {
@@ -68,15 +60,19 @@ class Zipcodes extends React.Component {
         zipcodes[index] = edit;
         this.setState({
             zipcodes: zipcodes
-        })
+        }, async () => await this.saveZipcodes())
     }
 
-    getEditZipcode = (index) => {
+    createEditZipcode = (index) => {
         if (this.state.zipcodes[index]) {
-            this.setState({ editZipcode: { weekdays: this.state.zipcodes[index].weekdays.slice(), zipcode: this.state.zipcodes[index].zipcode }})
+            this.setState({ editZipcode: { weekdays: this.state.zipcodes[index].weekdays.slice(),
+                            zipcode: this.state.zipcodes[index].zipcode }
+                        })
         }
         else {
-            this.setState({ editZipcode: { weekdays: [], zipcode: '' } })
+            this.setState({ editZipcode: { weekdays: [], 
+                                           zipcode: '' } 
+                        })
         }
     }
 
@@ -102,13 +98,16 @@ class Zipcodes extends React.Component {
     }
 
     handleEditZipcodeOpen = (index) => {
-        this.handleEditIndexChange(index);
-        this.getEditZipcode(index)
-        this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen });
+        // change the Edit Index to the new index
+        this.setState({ editIndex: index }, 
+        // now change the edit zipcode to the indexed zipcode
+            () => this.createEditZipcode(index))
+        // now close the dialog (can be async)
+        this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen })
     }
 
-    handleEditIndexChange = (index) => {
-        this.setState({ editIndex: index })
+    handleEditZipcodeClose = () => {
+        this.setState({ isEditZipcodeOpen: false})
     }
 
     handlePreviewClose = () => {
@@ -116,8 +115,8 @@ class Zipcodes extends React.Component {
     }
 
     handlePreviewOpen = (dates) => {
-        this.setState({ previewDisabledDates: dates })
-        this.setState({ isPreviewOpen: true })
+        this.setState({ previewDisabledDates: dates, isPreviewOpen: true })
+        // this.setState({ isPreviewOpen: true })
     }
 
     render() {
@@ -134,10 +133,10 @@ class Zipcodes extends React.Component {
                 />
                 <EditZipcode editZipcode={this.editZipcode}
                     isOpen={this.state.isEditZipcodeOpen}
-                    handleClose={this.handleEditZipcodeOpen}
+                    handleClose={this.handleEditZipcodeClose}
                     index={this.state.editIndex}
                     zipcode={this.state.editZipcode}
-                    key={this.state.zipcodes}
+                    key={this.state.editZipcode.zipcode}
                 />
                 <ZipcodesTable data={this.state.zipcodes}
                     editZipcode={this.handleEditZipcodeOpen}

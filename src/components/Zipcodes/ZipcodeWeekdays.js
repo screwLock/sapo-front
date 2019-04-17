@@ -12,7 +12,7 @@ class ZipcodeWeekdays extends React.Component {
       <div>
         <H5>Select the Pickup Days for this Zipcode</H5>
         {days.map((weekday, index) =>
-          <div>
+          <div key={weekday.day}>
             <span style={{width: '20px', display: 'block', margin: '5px'}}><span style={{fontWeight: '600'}}>{`${weekday.day}`}</span></span>
             <Checkbox
               label='All'

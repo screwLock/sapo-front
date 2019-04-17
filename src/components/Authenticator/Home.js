@@ -10,7 +10,7 @@ class Home extends React.Component {
     static defaultProps = {
         authData: {},
         authState: 'LoggedIn',
-        onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
+        onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); },
     };
 
     constructor(props) {
@@ -25,30 +25,71 @@ class Home extends React.Component {
             password: this.props.authData.password || '',
             user: null,
             userConfig: {},
+            isAdminLoggedIn: false
         };
     }
 
     componentDidMount = async () => {
         if (!this.props.authState) {
-          return;
+            return;
         }
-      
+
         try {
-          const userConfig = await this.getUserConfig();
-          this.setState({ userConfig });
-          console.log(userConfig)
+            const userConfig = await this.getUserConfig();
+            this.setState({ userConfig });
+            // console.log(userConfig)
         } catch (e) {
-          alert(e);
+            alert(e);
         }
-      
+
         // this.setState({ isLoading: false });
-      }
-      
+    }
+
     getUserConfig = () => {
         return API.get("sapo", '/users');
     }
 
-    render() {
+    // only works with one key, will have to use custom function for
+    // donorPage!
+
+    updateUserConfig = (key, update, jsonBody) => {
+        jsonBody = { ...this.state.userConfig, ...jsonBody}
+        this.setState(prevState => ({
+            userConfig: {
+                ...prevState.userConfig,
+                [key]: update
+            }
+        }), () =>  {
+            API.post("sapo", "/users", {
+                body: jsonBody
+            })
+        })
+    }
+
+    handleAdminLogin = () => {
+        this.setState({ isAdminLoggedIn: !this.state.isAdminLoggedIn })
+    }
+
+    renderAdmin = () => {
+        return (
+            <Grid
+                columns={"150px 1fr 50px"}
+                rows={"70px 1fr 45px"}
+                areas={[
+                    "header header  header",
+                    "menu   content ads   ",
+                    "footer footer  footer"
+                ]}
+            >
+                <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} isAdminLoggedIn={this.state.isAdminLoggedIn} /></Cell>
+                <Cell area="menu"><NavBar {...this.props} /></Cell>
+                <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
+            </Grid>
+        )
+
+    }
+
+    renderNonAdmin = () => {
         return (
             <div>
                 <Grid
@@ -56,16 +97,24 @@ class Home extends React.Component {
                     rows={"70px 1fr 45px"}
                     areas={[
                         "header header  header",
-                        "menu   content ads   ",
+                        "content content content",
                         "footer footer  footer"
                     ]}
                 >
-                    <Cell area="header"><Header {...this.props}/></Cell>
-                    <Cell area="menu"><NavBar {...this.props}/></Cell>
-                    <Cell area="content"><Main {...this.props}/></Cell>
+                    <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
+                    <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
                 </Grid>
             </div>
         )
+    }
+
+    render() {
+        if (this.state.isAdminLoggedIn) {
+            return this.renderAdmin()
+        }
+        else {
+            return this.renderNonAdmin()
+        }
     }
 }
 

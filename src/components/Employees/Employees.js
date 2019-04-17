@@ -16,7 +16,14 @@ class Employees extends React.Component {
       isEmployeeOpen: false,
       isEditEmployeeOpen: false,
       editIndex: '',
-      editEmployee: '',
+      editEmployee: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        employeeID: '',
+        access: 'Volunteer'
+      },
       userConfig: {}
     }
   }
@@ -30,19 +37,25 @@ class Employees extends React.Component {
   }
 
   saveEmployees = () => {
-    API.post("sapo", "/users", {
-      body: {
-        employees: this.state.employees
-      }
-    });
+    this.props.updateUserConfig('employees', this.state.employees, {employees: this.state.employees})
   }
+
+  editEmployee = (edit) => {
+    let employees = [...this.state.employees]
+    let index = this.state.editIndex
+    //update in database
+    employees[index] = edit;
+    this.setState({
+        employees: employees
+    }, async () => await this.saveEmployees())
+}
 
   componentDidMount = async () => {
     if (!this.props.authState) {
       return;
     }
     try {
-      const userConfig = await this.getUserConfig();
+      const userConfig = await this.props.getUserConfig();
       if (userConfig.employees !== null) {
         this.setState({ userConfig, employees: userConfig.employees });
       }
@@ -54,11 +67,7 @@ class Employees extends React.Component {
     }
   }
 
-  getUserConfig = () => {
-    return API.get("sapo", '/users');
-  }
-
-  getEditEmployee = (index) => {
+  createEditEmployee = (index) => {
     if (this.state.employees[index]) {
       this.setState({ editEmployee: this.state.employees[index] })
     }
@@ -67,6 +76,9 @@ class Employees extends React.Component {
     }
   }
 
+  getEditEmployee = () => {
+    return this.state.editEmployee
+  }
 
   handleDeleteEmployees = (i) => {
     let employees = [...this.state.employees]
@@ -83,7 +95,11 @@ class Employees extends React.Component {
 
   handleEditEmployeeOpen = (index) => {
     this.handleEditIndexChange(index);
-    this.getEditEmployee(index)
+    this.createEditEmployee(index)
+    this.setState({ isEditEmployeeOpen: !this.state.isEditEmployeeOpen })
+  }
+
+  handleEditEmployeeClose = () => {
     this.setState({ isEditEmployeeOpen: !this.state.isEditEmployeeOpen })
   }
 
@@ -107,12 +123,13 @@ class Employees extends React.Component {
           isEmployeeOpen={this.state.isEmployeeOpen}
           handleEmployeeOpen={this.handleEmployeeOpen}
         />
-        <EditEmployee addEmployee={this.addEmployee}
+        <EditEmployee editEmployee={this.editEmployee}
           employees={this.state.employees}
           isOpen={this.state.isEditEmployeeOpen}
-          handleClose={this.handleEditEmployeeOpen}
+          handleClose={this.handleEditEmployeeClose}
           index={this.state.editIndex}
-          employee={this.state.editEmployee}
+          getEditEmployee={this.getEditEmployee}
+          key={this.state.editEmployee.email}
         />
         <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} editEmployee={this.handleEditEmployeeOpen}/>
       </Container>

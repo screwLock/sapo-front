@@ -2,6 +2,7 @@ import * as React from 'react'
 import ReactTable from 'react-table'
 import { Button, Intent } from '@blueprintjs/core'
 import "react-table/react-table.css"
+import styled from 'styled-components'
 
 class EmployeesTable extends React.Component {
 
@@ -15,7 +16,7 @@ class EmployeesTable extends React.Component {
     }, {
         Header: 'First Name',
         accessor: 'firstName'
-    
+
     }, {
         Header: 'Email',
         accessor: 'email'
@@ -23,23 +24,25 @@ class EmployeesTable extends React.Component {
         Header: 'Phone Number',
         accessor: 'phoneNumber'
     }, {
-        Header: 'Access',
+        Header: 'Role',
         accessor: 'access',
         width: 125,
-    }, 
+    },
     {
         Header: 'Actions',
         Cell: (row) => (
-            <div>
-                <Button intent={Intent.PRIMARY}
-                    icon="edit"
-                    onClick={() => this.props.editEmployee(row.index)}
-                />
-                <Button intent={Intent.DANGER}
-                    icon="trash"
-                    onClick={() => this.props.delete(row.index)}
-                />
-            </div>
+            <ActionsCell>
+                <ActionsContainer>
+                    <Button intent={Intent.PRIMARY}
+                        icon="edit"
+                        onClick={() => this.props.editEmployee(row.index)}
+                    />
+                    <Button intent={Intent.DANGER}
+                        icon="trash"
+                        onClick={() => this.props.delete(row.index)}
+                    />
+                </ActionsContainer>
+            </ActionsCell>
         ),
         width: 200
     }
@@ -54,7 +57,7 @@ class EmployeesTable extends React.Component {
             style: {
                 'boxShadow': 'none',
                 'border': 'none',
-                'fontWeight' : 'bold'
+                'fontWeight': 'bold'
             }
         }
     }
@@ -97,5 +100,16 @@ class EmployeesTable extends React.Component {
         )
     }
 }
+
+const ActionsCell = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
+const ActionsContainer = styled.div`
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+`
 
 export default EmployeesTable;

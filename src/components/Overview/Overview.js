@@ -6,6 +6,8 @@ import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
 import pickupMocks from './mocks/pickupMocks';
 import { userMocks } from './mocks/userMocks.js'
+import { format, getMonth } from 'date-fns'
+import { API } from "aws-amplify"
 
 class Overview extends Component {
   constructor(props) {
@@ -15,19 +17,36 @@ class Overview extends Component {
       allPickups: [],
       selectedPickup: null,
       selectedDate: new Date(),
+      selectedMonth: {},
+      unconfirmedDates: [],
       user: {},
+      userConfig: {},
       newRoute: false,
       search: ''
     }
   }
 
-  componentDidMount() {
-    const addedRoutes = pickupMocks.map(pickup => pickup.inRoute = false)
-    this.setState({
-      pickups: pickupMocks,
-      allPickups: addedRoutes,
-      user: userMocks
-    })
+  componentDidMount = async () => {
+    if (!this.props.authState) {
+      return;
+    }
+
+    try {
+      const userConfig = await this.props.getUserConfig();
+      if (userConfig.blackoutDates !== null) {
+        this.setState({ userConfig,
+          pickups: pickupMocks,
+          allPickups: pickupMocks.map(pickup => pickup.inRoute = false),
+          user: userMocks,
+          selectedMonth: getMonth(new Date())
+        });
+      }
+      else {
+        this.setState({ userConfig })
+      }
+    } catch (e) {
+      alert(e);
+    }
   }
 
   createRoute = () => {
@@ -47,7 +66,11 @@ class Overview extends Component {
           routeKey={this.state.newRoute}
         />
         </Cell>
-        <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate} handleClick={this.selectDate} /></Cell>
+        <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate} 
+                                            handleClick={this.selectDate} 
+                                            handleMonthChange={this.handleMonthChange}
+                                            selectedMonth={this.state.selectedMonth}
+        /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
           user={this.state.user}
           routes={this.state.routes}
@@ -56,6 +79,7 @@ class Overview extends Component {
           onDragEnd={this.onDragEnd}
           handleRouteChange={this.handleRouteChange}
           createRoute={this.createRoute}
+          userConfig={this.state.userConfig}
         />
         </Cell>
       </Grid>
@@ -70,7 +94,7 @@ class Overview extends Component {
 
   selectPickup = (pickup) => {
     this.setState({
-      selectedPickup: pickup
+      selectedPickup: pickup,
     })
   };
 
@@ -81,11 +105,18 @@ class Overview extends Component {
       }));
   }
 
+  handleMonthChange = (month) => {
+    this.setState({selectedMonth: getMonth(month)})
+  }
+
+  // for the datepicker ondayclick handler
+  // unconfirmed pickups should be shown based
+  // on the month of the selected day
   selectDate = (date) => {
     this.setState({
       selectedDate: date
     })
-  };
+  }
 }
 
 export default Overview;

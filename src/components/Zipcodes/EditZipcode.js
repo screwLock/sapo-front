@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { postalCodeValidator } from './postalCodeValidator'
 import ZipcodeWeekdays from './ZipcodeWeekdays'
-import ZipcodeInput from './ZipcodeInput'
 import { weekdays, IWeekday } from "./checkedWeekdays";
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer';
@@ -12,26 +11,14 @@ class EditZipcode extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            zipcode: this.getInitialState.zipcode,
-            weekdays: this.getInitialState.weekdays,
+            zipcode: '',
+            weekdays: weekdays.slice(),
         }
     }
 
-    getInitialState = () => {
-        if (this.props.zipcode) {
-            return {
-                zipcode: this.props.zipcode.zipcode,
-                weekdays: this.props.zipcode.weekdays,
-            }
-        }
-        else {
-            return {
-                zipcode: '',
-                weekdays: weekdays
-            }
-        }
+    componentDidMount = () => {
+        this.setState({zipcode: this.props.zipcode.zipcode, weekdays: this.props.zipcode.weekdays })
     }
-
 
     isAllChecked = (index) => {
         if (this.state.weekdays[index].all === true) {
@@ -62,15 +49,13 @@ class EditZipcode extends React.Component {
     }
 
     handleCheckedChange = (index) => (e) => {
+        // console.log(index)
+        // console.log(this.state.weekdays)
+        // the above is changing like its supposed to ...
         this.setState(
             produce(this.state, draft => {
                 draft.weekdays[index][e.target.name] = !draft.weekdays[index][e.target.name]
             }), () => this.isAllChecked(index))
-    }
-
-    handleClose = () => {
-        this.setState({ zipcode: '', weekdays: weekdays.slice() });
-        this.props.handleClose();
     }
 
     handleSubmit = () => {
@@ -82,10 +67,7 @@ class EditZipcode extends React.Component {
         }
         else {
             this.props.editZipcode({ zipcode: this.state.zipcode, weekdays: this.state.weekdays });
-            //reset the checked weekday values
-            this.setState({ zipcode: '', weekdays: weekdays.slice() });
             this.props.handleClose();
-            console.log(this.props.index)
             //database call
             //show toast if save successful
         }
@@ -96,17 +78,20 @@ class EditZipcode extends React.Component {
     }
 
     render() {
-        let title = 'Edit Zipcode';
         return (
             <Dialog isOpen={this.props.isOpen}
-                title={title}
-                onClose={this.handleClose}
+                title='Edit Zipcode'
+                onClose={this.props.handleClose}
                 style={{ width: '750px' }}
             >
                 <DialogContainer>
-                    <ZipcodeInput
+                    <H3>Edit Zipcode {this.props.zipcode.zipcode}</H3>
+                    <ZipcodeInputGroup id="zipcode-value"
+                        placeholder="Enter a Zipcode"
+                        defaultValue = {this.props.zipcode.zipcode}
+                        // we use onBlur to modify the dialog's state zipcode
                         onBlur={this.handleBlur}
-                        value={this.state.zipcode}
+                        key = {this.props.zipcode.zipcode}
                     />
                     <ZipcodeWeekdays
                         onChange={this.handleCheckedChange}
@@ -115,7 +100,7 @@ class EditZipcode extends React.Component {
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.props.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
                     </div>
                 </div>
@@ -128,6 +113,10 @@ const DialogContainer = styled.div`
     width: 750px;
     margin: 20px;
     margin-top: 10px;
+`
+
+const ZipcodeInputGroup = styled(InputGroup)`
+    width: 150px;
 `
 
 export default EditZipcode;

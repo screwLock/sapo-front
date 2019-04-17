@@ -22,7 +22,7 @@ class BlackoutDates extends React.Component {
       return;
     }
     try {
-      const userConfig = await this.getUserConfig();
+      const userConfig = await this.props.getUserConfig();
       if (userConfig.blackoutDates !== null) {
         this.setState({ userConfig, dates: userConfig.blackoutDates });
       }
@@ -36,34 +36,26 @@ class BlackoutDates extends React.Component {
     // this.setState({ isLoading: false });
   }
 
-  getUserConfig = () => {
-    return API.get("sapo", '/users');
-  }
-
   addDates = (newDates, newReason) => {
     const datesWithReason = newDates.map((dateWithoutReason) => { return { date: dateWithoutReason.toISOString(), reason: newReason } })
     if (this.state.dates) {
       this.setState(
         produce(draft => {
           draft.dates = [...draft.dates, ...datesWithReason]
-        }), async () => await this.saveDates()
+        }), async () => await this.props.updateUserConfig('blackoutDates',
+        this.state.dates,
+        { blackoutDates: this.state.dates })
       )
     }
     else {
       this.setState(
         produce(draft => {
           draft.dates = [...datesWithReason]
-        }), async () => await this.saveDates()
+        }), async () => await this.props.updateUserConfig('blackoutDates',
+          this.state.dates,
+          { blackoutDates: this.state.dates })
       )
     }
-  }
-
-  saveDates = () => {
-    API.post("sapo", "/users", {
-      body: {
-        blackoutDates: this.state.dates
-      }
-    });
   }
 
   handleClick = () => {
@@ -80,17 +72,21 @@ class BlackoutDates extends React.Component {
     //save new dates array with removed dates in DB
     this.setState({
       dates: dates
-    }, async () => await this.saveDates())
+    }, async () => await this.props.updateUserConfig('blackoutDates',
+      this.state.dates,
+      { blackoutDates: this.state.dates }))
   }
 
   render() {
     return (
       <Container>
         <H3>Manage Blackout Dates</H3>
-        <Button intent={Intent.PRIMARY}
-          text='Add New Blackout Dates'
-          onClick={this.handleClick}
-        />
+        <ButtonRow>
+          <Button intent={Intent.PRIMARY}
+            text='Add New Blackout Dates'
+            onClick={this.handleClick}
+          />
+        </ButtonRow>
         <BlackoutDatesPicker addDates={this.addDates}
           dates={this.state.dates.map((date) => { return date.date })}
           isOpen={this.state.isDialogOpen}

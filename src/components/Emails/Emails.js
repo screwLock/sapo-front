@@ -18,6 +18,7 @@ class Emails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
+            emails: {},
             userConfig: {}
         }
     }
@@ -27,7 +28,7 @@ class Emails extends React.Component {
             return;
         }
         try {
-            const userConfig = await this.getUserConfig();
+            const userConfig = await this.props.getUserConfig();
             if (userConfig.emails !== null) {
                 this.setState({ userConfig, 
                     emails: userConfig.emails,
@@ -46,24 +47,6 @@ class Emails extends React.Component {
         }
     }
 
-    getUserConfig = () => {
-        return API.get("sapo", '/users');
-    }
-
-    saveEmail = () => {
-        return API.post("sapo", "/users", {
-            body: {
-                emails: {
-                    fromAddress: this.state.fromAddress,
-                    ccAddresses: this.state.ccAddresses,
-                    bccAddresses: this.state.bccAddresses,
-                    subjectLine: this.state.subjectLine,
-                    messageBody: this.state.messageBody,
-                }
-            }
-        });
-    }
-
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
     saveSettings = async () => {
@@ -78,10 +61,27 @@ class Emails extends React.Component {
         }
         else {
             try {
-                await this.saveEmail().then(this.showToast('Settings successfully saved.'))
+                await this.props.updateUserConfig('emails', {
+                    emails: {
+                        fromAddress: this.state.fromAddress,
+                        ccAddresses: this.state.ccAddresses,
+                        bccAddresses: this.state.bccAddresses,
+                        subjectLine: this.state.subjectLine,
+                        messageBody: this.state.messageBody,
+                    }}, 
+                    {
+                        emails: {
+                            fromAddress: this.state.fromAddress,
+                            ccAddresses: this.state.ccAddresses,
+                            bccAddresses: this.state.bccAddresses,
+                            subjectLine: this.state.subjectLine,
+                            messageBody: this.state.messageBody,
+                    }}
+                    )
+                this.showToast('Settings successfully saved.')
             }
             catch (e) {
-                this.showToast(e)
+                this.showToast('There was an error saving.  Try again')
             }
         }
     }
@@ -137,7 +137,7 @@ class Emails extends React.Component {
             return (
                 <div>
                     {data.map((d, index) => {
-                        return (<li key={index}>{d}
+                        return (<li key={d}>{d}
                             <Button intent={Intent.NONE}
                                 icon="cross"
                                 minimal={true}
@@ -154,7 +154,7 @@ class Emails extends React.Component {
             return (
                 <div>
                     {data.map((d, index) => {
-                        return (<li key={index}>{d}
+                        return (<li key={d}>{d}
                             <Button intent={Intent.NONE}
                                 icon="cross"
                                 minimal={true}
@@ -203,7 +203,7 @@ class Emails extends React.Component {
                         label='Message Body'
                     >
                         <TextArea
-                            small={true}
+                            small='true'
                             intent={Intent.PRIMARY}
                             onChange={this.handleChange}
                             value={this.state.messageBody}

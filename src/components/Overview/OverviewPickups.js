@@ -21,7 +21,7 @@ class OverviewPickups extends React.Component {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
         return datePickups.map((pickup, index) => {
             return (
-                <Cell height={1} width={4} left={2}>
+                <Cell height={1} width={4} left={2} key={pickup.id}>
                     <Draggable draggableId={pickup.id} index={index}>
                         {(provided) => (
                             <OverviewCard pickup={pickup}
@@ -62,7 +62,7 @@ class OverviewPickups extends React.Component {
         return (
             <div className="footer">
                 <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
-                <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} />
+                <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig}/>
                 <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups,this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
                 <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
             </div>
@@ -109,7 +109,7 @@ class OverviewPickups extends React.Component {
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         <Droppable droppableId="dropabble">
                             {(provided) => (
-                                <div innerRef={provided.innerRef} ref={provided.innerRef}>
+                                <div  ref={provided.innerRef}>
                                     <Grid columns={6}>
                                         {this.renderCards()}
                                         {provided.placeholder}

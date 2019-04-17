@@ -2,35 +2,38 @@ import * as React from 'react'
 import ReactTable from 'react-table'
 import { Button, Intent } from '@blueprintjs/core'
 import "react-table/react-table.css"
+import styled from 'styled-components'
 
 class BlackoutDatesTable extends React.Component {
-   
+
     columns = [
-    {
-        Header: 'Date',
-        accessor: 'date',
-        Cell: (row) => (
-            <div>
-                {`${new Date(row.value).toLocaleDateString()}`}
-            </div>
-        )
-    }, {
-        Header: 'Reason',
-        accessor: 'reason'
-    
-    }, 
-    {
-        Header: 'Actions',
-        Cell: (row) => (
-            <div>
-                <Button intent={Intent.DANGER}
-                    icon="trash"
-                    onClick={() => this.props.delete(row.index)}
-                />
-            </div>
-        ),
-        width: 200
-    }
+        {
+            Header: 'Date',
+            accessor: 'date',
+            Cell: (row) => (
+                <div>
+                    {`${new Date(row.value).toLocaleDateString()}`}
+                </div>
+            )
+        }, {
+            Header: 'Reason',
+            accessor: 'reason'
+
+        },
+        {
+            Header: 'Actions',
+            Cell: (row) => (
+                <ActionsCell>
+                    <ActionsContainer>
+                        <Button intent={Intent.DANGER}
+                            icon="trash"
+                            onClick={() => this.props.delete(row.index)}
+                        />
+                    </ActionsContainer>
+                </ActionsCell>
+            ),
+            width: 200
+        }
     ]
 
     tableStyle = {
@@ -42,7 +45,7 @@ class BlackoutDatesTable extends React.Component {
             style: {
                 'boxShadow': 'none',
                 'border': 'none',
-                'fontWeight' : 'bold'
+                'fontWeight': 'bold'
             }
         }
     }
@@ -67,7 +70,7 @@ class BlackoutDatesTable extends React.Component {
     render() {
         return (
             <div>
-            <ReactTable
+                <ReactTable
                     data={this.props.data}
                     columns={this.columns}
                     className="-highlight"
@@ -85,5 +88,16 @@ class BlackoutDatesTable extends React.Component {
         )
     }
 }
+
+const ActionsCell = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
+const ActionsContainer = styled.div`
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+`
 
 export default BlackoutDatesTable;
