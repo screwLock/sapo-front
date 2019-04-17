@@ -171,7 +171,11 @@ class NewCategory extends React.Component<any, any> {
 
     protected addDonatable = () => {
         if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.selectedDonatable.name)).length > 0)) {
-            this.setState(produce(draft => { draft.categoryDonatables.push(draft.selectedDonatable) }), () => {
+            const newDonatable = {
+                name: this.state.selectedDonatable.name,
+                checked: false
+            }
+            this.setState(produce(draft => { draft.categoryDonatables.push(newDonatable) }), () => {
                 this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables});
             })
             this.props.canSubmit(true);
@@ -187,10 +191,12 @@ class NewCategory extends React.Component<any, any> {
             && !(this.state.donatableName === '')) {
             const customDonatable = {
                 name: this.state.donatableName,
+                checked: false
             }
-            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
+            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }), () => {
+                this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
+            })
             this.props.canSubmit(true);
-            this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
             return true;
         }
         else {

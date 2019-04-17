@@ -128,7 +128,7 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    renderPickupItems = () => {
+    renderPickupItems = (categories) => {
         if (this.state.showPickupDetails) {
             return (
                 <BlockContainer>
@@ -200,7 +200,7 @@ export class CustomerCallIn extends React.Component {
                     </div>
                     <div>
                         {(this.props.userConfig.categories) ?
-                            this.renderPickupItems() :
+                            this.renderPickupItems(this.props.userConfig.categories) :
                             ''}
                     </div>
                 </DialogContainer>
