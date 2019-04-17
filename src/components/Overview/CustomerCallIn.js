@@ -5,6 +5,7 @@ import getDisabledDates from '../Zipcodes/getDisabledDates'
 import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
 import styled from 'styled-components'
+import {produce} from 'immer'
 
 
 export class CustomerCallIn extends React.Component {
@@ -74,6 +75,13 @@ export class CustomerCallIn extends React.Component {
 
     onChange = e => this.setState({ [e.target.name]: e.target.value })
 
+    handleCheckedChange = (cIndex, dIndex) => (e) => {
+        this.setState(
+            produce(this.state, draft => {
+                draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
+            }))
+    }
+
     renderDatePicker = (blackoutDates) => {
         let zipcode = this.props.userConfig.zipcodes.find(zip => zip.zipcode === this.state.selectedZipcode)
         if (this.state.showDatePicker) {
@@ -135,14 +143,16 @@ export class CustomerCallIn extends React.Component {
                     <H4>Select Donations</H4>
                     {categories.map( (category, cIndex) => {
                         return (
-                            <div>
+                            <div key={category.name + cIndex}>
                                 <H6>{category.name}</H6>
                                 <SubBlockContainer>
                                     {category.donatables.map( (donatable, dIndex) => {
                                         return (
                                             <Checkbox name={donatable.name}
-                                                label={donatable.name}
-                                                checked={true}
+                                                // label={cIndex}
+                                                // key={category.name + donatable.name}
+                                                // label={this.state.categories[cIndex].name}
+                                                //  onChange={this.handleCheckedChange(cIndex, dIndex)}
                                             />
                                         )
                                     })}
