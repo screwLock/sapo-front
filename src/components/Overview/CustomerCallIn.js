@@ -30,11 +30,11 @@ export class CustomerCallIn extends React.Component {
 
     componentDidMount = () => {
         this.setState({
-            selectedDate: null,
             categories: this.props.userConfig.categories
         })
     }
 
+    // TODO: make category checkboxes equal to false here
     handleCancel = () => {
         this.setState({
             selectedZipcode: '',
@@ -73,7 +73,7 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    onChange = e => this.setState({ [e.target.name]: e.target.value })
+    handleBlur = e => this.setState({ [e.target.name]: e.target.value })
 
     handleCheckedChange = (cIndex, dIndex) => (e) => {
         this.setState(
@@ -113,19 +113,19 @@ export class CustomerCallIn extends React.Component {
                     <H4>Pickup Address</H4>
                     <SubBlockContainer>
                         <FormGroup>
-                            <InputGroup name='streetAddress' onChange={this.onChange} />
+                            <InputGroup name='streetAddress' onBlur={this.handleBlur} />
                         </FormGroup>
                     </SubBlockContainer>
                     <H4>Contact Info</H4>
                     <SubBlockContainer>
                         <FormGroup>
-                            <InputGroup placeholder='Contact Name' name='name' onChange={this.onChange} />
+                            <InputGroup placeholder='Contact Name' name='name' onBlur={this.handleBlur} />
                         </FormGroup>
                         <FormGroup>
-                            <InputGroup placeholder='Contact Phone' name='phone' onChange={this.onChange} />
+                            <InputGroup placeholder='Contact Phone' name='phone' onBlur={this.handleBlur} />
                         </FormGroup>
                         <FormGroup>
-                            <InputGroup placeholder='Contact Email' name='email' onChange={this.onChange} />
+                            <InputGroup placeholder='Contact Email' name='email' onBlur={this.handleBlur} />
                         </FormGroup>
                     </SubBlockContainer>
                 </BlockContainer>
@@ -144,21 +144,21 @@ export class CustomerCallIn extends React.Component {
                     <H4>Select Donations</H4>
                     {categories.map((category, cIndex) => {
                         return (
-                            <div key={category.name + cIndex}>
+                            <React.Fragment>
                                 <H6>{category.name}</H6>
                                 <SubBlockContainer>
                                     {category.donatables.map((donatable, dIndex) => {
                                         return (
                                             <Checkbox name={donatable.name}
-                                            // label={donatable.name}
                                             // key={category.name + donatable.name}
-                                            // label={this.state.categories[cIndex].donatables[dIndex].name}
-                                            // onChange={this.handleCheckedChange(cIndex, dIndex)}
+                                            checked={this.state.categories[cIndex].donatables[dIndex].checked}
+                                            label={donatable.name}
+                                            onChange={this.handleCheckedChange(cIndex, dIndex)}
                                             />
                                         )
                                     })}
                                 </SubBlockContainer>
-                            </div>
+                            </React.Fragment>
                         )
                     })}
                 </BlockContainer>
