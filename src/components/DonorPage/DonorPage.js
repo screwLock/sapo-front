@@ -15,7 +15,6 @@ class DonorPage extends React.Component {
             serviceDetails: [],
             isCategoriesOpen: false,
             selection: '',
-            userConfig: {}
         }
     }
 
@@ -24,17 +23,13 @@ class DonorPage extends React.Component {
             return;
         }
         try {
-            const userConfig = await this.props.getUserConfig();
+            const userConfig = this.props.userConfig;
             if (userConfig.categories !== null && userConfig.restrictions !== null && userConfig.serviceDetails !== null) {
                 this.setState({
-                    userConfig,
                     categories: userConfig.categories,
                     restrictions: userConfig.restrictions,
                     serviceDetails: userConfig.serviceDetails
                 })
-            }
-            else {
-                this.setState({ userConfig })
             }
         } catch (e) {
             alert(e);

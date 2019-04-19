@@ -13,7 +13,6 @@ class BlackoutDates extends React.Component {
     this.state = {
       dates: [],
       isDialogOpen: false,
-      userConfig: {}
     }
   }
 
@@ -22,12 +21,8 @@ class BlackoutDates extends React.Component {
       return;
     }
     try {
-      const userConfig = await this.props.getUserConfig();
-      if (userConfig.blackoutDates !== null) {
-        this.setState({ userConfig, dates: userConfig.blackoutDates });
-      }
-      else {
-        this.setState({ userConfig })
+      if (this.props.userConfig.blackoutDates !== null) {
+        this.setState({ dates: this.props.userConfig.blackoutDates });
       }
     } catch (e) {
       alert(e);

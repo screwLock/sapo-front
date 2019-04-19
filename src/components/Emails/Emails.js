@@ -19,7 +19,6 @@ class Emails extends React.Component {
             bccAddress: '',
             bccAddresses: [],
             emails: {},
-            userConfig: {}
         }
     }
 
@@ -28,19 +27,15 @@ class Emails extends React.Component {
             return;
         }
         try {
-            const userConfig = await this.props.getUserConfig();
-            if (userConfig.emails !== null) {
-                this.setState({ userConfig, 
-                    emails: userConfig.emails,
-                    fromAddress: userConfig.emails.fromAddress,
-                    ccAddresses: userConfig.emails.ccAddresses,
-                    bccAddresses: userConfig.emails.bccAddresses,
-                    subjectLine: userConfig.emails.subjectLine,
-                    messageBody: userConfig.emails.messageBody
+            if (this.props.userConfig.emails !== null) {
+                this.setState({ 
+                    emails: this.props.userConfig.emails,
+                    fromAddress: this.props.userConfig.emails.fromAddress,
+                    ccAddresses: this.props.userConfig.emails.ccAddresses,
+                    bccAddresses: this.props.userConfig.emails.bccAddresses,
+                    subjectLine: this.props.userConfig.emails.subjectLine,
+                    messageBody: this.props.userConfig.emails.messageBody
                 })
-            }
-            else {
-                this.setState({ userConfig })
             }
         } catch (e) {
             alert(e);

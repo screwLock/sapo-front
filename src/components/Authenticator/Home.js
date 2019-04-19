@@ -81,9 +81,22 @@ class Home extends React.Component {
                     "footer footer  footer"
                 ]}
             >
-                <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} isAdminLoggedIn={this.state.isAdminLoggedIn} /></Cell>
-                <Cell area="menu"><NavBar {...this.props} /></Cell>
-                <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
+                <Cell area="header">
+                                    <Header {...this.props} 
+                                        onAdminLogin={this.handleAdminLogin} 
+                                        isAdminLoggedIn={this.state.isAdminLoggedIn} 
+                                    />
+                </Cell>
+                <Cell area="menu">
+                                    <NavBar {...this.props} />
+                </Cell>
+                <Cell area="content">
+                                    <Main {...this.props} 
+                                        getUserConfig={this.getUserConfig} 
+                                        updateUserConfig={this.updateUserConfig}
+                                        userConfig={this.state.userConfig}
+                                    />
+                </Cell>
             </Grid>
         )
 

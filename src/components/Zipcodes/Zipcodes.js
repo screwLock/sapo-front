@@ -20,7 +20,6 @@ class Zipcodes extends React.Component {
             isPreviewOpen: false,
             editIndex: '',
             editZipcode: { zipcode: '', weekdays: []},
-            userConfig: {}
         }
     }
 
@@ -29,13 +28,14 @@ class Zipcodes extends React.Component {
           return;
         }
         try {
-          const userConfig = await this.props.getUserConfig();
-          if (userConfig.zipcodes !== null) {
-            this.setState({ userConfig, zipcodes: userConfig.zipcodes });
+          // const userConfig = await this.props.getUserConfig();
+          if (this.props.userConfig.zipcodes !== null) {
+            // this.setState({ userConfig, zipcodes: userConfig.zipcodes });
+            this.setState({zipcodes: this.props.userConfig.zipcodes})
           }
-          else {
-            this.setState({ userConfig })
-          }
+          // else {
+          //  this.setState({ userConfig })
+          // }
         } catch (e) {
           alert(e);
         }

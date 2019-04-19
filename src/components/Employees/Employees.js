@@ -24,7 +24,6 @@ class Employees extends React.Component {
         employeeID: '',
         access: 'Volunteer'
       },
-      userConfig: {}
     }
   }
 
@@ -55,12 +54,8 @@ class Employees extends React.Component {
       return;
     }
     try {
-      const userConfig = await this.props.getUserConfig();
-      if (userConfig.employees !== null) {
-        this.setState({ userConfig, employees: userConfig.employees });
-      }
-      else {
-        this.setState({ userConfig })
+      if (this.props.userConfig.employees !== null) {
+        this.setState({ employees: this.props.userConfig.employees });
       }
     } catch (e) {
       alert(e);

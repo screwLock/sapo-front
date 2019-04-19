@@ -34,7 +34,8 @@ class Overview extends Component {
     try {
       const userConfig = await this.props.getUserConfig();
       if (userConfig.blackoutDates !== null) {
-        this.setState({ userConfig,
+        this.setState({
+          userConfig,
           pickups: pickupMocks,
           allPickups: pickupMocks.map(pickup => pickup.inRoute = false),
           user: userMocks,
@@ -50,7 +51,7 @@ class Overview extends Component {
   }
 
   createRoute = () => {
-    this.setState({newRoute: !this.state.newRoute});
+    this.setState({ newRoute: !this.state.newRoute });
   }
 
   render() {
@@ -66,10 +67,10 @@ class Overview extends Component {
           routeKey={this.state.newRoute}
         />
         </Cell>
-        <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate} 
-                                            handleClick={this.selectDate} 
-                                            handleMonthChange={this.handleMonthChange}
-                                            selectedMonth={this.state.selectedMonth}
+        <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate}
+          handleClick={this.selectDate}
+          handleMonthChange={this.handleMonthChange}
+          selectedMonth={this.state.selectedMonth}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
           user={this.state.user}
@@ -106,7 +107,7 @@ class Overview extends Component {
   }
 
   handleMonthChange = (month) => {
-    this.setState({selectedMonth: getMonth(month)})
+    this.setState({ selectedMonth: getMonth(month) })
   }
 
   // for the datepicker ondayclick handler

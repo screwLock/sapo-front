@@ -5,7 +5,7 @@ import getDisabledDates from '../Zipcodes/getDisabledDates'
 import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
 import styled from 'styled-components'
-import {produce} from 'immer'
+import { produce } from 'immer'
 
 
 export class CustomerCallIn extends React.Component {
@@ -137,22 +137,23 @@ export class CustomerCallIn extends React.Component {
     }
 
     renderPickupItems = (categories) => {
+        console.log(this.state.categories)
         if (this.state.showPickupDetails) {
             return (
                 <BlockContainer>
                     <H4>Select Donations</H4>
-                    {categories.map( (category, cIndex) => {
+                    {categories.map((category, cIndex) => {
                         return (
                             <div key={category.name + cIndex}>
                                 <H6>{category.name}</H6>
                                 <SubBlockContainer>
-                                    {category.donatables.map( (donatable, dIndex) => {
+                                    {category.donatables.map((donatable, dIndex) => {
                                         return (
                                             <Checkbox name={donatable.name}
-                                                // label={cIndex}
-                                                // key={category.name + donatable.name}
-                                                // label={this.state.categories[cIndex].name}
-                                                //  onChange={this.handleCheckedChange(cIndex, dIndex)}
+                                            // label={donatable.name}
+                                            // key={category.name + donatable.name}
+                                            // label={this.state.categories[cIndex].donatables[dIndex].name}
+                                            // onChange={this.handleCheckedChange(cIndex, dIndex)}
                                             />
                                         )
                                     })}
@@ -188,40 +189,49 @@ export class CustomerCallIn extends React.Component {
         if (this.props.userConfig.blackoutDates) {
             blackoutDates = this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date))
         }
-        return (
-            <Dialog isOpen={this.props.isOverlayOpen}
-                onClose={this.props.onClose}
-                transitionDuration={100}
-                title="Customer Call-In"
-            >
-                <DialogContainer>
-                    <H4>Select The Pickup Zipcode</H4>
-                    <SelectContainer>
-                        <Select
-                            value={{ value: this.state.selectedZipcode, label: this.state.selectedZipcode }}
-                            onChange={this.handleZipcodeSelect}
-                            options={zipcodeOptions}
-                            isClearable={true}
-                        />
-                    </SelectContainer>
-                    {this.props.userConfig.zipcodes ? this.renderDatePicker(blackoutDates) : ''}
-                    <div>
-                        {this.renderPickupDetails()}
+        if (this.props.userConfig) {
+            return (
+                <Dialog isOpen={this.props.isOverlayOpen}
+                    onClose={this.props.onClose}
+                    transitionDuration={100}
+                    title="Customer Call-In"
+                >
+                    <DialogContainer>
+                        <H4>Select The Pickup Zipcode</H4>
+                        <SelectContainer>
+                            <Select
+                                value={{ value: this.state.selectedZipcode, label: this.state.selectedZipcode }}
+                                onChange={this.handleZipcodeSelect}
+                                options={zipcodeOptions}
+                                isClearable={true}
+                            />
+                        </SelectContainer>
+                        {this.props.userConfig.blackoutDates ?
+                            this.renderDatePicker(blackoutDates) :
+                            ''
+                        }
+                        <div>
+                            {this.renderPickupDetails()}
+                        </div>
+                        <div>
+                            {(this.props.userConfig.categories) ?
+                                this.renderPickupItems(this.props.userConfig.categories) :
+                                ''
+                            }
+                        </div>
+                    </DialogContainer>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.handleCancel}>Cancel</Button>
+                            <Button onClick={this.handleSubmit}>Submit</Button>
+                        </div>
                     </div>
-                    <div>
-                        {(this.props.userConfig.categories) ?
-                            this.renderPickupItems(this.props.userConfig.categories) :
-                            ''}
-                    </div>
-                </DialogContainer>
-                <div className={Classes.DIALOG_FOOTER}>
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleCancel}>Cancel</Button>
-                        <Button onClick={this.handleSubmit}>Submit</Button>
-                    </div>
-                </div>
-            </Dialog>
-        )
+                </Dialog>
+            )
+        }
+        else {
+            return ''
+        }
     }
 }
 
