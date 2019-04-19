@@ -20,7 +20,6 @@ class Overview extends Component {
       selectedMonth: {},
       unconfirmedDates: [],
       user: {},
-      userConfig: {},
       newRoute: false,
       search: ''
     }
@@ -32,18 +31,14 @@ class Overview extends Component {
     }
 
     try {
-      const userConfig = await this.props.getUserConfig();
+      const userConfig = this.props.userConfig
       if (userConfig.blackoutDates !== null) {
         this.setState({
-          userConfig,
           pickups: pickupMocks,
           allPickups: pickupMocks.map(pickup => pickup.inRoute = false),
           user: userMocks,
           selectedMonth: getMonth(new Date())
         });
-      }
-      else {
-        this.setState({ userConfig })
       }
     } catch (e) {
       alert(e);
@@ -80,7 +75,7 @@ class Overview extends Component {
           onDragEnd={this.onDragEnd}
           handleRouteChange={this.handleRouteChange}
           createRoute={this.createRoute}
-          userConfig={this.state.userConfig}
+          userConfig={this.props.userConfig}
         />
         </Cell>
       </Grid>

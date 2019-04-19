@@ -13,7 +13,7 @@ class Main extends Component {
       return(
         <Switch>
           <Route exact path='/'
-                 render = {() => <Overview {...this.props} />}
+                 render = {() => <Overview {...this.props}/>}
           />
           <Route exact path='/blackoutDates'
                  render = {() => <BlackoutDates {...this.props} />}

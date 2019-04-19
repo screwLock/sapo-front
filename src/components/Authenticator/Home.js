@@ -37,7 +37,6 @@ class Home extends React.Component {
         try {
             const userConfig = await this.getUserConfig();
             this.setState({ userConfig });
-            // console.log(userConfig)
         } catch (e) {
             alert(e);
         }
@@ -114,8 +113,16 @@ class Home extends React.Component {
                         "footer footer  footer"
                     ]}
                 >
-                    <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
-                    <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
+                    <Cell area="header">
+                        <Header {...this.props} onAdminLogin={this.handleAdminLogin} />
+                    </Cell>
+                    <Cell area="content">
+                                    <Main {...this.props} 
+                                        getUserConfig={this.getUserConfig} 
+                                        updateUserConfig={this.updateUserConfig}
+                                        userConfig={this.state.userConfig}
+                                    />
+                </Cell>
                 </Grid>
             </div>
         )
