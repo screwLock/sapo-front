@@ -34,24 +34,19 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
-    // TODO: make category checkboxes equal to false here
-    handleCancel = () => {
+    handleClose = () => {
         this.setState({
             selectedZipcode: '',
             selectedDate: null,
             showDatePicker: false,
             showPickupDetails: false,
+            categories: this.props.userConfig.categories
         })
         this.props.onClose()
     }
 
     handleSubmit = () => {
-        this.setState({
-            selectedZipcode: '',
-            selectedDate: null,
-            showDatePicker: false,
-            showPickupDetails: false,
-        })
+        this.handleClose();
         this.props.onClose()
     }
 
@@ -222,7 +217,7 @@ export class CustomerCallIn extends React.Component {
                     </DialogContainer>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleCancel}>Cancel</Button>
+                            <Button onClick={this.handleClose}>Cancel</Button>
                             <Button onClick={this.handleSubmit}>Submit</Button>
                         </div>
                     </div>
