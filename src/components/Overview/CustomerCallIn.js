@@ -6,7 +6,7 @@ import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
 import styled from 'styled-components'
 import { produce } from 'immer'
-import CategoryCheckboxes from './OverviewCheckboxes'
+import CategoryCheckboxes from './CategoryCheckboxes'
 
 
 export class CustomerCallIn extends React.Component {
@@ -117,39 +117,6 @@ export class CustomerCallIn extends React.Component {
                             <InputGroup placeholder='Contact Email' name='email' onBlur={this.handleBlur} />
                         </FormGroup>
                     </SubBlockContainer>
-                </BlockContainer>
-            )
-        }
-        else {
-            return ''
-        }
-    }
-
-    renderPickupItems = (categories) => {
-        console.log(this.state.categories)
-        if (this.state.showPickupDetails) {
-            return (
-                <BlockContainer>
-                    <H4>Select Donations</H4>
-                    {categories.map((category, cIndex) => {
-                        return (
-                            <React.Fragment>
-                                <H6>{category.name}</H6>
-                                <SubBlockContainer>
-                                    {category.donatables.map((donatable, dIndex) => {
-                                        return (
-                                            <Checkbox name={donatable.name}
-                                                // key={category.name + donatable.name}
-                                                checked={this.state.categories[cIndex].donatables[dIndex].checked}
-                                                label={donatable.name}
-                                                onChange={this.handleCheckedChange(cIndex, dIndex)}
-                                            />
-                                        )
-                                    })}
-                                </SubBlockContainer>
-                            </React.Fragment>
-                        )
-                    })}
                 </BlockContainer>
             )
         }
