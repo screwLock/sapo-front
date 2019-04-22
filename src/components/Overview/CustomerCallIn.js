@@ -8,13 +8,16 @@ import styled from 'styled-components'
 import { produce } from 'immer'
 import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
+import { AppToaster } from '../Toaster'
+import * as EmailValidator from 'email-validator'
 
 
 export class CustomerCallIn extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: '',
+            firstName: '',
+            lastName: '',
             streetAddress: '',
             phone: '',
             email: '',
@@ -48,8 +51,10 @@ export class CustomerCallIn extends React.Component {
     }
 
     handleSubmit = () => {
-        this.handleClose();
-        this.props.onClose()
+        if (this.validateForms()) {
+            this.handleClose()
+            this.props.onClose()
+        }
     }
 
     handleZipcodeSelect = (zipcode, action) => {
@@ -109,7 +114,10 @@ export class CustomerCallIn extends React.Component {
                     <H4>Contact Info</H4>
                     <SubBlockContainer>
                         <FormGroup>
-                            <InputGroup placeholder='Contact Name' name='name' onBlur={this.handleBlur} />
+                            <InputGroup placeholder='Contact First Name' name='firstName' onBlur={this.handleBlur} />
+                        </FormGroup>
+                        <FormGroup>
+                            <InputGroup placeholder='Contact Last Name' name='lastName' onBlur={this.handleBlur} />
                         </FormGroup>
                         <FormGroup>
                             <InputGroup placeholder='Contact Phone' name='phone' onBlur={this.handleBlur} />
@@ -126,16 +134,42 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    renderServiceDetails = () => {
-        return ''
-    }
-
     handleDayClick = (date) => {
         this.setState({
             selectedDate: date,
             showPickupDetails: true
         })
     }
+
+    showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
+
+    validateForms = () => {
+        const phoneValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+        if (this.state.firstName === '' ||
+            this.state.lastName === '' ||
+            this.state.email === '' ||
+            this.state.phoneNumber === '' ||
+            this.state.streetAddress === '' ||
+            this.state.selectedZipcode === ''
+        ) {
+            this.showToast('Required fields are missing')
+            return false;
+        }
+        else if (!EmailValidator.validate(this.state.email)) {
+            this.showToast('Enter a valid email address')
+            return false
+        }
+        else if (!phoneValidate.test(this.state.phoneNumber)) {
+            this.showToast('Enter a valid phone number')
+            return false
+        }
+        else {
+            return true;
+        }
+    }
+
 
     render() {
         let zipcodeOptions = []

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
- import * as EmailValidator from 'email-validator';
+import * as EmailValidator from 'email-validator'
 import AccessLevelSelect from "./Access_Level_Select"
 
 
