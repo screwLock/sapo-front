@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AnchorButton, Button, Card, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Checkbox } from '@blueprintjs/core'
+import { H4, H6, Checkbox } from '@blueprintjs/core'
 import { produce } from 'immer'
 import styled from 'styled-components'
 
@@ -70,5 +70,6 @@ const SubBlockContainer = styled.div`
     width: 250px;
     margin: 10px;
     margin-left: 20px;
-`
+`;
+
 export default CategoryCheckboxes

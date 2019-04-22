@@ -7,6 +7,7 @@ import Select from 'react-select'
 import styled from 'styled-components'
 import { produce } from 'immer'
 import CategoryCheckboxes from './CategoryCheckboxes'
+import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
 
 
 export class CustomerCallIn extends React.Component {
@@ -175,6 +176,17 @@ export class CustomerCallIn extends React.Component {
                                     <CategoryCheckboxes categories={this.props.userConfig.categories}
                                         isVisible={this.state.showPickupDetails}
                                         key={this.props.userConfig.categories}
+                                    />
+                                ) :
+                                ''
+                            }
+                        </div>
+                        <div>
+                            {(this.props.userConfig.serviceDetails) ?
+                                (
+                                    <ServiceDetailCheckboxes serviceDetails={this.props.userConfig.serviceDetails}
+                                        isVisible={this.state.showPickupDetails}
+                                        key={this.props.userConfig.serviceDetails}
                                     />
                                 ) :
                                 ''
