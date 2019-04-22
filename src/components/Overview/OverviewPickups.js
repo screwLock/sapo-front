@@ -64,7 +64,7 @@ class OverviewPickups extends React.Component {
         return (
             <div className="footer">
                 <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
-                <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} key={this.props.userConfig.categories}/>
+                <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig}/>
                 <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups,this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
                 <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
             </div>

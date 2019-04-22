@@ -6,6 +6,7 @@ import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
 import styled from 'styled-components'
 import { produce } from 'immer'
+import CategoryCheckboxes from './OverviewCheckboxes'
 
 
 export class CustomerCallIn extends React.Component {
@@ -69,13 +70,6 @@ export class CustomerCallIn extends React.Component {
     }
 
     handleBlur = e => this.setState({ [e.target.name]: e.target.value })
-
-    handleCheckedChange = (cIndex, dIndex) => (e) => {
-        this.setState(
-            produce(this.state, draft => {
-                draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
-            }))
-    }
 
     renderDatePicker = (blackoutDates) => {
         let zipcode = this.props.userConfig.zipcodes.find(zip => zip.zipcode === this.state.selectedZipcode)
@@ -145,10 +139,10 @@ export class CustomerCallIn extends React.Component {
                                     {category.donatables.map((donatable, dIndex) => {
                                         return (
                                             <Checkbox name={donatable.name}
-                                            // key={category.name + donatable.name}
-                                            checked={this.state.categories[cIndex].donatables[dIndex].checked}
-                                            label={donatable.name}
-                                            onChange={this.handleCheckedChange(cIndex, dIndex)}
+                                                // key={category.name + donatable.name}
+                                                checked={this.state.categories[cIndex].donatables[dIndex].checked}
+                                                label={donatable.name}
+                                                onChange={this.handleCheckedChange(cIndex, dIndex)}
                                             />
                                         )
                                     })}
@@ -210,7 +204,12 @@ export class CustomerCallIn extends React.Component {
                         </div>
                         <div>
                             {(this.props.userConfig.categories) ?
-                                this.renderPickupItems(this.props.userConfig.categories) :
+                                (
+                                    <CategoryCheckboxes categories={this.props.userConfig.categories}
+                                        isVisible={this.state.showPickupDetails}
+                                        key={this.props.userConfig.categories}
+                                    />
+                                ) :
                                 ''
                             }
                         </div>
