@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AnchorButton, Button, Card, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Checkbox } from '@blueprintjs/core'
-import DayPicker, { DateUtils } from 'react-day-picker';
+import DayPicker, { DateUtils } from 'react-day-picker'
 import getDisabledDates from '../Zipcodes/getDisabledDates'
 import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
@@ -10,6 +10,8 @@ import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
 import { AppToaster } from '../Toaster'
 import * as EmailValidator from 'email-validator'
+import 'here-js-api/scripts/mapsjs-core'
+import 'here-js-api/scripts/mapsjs-service'
 
 
 export class CustomerCallIn extends React.Component {
@@ -19,12 +21,12 @@ export class CustomerCallIn extends React.Component {
             firstName: '',
             lastName: '',
             streetAddress: '',
-            phone: '',
+            phoneNumber: '',
             email: '',
             categories: [],
             donations: [],
-            confirmed: true,
-            completed: false,
+            lat: '',
+            lng: '',
             pickupID: '',
             selectedDate: null,
             selectedZipcode: '',
@@ -43,6 +45,8 @@ export class CustomerCallIn extends React.Component {
         this.setState({
             selectedZipcode: '',
             selectedDate: null,
+            lat: '',
+            lng: '',
             showDatePicker: false,
             showPickupDetails: false,
             categories: this.props.userConfig.categories
@@ -52,6 +56,24 @@ export class CustomerCallIn extends React.Component {
 
     handleSubmit = () => {
         if (this.validateForms()) {
+            this.getLatLng({
+                zipcode: this.state.selectedZipcode,
+                pickupDate: this.state.pickupDate,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                streetAddress: this.state.streetAddress,
+                lat: this.state.lat,
+                lng: this.state.lng,
+                phoneNumber: this.state.phoneNumber,
+                email: this.state.email,
+                confirmed: true,
+                completed: false,
+                createdAt: new Date(),
+                pickupID: `${this.state.email}..${this.state.zipcode}..${new Date()}`,
+                donations: this.state.donations,
+                // serviceDetails: this.state.serviceDetails
+            })
+            //maybe move to callback of getLatLng???
             this.handleClose()
             this.props.onClose()
         }
@@ -120,7 +142,7 @@ export class CustomerCallIn extends React.Component {
                             <InputGroup placeholder='Contact Last Name' name='lastName' onBlur={this.handleBlur} />
                         </FormGroup>
                         <FormGroup>
-                            <InputGroup placeholder='Contact Phone' name='phone' onBlur={this.handleBlur} />
+                            <InputGroup placeholder='Contact Phone' name='phoneNumber' onBlur={this.handleBlur} />
                         </FormGroup>
                         <FormGroup>
                             <InputGroup placeholder='Contact Email' name='email' onBlur={this.handleBlur} />
@@ -139,6 +161,37 @@ export class CustomerCallIn extends React.Component {
             selectedDate: date,
             showPickupDetails: true
         })
+    }
+
+    getLatLng = (message) => {
+        const platform = new H.service.Platform({
+            'app_id': 'u3uFI5c0XaweKx6Yh31t',
+            'app_code': 'wUPW8ZhbclB20ZTwqRC4fA'
+        });
+        const geocoder = platform.getGeocodingService();
+
+        let lat = ''
+        let lng = ''
+
+        //get the lat and lng from a geocoder call
+        geocoder.geocode({ searchText: `${this.state.streetAddress + this.state.selectedZipcode}` },
+            (result) => {
+                if (result.Response.View[0]) {
+                    lat = result.Response.View[0].Result[0].Location.DisplayPosition.Latitude
+                    lng = result.Response.View[0].Result[0].Location.DisplayPosition.Longitude
+                    //after setting lat/lng in state, create the pickup and persist the data
+                    if (!(lng === '') && !(lat === '')) {
+                        this.setState({ lat: lat, lng: lng },
+                            () => { console.log(this.state.lat) }
+                        )
+                    }
+                }
+                else {
+                    this.showToast('Not a valid street address')
+                }
+            }, (e) => {
+                alert(e);
+            });
     }
 
     showToast = (message) => {
@@ -169,7 +222,6 @@ export class CustomerCallIn extends React.Component {
             return true;
         }
     }
-
 
     render() {
         let zipcodeOptions = []
