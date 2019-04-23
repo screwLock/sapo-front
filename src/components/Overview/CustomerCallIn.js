@@ -10,6 +10,7 @@ import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
 import { AppToaster } from '../Toaster'
 import * as EmailValidator from 'email-validator'
+import { API } from "aws-amplify"
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
 
@@ -56,23 +57,7 @@ export class CustomerCallIn extends React.Component {
 
     handleSubmit = () => {
         if (this.validateForms()) {
-            this.getLatLng({
-                zipcode: this.state.selectedZipcode,
-                pickupDate: this.state.pickupDate,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                streetAddress: this.state.streetAddress,
-                lat: this.state.lat,
-                lng: this.state.lng,
-                phoneNumber: this.state.phoneNumber,
-                email: this.state.email,
-                confirmed: true,
-                completed: false,
-                createdAt: new Date(),
-                pickupID: `${this.state.email}..${this.state.zipcode}..${new Date()}`,
-                donations: this.state.donations,
-                // serviceDetails: this.state.serviceDetails
-            })
+            this.getLatLng()
             //maybe move to callback of getLatLng???
             this.handleClose()
             this.props.onClose()
@@ -163,7 +148,7 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
-    getLatLng = (message) => {
+    getLatLng = () => {
         const platform = new H.service.Platform({
             'app_id': 'u3uFI5c0XaweKx6Yh31t',
             'app_code': 'wUPW8ZhbclB20ZTwqRC4fA'
@@ -182,8 +167,28 @@ export class CustomerCallIn extends React.Component {
                     //after setting lat/lng in state, create the pickup and persist the data
                     if (!(lng === '') && !(lat === '')) {
                         this.setState({ lat: lat, lng: lng },
-                            () => { console.log(this.state.lat) }
-                        )
+                            () => {
+                                API.post("sapo", "/pickups", {
+                                    body: {
+                                        zipcode: this.state.selectedZipcode,
+                                        pickupDate: this.state.pickupDate,
+                                        firstName: this.state.firstName,
+                                        lastName: this.state.lastName,
+                                        streetAddress: this.state.streetAddress,
+                                        lat: this.state.lat,
+                                        lng: this.state.lng,
+                                        phoneNumber: this.state.phoneNumber,
+                                        email: this.state.email,
+                                        confirmed: true,
+                                        completed: false,
+                                        createdAt: new Date(),
+                                        pickupID: `${this.state.email}..${this.state.zipcode}..${new Date()}`,
+                                        donations: this.state.donations,
+                                        serviceDetails: this.state.serviceDetails
+                                    }
+
+                                })
+                            })
                     }
                 }
                 else {
