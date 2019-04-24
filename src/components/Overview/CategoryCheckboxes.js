@@ -21,7 +21,9 @@ class CategoryCheckboxes extends React.Component {
         this.setState(
             produce(this.state, draft => {
                 draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
-            }))
+            }), () => {
+                this.props.addDonation(this.state.categories[cIndex].donatables[dIndex].name)
+            })
     }
 
     renderCategories = (categories) => {

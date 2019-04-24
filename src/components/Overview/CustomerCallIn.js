@@ -43,6 +43,16 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
+    addDonation = (name) => {
+        if(this.state.donations.includes(name)){
+            this.state.donations.splice( this.state.donations.indexOf(name), 1 );
+        }
+        else {
+            this.state.donations.push(name)
+            this.state.donations.sort()
+        }
+    }
+
     handleClose = () => {
         this.setState({
             selectedZipcode: '',
@@ -61,9 +71,6 @@ export class CustomerCallIn extends React.Component {
     handleSubmit = () => {
         if (this.validateForms()) {
             this.getLatLng()
-            //maybe move to callback of getLatLng???
-            this.handleClose()
-            this.props.onClose()
         }
     }
 
@@ -174,7 +181,7 @@ export class CustomerCallIn extends React.Component {
                                 API.post("sapo", "/pickups", {
                                     body: {
                                         zipcode: this.state.selectedZipcode,
-                                        pickupDate: this.state.pickupDate,
+                                        pickupDate: this.state.selectedDate.toISOString(),
                                         firstName: this.state.firstName,
                                         lastName: this.state.lastName,
                                         streetAddress: this.state.streetAddress,
@@ -185,13 +192,15 @@ export class CustomerCallIn extends React.Component {
                                         email: this.state.email,
                                         confirmed: true,
                                         completed: false,
-                                        pickupID: `${this.state.email}..${this.state.zipcode}..${new Date()}`,
+                                        pickupID: `${this.state.email}..${this.state.selectedZipcode}..${new Date()}`,
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails
                                     }
-
                                 }).then( response => {
-                                    console.log(repsonse)
+                                    console.log(response)
+                                    this.handleClose()
+                                    this.showToast('Pickup Successfully Saved')
+                                    // send email
                                 }).catch( error => {
                                     alert(error)
                                 })
@@ -217,7 +226,8 @@ export class CustomerCallIn extends React.Component {
             this.state.email === '' ||
             this.state.phoneNumber === '' ||
             this.state.streetAddress === '' ||
-            this.state.selectedZipcode === ''
+            this.state.selectedZipcode === '' ||
+            !this.state.selectedDate 
         ) {
             this.showToast('Required fields are missing')
             return false;
@@ -274,6 +284,7 @@ export class CustomerCallIn extends React.Component {
                                     <CategoryCheckboxes categories={this.props.userConfig.categories}
                                         isVisible={this.state.showPickupDetails}
                                         key={this.props.userConfig.categories}
+                                        addDonation={this.addDonation}
                                     />
                                 ) :
                                 ''
