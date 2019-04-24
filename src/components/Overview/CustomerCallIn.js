@@ -21,6 +21,7 @@ export class CustomerCallIn extends React.Component {
         this.state = {
             firstName: '',
             lastName: '',
+            orgName: '',
             streetAddress: '',
             phoneNumber: '',
             email: '',
@@ -50,7 +51,9 @@ export class CustomerCallIn extends React.Component {
             lng: '',
             showDatePicker: false,
             showPickupDetails: false,
-            categories: this.props.userConfig.categories
+            categories: this.props.userConfig.categories,
+            donations: [],
+            serviceDetails: [],
         })
         this.props.onClose()
     }
@@ -175,21 +178,25 @@ export class CustomerCallIn extends React.Component {
                                         firstName: this.state.firstName,
                                         lastName: this.state.lastName,
                                         streetAddress: this.state.streetAddress,
+                                        orgName: 'NA',
                                         lat: this.state.lat,
                                         lng: this.state.lng,
                                         phoneNumber: this.state.phoneNumber,
                                         email: this.state.email,
                                         confirmed: true,
                                         completed: false,
-                                        createdAt: new Date(),
                                         pickupID: `${this.state.email}..${this.state.zipcode}..${new Date()}`,
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails
                                     }
 
+                                }).then( response => {
+                                    console.log(repsonse)
+                                }).catch( error => {
+                                    alert(error)
                                 })
-                            })
-                    }
+                            })// end of setState
+                    } //end of if
                 }
                 else {
                     this.showToast('Not a valid street address')
