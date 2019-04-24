@@ -17,7 +17,7 @@ class Overview extends Component {
       allPickups: [],
       selectedPickup: null,
       selectedDate: new Date(),
-      selectedMonth: {},
+      selectedMonth: getMonth(new Date()),
       unconfirmedDates: [],
       user: {},
       newRoute: false,
@@ -31,13 +31,11 @@ class Overview extends Component {
     }
 
     try {
-      const userConfig = this.props.userConfig
-      if (userConfig.blackoutDates !== null) {
+      if (this.props.userConfig.blackoutDates !== null) {
         this.setState({
           pickups: pickupMocks,
           allPickups: pickupMocks.map(pickup => pickup.inRoute = false),
           user: userMocks,
-          selectedMonth: getMonth(new Date())
         });
       }
     } catch (e) {
