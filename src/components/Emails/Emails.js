@@ -26,20 +26,18 @@ class Emails extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        try {
-            if (this.props.userConfig.emails != null) {
-                this.setState({ 
-                    emails: this.props.userConfig.emails,
-                    fromAddress: this.props.userConfig.emails.fromAddress,
-                    ccAddresses: this.props.userConfig.emails.ccAddresses,
-                    bccAddresses: this.props.userConfig.emails.bccAddresses,
-                    subjectLine: this.props.userConfig.emails.subjectLine,
-                    messageBody: this.props.userConfig.emails.messageBody
-                })
-            }
-        } catch (e) {
-            alert(e);
+        if (this.props.userConfig.emails != null) {
+            let emails = this.props.userConfig.emails
+            this.setState({
+                emails: emails,
+                fromAddress: emails.fromAddress,
+                ccAddresses: emails.ccAddresses,
+                bccAddresses: emails.bccAddresses,
+                subjectLine: emails.subjectLine,
+                messageBody: emails.messageBody
+            })
         }
+
     }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
@@ -57,13 +55,12 @@ class Emails extends React.Component {
         else {
             try {
                 await this.props.updateUserConfig('emails', {
-                    emails: {
-                        fromAddress: this.state.fromAddress,
-                        ccAddresses: this.state.ccAddresses,
-                        bccAddresses: this.state.bccAddresses,
-                        subjectLine: this.state.subjectLine,
-                        messageBody: this.state.messageBody,
-                    }}, 
+                    fromAddress: this.state.fromAddress,
+                    ccAddresses: this.state.ccAddresses,
+                    bccAddresses: this.state.bccAddresses,
+                    subjectLine: this.state.subjectLine,
+                    messageBody: this.state.messageBody,
+                },
                     {
                         emails: {
                             fromAddress: this.state.fromAddress,
@@ -71,8 +68,9 @@ class Emails extends React.Component {
                             bccAddresses: this.state.bccAddresses,
                             subjectLine: this.state.subjectLine,
                             messageBody: this.state.messageBody,
-                    }}
-                    )
+                        }
+                    }
+                )
             }
             catch (e) {
                 console.log(e)
@@ -84,8 +82,8 @@ class Emails extends React.Component {
         if (!EmailValidator.validate(this.state.ccAddress)) {
             this.showToast('CC email is not a valid email address')
         }
-        else if(!this.state.ccAddresses){
-            this.setState({ccAddresses: [this.state.ccAddress]})
+        else if (!this.state.ccAddresses) {
+            this.setState({ ccAddresses: [this.state.ccAddress] })
         }
         else if (!(this.state.ccAddresses.filter((cc) => (cc === this.state.ccAddress)).length > 0) &&
             !(this.state.ccAddress === '')) {
@@ -97,8 +95,8 @@ class Emails extends React.Component {
         if (!EmailValidator.validate(this.state.bccAddress)) {
             this.showToast('BCC email is not a valid email address')
         }
-        else if(!this.state.ccAddresses){
-            this.setState({bccAddresses: [this.state.bccAddress]})
+        else if (!this.state.ccAddresses) {
+            this.setState({ bccAddresses: [this.state.bccAddress] })
         }
         else if (!(this.state.bccAddresses.filter((bcc) => (bcc === this.state.bccAddress)).length > 0) &&
             !(this.state.bccAddress === '')) {
