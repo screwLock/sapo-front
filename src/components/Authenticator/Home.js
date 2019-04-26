@@ -4,7 +4,8 @@ import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
 import Main from '../Main'
-import { API, Auth } from "aws-amplify";
+import { AppToaster } from '../Toaster'
+import { API, Auth } from "aws-amplify"
 
 class Home extends React.Component {
     static defaultProps = {
@@ -48,6 +49,10 @@ class Home extends React.Component {
         return API.get("sapo", '/users');
     }
 
+    showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
+
     // only works with one key, will have to use custom function for
     // donorPage!
 
@@ -61,6 +66,10 @@ class Home extends React.Component {
         }), () =>  {
             API.post("sapo", "/users", {
                 body: jsonBody
+            }).then(response => {
+                this.showToast('Successfully Saved!')
+            }).catch(error => {
+                this.showToast(`Save Failed. Error with Status Code ${error.response.status}`)
             })
         })
     }

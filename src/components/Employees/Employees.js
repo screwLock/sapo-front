@@ -54,7 +54,7 @@ class Employees extends React.Component {
       return;
     }
     try {
-      if (this.props.userConfig.employees !== null) {
+      if (this.props.userConfig.employees != null) {
         this.setState({ employees: this.props.userConfig.employees });
       }
     } catch (e) {

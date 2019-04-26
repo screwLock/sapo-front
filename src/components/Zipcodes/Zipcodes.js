@@ -29,7 +29,7 @@ class Zipcodes extends React.Component {
         }
         try {
           // const userConfig = await this.props.getUserConfig();
-          if (this.props.userConfig.zipcodes !== null) {
+          if (this.props.userConfig.zipcodes != null) {
             // this.setState({ userConfig, zipcodes: userConfig.zipcodes });
             this.setState({zipcodes: this.props.userConfig.zipcodes})
           }

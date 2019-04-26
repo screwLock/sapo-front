@@ -27,7 +27,7 @@ class Emails extends React.Component {
             return;
         }
         try {
-            if (this.props.userConfig.emails !== null) {
+            if (this.props.userConfig.emails != null) {
                 this.setState({ 
                     emails: this.props.userConfig.emails,
                     fromAddress: this.props.userConfig.emails.fromAddress,
@@ -73,10 +73,9 @@ class Emails extends React.Component {
                             messageBody: this.state.messageBody,
                     }}
                     )
-                this.showToast('Settings successfully saved.')
             }
             catch (e) {
-                this.showToast('There was an error saving.  Try again')
+                console.log(e)
             }
         }
     }

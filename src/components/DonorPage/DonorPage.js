@@ -24,7 +24,7 @@ class DonorPage extends React.Component {
         }
         try {
             const userConfig = this.props.userConfig;
-            if (userConfig.categories !== null && userConfig.restrictions !== null && userConfig.serviceDetails !== null) {
+            if (userConfig.categories != null && userConfig.restrictions != null && userConfig.serviceDetails != null) {
                 this.setState({
                     categories: userConfig.categories,
                     restrictions: userConfig.restrictions,
@@ -157,10 +157,9 @@ class DonorPage extends React.Component {
                     serviceDetails: this.state.serviceDetails
                 }
                 )
-                this.showToast('Settings successfully saved.')
             }
             catch (e) {
-                this.showToast('There was an error saving.  Try again')
+                alert(e)
             }
         }
     }
