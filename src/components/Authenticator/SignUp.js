@@ -5,7 +5,7 @@ import { Auth } from "aws-amplify"
 import { Redirect, withRouter } from "react-router-dom"
 import * as EmailValidator from 'email-validator'
 import Terms from './Terms'
-import { ALIGNMENT_RIGHT } from '@blueprintjs/icons/lib/esm/generated/iconContents';
+import { postalCodeValidator } from '../Zipcodes/postalCodeValidator'
 
 class SignUp extends React.Component {
     static defaultProps = {
@@ -69,6 +69,10 @@ class SignUp extends React.Component {
     }
 
     onSignUp = async () => {
+        let ein = this.state.ein;
+        if(this.state.ein.length === 0 && this.state.isNonProfit === false){
+            ein = 'NA'
+        }
         try {
             this.setState({ loading: true });
             const response = await Auth.signUp({
@@ -77,9 +81,21 @@ class SignUp extends React.Component {
                 attributes: {
                     'custom:first_name': this.state.firstName,
                     'custom:last_name': this.state.lastName,
-                    'custom:phone': this.state.phone,
+                    'custom:phone': this.state.phone.replace(/[^A-Za-z0-9]/g, ''),
                     'custom:organization': this.state.organization,
-                    'custom:access': this.state.access,
+                    'custom:streetAddress': this.state.streetAddress,
+                    'custom:city': this.state.city,
+                    'custom:zipcode': this.state.zipcode.replace(/[^A-Za-z0-9]/g, ''),
+                    'custom:state': this.state.state,
+                    'custom:isNonProfit': this.state.isNonProfit,
+                    'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g,''),
+                    'custom:adminUserName1': this.state.adminUserName,
+                    'custom:adminPassword1': this.state.adminPassword,
+                    'custom:membership': 'trial',
+                    'custom:createdAt': new Date(),
+                    // 'custom: stripeID: '',
+                    // 'custom: adminUserName2: '',
+                    // 'custom: adminPassword2: '',
                 }
             });
             console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
@@ -134,6 +150,10 @@ class SignUp extends React.Component {
         }
         else if (!phoneValidate.test(this.state.phone)) {
             this.setState({ error: 'Enter a valid phone number' })
+            return false
+        }
+        else if (!postalCodeValidator(this.state.zipcode)) {
+            this.setState({error: 'Enter a valid postal code'})
             return false
         }
         else if (this.state.isNonProfit === true && this.state.ein.length === 9) {
