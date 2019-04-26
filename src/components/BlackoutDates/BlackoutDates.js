@@ -20,15 +20,9 @@ class BlackoutDates extends React.Component {
     if (!this.props.authState) {
       return;
     }
-    try {
-      if (this.props.userConfig.blackoutDates !== null) {
-        this.setState({ dates: this.props.userConfig.blackoutDates });
-      }
-    } catch (e) {
-      alert(e);
+    if (this.props.userConfig.blackoutDates != null) {
+      this.setState({ dates: this.props.userConfig.blackoutDates });
     }
-
-    // this.setState({ isLoading: false });
   }
 
   addDates = (newDates, newReason) => {
@@ -38,8 +32,8 @@ class BlackoutDates extends React.Component {
         produce(draft => {
           draft.dates = [...draft.dates, ...datesWithReason]
         }), async () => await this.props.updateUserConfig('blackoutDates',
-        this.state.dates,
-        { blackoutDates: this.state.dates })
+          this.state.dates,
+          { blackoutDates: this.state.dates })
       )
     }
     else {
