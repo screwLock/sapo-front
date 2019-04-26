@@ -22,18 +22,25 @@ class DonorPage extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        try {
-            const userConfig = this.props.userConfig;
-            if (userConfig.categories != null && userConfig.restrictions != null && userConfig.serviceDetails != null) {
-                this.setState({
-                    categories: userConfig.categories,
-                    restrictions: userConfig.restrictions,
-                    serviceDetails: userConfig.serviceDetails
-                })
-            }
-        } catch (e) {
-            alert(e);
+        // need to also check for this.props.userConfig.donorPage
+        // due to the added to updateUserConfig used below
+        let userConfig = this.props.userConfig;
+        if (userConfig.donorPage != null){
+            userConfig = userConfig.donorPage;
+            this.setState({
+                categories: userConfig.categories,
+                restrictions: userConfig.restrictions,
+                serviceDetails: userConfig.serviceDetails
+            })
         }
+        else if (userConfig.categories != null && userConfig.restrictions != null && userConfig.serviceDetails != null) {
+            this.setState({
+                categories: userConfig.categories,
+                restrictions: userConfig.restrictions,
+                serviceDetails: userConfig.serviceDetails
+            })
+        }
+
     }
 
     addListing = (listing, listingType) => {
@@ -61,7 +68,7 @@ class DonorPage extends React.Component {
                 let mergedDonatables = [...listing.donatables, ...this.state.categories[categoryIndex].donatables]
                 // remove duplicate donatables
                 let key = 'name'
-                mergedDonatables = mergedDonatables.filter((e, i) => mergedDonatables.findIndex(a => a[key] === e[key]) === i).sort((a,b) => a.name.localeCompare(b.name));
+                mergedDonatables = mergedDonatables.filter((e, i) => mergedDonatables.findIndex(a => a[key] === e[key]) === i).sort((a, b) => a.name.localeCompare(b.name));
 
                 this.setState(
                     produce(draft => {
@@ -146,16 +153,18 @@ class DonorPage extends React.Component {
         }
         else {
             try {
+                // donorPage key here is overkill
+                // need to check for userConfig.donorPage in componentDidMount
                 await this.props.updateUserConfig('donorPage', {
                     categories: this.state.categories,
                     restrictions: this.state.restrictions,
                     serviceDetails: this.state.serviceDetails
                 },
-                {
-                    categories: this.state.categories,
-                    restrictions: this.state.restrictions,
-                    serviceDetails: this.state.serviceDetails
-                }
+                    {
+                        categories: this.state.categories,
+                        restrictions: this.state.restrictions,
+                        serviceDetails: this.state.serviceDetails
+                    }
                 )
             }
             catch (e) {
