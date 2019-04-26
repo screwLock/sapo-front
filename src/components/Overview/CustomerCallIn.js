@@ -188,7 +188,7 @@ export class CustomerCallIn extends React.Component {
                                         orgName: 'NA',
                                         lat: this.state.lat,
                                         lng: this.state.lng,
-                                        phoneNumber: this.state.phoneNumber,
+                                        phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
                                         email: this.state.email,
                                         confirmed: true,
                                         completed: false,
