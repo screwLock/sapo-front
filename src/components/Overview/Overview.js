@@ -6,7 +6,7 @@ import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
 import pickupMocks from './mocks/pickupMocks';
 import { userMocks } from './mocks/userMocks.js'
-import { format, getMonth } from 'date-fns'
+import { format, getMonth, getYear, lastDayOfMonth } from 'date-fns'
 import { API } from "aws-amplify"
 
 class Overview extends Component {
@@ -29,22 +29,31 @@ class Overview extends Component {
     if (!this.props.authState) {
       return;
     }
-
+    /*
     try {
-      if (this.props.userConfig.blackoutDates !== null) {
-        this.setState({
-          pickups: pickupMocks,
-          allPickups: pickupMocks.map(pickup => pickup.inRoute = false),
-          user: userMocks,
-        });
-      }
+      let pickups = await this.getPickupsByMonth(startDate, endDate)
+      console.log(pickups)
+      */this.setState({
+        pickups: pickupMocks,
+        user: userMocks,
+      })
+      /*
     } catch (e) {
       alert(e);
     }
+    */
   }
 
   createRoute = () => {
     this.setState({ newRoute: !this.state.newRoute });
+  }
+
+  getPickupsByMonth = () => {
+    let currentMonth = this.state.selectedMonth
+    let currentYear = getYear(new Date())
+    let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0,10)
+    let startDate = new Date(currentYear, currentMonth-1, 1 ).toISOString().substr(0,10)
+    return API.get("sapo", "/pickups");
   }
 
   render() {
@@ -106,7 +115,17 @@ class Overview extends Component {
   // for the datepicker ondayclick handler
   // unconfirmed pickups should be shown based
   // on the month of the selected day
-  selectDate = (date) => {
+  selectDate = async (date) => {
+    try {
+      let pickups = await this.getPickupsByMonth()
+      console.log(pickups)
+      this.setState({
+        pickups: pickupMocks,
+        user: userMocks,
+      })
+    } catch (e) {
+      alert(e);
+    }
     this.setState({
       selectedDate: date
     })
