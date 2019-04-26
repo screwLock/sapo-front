@@ -94,8 +94,10 @@ class SignUp extends React.Component {
                     'custom:membership': 'trial',
                     'custom:createdAt': new Date(),
                     // 'custom: stripeID: '',
+                    // 4 additional pairs for admins
                     // 'custom: adminUserName2: '',
                     // 'custom: adminPassword2: '',
+                    // ...admin3,4,5...pass3,4,5...
                 }
             });
             console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
