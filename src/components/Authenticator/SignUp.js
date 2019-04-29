@@ -87,17 +87,22 @@ class SignUp extends React.Component {
                     'custom:city': this.state.city,
                     'custom:zipcode': this.state.zipcode.replace(/[^A-Za-z0-9]/g, ''),
                     'custom:state': this.state.state,
+                    'custom: latLng': '',
                     'custom:isNonProfit': this.state.isNonProfit,
                     'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g,''),
                     'custom:adminUserName1': this.state.adminUserName,
                     'custom:adminPassword1': this.state.adminPassword,
                     'custom:membership': 'trial',
                     'custom:createdAt': new Date(),
-                    // 'custom: stripeID: '',
-                    // 4 additional pairs for admins
-                    // 'custom: adminUserName2: '',
-                    // 'custom: adminPassword2: '',
-                    // ...admin3,4,5...pass3,4,5...
+                    'custom: stripeID': '',
+                    'custom: adminUserName2': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminPassword2': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminUserName3': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminPassword3': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminUserName4': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminPassword4': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminUserName5': Math.random().toString(36).replace('0.', ''),
+                    'custom: adminPassword5': Math.random().toString(36).replace('0.', ''),
                 }
             });
             console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
