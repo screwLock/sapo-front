@@ -7,7 +7,9 @@ import OverviewDatePicker from './OverviewDatePicker.js';
 import pickupMocks from './mocks/pickupMocks';
 import { userMocks } from './mocks/userMocks.js'
 import { format, getMonth, getYear, lastDayOfMonth } from 'date-fns'
-import { API } from "aws-amplify"
+import { API, Auth } from "aws-amplify"
+import 'here-js-api/scripts/mapsjs-core'
+import 'here-js-api/scripts/mapsjs-service'
 
 class Overview extends Component {
   constructor(props) {
@@ -29,19 +31,41 @@ class Overview extends Component {
     if (!this.props.authState) {
       return;
     }
-    /*
+    let letlng = this.props.authData.signInUserSession.idToken.payload['custom:latlng']
     try {
-      let pickups = await this.getPickupsByMonth(startDate, endDate)
-      console.log(pickups)
-      */this.setState({
-        pickups: pickupMocks,
-        user: userMocks,
-      })
-      /*
+      if (this.props.user.latlng.length !== 0) {
+        /*
+        const platform = new H.service.Platform({
+          'app_id': 'u3uFI5c0XaweKx6Yh31t',
+          'app_code': 'wUPW8ZhbclB20ZTwqRC4fA'
+        });
+        const geocoder = platform.getGeocodingService();
+
+        let lat = ''
+        let lng = ''
+        let streetAddress = this.props.authData.signInUserSession.idToken.payload['custom:streetAddress']
+        let zipcode = this.props.authData.signInUserSession.idToken.payload['custom:zipcode']
+        //get the lat and lng from a geocoder call
+        geocoder.geocode({ searchText: `${streetAddress + zipcode}` },
+          (result) => {
+            if (result.Response.View[0]) {
+              lat = result.Response.View[0].Result[0].Location.DisplayPosition.Latitude
+              lng = result.Response.View[0].Result[0].Location.DisplayPosition.Longitude
+            }
+          })
+          const result = await Auth.updateUserAttributes(user, {
+            'latLng': `${lat}:${lng}`
+        });
+        */
+      }
+      else {
+        // grab the already created latitude and longitude
+      }
+      // let pickups = await this.getPickupsByMonth(startDate, endDate)
+
     } catch (e) {
       alert(e);
     }
-    */
   }
 
   createRoute = () => {
@@ -51,8 +75,8 @@ class Overview extends Component {
   getPickupsByMonth = () => {
     let currentMonth = this.state.selectedMonth
     let currentYear = getYear(new Date())
-    let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0,10)
-    let startDate = new Date(currentYear, currentMonth-1, 1 ).toISOString().substr(0,10)
+    let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0, 10)
+    let startDate = new Date(currentYear, currentMonth - 1, 1).toISOString().substr(0, 10)
     return API.get("sapo", "/pickups");
   }
 
