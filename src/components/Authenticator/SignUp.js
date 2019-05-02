@@ -79,30 +79,29 @@ class SignUp extends React.Component {
                 username: this.state.email,
                 password: this.state.password,
                 attributes: {
-                    'custom:first_name': this.state.firstName,
-                    'custom:last_name': this.state.lastName,
-                    'custom:phone': this.state.phone.replace(/[^A-Za-z0-9]/g, ''),
-                    'custom:organization': this.state.organization,
-                    'custom:streetAddress': this.state.streetAddress,
-                    'custom:city': this.state.city,
-                    'custom:zipcode': this.state.zipcode.replace(/[^A-Za-z0-9]/g, ''),
-                    'custom:state': this.state.state,
-                    'custom: latLng': '',
-                    'custom:isNonProfit': this.state.isNonProfit,
+                    phone_number: `+${this.state.phone.replace(/[^A-Za-z0-9]/g, '')}`,
+                    // we'll use the name standard attribute for organization name
+                    name: this.state.organization,
+                    given_name: this.state.firstName,
+                    family_name: this.state.lastName,
+                    // we'll combine all the address parameters into one attribute field
+                    address: `${this.state.streetAddress}@${this.state.city}@${this.state.state}@${this.state.zipcode.replace(/[^A-Za-z0-9]/g, '')}`,
+                    updated_at: Date.now().toString(),
+                    'custom:isNonProfit': this.state.isNonProfit.toString(),
                     'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g,''),
+                    'custom:membership': 'trial',
+                    'custom:stripeID': '-',
                     'custom:adminUserName1': this.state.adminUserName,
                     'custom:adminPassword1': this.state.adminPassword,
-                    'custom:membership': 'trial',
-                    'custom:createdAt': new Date(),
-                    'custom: stripeID': '',
-                    'custom: adminUserName2': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminPassword2': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminUserName3': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminPassword3': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminUserName4': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminPassword4': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminUserName5': Math.random().toString(36).replace('0.', ''),
-                    'custom: adminPassword5': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName2': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword2': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName3': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword3': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName4': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword4': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName5': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword5': Math.random().toString(36).replace('0.', ''),
+                    'custom:createdAt': new Date().toISOString(),
                 }
             });
             console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
@@ -256,7 +255,7 @@ class SignUp extends React.Component {
                             <InputGroup name="organization" onChange={this.handleChange} />
                         </FormGroup>
                         <FormGroup
-                            label="Street Address"
+                            label="Organization Street Address"
                             labelFor="text-input"
                         >
                             <InputGroup name="streetAddress" onChange={this.handleChange} />

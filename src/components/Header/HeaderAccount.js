@@ -15,7 +15,7 @@ class HeaderAccount extends React.Component {
 
   render() {
     let text = this.renderLoginOrLogout()
-    const org = this.props.authData.signInUserSession.idToken.payload['custom:organization'].toUpperCase()
+    const org = this.props.authData.signInUserSession.idToken.payload.name.toUpperCase()
     return (
       <StyledHeaderAccount>
         <Popover position='bottom'>
