@@ -26,7 +26,8 @@ class OverviewMap extends React.Component {
 
   render() {
     const center = this.getCenter(this.props.selectedPickup, this.props.center);
-    const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
+    const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate));
+    console.log(datePickups)
     const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
     const user = this.props.user;
     const zoom = this.props.zoom;
@@ -45,7 +46,6 @@ class OverviewMap extends React.Component {
             return <PickupMarker
               lat={pickup.lat}
               lng={pickup.lng}
-              name={pickup.name}
               selectedPickup={this.props.selectedPickup}
               pickup={pickup}
               onClick={this.props.onClick}
