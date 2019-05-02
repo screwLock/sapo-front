@@ -219,7 +219,7 @@ class SignUp extends React.Component {
     }
 
     render() {
-        const errorComponent = this.state.error !== null
+        const errorComponent = (this.state.error !== null && !this.state.successShowing)
             ? this.state.error
             : '';
 
