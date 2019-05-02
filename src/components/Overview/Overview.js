@@ -45,8 +45,7 @@ class Overview extends Component {
           lng: parseFloat(latlng[1])
         }
       }))
-      let pickups = await this.getPickupsByMonth()
-      this.setState({pickups: pickups})
+      await this.getPickupsByMonth()
       return;
     }
     else {
@@ -85,8 +84,7 @@ class Overview extends Component {
             this.showToast(`${error.response.status}`)
           }
         )
-        let pickups = await this.getPickupsByMonth()
-        this.setState({pickups: pickups})
+        await this.getPickupsByMonth()
 
       } catch (error) {
         this.showToast(`${error}`)
@@ -109,6 +107,9 @@ class Overview extends Component {
         'startDate': startDate,
         'endDate': endDate
       }
+    }).then(result => {
+      console.log(result)
+      this.setState({ pickups: result })
     });
   }
 
@@ -175,20 +176,17 @@ class Overview extends Component {
   // for the datepicker ondayclick handler
   // unconfirmed pickups should be shown based
   // on the month of the selected day
-  selectDate = async (date) => {
+  selectDate = (date) => {
     try {
-      let pickups = await this.getPickupsByMonth()
-      console.log(pickups)
       this.setState({
-        pickups: pickupMocks,
-        user: userMocks,
-      })
+        selectedDate: date
+      }, () => {
+        this.getPickupsByMonth()
+      }
+      )
     } catch (e) {
       alert(e);
     }
-    this.setState({
-      selectedDate: date
-    })
   }
 }
 

@@ -18,11 +18,11 @@ class OverviewPickups extends React.Component {
     };
 
     renderCards = () => {
-        const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
+        const datePickups = this.props.pickups.filter((pickup) => isSameDay(new Date(pickup.pickupDate), this.props.selectedDate));
         return datePickups.map((pickup, index) => {
             return (
-                <Cell height={1} width={4} left={2} key={pickup.id}>
-                    <Draggable draggableId={pickup.id} index={index}>
+                <Cell height={1} width={4} left={2} key={pickup.pickupID}>
+                    <Draggable draggableId={pickup.pickupID} index={index}>
                         {(provided) => (
                             <OverviewCard pickup={pickup}
                                 index={index}
