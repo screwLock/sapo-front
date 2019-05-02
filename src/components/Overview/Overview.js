@@ -8,6 +8,7 @@ import pickupMocks from './mocks/pickupMocks';
 import { userMocks } from './mocks/userMocks.js'
 import { format, getMonth, getYear, lastDayOfMonth } from 'date-fns'
 import { API, Auth } from "aws-amplify"
+import { AppToaster } from '../Toaster'
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
 
@@ -31,40 +32,64 @@ class Overview extends Component {
     if (!this.props.authState) {
       return;
     }
-    let letlng = this.props.authData.signInUserSession.idToken.payload['custom:latlng']
-    try {
-      if (this.props.user.latlng.length !== 0) {
-        /*
+
+    else if (this.props.authData.signInUserSession.idToken.payload['custom:LatLng'] == null) {
+      this.showToast('You need to use a valid address for pickups.  You can change your address in the Account tab in the Admin dashboard.')
+      return;
+    }
+    else if (this.props.authData.signInUserSession.idToken.payload['custom:LatLng'] !== '@') {
+      let latlng = this.props.authData.signInUserSession.idToken.payload['custom:LatLng'].split('@')
+      this.setState(prevState => ({
+        user: {
+          ...prevState.user,
+          lat: parseFloat(latlng[0]),
+          lng: parseFloat(latlng[1])
+        }
+      }))
+      return;
+    }
+    else {
+      try {
         const platform = new H.service.Platform({
           'app_id': 'u3uFI5c0XaweKx6Yh31t',
           'app_code': 'wUPW8ZhbclB20ZTwqRC4fA'
         });
+        let user = await Auth.currentAuthenticatedUser();
         const geocoder = platform.getGeocodingService();
 
         let lat = ''
         let lng = ''
-        let streetAddress = this.props.authData.signInUserSession.idToken.payload['custom:streetAddress']
-        let zipcode = this.props.authData.signInUserSession.idToken.payload['custom:zipcode']
+        let address = this.props.authData.signInUserSession.idToken.payload.address.formatted.split('@')
+
         //get the lat and lng from a geocoder call
-        geocoder.geocode({ searchText: `${streetAddress + zipcode}` },
+        geocoder.geocode({ searchText: `${address[0] + address[3]}` },
           (result) => {
             if (result.Response.View[0]) {
               lat = result.Response.View[0].Result[0].Location.DisplayPosition.Latitude
               lng = result.Response.View[0].Result[0].Location.DisplayPosition.Longitude
+              Auth.updateUserAttributes(user, {
+                'custom:LatLng': `${lat}@${lng}`
+              }).then(
+                this.setState(prevState => ({
+                  user: {
+                    ...prevState.user,
+                    lat: lat,
+                    lng: lng
+                  }
+                }))
+              )
             }
-          })
-          const result = await Auth.updateUserAttributes(user, {
-            'latLng': `${lat}:${lng}`
-        });
-        */
-      }
-      else {
-        // grab the already created latitude and longitude
-      }
-      // let pickups = await this.getPickupsByMonth(startDate, endDate)
+          },
+          (error) => {
+            this.showToast(`${error.response.status}`)
+          }
+        )
+        // let pickups = await this.getPickupsByMonth(startDate, endDate)
 
-    } catch (e) {
-      alert(e);
+      } catch (error) {
+        this.showToast(`${error}`)
+      }
+
     }
   }
 
@@ -89,7 +114,7 @@ class Overview extends Component {
           onClick={this.selectPickup}
           user={this.state.user}
           center={{ 'lat': this.state.user.lat, 'lng': this.state.user.lng }}
-          zoom={9}
+          zoom={12}
           routeKey={this.state.newRoute}
         />
         </Cell>
@@ -123,7 +148,11 @@ class Overview extends Component {
     this.setState({
       selectedPickup: pickup,
     })
-  };
+  }
+
+  showToast = (message) => {
+    AppToaster.show({ message: message });
+  }
 
   handleRouteChange = (index) => {
     this.setState(

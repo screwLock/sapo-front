@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
 
 class AdminLogin extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
-            email: '',
+            username: '',
             password: '',
         }
     }
@@ -15,11 +15,16 @@ class AdminLogin extends React.Component {
     authenticateAdmin = () => {
         let payload = this.props.authData.signInUserSession.idToken.payload
         let admins = []
-        if((this.state.email === payload['custom:adminUserName1'] && this.state.password === payload['custom:adminPassword1'])){
+        if ((this.state.username === payload['custom:adminUserName1'] && this.state.password === payload['custom:adminPassword1']) ||
+            (this.state.username === payload['custom:adminUserName2'] && this.state.password === payload['custom:adminPassword2']) ||
+            (this.state.username === payload['custom:adminUserName3'] && this.state.password === payload['custom:adminPassword3']) ||
+            (this.state.username === payload['custom:adminUserName4'] && this.state.password === payload['custom:adminPassword4']) ||
+            (this.state.username === payload['custom:adminUserName5'] && this.state.password === payload['custom:adminPassword5'])
+        ) {
             this.props.onAdminLogin()
         }
         else {
-            this.showToast('Incorrect email or password')
+            this.showToast('Incorrect username or password')
         }
     }
 
@@ -42,9 +47,9 @@ class AdminLogin extends React.Component {
             >
                 <DialogContainer>
                     <FormGroup
-                        label="Admin Email"
+                        label="Admin Username"
                     >
-                        <InputGroup name='email' onChange={this.handleChange} />
+                        <InputGroup name='username' onChange={this.handleChange} />
                     </FormGroup>
                     <FormGroup
                         label="Admin Password"

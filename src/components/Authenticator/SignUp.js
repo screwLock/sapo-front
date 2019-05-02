@@ -91,6 +91,7 @@ class SignUp extends React.Component {
                     'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g,''),
                     'custom:membership': 'trial',
                     'custom:stripeID': '-',
+                    'custom:LatLng': '@',
                     'custom:adminUserName1': this.state.adminUserName,
                     'custom:adminPassword1': this.state.adminPassword,
                     'custom:adminUserName2': Math.random().toString(36).replace('0.', ''),
@@ -175,7 +176,7 @@ class SignUp extends React.Component {
             return false
         }
         else if (this.state.adminUserName === this.state.email) {
-            this.setState({ error: 'Admin user name should not be the login email' })
+            this.setState({ error: 'Admin username should not be the login email' })
             return false
         }
         else if (this.state.adminPassword.length <= 0) {
@@ -307,9 +308,9 @@ class SignUp extends React.Component {
                         </FormGroup>
                         <TitleRow>Administrative Login</TitleRow>
                         <FormGroup
-                            label="Admin Email"
+                            label="Admin Username"
                             labelFor="text-input"
-                            helperText="This email will be used for administrative login"
+                            helperText="This username will be used for administrative login"
                         >
                             <InputGroup name="adminUserName" onChange={this.handleChange} />
                         </FormGroup>
