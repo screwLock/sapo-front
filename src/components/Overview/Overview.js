@@ -17,7 +17,6 @@ class Overview extends Component {
     super(props);
     this.state = {
       pickups: [],
-      allPickups: [],
       selectedPickup: null,
       selectedDate: new Date(),
       selectedMonth: getMonth(new Date()),
@@ -46,6 +45,8 @@ class Overview extends Component {
           lng: parseFloat(latlng[1])
         }
       }))
+      let pickups = await this.getPickupsByMonth()
+      this.setState({pickups: pickups})
       return;
     }
     else {
@@ -84,7 +85,8 @@ class Overview extends Component {
             this.showToast(`${error.response.status}`)
           }
         )
-        // let pickups = await this.getPickupsByMonth(startDate, endDate)
+        let pickups = await this.getPickupsByMonth()
+        this.setState({pickups: pickups})
 
       } catch (error) {
         this.showToast(`${error}`)
@@ -102,7 +104,12 @@ class Overview extends Component {
     let currentYear = getYear(new Date())
     let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0, 10)
     let startDate = new Date(currentYear, currentMonth - 1, 1).toISOString().substr(0, 10)
-    return API.get("sapo", "/pickups");
+    return API.get("sapo", "/pickups", {
+      'queryStringParameters': {
+        'startDate': startDate,
+        'endDate': endDate
+      }
+    });
   }
 
   render() {
