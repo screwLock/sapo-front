@@ -271,7 +271,7 @@ export class CustomerCallIn extends React.Component {
                                 isClearable={true}
                             />
                         </SelectContainer>
-                        {this.props.userConfig.blackoutDates ?
+                        {(this.props.userConfig.blackoutDates && this.props.userConfig.zipcodes) ?
                             this.renderDatePicker(blackoutDates) :
                             ''
                         }
