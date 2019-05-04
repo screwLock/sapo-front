@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-import DayPicker from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
-import { keyframes } from "styled-components";
+import React, { Component } from 'react'
+import DayPicker from 'react-day-picker'
+import 'react-day-picker/lib/style.css'
+import { keyframes } from "styled-components"
+import { getDate } from "date-fns"
 
 class OverviewDatePicker extends Component {
   constructor(props) {
@@ -21,13 +22,21 @@ class OverviewDatePicker extends Component {
   }
 
   render() {
+    // we have to use getDate() so that we can safely ignore
+    // the time part of the Date object
+    let unconfirmed = this.props.pickups.filter(pickup => {
+      return pickup.confirmed === false
+    }).map(pickup => {
+      return getDate(new Date(pickup.pickupDate))
+    })
     // highlighted should be same month as selectedDate
     // as well as !confirmed
+    const unconfirmedDays = (day) => {
+      return unconfirmed.includes(getDate(day))
+    }
+
     const modifiers = {
-      highlighted: {
-        from: new Date(2019, this.props.selectedMonth, 12),
-        to: new Date(2019, this.props.selectedMonth, 16)
-      }
+      unconfirmedDays: unconfirmedDays
     }
 
     const pulse = keyframes `
@@ -42,7 +51,7 @@ class OverviewDatePicker extends Component {
       }
     `
 
-    const highlightedStyle = `.DayPicker-Day--highlighted {
+    const highlightedStyle = `.DayPicker-Day--unconfirmedDays {
       color: red;
       font-weight: 800;
       animation-name: ${pulse};
@@ -58,7 +67,6 @@ class OverviewDatePicker extends Component {
           onDayClick={this.handleDayClick}
           onMonthChange={this.props.handleMonthChange}
           selectedDays={this.props.selectedDate}
-          disabledDays={{ daysOfWeek: [0] }}
         />
       </div>
     );

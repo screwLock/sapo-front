@@ -130,6 +130,7 @@ class Overview extends Component {
           handleClick={this.selectDate}
           handleMonthChange={this.handleMonthChange}
           selectedMonth={this.state.selectedMonth}
+          pickups={this.state.pickups}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
           user={this.state.user}
@@ -169,24 +170,19 @@ class Overview extends Component {
       }));
   }
 
+  // we also need to get the pickups for the selected month
   handleMonthChange = (month) => {
-    this.setState({ selectedMonth: getMonth(month) })
+    this.setState({ selectedMonth: getMonth(month) },
+      () => {
+        this.getPickupsByMonth()
+      })
   }
 
   // for the datepicker ondayclick handler
   // unconfirmed pickups should be shown based
   // on the month of the selected day
   selectDate = (date) => {
-    try {
-      this.setState({
-        selectedDate: date
-      }, () => {
-        this.getPickupsByMonth()
-      }
-      )
-    } catch (e) {
-      alert(e);
-    }
+      this.setState({selectedDate: date})
   }
 }
 
