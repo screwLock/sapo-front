@@ -42,8 +42,8 @@ class Header extends React.Component {
                     {...props}
                 />
                 <Grid columns={12}>
-                    <Cell width={10}>SAPO</Cell>
-                    <Cell width={2}><HeaderAccount {...props} handleAdminOpen={this.handleOpen}/></Cell>
+                    <Cell width={7}>SAPO</Cell>
+                    <Cell width={5}><HeaderAccount {...props} handleAdminOpen={this.handleOpen}/></Cell>
                 </Grid>
             </Header1>
         );
