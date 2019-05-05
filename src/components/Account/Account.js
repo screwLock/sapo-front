@@ -20,7 +20,7 @@ class Account extends React.Component {
         return (
             <Container>
                 <H3>Manage Account Info</H3>
-                <H5>Current Membership Level:</H5>
+                <H5>Current Membership Level: {this.props.authData.signInUserSession.idToken.payload['custom:membership'].toUpperCase()}</H5>
                 <Button 
                     onClick={this.handleOpen}
                     text='Change Membership'
