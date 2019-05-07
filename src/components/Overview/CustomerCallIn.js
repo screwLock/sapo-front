@@ -21,7 +21,7 @@ export class CustomerCallIn extends React.Component {
         this.state = {
             firstName: '',
             lastName: '',
-            orgName: '',
+            organization: '',
             streetAddress: '',
             phoneNumber: '',
             email: '',
@@ -44,8 +44,8 @@ export class CustomerCallIn extends React.Component {
     }
 
     addDonation = (name) => {
-        if(this.state.donations.includes(name)){
-            this.state.donations.splice( this.state.donations.indexOf(name), 1 );
+        if (this.state.donations.includes(name)) {
+            this.state.donations.splice(this.state.donations.indexOf(name), 1);
         }
         else {
             this.state.donations.push(name)
@@ -118,30 +118,37 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    renderPickupDetails = () => {
+    renderPickupAddress = () => {
         if (this.state.showPickupDetails) {
             return (
                 <BlockContainer>
                     <H4>Pickup Address</H4>
-                    <SubBlockContainer>
-                        <FormGroup>
-                            <InputGroup name='streetAddress' onBlur={this.handleBlur} />
+                    <SubBlockContainer >
+                        <FormGroup label='Street Address'>
+                            <InputGroup name='streetAddress' onBlur={this.handleBlur} autocomplete="new-street-address"/>
+                        </FormGroup>
+                        <FormGroup label='Organization Name (If Not Residential)'>
+                            <InputGroup name='organization' onBlur={this.handleBlur} />
                         </FormGroup>
                     </SubBlockContainer>
                     <H4>Contact Info</H4>
                     <SubBlockContainer>
-                        <FormGroup>
-                            <InputGroup placeholder='Contact First Name' name='firstName' onBlur={this.handleBlur} />
-                        </FormGroup>
-                        <FormGroup>
-                            <InputGroup placeholder='Contact Last Name' name='lastName' onBlur={this.handleBlur} />
-                        </FormGroup>
-                        <FormGroup>
-                            <InputGroup placeholder='Contact Phone' name='phoneNumber' onBlur={this.handleBlur} />
-                        </FormGroup>
-                        <FormGroup>
-                            <InputGroup placeholder='Contact Email' name='email' onBlur={this.handleBlur} />
-                        </FormGroup>
+                        <ContactForms>
+                            <NameForm label='First Name'>
+                                <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </NameForm>
+                            <FormGroup label='Last Name'>
+                                <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </FormGroup>
+                        </ContactForms>
+                        <ContactForms>
+                            <FormGroup label='Email'>
+                                <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </FormGroup>
+                            <PhoneForm label='Phone Number'>
+                                <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </PhoneForm>
+                        </ContactForms>
                     </SubBlockContainer>
                 </BlockContainer>
             )
@@ -185,7 +192,7 @@ export class CustomerCallIn extends React.Component {
                                         firstName: this.state.firstName,
                                         lastName: this.state.lastName,
                                         streetAddress: this.state.streetAddress,
-                                        orgName: 'NA',
+                                        organization: 'NA',
                                         lat: this.state.lat,
                                         lng: this.state.lng,
                                         phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
@@ -196,12 +203,12 @@ export class CustomerCallIn extends React.Component {
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails
                                     }
-                                }).then( response => {
+                                }).then(response => {
                                     console.log(response)
                                     this.handleClose()
                                     this.showToast('Pickup Successfully Saved')
                                     // send email
-                                }).catch( error => {
+                                }).catch(error => {
                                     alert(error)
                                 })
                             })// end of setState
@@ -227,7 +234,7 @@ export class CustomerCallIn extends React.Component {
             this.state.phoneNumber === '' ||
             this.state.streetAddress === '' ||
             this.state.selectedZipcode === '' ||
-            !this.state.selectedDate 
+            !this.state.selectedDate
         ) {
             this.showToast('Required fields are missing')
             return false;
@@ -276,7 +283,7 @@ export class CustomerCallIn extends React.Component {
                             ''
                         }
                         <div>
-                            {this.renderPickupDetails()}
+                            {this.renderPickupAddress()}
                         </div>
                         <div>
                             {(this.props.userConfig.categories) ?
@@ -323,7 +330,7 @@ const BlockContainer = styled.div`
 `;
 
 const SubBlockContainer = styled.div`
-    width: 250px;
+    width: 350px;
     margin: 10px;
     margin-left: 20px;
 `
@@ -333,8 +340,18 @@ const DialogContainer = styled.div`
     margin: 20px;
 `
 
-const FormGroupContainer = styled(FormGroup)`
-    width: 250px;
+const ContactForms = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+
+const NameForm = styled(FormGroup)`
+    width: 150px;
+`
+
+const PhoneForm = styled(FormGroup)`
+    width: 125px;
 `
 
 const SelectContainer = styled.div`
