@@ -29,7 +29,8 @@ class Account extends React.Component {
                 />
                 <StripeProvider apiKey='pk_test_ZokTubwC6G4D2q2COo4Gj9O4'>
                     <Elements>
-                        <BillingForm 
+                        <BillingForm
+                            {...this.props} 
                             isOpen={this.state.isBillingOpen}
                             handleOpen={this.handleOpen}
                         />

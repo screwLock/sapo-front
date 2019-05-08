@@ -26,33 +26,47 @@ class BillingForm extends React.Component {
 
     handleSubmit = async event => {
         event.preventDefault();
+        if (!this.validateForm()) {
+            return
+        }
         this.setState({ isProcessing: true });
         // create the Stripe source
-        let source = await this.props.stripe.createSource({
-            type: 'card',
-            owner: {
-                name: this.state.cardholderName,
-                email: this.props.authData.signInUserSession.idToken.payload.email
-            },
+        try {
+            let source = await this.props.stripe.createSource({
+                type: 'card',
+                owner: {
+                    name: this.state.cardholderName,
+                    email: this.props.authData.signInUserSession.idToken.payload.email
+                },
 
-        })
-        if (source) {
-            const postBody = {
-                stripeSourceId: source.source.id,
-            };
-            // Here you POST the above body to link source to customer in the backend (see below)
+            })
+            if (source) {
+                const postBody = {
+                    source: source.id,
+                    email: this.props.authData.signInUserSession.idToken.payload.email,
+                    plan: this.state.plan
+                };
+                await API.post("sapo", "/billing", {
+                    body: postBody
+                })
+            }
+            this.setState({
+                isProcessing: false,
+                cardholderName: '',
+                isCardComplete: false,
+                plan: 'basic'
+            }, () => this.props.handleOpen());
+            this.showToast('Card successfully charged')
+        } catch (error) {
+            this.setState({
+                isProcessing: false,
+                cardholderName: '',
+                isCardComplete: false,
+                plan: 'basic'
+            }, () => this.props.handleOpen());            
+            this.showToast(`Charge Failed. Error with Status Code ${error.response.status}`)
+
         }
-        this.setState({ isProcessing: false });
-        // this.props.authData.signInUserSession.idToken.payload['custom:stripeID'] == 'NA') 
-        // if stripeID ==='NA', then create customer id with this.props.stripe.customers.create()
-        // let user = await Auth.currentAuthenticatedUser();
-        /* Auth.updateUserAttributes(user, {
-                'custom:stripeID': `newID`,
-                'custom:membership': 'membership',
-              }).then(
-        */
-        // then store the new id in cognito
-        this.showToast('Card successfully charged')
     }
 
     showToast = (message) => {
@@ -60,11 +74,13 @@ class BillingForm extends React.Component {
     }
 
     validateForm = () => {
-        return (
-            this.state.plan.length > 0 &&
-            this.state.isCardComplete &&
-            this.state.cardholderName.length > 0
-        );
+        if (this.state.plan.length > 0 && this.state.isCardComplete && this.state.cardholderName.length > 0) {
+            return true
+        }
+        else {
+            this.showToast('All fields are required')
+            return false
+        }
     }
 
     render() {
@@ -83,9 +99,9 @@ class BillingForm extends React.Component {
                             name='plan'
                             inline={true}
                         >
-                            <Radio label="Bronze" value="Bronze" />
-                            <Radio label="Silver" value="Silver" />
-                            <Radio label="Gold" value="Gold" />
+                            <Radio label="Basic" value="basic" />
+                            <Radio label="Standard" value="standard" />
+                            <Radio label="Premium" value="premium" />
                         </RadioGroup>
                     </CardRow>
                     <CardRow>
@@ -93,7 +109,7 @@ class BillingForm extends React.Component {
                             label="Cardholder's Name"
                             labelFor="text-input"
                         >
-                            <InputGroup name="cardholderName" type="text" onChange={this.onChange} />
+                            <InputGroup name="cardholderName" type="text" onChange={this.handleChange} />
                         </FormGroup>
                     </CardRow>
                     <CardElementRow>
