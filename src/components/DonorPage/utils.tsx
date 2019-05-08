@@ -6,7 +6,7 @@ export const dynamicSort = (property: any) => {
         sortOrder = -1;
         property = property.substr(1);
     }
-    return (a: {},b: {}) => {
+    return (a: any,b: any) => {
         const result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
     }

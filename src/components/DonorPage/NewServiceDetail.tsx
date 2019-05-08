@@ -7,7 +7,7 @@ import * as ServiceDetails from './types/ServiceDetails'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 
 class NewServiceDetail extends React.Component<any, any> {
-    constructor(props) {
+    constructor(props:any) {
         super(props)
         this.state = {
             selectedServiceDetail: ServiceDetails.PREPACKAGED_SERVICE_DETAILS[0] as ServiceDetails.IServiceDetail,
@@ -47,7 +47,7 @@ class NewServiceDetail extends React.Component<any, any> {
     }
 
     protected addServiceDetail = () => {
-        if (!(this.state.serviceDetails.filter((d) => (d.name === this.state.selectedServiceDetail.name)).length > 0)) {
+        if (!(this.state.serviceDetails.filter((d:any) => (d.name === this.state.selectedServiceDetail.name)).length > 0)) {
             this.setState(produce(draft => { draft.serviceDetails.push(draft.selectedServiceDetail) }), () => {
                 this.props.createSubmittable(this.state.serviceDetails);
             })
@@ -90,15 +90,15 @@ class NewServiceDetail extends React.Component<any, any> {
         }
     }
 
-    protected handleServiceDetailBlur = (e) => {
+    protected handleServiceDetailBlur = (e:any) => {
         this.setState({ serviceDetail: e.target.value });
     }
 
-    protected handleServiceDetailValueChange = (serviceDetail) => {
+    protected handleServiceDetailValueChange = (serviceDetail:any) => {
         this.setState(produce(draft => { draft.selectedServiceDetail = serviceDetail }))
     }
 
-    protected handleRadioServiceDetailChange = (e) => {
+    protected handleRadioServiceDetailChange = (e:any) => {
         this.setState({ radioServiceDetail: e.currentTarget.value })
     }
 

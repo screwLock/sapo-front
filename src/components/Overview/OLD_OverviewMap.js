@@ -11,8 +11,8 @@ class OverviewMap extends React.Component {
 
   apiIsLoaded = (map, maps, pickups) => {
     if (map && (pickups && pickups.length)) {
-      const directionsService = new google.maps.DirectionsService();
-      const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+      const directionsService = maps.DirectionsService();
+      const directionsDisplay = maps.DirectionsRenderer({ suppressMarkers: true });
       directionsDisplay.setDirections({ routes: [] });
       directionsService.route({
         origin: { lat: this.props.user.lat, lng: this.props.user.lng },

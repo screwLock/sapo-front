@@ -7,7 +7,7 @@ import * as Restrictions from './types/DonatableRestrictions'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 
 class NewRestriction extends React.Component<any, any> {
-    constructor(props) {
+    constructor(props: any) {
         super(props)
         this.state = {
             selectedRestriction: Restrictions.PREPACKAGED_RESTRICTIONS[0] as Restrictions.IDonatableRestriction,
@@ -47,7 +47,7 @@ class NewRestriction extends React.Component<any, any> {
     }
 
     protected addRestriction = () => {
-        if (!(this.state.restrictions.filter((d) => (d.name === this.state.selectedRestriction.name)).length > 0)) {
+        if (!(this.state.restrictions.filter((d:any) => (d.name === this.state.selectedRestriction.name)).length > 0)) {
             this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction) }), () => {
                 this.props.createSubmittable(this.state.restrictions);
             })
@@ -90,15 +90,15 @@ class NewRestriction extends React.Component<any, any> {
         }
     }
 
-    protected handleRestrictionBlur = (e) => {
+    protected handleRestrictionBlur = (e:any) => {
         this.setState({ restriction: e.target.value });
     }
 
-    protected handleRestrictionValueChange = (restriction) => {
+    protected handleRestrictionValueChange = (restriction:any) => {
         this.setState(produce(draft => { draft.selectedRestriction = restriction }))
     }
 
-    protected handleRadioRestrictionChange = (e) => {
+    protected handleRadioRestrictionChange = (e:any) => {
         this.setState({ radioRestriction: e.currentTarget.value })
     }
 

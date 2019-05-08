@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { Grid, Cell } from "styled-css-grid";
 import produce from 'immer';
