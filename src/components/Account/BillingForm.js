@@ -44,7 +44,8 @@ class BillingForm extends React.Component {
                 const postBody = {
                     source: source.id,
                     email: this.props.authData.signInUserSession.idToken.payload.email,
-                    plan: this.state.plan
+                    plan: this.state.plan,
+                    customer: this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
                 };
                 await API.post("sapo", "/billing", {
                     body: postBody
