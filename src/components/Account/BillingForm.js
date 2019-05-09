@@ -40,17 +40,22 @@ class BillingForm extends React.Component {
                 },
 
             })
-            if (source) {
-                const postBody = {
-                    source: source.id,
-                    email: this.props.authData.signInUserSession.idToken.payload.email,
-                    plan: this.state.plan,
-                    customer: this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
-                };
-                await API.post("sapo", "/billing", {
-                    body: postBody
-                })
+            // exit if a source was not created
+            if (source == null) {
+                this.setState({ isProcessing: false})
+                this.showToast('There was an error creating the source')
+                return false
             }
+            const postBody = {
+                source: source.source.id,
+                email: this.props.authData.signInUserSession.idToken.payload.email,
+                plan: this.state.plan,
+                customer: this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
+                subscription: this.props.authData.signInUserSession.idToken.payload['custom:subscriptionID'],
+            };
+            await API.post("sapo", "/billing", {
+                body: postBody
+            })
             this.setState({
                 isProcessing: false,
                 cardholderName: '',
@@ -64,7 +69,7 @@ class BillingForm extends React.Component {
                 cardholderName: '',
                 isCardComplete: false,
                 plan: 'basic'
-            }, () => this.props.handleOpen());            
+            }, () => this.props.handleOpen());
             this.showToast(`Charge Failed. Error with Status Code ${error.response.status}`)
 
         }
