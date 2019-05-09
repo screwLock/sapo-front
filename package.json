@@ -34,9 +34,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "predeploy": "npm run build",
+
+    "predeploy": "npm run build --env=dev",
     "deploy": "aws s3 sync build/ s3://sapopros-app-client-prod",
-    "postdeploy": "aws cloudfront create-invalidation --distribution-id E1CBWV83ENYAXM --paths /*",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id E1DX03QB04ZE4T --paths /*",
+    
+    "predeploy:prod": "npm run build --env=production",
+    "deploy:prod": "aws s3 sync build/ s3://sapopros-app-client-prod",
+    "postdeploy:prod": "aws cloudfront create-invalidation --distribution-id E1DX03QB04ZE4T --paths /*",
+    
     "eject": "react-scripts eject"
   },
   "devDependencies": {
