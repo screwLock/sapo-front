@@ -11,7 +11,7 @@ class SignUp extends React.Component {
     static defaultProps = {
         authData: {},
         authState: false,
-        onAuthStateChange: (next, data) => { console.log(`SignUp:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
+        // onAuthStateChange: (next, data) => { console.log(`SignUp:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
     };
 
     constructor(props) {
@@ -105,14 +105,14 @@ class SignUp extends React.Component {
                     'custom:createdAt': new Date().toISOString(),
                 }
             });
-            console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
+            // console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
             if (response.userConfirmed === false) {
                 this.setState({ authData: response, modalShowing: true, loading: false, successShowing: true });
             } else {
                 this.onAuthStateChange('default', { username: response.username });
             }
         } catch (err) {
-            console.log(`SignUp::onSignUp(): Error ${JSON.stringify(err, null, 2)}`);
+            // console.log(`SignUp::onSignUp(): Error ${JSON.stringify(err, null, 2)}`);
             this.setState({ error: err.message, loading: false });
         }
     }
@@ -121,13 +121,13 @@ class SignUp extends React.Component {
         try {
             this.setState({ loading: true });
             const response = await Auth.confirmSignUp(this.state.email, token);
-            console.log(`SignUp::onConfirmSubmitted(): Response#2 = ${JSON.stringify(response, null, 2)}`);
+            // console.log(`SignUp::onConfirmSubmitted(): Response#2 = ${JSON.stringify(response, null, 2)}`);
             this.setState({ loading: false });
             if (response === 'SUCCESS') {
                 this.props.onAuthStateChange('default', { email: this.state.email });
             }
         } catch (err) {
-            console.log(`SignUp::onConfirmSubmitted(): Error ${JSON.stringify(err, null, 2)}`);
+            // console.log(`SignUp::onConfirmSubmitted(): Error ${JSON.stringify(err, null, 2)}`);
             this.setState({ error: err.message, loading: false });
         }
     }

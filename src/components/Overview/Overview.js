@@ -110,7 +110,6 @@ class Overview extends Component {
         'endDate': endDate
       }
     }).then(result => {
-      console.log(result)
       this.setState({ pickups: result })
     });
   }

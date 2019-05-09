@@ -8,7 +8,7 @@ class SignIn extends React.Component {
     static defaultProps = {
         authData: {},
         authState: 'false',
-        onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
+        // onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
     };
 
     constructor(props) {
@@ -30,7 +30,7 @@ class SignIn extends React.Component {
         this.setState({ loading: true });
         try {
             const data = await Auth.signIn(this.state.email, this.state.password);
-            console.log(`onSignIn::Response#1: ${JSON.stringify(data, null, 2)}`);
+            // console.log(`onSignIn::Response#1: ${JSON.stringify(data, null, 2)}`);
             if (data.signInUserSession === null) {
                 this.setState({ user: data, loading: false, modalShowing: true });
             } else {
@@ -38,7 +38,7 @@ class SignIn extends React.Component {
                 this.props.history.push('/')
             }
         } catch (err) {
-            console.log(`Error: ${JSON.stringify(err, null, 2)}`);
+            // console.log(`Error: ${JSON.stringify(err, null, 2)}`);
             this.setState({ error: err.message, loading: false });
         }
     }
@@ -55,13 +55,13 @@ class SignIn extends React.Component {
     onConfirmSignin = async (token) => {
         this.setState({ loading: true });
         try {
-            console.log(`onConfirmSignIn:: ${this.state.email}, ${token}`);
+            // console.log(`onConfirmSignIn:: ${this.state.email}, ${token}`);
             const data = await Auth.confirmSignIn(this.state.user, token);
-            console.log(`onConfirmSignIn::Response#2: ${JSON.stringify(data, null, 2)}`);
+            // console.log(`onConfirmSignIn::Response#2: ${JSON.stringify(data, null, 2)}`);
             const profile = await Auth.currentUser();
             this.props.onAuthStateChange(true, profile);
         } catch (err) {
-            console.log('Error: ', err);
+            // console.log('Error: ', err);
             this.setState({ error: err.message, loading: false });
             this.setErrorText(err.code);
         }
