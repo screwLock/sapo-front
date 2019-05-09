@@ -10,6 +10,7 @@ import { userMocks } from './mocks/userMocks.js'
 import { format, getMonth, getYear, lastDayOfMonth } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
+import config from '../../config'
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
 
@@ -52,8 +53,8 @@ class Overview extends Component {
     else {
       try {
         const platform = new H.service.Platform({
-          'app_id': 'u3uFI5c0XaweKx6Yh31t',
-          'app_code': 'wUPW8ZhbclB20ZTwqRC4fA'
+          'app_id': config.HERE_APP_ID,
+          'app_code': config.HERE_APP_CODE
         });
         let user = await Auth.currentAuthenticatedUser();
         const geocoder = platform.getGeocodingService();

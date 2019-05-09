@@ -12,6 +12,7 @@ import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
 import { AppToaster } from '../Toaster'
 import * as EmailValidator from 'email-validator'
 import { API } from "aws-amplify"
+import config from '../../config'
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
 
@@ -168,8 +169,8 @@ export class CustomerCallIn extends React.Component {
 
     getLatLng = () => {
         const platform = new H.service.Platform({
-            'app_id': 'u3uFI5c0XaweKx6Yh31t',
-            'app_code': 'wUPW8ZhbclB20ZTwqRC4fA'
+            'app_id': config.HERE_APP_ID,
+            'app_code': config.HERE_APP_CODE
         });
         const geocoder = platform.getGeocodingService();
 

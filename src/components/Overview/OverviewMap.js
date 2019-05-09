@@ -3,6 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import PickupMarker from './PickupMarker'
 import './styles/pickupMarker.css';
 import { isSameDay } from 'date-fns';
+import config from '../../config'
 
 class OverviewMap extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class OverviewMap extends React.Component {
     return (
       <div className='google-map' style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyDOs_VPiyP8PWQ70b7uNtPhKftBgwsFhw8' }}
+          bootstrapURLKeys={{ key: config.GOOGLE_MAP_KEY }}
           defaultCenter={{'lat': user.lat, 'lng': user.lng}}
           defaultZoom={zoom}
           center={center}

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import BillingForm from './BillingForm'
+import config from '../../config'
 
 class Account extends React.Component {
     constructor(props) {
@@ -27,7 +28,7 @@ class Account extends React.Component {
                     onClick={this.handleOpen}
                     text='Change Membership'
                 />
-                <StripeProvider apiKey='pk_test_ZokTubwC6G4D2q2COo4Gj9O4'>
+                <StripeProvider apiKey={config.STRIPE_KEY}>
                     <Elements>
                         <BillingForm
                             {...this.props} 
