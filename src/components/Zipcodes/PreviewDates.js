@@ -16,6 +16,8 @@ class PreviewDates extends React.Component {
             >
                 <div>
                     <DayPicker
+                        // only show the current month for previewing
+                        canChangeMonth={false}
                         disabledDays={this.props.disabledDates}
                     />
                 </div>

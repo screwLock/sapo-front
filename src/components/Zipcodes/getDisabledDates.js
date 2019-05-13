@@ -16,6 +16,8 @@ const nthWeekdayOfMonth = (weekday, n, iDate) => {
     return date;
 }
 
+// this function eats a lot of memory when lots of zipcodes are in the table
+// it'll remain here, but nthWeekdayOfCurrentMonth() will be used instead
 const nthWeekdayOfEveryMonth = (weekday, n, iDate = new Date()) => {
     let days = []
     // months before 0 and after 11 are outside of current year
@@ -25,6 +27,13 @@ const nthWeekdayOfEveryMonth = (weekday, n, iDate = new Date()) => {
         let newDate = new Date(iDate.getFullYear(), month, 1)
         days.push(nthWeekdayOfMonth(weekday, n, newDate))
     })
+    return days;
+}
+
+const nthWeekdayOfCurrentMonth = (weekday, n, iDate = new Date()) => {
+    let days = []
+    let newDate = new Date(iDate.getFullYear(), iDate.getMonth(), 1)
+    days.push(nthWeekdayOfMonth(weekday, n, newDate))
     return days;
 }
 
@@ -60,7 +69,7 @@ const convertToDates = (weekdays) => {
     let converted = getWeekdayValues(weekdays)
     converted = converted.map(date => convertOrdinalsToNumbers(date))
     let arrayOfDates = [];
-    converted.map((dates, index) => dates.map(date => arrayOfDates = [...arrayOfDates, ...nthWeekdayOfEveryMonth(index, date)]))
+    converted.map((dates, index) => dates.map(date => arrayOfDates = [...arrayOfDates, ...nthWeekdayOfCurrentMonth(index, date)]))
     return arrayOfDates
 }
 
