@@ -18,6 +18,7 @@ class Account extends React.Component {
     }
 
     render() {
+        const href=`donate.sapopros.com/?id=${this.props.authData.username}`
         return (
             <Container>
                 <H3>Manage Account Info</H3>
@@ -37,6 +38,7 @@ class Account extends React.Component {
                         />
                     </Elements>
                 </StripeProvider>
+                <div>Your URL for your scheduling page: <a style={{display: "table-cell"}} href={href} target="_blank">https://donate.sapopros.com/?id={this.props.authData.username}</a></div>
             </Container>
 
         )
