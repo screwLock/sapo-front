@@ -22,9 +22,9 @@ class Account extends React.Component {
         return (
             <Container>
                 <H3>Manage Account Info</H3>
-                <H5>Current Membership Level: {this.props.authData.signInUserSession.idToken.payload['custom:membership'].toUpperCase()}</H5>
-                <H5>Next Statement Date:</H5>
-                <H5>Monthly Cost:</H5>
+                <BillingInfoRow><H5>Current Membership Level: {this.props.authData.signInUserSession.idToken.payload['custom:membership'].toUpperCase()}</H5></BillingInfoRow>
+                <BillingInfoRow><H5>Next Statement Date:</H5></BillingInfoRow>
+                <BillingInfoRow><H5>Monthly Cost:</H5></BillingInfoRow>
                 <Button 
                     onClick={this.handleOpen}
                     text='Change Membership'
@@ -38,7 +38,7 @@ class Account extends React.Component {
                         />
                     </Elements>
                 </StripeProvider>
-                <div>Your URL for your scheduling page: <a style={{display: "table-cell"}} href={href} target="_blank">https://donate.sapopros.com/?id={this.props.authData.username}</a></div>
+                <div>Your URL for your scheduling page: <a href={href} target="_blank">https://donate.sapopros.com/?id={this.props.authData.username}</a></div>
             </Container>
 
         )
@@ -46,7 +46,13 @@ class Account extends React.Component {
 }
 
 const Container = styled.div`
-  margin: 25px;
+    margin: 25px;
+`
+
+const BillingInfoRow = styled.div`
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 `
 
 export default Account;
