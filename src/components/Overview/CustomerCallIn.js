@@ -6,6 +6,7 @@ import getDisabledDates from '../Zipcodes/getDisabledDates'
 import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
 import styled from 'styled-components'
+import {StateSelect} from './StateSelect'
 import { produce } from 'immer'
 import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
@@ -25,6 +26,8 @@ export class CustomerCallIn extends React.Component {
             lastName: '',
             organization: '',
             streetAddress: '',
+            province: 'AK',
+            city: '',
             phoneNumber: '',
             email: '',
             categories: [],
@@ -57,6 +60,14 @@ export class CustomerCallIn extends React.Component {
 
     handleClose = () => {
         this.setState({
+            firstName: '',
+            lastName: '',
+            organization: '',
+            streetAddress: '',
+            province: '',
+            city: '',
+            phoneNumber: '',
+            email: '',
             selectedZipcode: '',
             selectedDate: null,
             lat: '',
@@ -89,6 +100,22 @@ export class CustomerCallIn extends React.Component {
                 this.setState({
                     selectedZipcode: '',
                     showDatePicker: false,
+                    showPickupDetails: false
+                });
+                break;
+        }
+    }
+
+    handleStateSelect = (st, action) => {
+        switch (action.action) {
+            case 'select-option':
+                this.setState({
+                    province: st.value,
+                });
+                break;
+            case 'clear':
+                this.setState({
+                    province: '',
                 });
                 break;
         }
@@ -129,6 +156,14 @@ export class CustomerCallIn extends React.Component {
                         <FormGroup label='Street Address'>
                             <InputGroup name='streetAddress' onBlur={this.handleBlur} autocomplete="new-street-address"/>
                         </FormGroup>
+                        <ContactForms>
+                            <NameForm label='City'>
+                                <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </NameForm>
+                            <FormGroup label='State/Province'>
+                                <StateSelect onChange={this.handleStateSelect}/>
+                            </FormGroup>
+                        </ContactForms>
                         <FormGroup label='Organization Name (If Not Residential)'>
                             <InputGroup name='organization' onBlur={this.handleBlur} />
                         </FormGroup>
@@ -194,6 +229,8 @@ export class CustomerCallIn extends React.Component {
                                         firstName: this.state.firstName,
                                         lastName: this.state.lastName,
                                         streetAddress: this.state.streetAddress,
+                                        city: this.state.city,
+                                        province: this.state.province,
                                         organization: 'NA',
                                         lat: this.state.lat,
                                         lng: this.state.lng,
@@ -235,6 +272,8 @@ export class CustomerCallIn extends React.Component {
             this.state.email === '' ||
             this.state.phoneNumber === '' ||
             this.state.streetAddress === '' ||
+            this.state.city === '' ||
+            this.state.province === '' ||
             this.state.selectedZipcode === '' ||
             !this.state.selectedDate
         ) {
