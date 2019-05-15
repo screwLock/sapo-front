@@ -54,7 +54,8 @@ class Overview extends Component {
       try {
         const platform = new H.service.Platform({
           'app_id': config.HERE_APP_ID,
-          'app_code': config.HERE_APP_CODE
+          'app_code': config.HERE_APP_CODE,
+          useHTTPS: true
         });
         let user = await Auth.currentAuthenticatedUser();
         const geocoder = platform.getGeocodingService();

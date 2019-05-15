@@ -205,7 +205,8 @@ export class CustomerCallIn extends React.Component {
     getLatLng = () => {
         const platform = new H.service.Platform({
             'app_id': config.HERE_APP_ID,
-            'app_code': config.HERE_APP_CODE
+            'app_code': config.HERE_APP_CODE,
+            useHTTPS: true
         });
         const geocoder = platform.getGeocodingService();
 
