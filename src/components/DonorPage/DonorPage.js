@@ -134,7 +134,7 @@ class DonorPage extends React.Component {
                 <H5>Service Details</H5>
                 <ul style={ulStyle}>
                     {this.state.serviceDetails.map((serviceDetail, index) => {
-                        return (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}</li>)
+                        return (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}{(serviceDetail.isMandatory)? ` (mandatory)` : ''}</li>)
                     })}
                 </ul>
             </div>
