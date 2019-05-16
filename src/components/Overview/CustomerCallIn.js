@@ -125,7 +125,6 @@ export class CustomerCallIn extends React.Component {
 
     renderDatePicker = (blackoutDates) => {
         let zipcode = this.props.userConfig.zipcodes.find(zip => zip.zipcode === this.state.selectedZipcode)
-        if (this.state.showDatePicker) {
             return (
                 <BlockContainer>
                     <H4>Select A Pickup Date</H4>
@@ -141,14 +140,9 @@ export class CustomerCallIn extends React.Component {
                     </p>
                 </BlockContainer>
             )
-        }
-        else {
-            return ''
-        }
     }
 
     renderPickupAddress = () => {
-        if (this.state.showPickupDetails) {
             return (
                 <BlockContainer>
                     <H4>Pickup Address</H4>
@@ -189,10 +183,6 @@ export class CustomerCallIn extends React.Component {
                     </SubBlockContainer>
                 </BlockContainer>
             )
-        }
-        else {
-            return ''
-        }
     }
 
     handleDayClick = (date) => {
@@ -297,10 +287,10 @@ export class CustomerCallIn extends React.Component {
     render() {
         let zipcodeOptions = []
         let blackoutDates = []
-        if (this.props.userConfig.zipcodes) {
+        if (this.props.userConfig.zipcodes != null) {
             zipcodeOptions = this.props.userConfig.zipcodes.map(zipcode => ({ value: zipcode.zipcode, label: zipcode.zipcode }));
         }
-        if (this.props.userConfig.blackoutDates) {
+        if (this.props.userConfig.blackoutDates != null) {
             blackoutDates = this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date))
         }
         if (this.props.userConfig) {
@@ -320,15 +310,15 @@ export class CustomerCallIn extends React.Component {
                                 isClearable={true}
                             />
                         </SelectContainer>
-                        {(this.props.userConfig.blackoutDates && this.props.userConfig.zipcodes) ?
+                        {(this.props.userConfig.zipcodes!=null && this.state.showDatePicker) ?
                             this.renderDatePicker(blackoutDates) :
                             ''
                         }
                         <div>
-                            {this.renderPickupAddress()}
+                            {(this.state.showPickupDetails) ? this.renderPickupAddress() : ''}
                         </div>
                         <div>
-                            {(this.props.userConfig.categories) ?
+                            {(this.props.userConfig.categories != null) ?
                                 (
                                     <CategoryCheckboxes categories={this.props.userConfig.categories}
                                         isVisible={this.state.showPickupDetails}
@@ -340,7 +330,7 @@ export class CustomerCallIn extends React.Component {
                             }
                         </div>
                         <div>
-                            {(this.props.userConfig.serviceDetails) ?
+                            {(this.props.userConfig.serviceDetails != null) ?
                                 (
                                     <ServiceDetailCheckboxes serviceDetails={this.props.userConfig.serviceDetails}
                                         isVisible={this.state.showPickupDetails}
