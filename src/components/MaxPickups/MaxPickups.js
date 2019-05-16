@@ -61,7 +61,7 @@ class MaxPickups extends React.Component {
                         </NumericInputContainer>
                     ))}
                 </NumericInputsContainer>
-                <Button text='Submit' onClick={this.handleSubmit}/>
+                <Button text='Save' onClick={this.handleSubmit}/>
             </Container>
         )
     }
