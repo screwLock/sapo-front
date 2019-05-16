@@ -37,7 +37,7 @@ class NewServiceDetail extends React.Component<any, any> {
                         <ul style={ulStyle}>
                             {this.state.serviceDetails.map(
                                 (serviceDetail: any, index: number) =>
-                                    (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteServiceDetail(index)} />{serviceDetail.name}</li>)
+                                    (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteServiceDetail(index)} />{serviceDetail.name}{(serviceDetail.mandatory)? ` (mandatory)`:''}</li>)
                             )}
                         </ul>
                     </BlockContainer>
