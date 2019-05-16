@@ -3,42 +3,68 @@ import styled from 'styled-components'
 import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import BillingForm from './BillingForm'
+import CancelDialog from './CancelDialog'
 import config from '../../config'
 
 class Account extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isBillingOpen: false
+            isBillingOpen: false,
+            isCancelOpen: false
         }
     }
 
-    handleOpen = () => {
-        this.setState( {isBillingOpen : !this.state.isBillingOpen} )
+    handleChangeOpen = () => {
+        this.setState({ isBillingOpen: !this.state.isBillingOpen })
+    }
+
+    handleCancelOpen = () => {
+        this.setState({ isCancelOpen: !this.state.isCancelOpen })
     }
 
     render() {
-        const href=`https://donate.sapopros.com/?id=${this.props.authData.username}`
+        const prices = {
+            basic: '$90.00',
+            standard: '$149.99',
+            premium: '$199.00'
+        }
+        const membership = this.props.authData.signInUserSession.idToken.payload['custom:membership']
+        const href = `https://donate.sapopros.com/?id=${this.props.authData.username}`
         return (
             <Container>
                 <H3>Manage Account Info</H3>
-                <BillingInfoRow><H5>Current Membership Level: {this.props.authData.signInUserSession.idToken.payload['custom:membership'].toUpperCase()}</H5></BillingInfoRow>
+                <BillingInfoRow><H5>Current Membership Level: {membership.toUpperCase()}</H5></BillingInfoRow>
                 <BillingInfoRow><H5>Next Statement Date:</H5></BillingInfoRow>
-                <BillingInfoRow><H5>Monthly Cost:</H5></BillingInfoRow>
-                <Button 
-                    onClick={this.handleOpen}
-                    text='Change Membership'
-                />
+                <BillingInfoRow><H5>Monthly Cost: {`${prices[membership]}`}</H5></BillingInfoRow>
+                <MembButtonRow>
+                    <Button
+                        onClick={this.handleChangeOpen}
+                        text='Change Membership'
+                    />
+                </MembButtonRow>
                 <StripeProvider apiKey={config.STRIPE_KEY}>
                     <Elements>
                         <BillingForm
-                            {...this.props} 
+                            {...this.props}
                             isOpen={this.state.isBillingOpen}
-                            handleOpen={this.handleOpen}
+                            handleOpen={this.handleChangeOpen}
                         />
                     </Elements>
                 </StripeProvider>
-                <div>Your URL for your scheduling page: <a href={href} target="_blank">https://donate.sapopros.com/?id={this.props.authData.username}</a></div>
+                <CancelDialog
+                    {...this.props}
+                    isOpen={this.state.isCancelOpen}
+                    handleOpen={this.handleCancelOpen}
+                />
+                <URL>Your URL for your scheduling page: <a href={href} target="_blank">https://donate.sapopros.com/?id={this.props.authData.username}</a></URL>
+                <CancelButtonRow>
+                    <Button
+                        onClick={this.handleCancelOpen}
+                        text='Cancel Membership'
+                        intent={Intent.DANGER}
+                    />
+                </CancelButtonRow>
             </Container>
 
         )
@@ -47,6 +73,17 @@ class Account extends React.Component {
 
 const Container = styled.div`
     margin: 25px;
+`
+const URL = styled.div`
+    margin-top: 25px;
+`
+const MembButtonRow = styled.div`
+    margin-top: 25px;
+`
+
+const CancelButtonRow = styled.div`
+    display: flex;
+    flex-direction: row-reverse;
 `
 
 const BillingInfoRow = styled.div`
