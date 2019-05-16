@@ -8,13 +8,13 @@ class MaxPickups extends React.Component {
         super(props)
         this.state = {
             maxPickups: {
-                monday: 0,
-                tuesday: 0,
-                wednesday: 0,
-                thursday: 0,
-                friday: 0,
-                saturday: 0,
-                sunday: 0,
+                monday: 5,
+                tuesday: 5,
+                wednesday: 5,
+                thursday: 5,
+                friday: 5,
+                saturday: 5,
+                sunday: 5,
             }
         }
     }
@@ -33,7 +33,15 @@ class MaxPickups extends React.Component {
             draft.maxPickups[name] = number;
         })
         )
-        console.log(this.state.maxPickups)
+    }
+
+    handleSubmit = async () => {
+        try {
+            await this.props.updateUserConfig('maxPickups', this.state.maxPickups, { maxPickups: this.state.maxPickups })
+        }
+        catch(e) {
+            console.log(e)
+        }
     }
 
     render() {
@@ -53,6 +61,7 @@ class MaxPickups extends React.Component {
                         </NumericInputContainer>
                     ))}
                 </NumericInputsContainer>
+                <Button text='Submit' onClick={this.handleSubmit}/>
             </Container>
         )
     }
