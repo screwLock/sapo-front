@@ -48,7 +48,7 @@ class NewServiceDetail extends React.Component<any, any> {
 
     protected addServiceDetail = () => {
         if (!(this.state.serviceDetails.filter((d:any) => (d.name === this.state.selectedServiceDetail.name)).length > 0)) {
-            this.setState(produce(draft => { draft.serviceDetails.push(draft.selectedServiceDetail) }), () => {
+            this.setState(produce(draft => { draft.serviceDetails.push({ name: draft.selectedServiceDetail.name, mandatory: false }) }), () => {
                 this.props.createSubmittable(this.state.serviceDetails);
             })
             this.props.canSubmit(true);
@@ -64,6 +64,7 @@ class NewServiceDetail extends React.Component<any, any> {
             && !(this.state.serviceDetail === '')) {
             const customServiceDetail = {
                 name: this.state.serviceDetail,
+                mandatory: false
             }
             this.setState(produce(draft => { draft.serviceDetails.push(customServiceDetail) }), () => {
                 this.props.createSubmittable(this.state.serviceDetails)

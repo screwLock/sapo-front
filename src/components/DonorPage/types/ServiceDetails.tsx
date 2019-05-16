@@ -6,7 +6,8 @@ import * as React from "react";
 export interface IServiceDetail {
     name: string;
     comments?: string;
-    uiElement?: string;  
+    uiElement?: string;
+    mandatory?: string;  
 }
 
 const NAMES: string[] = [
