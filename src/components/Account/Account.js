@@ -18,7 +18,7 @@ class Account extends React.Component {
     }
 
     render() {
-        const href=`donate.sapopros.com/?id=${this.props.authData.username}`
+        const href=`https://donate.sapopros.com/?id=${this.props.authData.username}`
         return (
             <Container>
                 <H3>Manage Account Info</H3>
