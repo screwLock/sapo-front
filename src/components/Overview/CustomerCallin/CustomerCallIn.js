@@ -1,12 +1,10 @@
 /* eslint-disable */
 import * as React from 'react';
 import { AnchorButton, Button, Card, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Checkbox } from '@blueprintjs/core'
-import DayPicker, { DateUtils } from 'react-day-picker'
 import getDisabledDates from '../../Zipcodes/getDisabledDates'
-import { format, getMonth } from 'date-fns'
 import Select from 'react-select'
 import styled from 'styled-components'
-import {StateSelect} from './StateSelect'
+import { StateSelect } from './StateSelect'
 import { produce } from 'immer'
 import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
@@ -27,12 +25,16 @@ export class CustomerCallIn extends React.Component {
             lastName: '',
             organization: '',
             streetAddress: '',
-            province: 'AK',
+            province: '',
             city: '',
             phoneNumber: '',
             email: '',
             categories: [],
+            serviceDetails: [],
+            mandatoryDetails: [],
+            selectedServiceDetails: [],
             donations: [],
+            disabledDays: [],
             lat: '',
             lng: '',
             pickupID: '',
@@ -45,18 +47,62 @@ export class CustomerCallIn extends React.Component {
 
     componentDidMount = () => {
         this.setState({
-            categories: this.props.userConfig.categories
+            categories: this.props.userConfig.categories,
+            serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                return detail.isMandatory === false
+            }),
+            mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                return detail.isMandatory === true
+            })
         })
     }
 
-    addDonation = (name) => {
-        if (this.state.donations.includes(name)) {
-            this.state.donations.splice(this.state.donations.indexOf(name), 1);
+    handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
+        // add or remove from the donations array
+        const donations = [...this.state.donations]
+        const name = this.state.categories[cIndex].donatables[dIndex].name
+        if (donations.includes(name)) {
+            donations.splice(donations.indexOf(name), 1);
         }
         else {
-            this.state.donations.push(name)
-            this.state.donations.sort()
+            donations.push(name)
+            donations.sort()
         }
+        // save the checkbox change and new array
+        this.setState(
+            produce(this.state, draft => {
+                draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
+                draft.donations = [...donations]
+            })
+        )
+    }
+
+    handleServiceCheckedChange = (sdIndex) => (e) => {
+        // add or remove from the selected array
+        const selectedServiceDetails = [...this.state.selectedServiceDetails]
+        const name = this.state.serviceDetails[sdIndex].name
+        if (selectedServiceDetails.includes(name)) {
+            selectedServiceDetails.splice(selectedServiceDetails.indexOf(name), 1);
+        }
+        else {
+            selectedServiceDetails.push(name)
+            selectedServiceDetails.sort()
+        }
+        // save the checkbox change and new selected array
+        this.setState(
+            produce(this.state, draft => {
+                draft.serviceDetails[sdIndex].checked = !draft.serviceDetails[sdIndex].checked
+                draft.selectedServiceDetails = [...selectedServiceDetails]
+            })
+        )
+    }
+
+    handleMandatoryCheckedChange = (mIndex) => (e) => {
+        this.setState(
+            produce(this.state, draft => {
+                draft.mandatoryDetails[mIndex].checked = !draft.mandatoryDetails[mIndex].checked
+            })
+        )
     }
 
     handleClose = () => {
@@ -95,6 +141,10 @@ export class CustomerCallIn extends React.Component {
                     selectedZipcode: zipcode.value,
                     showDatePicker: true,
                     selectedDate: null,
+                    disabledDays: [...getDisabledDates(this.props.userConfig.zipcodes.find(zip => zip.zipcode === zipcode.value).weekdays),
+                    ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)),
+                    { before: addDays(new Date(), 1) }
+                    ]
                 });
                 break;
             case 'clear':
@@ -124,66 +174,47 @@ export class CustomerCallIn extends React.Component {
 
     handleBlur = e => this.setState({ [e.target.name]: e.target.value })
 
-    renderDatePicker = (blackoutDates) => {
-        let zipcode = this.props.userConfig.zipcodes.find(zip => zip.zipcode === this.state.selectedZipcode)
-            return (
-                <BlockContainer>
-                    <H4>Select A Pickup Date</H4>
-                    <DayPicker
-                        disabledDays={[...getDisabledDates(zipcode.weekdays), ...blackoutDates]}
-                        onDayClick={this.handleDayClick}
-                        selectedDays={this.state.selectedDate}
-                    />
-                    <p>
-                        {this.state.selectedDate
-                            ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
-                            : ''}
-                    </p>
-                </BlockContainer>
-            )
-    }
-
     renderPickupAddress = () => {
-            return (
-                <BlockContainer>
-                    <H4>Pickup Address</H4>
-                    <SubBlockContainer >
-                        <FormGroup label='Street Address'>
-                            <InputGroup name='streetAddress' onBlur={this.handleBlur} autocomplete="new-street-address"/>
+        return (
+            <BlockContainer>
+                <H4>Pickup Address</H4>
+                <SubBlockContainer >
+                    <FormGroup label='Street Address'>
+                        <InputGroup name='streetAddress' onBlur={this.handleBlur} autocomplete="new-street-address" />
+                    </FormGroup>
+                    <ContactForms>
+                        <NameForm label='City'>
+                            <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
+                        </NameForm>
+                        <FormGroup label='State/Province'>
+                            <StateSelect onChange={this.handleStateSelect} />
                         </FormGroup>
-                        <ContactForms>
-                            <NameForm label='City'>
-                                <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
-                            </NameForm>
-                            <FormGroup label='State/Province'>
-                                <StateSelect onChange={this.handleStateSelect}/>
-                            </FormGroup>
-                        </ContactForms>
-                        <FormGroup label='Organization Name (If Not Residential)'>
-                            <InputGroup name='organization' onBlur={this.handleBlur} />
+                    </ContactForms>
+                    <FormGroup label='Organization Name (If Not Residential)'>
+                        <InputGroup name='organization' onBlur={this.handleBlur} />
+                    </FormGroup>
+                </SubBlockContainer>
+                <H4>Contact Info</H4>
+                <SubBlockContainer>
+                    <ContactForms>
+                        <NameForm label='First Name'>
+                            <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
+                        </NameForm>
+                        <FormGroup label='Last Name'>
+                            <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
                         </FormGroup>
-                    </SubBlockContainer>
-                    <H4>Contact Info</H4>
-                    <SubBlockContainer>
-                        <ContactForms>
-                            <NameForm label='First Name'>
-                                <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
-                            </NameForm>
-                            <FormGroup label='Last Name'>
-                                <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
-                            </FormGroup>
-                        </ContactForms>
-                        <ContactForms>
-                            <FormGroup label='Email'>
-                                <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
-                            </FormGroup>
-                            <PhoneForm label='Phone Number'>
-                                <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
-                            </PhoneForm>
-                        </ContactForms>
-                    </SubBlockContainer>
-                </BlockContainer>
-            )
+                    </ContactForms>
+                    <ContactForms>
+                        <FormGroup label='Email'>
+                            <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
+                        </FormGroup>
+                        <PhoneForm label='Phone Number'>
+                            <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
+                        </PhoneForm>
+                    </ContactForms>
+                </SubBlockContainer>
+            </BlockContainer>
+        )
     }
 
     handleDayClick = (date) => {
@@ -259,17 +290,21 @@ export class CustomerCallIn extends React.Component {
 
     validateForms = () => {
         const phoneValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
-        if (this.state.firstName === '' ||
+        if (this.state.selectedZipcode === '') {
+            this.showToast('Please select a zipcode')
+        }
+        else if (!this.state.selectedDate) {
+            this.showToast('Please select a pickup date')
+        }
+        else if (this.state.firstName === '' ||
             this.state.lastName === '' ||
             this.state.email === '' ||
             this.state.phoneNumber === '' ||
             this.state.streetAddress === '' ||
             this.state.city === '' ||
-            this.state.province === '' ||
-            this.state.selectedZipcode === '' ||
-            !this.state.selectedDate
+            this.state.province === ''
         ) {
-            this.showToast('Required fields are missing')
+            this.showToast('Please enter pickup and contact info')
             return false;
         }
         else if (!EmailValidator.validate(this.state.email)) {
@@ -278,6 +313,17 @@ export class CustomerCallIn extends React.Component {
         }
         else if (!phoneValidate.test(this.state.phoneNumber)) {
             this.showToast('Enter a valid phone number')
+            return false
+        }
+        else if (this.state.donations.length === 0) {
+            this.showToast('You have not selected any donations')
+            return false
+        }
+        // If there are mandatory details AND if all checkboxes are selected
+        // return false
+        else if ((this.state.mandatoryDetails.length > 0)
+            && (this.state.mandatoryDetails.filter(detail => { return detail.checked === true }).length !== this.state.mandatoryDetails.length)) {
+            this.showToast('You must certify that you meet all requirements')
             return false
         }
         else {
@@ -303,42 +349,51 @@ export class CustomerCallIn extends React.Component {
                 >
                     <DialogContainer>
                         <H4>Select The Pickup Zipcode</H4>
-                        <SelectContainer>
-                            <Select
-                                value={{ value: this.state.selectedZipcode, label: this.state.selectedZipcode }}
-                                onChange={this.handleZipcodeSelect}
-                                options={zipcodeOptions}
-                                isClearable={true}
+                        <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                            onChange={this.handleZipcodeSelect}
+                            selectedZipcode={this.state.selectedZipcode}
+                        />
+                        <BlockContainer>
+                            <DatePicker disabledDays={this.state.disabledDays}
+                                onClick={this.handleDayClick}
+                                zipcode={this.state.selectedZipcode}
+                                selectedDate={this.state.selectedDate}
+                                isVisible={this.state.showDatePicker}
                             />
-                        </SelectContainer>
-                        {(this.props.userConfig.zipcodes!=null && this.state.showDatePicker) ?
-                            this.renderDatePicker(blackoutDates) :
-                            ''
-                        }
+
+                        </BlockContainer>
+                        <p>
+                            {this.state.selectedDate
+                                ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                                : ''}
+                        </p>
+                        {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
                         <div>
-                            {(this.state.showPickupDetails) ? this.renderPickupAddress() : ''}
+                            <CategoryCheckboxes
+                                categories={this.state.categories}
+                                onChange={this.handleCategoryCheckedChange}
+                                isVisible={this.state.showPickupDetails}
+                            />
                         </div>
                         <div>
-                            {(this.props.userConfig.categories != null) ?
-                                (
-                                    <CategoryCheckboxes categories={this.props.userConfig.categories}
-                                        isVisible={this.state.showPickupDetails}
-                                        key={this.props.userConfig.categories}
-                                        addDonation={this.addDonation}
-                                    />
-                                ) :
-                                ''
-                            }
+                            <ServiceDetailCheckboxes
+                                serviceDetails={this.state.serviceDetails}
+                                onChange={this.handleServiceCheckedChange}
+                                isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
+                            />
                         </div>
                         <div>
-                            {(this.props.userConfig.serviceDetails != null) ?
-                                (
-                                    <ServiceDetailCheckboxes serviceDetails={this.props.userConfig.serviceDetails}
-                                        isVisible={this.state.showPickupDetails}
-                                        key={this.props.userConfig.serviceDetails}
-                                    />
-                                ) :
-                                ''
+                            <MandatoryCheckboxes
+                                mandatoryDetails={this.state.mandatoryDetails}
+                                onChange={this.handleMandatoryCheckedChange}
+                                // should not render if NO mandatory service details
+                                isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
+                            />
+                        </div>
+                        <div>
+                            {this.state.showPickupDetails ? (
+                                <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
+                            ) : ''
                             }
                         </div>
                     </DialogContainer>
