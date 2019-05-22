@@ -2,11 +2,9 @@
 import React, { Component } from 'react';
 import { Grid, Cell } from "styled-css-grid";
 import produce from 'immer';
-import StaticMap from './StaticMap.js';
+import LeafletMap from './LeafletMap'
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
-import pickupMocks from './mocks/pickupMocks';
-import { userMocks } from './mocks/userMocks.js'
 import { format, getMonth, getYear, lastDayOfMonth } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
@@ -119,7 +117,7 @@ class Overview extends Component {
   render() {
     return (
       <Grid columns={12}>
-        <Cell width={12}><StaticMap pickups={this.state.pickups}
+        <Cell width={12}><LeafletMap pickups={this.state.pickups}
           selectedDate={this.state.selectedDate}
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}
