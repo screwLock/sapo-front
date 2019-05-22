@@ -111,7 +111,8 @@ class Overview extends Component {
         'endDate': endDate
       }
     }).then(result => {
-      this.setState({ pickups: result })
+      // make sure we add an inRoute attribute for the directions API
+      this.setState({ pickups: result.map(pickup => { return {... pickup, inRoute: false} } )})
     });
   }
 

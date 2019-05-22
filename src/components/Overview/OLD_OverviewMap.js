@@ -12,8 +12,9 @@ class OverviewMap extends React.Component {
 
   apiIsLoaded = (map, maps, pickups) => {
     if (map && (pickups && pickups.length)) {
-      const directionsService = maps.DirectionsService();
-      const directionsDisplay = maps.DirectionsRenderer({ suppressMarkers: true });
+      // added 'new' to DirectionsService() and DirectionsRenderer
+      const directionsService = new maps.DirectionsService();
+      const directionsDisplay = new maps.DirectionsRenderer({ suppressMarkers: true });
       directionsDisplay.setDirections({ routes: [] });
       directionsService.route({
         origin: { lat: this.props.user.lat, lng: this.props.user.lng },
@@ -30,7 +31,7 @@ class OverviewMap extends React.Component {
           directionsDisplay.setDirections(response);
           console.log(response.routes[0])
         } else {
-          window.alert('Directions request failed due to ' + status);
+          console.log('Directions request failed due to ' + status);
         }
       });
     }
