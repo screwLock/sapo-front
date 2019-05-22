@@ -6,7 +6,7 @@ import './styles/pickups.css'
 import OverviewCard from './OverviewCard.js'
 import { Card, Button, Overlay, Classes, Elevation } from '@blueprintjs/core'
 import { makeDailyPickupsPDF } from './PickupPDFMake'
-import { CustomerCallIn } from './CustomerCallIn'
+import { CustomerCallIn } from './CustomerCallin/CustomerCallIn'
 
 class OverviewPickups extends React.Component {
     constructor(props) {
