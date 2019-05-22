@@ -128,10 +128,15 @@ export class CustomerCallIn extends React.Component {
             lng: '',
             showDatePicker: false,
             showPickupDetails: false,
-            categories: this.props.userConfig.categories,
             donations: [],
-            serviceDetails: [],
-            mandatoryDetails: [],
+            selectedServiceDetails: [],
+            categories: this.props.userConfig.categories,
+            serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                return detail.isMandatory === false
+            }),
+            mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                return detail.isMandatory === true
+            })
         })
         this.props.onClose()
     }
