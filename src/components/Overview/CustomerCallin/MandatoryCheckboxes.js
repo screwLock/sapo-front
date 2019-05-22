@@ -11,7 +11,7 @@ class MandatoryCheckboxes extends React.PureComponent {
         if (this.props.isVisible) {
             return (
                 <BlockContainer>
-                    <H4>I Certify That: </H4>
+                    <H4>The Customer Certifies That: </H4>
                     <SubBlockContainer>
                         {this.props.mandatoryDetails.map((detail, mdIndex) => {
                             return (

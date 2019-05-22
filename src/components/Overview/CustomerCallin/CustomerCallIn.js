@@ -1,14 +1,16 @@
 /* eslint-disable */
 import * as React from 'react';
-import { AnchorButton, Button, Card, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Checkbox } from '@blueprintjs/core'
+import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent } from '@blueprintjs/core'
 import getDisabledDates from '../../Zipcodes/getDisabledDates'
-import Select from 'react-select'
 import styled from 'styled-components'
 import { StateSelect } from './StateSelect'
 import { produce } from 'immer'
+import { addDays } from 'date-fns'
 import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
 import MandatoryCheckboxes from './MandatoryCheckboxes'
+import ZipcodeSelect from './ZipcodeSelect'
+import DatePicker from './DatePicker'
 import { AppToaster } from '../../Toaster'
 import * as EmailValidator from 'email-validator'
 import { API } from "aws-amplify"
@@ -46,15 +48,20 @@ export class CustomerCallIn extends React.Component {
     }
 
     componentDidMount = () => {
-        this.setState({
-            categories: this.props.userConfig.categories,
-            serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
-                return detail.isMandatory === false
-            }),
-            mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
-                return detail.isMandatory === true
+        const userConfig = this.props.userConfig
+        // this check should occur in the parent render function, but just so we don't
+        // get a undefined error ...
+        if (userConfig.categories != null && userConfig.serviceDetails != null) {
+            this.setState({
+                categories: this.props.userConfig.categories,
+                serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                    return detail.isMandatory === false
+                }),
+                mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                    return detail.isMandatory === true
+                })
             })
-        })
+        }
     }
 
     handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
@@ -323,7 +330,7 @@ export class CustomerCallIn extends React.Component {
         // return false
         else if ((this.state.mandatoryDetails.length > 0)
             && (this.state.mandatoryDetails.filter(detail => { return detail.checked === true }).length !== this.state.mandatoryDetails.length)) {
-            this.showToast('You must certify that you meet all requirements')
+            this.showToast('Customer must certify that all requirements are met')
             return false
         }
         else {
@@ -332,84 +339,66 @@ export class CustomerCallIn extends React.Component {
     }
 
     render() {
-        let zipcodeOptions = []
-        let blackoutDates = []
-        if (this.props.userConfig.zipcodes != null) {
-            zipcodeOptions = this.props.userConfig.zipcodes.map(zipcode => ({ value: zipcode.zipcode, label: zipcode.zipcode }));
-        }
-        if (this.props.userConfig.blackoutDates != null) {
-            blackoutDates = this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date))
-        }
-        if (this.props.userConfig) {
-            return (
-                <Dialog isOpen={this.props.isOverlayOpen}
-                    onClose={this.props.onClose}
-                    transitionDuration={100}
-                    title="Customer Call-In"
-                >
-                    <DialogContainer>
-                        <H4>Select The Pickup Zipcode</H4>
-                        <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
-                            onChange={this.handleZipcodeSelect}
-                            selectedZipcode={this.state.selectedZipcode}
+        return (
+            <Dialog isOpen={this.props.isOverlayOpen}
+                onClose={this.props.onClose}
+                transitionDuration={100}
+                title="Customer Call-In"
+            >
+                <DialogContainer>
+                    <H4>Select The Pickup Zipcode</H4>
+                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                        onChange={this.handleZipcodeSelect}
+                        selectedZipcode={this.state.selectedZipcode}
+                    />
+                    <BlockContainer>
+                        <DatePicker disabledDays={this.state.disabledDays}
+                            onClick={this.handleDayClick}
+                            zipcode={this.state.selectedZipcode}
+                            selectedDate={this.state.selectedDate}
+                            isVisible={this.state.showDatePicker}
                         />
-                        <BlockContainer>
-                            <DatePicker disabledDays={this.state.disabledDays}
-                                onClick={this.handleDayClick}
-                                zipcode={this.state.selectedZipcode}
-                                selectedDate={this.state.selectedDate}
-                                isVisible={this.state.showDatePicker}
-                            />
 
-                        </BlockContainer>
-                        <p>
-                            {this.state.selectedDate
-                                ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
-                                : ''}
-                        </p>
-                        {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
-                        <div>
-                            <CategoryCheckboxes
-                                categories={this.state.categories}
-                                onChange={this.handleCategoryCheckedChange}
-                                isVisible={this.state.showPickupDetails}
-                            />
-                        </div>
-                        <div>
-                            <ServiceDetailCheckboxes
-                                serviceDetails={this.state.serviceDetails}
-                                onChange={this.handleServiceCheckedChange}
-                                isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
-                            />
-                        </div>
-                        <div>
-                            <MandatoryCheckboxes
-                                mandatoryDetails={this.state.mandatoryDetails}
-                                onChange={this.handleMandatoryCheckedChange}
-                                // should not render if NO mandatory service details
-                                isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
-                            />
-                        </div>
-                        <div>
-                            {this.state.showPickupDetails ? (
-                                <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
-                            ) : ''
-                            }
-                        </div>
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleClose}>Cancel</Button>
-                            <Button onClick={this.handleSubmit}>Submit</Button>
-                        </div>
+                    </BlockContainer>
+                    <p>
+                        {this.state.selectedDate
+                            ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                            : ''}
+                    </p>
+                    {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
+                    <div>
+                        <CategoryCheckboxes
+                            categories={this.state.categories}
+                            onChange={this.handleCategoryCheckedChange}
+                            isVisible={this.state.showPickupDetails}
+                        />
                     </div>
-                </Dialog>
-            )
-        }
-        else {
-            return ''
-        }
+                    <div>
+                        <ServiceDetailCheckboxes
+                            serviceDetails={this.state.serviceDetails}
+                            onChange={this.handleServiceCheckedChange}
+                            isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
+                        />
+                    </div>
+                    <div>
+                        <MandatoryCheckboxes
+                            mandatoryDetails={this.state.mandatoryDetails}
+                            onChange={this.handleMandatoryCheckedChange}
+                            // should not render if NO mandatory service details
+                            isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
+                        />
+                    </div>
+                </DialogContainer>
+                <div className={Classes.DIALOG_FOOTER}>
+                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.handleSubmit}>Submit</Button>
+                    </div>
+                </div>
+            </Dialog>
+        )
     }
+
 }
 
 const BlockContainer = styled.div`

@@ -61,14 +61,21 @@ class OverviewPickups extends React.Component {
     // in renderFooter(), a key was added to CustomerCallIn to ensure categories is set when loaded or changed
 
     renderFooter = () => {
-        return (
-            <div className="footer">
-                <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
-                <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig}/>
-                <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups,this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
-                <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
-            </div>
-        )
+        if (Object.keys(this.props.userConfig).length > 0) {
+            return (
+                <div className="footer">
+                    <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
+                    <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
+                    <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups, this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
+                    <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>You need to setup your donor page first!</div>
+            )
+        }
     }
 
 
@@ -111,7 +118,7 @@ class OverviewPickups extends React.Component {
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         <Droppable droppableId="dropabble">
                             {(provided) => (
-                                <div  ref={provided.innerRef}>
+                                <div ref={provided.innerRef}>
                                     <Grid columns={6}>
                                         {this.renderCards()}
                                         {provided.placeholder}

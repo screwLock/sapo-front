@@ -111,7 +111,6 @@ export class StateSelect extends React.Component {
     render() {
         return(
             <Select
-                defaultValue={stateOptions[1]}
                 options={groupedOptions}
                 formatGroupLabel={formatGroupLabel}
                 onChange={this.props.onChange}
