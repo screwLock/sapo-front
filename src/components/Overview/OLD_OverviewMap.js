@@ -55,6 +55,7 @@ class OverviewMap extends React.Component {
     const center = this.getCenter(this.props.selectedPickup, this.props.center);
     const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate));
     const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
+    console.log(routePickups)
     const user = this.props.user;
     const zoom = this.props.zoom;
     return (

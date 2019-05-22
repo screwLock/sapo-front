@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Grid, Cell } from "styled-css-grid";
 import produce from 'immer';
-import OverviewMap from './OLD_OverviewMap.js';
+import StaticMap from './StaticMap.js';
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
 import pickupMocks from './mocks/pickupMocks';
@@ -119,7 +119,7 @@ class Overview extends Component {
   render() {
     return (
       <Grid columns={12}>
-        <Cell width={12}><OverviewMap pickups={this.state.pickups}
+        <Cell width={12}><StaticMap pickups={this.state.pickups}
           selectedDate={this.state.selectedDate}
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}
