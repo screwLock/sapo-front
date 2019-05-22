@@ -131,6 +131,7 @@ export class CustomerCallIn extends React.Component {
             categories: this.props.userConfig.categories,
             donations: [],
             serviceDetails: [],
+            mandatoryDetails: [],
         })
         this.props.onClose()
     }
@@ -273,7 +274,6 @@ export class CustomerCallIn extends React.Component {
                                         serviceDetails: this.state.serviceDetails
                                     }
                                 }).then(response => {
-                                    console.log(response)
                                     this.handleClose()
                                     this.showToast('Pickup Successfully Saved')
                                     // send email
