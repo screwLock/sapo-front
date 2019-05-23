@@ -1,6 +1,6 @@
 import * as React from 'react'
 import GoogleMapReact from 'google-map-react'
-import PickupMarker from './PickupMarker'
+import PickupMarker from './markers/PickupMarker'
 import './styles/pickupMarker.css'
 import { isSameDay } from 'date-fns'
 import config from '../../config'

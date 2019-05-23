@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Popover, PopoverInteractionKind } from '@blueprintjs/core';
-import { IPickup } from './types/pickup';
+import { IPickup } from '../types/pickup';
 import styled from 'styled-components';
 
 interface IPickupMarkerProps {
