@@ -11,6 +11,8 @@ import { AppToaster } from '../Toaster'
 import config from '../../config'
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
+// we have to import map.css here to hide the directions panel 
+import './map.css'
 
 class Overview extends Component {
   constructor(props) {
