@@ -28,6 +28,12 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
         document.content.push({
                 text:   `${index+1}) Name: ${pickup.lastName}, ${pickup.firstName} 
                         Address: ${pickup.streetAddress}
+                        Haul: ${pickup.donations.map( donation => {
+                            return(`${donation}`)
+                        })}
+                        Pickup Details: ${pickup.serviceDetails.map( detail => {
+                            return(`${detail}`)
+                        })}
                         `,
                 lineHeight: 1
             },
