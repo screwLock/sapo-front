@@ -27,8 +27,9 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
     routePickups.forEach( (pickup,index) => {
         document.content.push({
                 text:   `${index+1}) Name: ${pickup.lastName}, ${pickup.firstName} 
-                        Address: ${pickup.streetAddress}`,
-                lineHeight: 2
+                        Address: ${pickup.streetAddress}
+                        `,
+                lineHeight: 1
             },
             );
     });
