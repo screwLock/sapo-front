@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
+import { isSameDay } from 'date-fns'
 import "leaflet-routing-machine"
 import Routing from "./RoutingMachine"
 import styled from 'styled-components'
@@ -8,48 +9,61 @@ import 'react-leaflet-fullscreen/dist/styles.css'
 import FullscreenControl from 'react-leaflet-fullscreen';
 
 
-class LeafletMap extends React.PureComponent {
+class LeafletMap extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            lat: 51.505,
-            lng: -0.09,
-            zoom: 13,
             isMapInit: false,
         };
+    }
+
+    getCenter = (selectedPickup, defaultCenter) => {
+        let selectedCenter = null;
+        if (selectedPickup) {
+            selectedCenter = [selectedPickup.lat, selectedPickup.lng]
+            return selectedCenter;
+        }
+        else {
+            return defaultCenter;
+        }
     }
 
     saveMap = (map) => {
         this.map = map;
         this.setState({
-            isMapInit: true
+            isMapInit: true,
         })
     }
 
     render() {
-        const position = [37.335556, -122.009167];
+        const center = this.getCenter(this.props.selectedPickup, [this.props.user.lat, this.props.user.lng]);
+        const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate));
+        const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
         // height MUST be set on Map component as well for proper rendering!
         // we set zIndex=1 so that dialogs/popovers will appear over map
-
         return (
             <MapContainer>
-                <Map center={position}
-                    zoom={this.state.zoom}
-                    scrollWheelZoom={false}
-                    animate={true}
-                    ref={this.saveMap}
-                    style={{
-                        height: "100vh",
-                        zIndex: '1',
-                    }}
-                >
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
-                    />
-                    {this.state.isMapInit && <Routing map={this.map}/>}
-                    <FullscreenControl position="topleft" />
-                </Map>
+                {/* Make sure this.props.user has been set */}
+                {Object.keys(this.props.user).length === 0 ? '' : (
+                    <Map center={[this.props.user.lat, this.props.user.lng]}
+                        zoom={13}
+                        key={this.props.routeKey}
+                        scrollWheelZoom={false}
+                        animate={true}
+                        ref={this.saveMap}
+                        style={{
+                            height: "100vh",
+                            zIndex: '1',
+                        }}
+                    >
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+                        />
+                        {this.state.isMapInit && <Routing map={this.map} pickups={routePickups} user={this.props.user} />}
+                        <FullscreenControl position="topleft" />
+                    </Map>
+                )}
             </MapContainer>
         )
     }

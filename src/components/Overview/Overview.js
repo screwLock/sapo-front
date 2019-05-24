@@ -124,8 +124,6 @@ class Overview extends Component {
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}
           user={this.state.user}
-          center={{ 'lat': this.state.user.lat, 'lng': this.state.user.lng }}
-          zoom={12}
           routeKey={this.state.newRoute}
         />
         </Cell>
