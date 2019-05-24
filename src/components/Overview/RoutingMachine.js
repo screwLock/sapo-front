@@ -24,7 +24,7 @@ class Routing extends MapLayer {
             show: false,
             createMarker: (i, wp) => {
                 return L.marker(wp.latLng, {
-                    draggable: true,
+                    draggable: false,
                     icon
                 })
             }
