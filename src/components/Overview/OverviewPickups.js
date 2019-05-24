@@ -18,25 +18,31 @@ class OverviewPickups extends React.Component {
     };
 
     renderCards = () => {
-        return this.props.datePickups.map((pickup, index) => {
+        if (this.props.datePickups.length > 0) {
+            return this.props.datePickups.map((pickup, index) => {
+                return (
+                    <Cell height={1} width={4} left={2} key={pickup.pickupID}>
+                        <Draggable draggableId={pickup.pickupID} index={index}>
+                            {(provided) => (
+                                <OverviewCard pickup={pickup}
+                                    index={index}
+                                    routes={this.props.routes}
+                                    innerRef={provided.innerRef}
+                                    provided={provided}
+                                    handleClick={this.props.handleClick}
+                                    isAllOpen={this.state.isAllOpen}
+                                    handleRouteChange={this.props.handleRouteChange}
+                                />
+                            )}
+                        </Draggable>
+                    </Cell>
+                );
+            });
+        } else {
             return (
-                <Cell height={1} width={4} left={2} key={pickup.pickupID}>
-                    <Draggable draggableId={pickup.pickupID} index={index}>
-                        {(provided) => (
-                            <OverviewCard pickup={pickup}
-                                index={index}
-                                routes={this.props.routes}
-                                innerRef={provided.innerRef}
-                                provided={provided}
-                                handleClick={this.props.handleClick}
-                                isAllOpen={this.state.isAllOpen}
-                                handleRouteChange={this.props.handleRouteChange}
-                            />
-                        )}
-                    </Draggable>
-                </Cell>
-            );
-        });
+                <Cell height={1} width={4} left={2}>No Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</Cell>
+            )
+        }
     }
 
     renderHeader = () => {
@@ -65,8 +71,8 @@ class OverviewPickups extends React.Component {
                 <div className="footer">
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
-                    <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.datePickups, this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
-                    <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
+                    <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.datePickups, this.props.user)} rightIcon="document" id="createPDF">Create Directions</Button>
+                    <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Preview Route On Map</Button>
                 </div>
             )
         }
