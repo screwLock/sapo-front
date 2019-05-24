@@ -5,7 +5,7 @@ import produce from 'immer';
 import LeafletMap from './LeafletMap'
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
-import { format, getMonth, getYear, lastDayOfMonth } from 'date-fns'
+import { format, getMonth, getYear, isSameDay, lastDayOfMonth } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
 import config from '../../config'
@@ -117,10 +117,11 @@ class Overview extends Component {
   }
 
   render() {
+    const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate))
+    const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
     return (
       <Grid columns={12}>
-        <Cell width={12}><LeafletMap pickups={this.state.pickups}
-          selectedDate={this.state.selectedDate}
+        <Cell width={12}><LeafletMap pickups={routePickups}
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}
           user={this.state.user}
@@ -134,6 +135,7 @@ class Overview extends Component {
           pickups={this.state.pickups}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
+          datePickups={datePickups}
           user={this.state.user}
           routes={this.state.routes}
           handleClick={this.selectPickup}

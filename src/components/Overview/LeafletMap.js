@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
-import { isSameDay } from 'date-fns'
 import "leaflet-routing-machine"
 import Routing from "./RoutingMachine"
 import styled from 'styled-components'
@@ -36,9 +35,7 @@ class LeafletMap extends React.Component {
     }
 
     render() {
-        const center = this.getCenter(this.props.selectedPickup, [this.props.user.lat, this.props.user.lng]);
-        const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate));
-        const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
+        const center = this.getCenter(this.props.selectedPickup, [this.props.user.lat, this.props.user.lng])
         // height MUST be set on Map component as well for proper rendering!
         // we set zIndex=1 so that dialogs/popovers will appear over map
         return (
@@ -60,7 +57,7 @@ class LeafletMap extends React.Component {
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
                         />
-                        {this.state.isMapInit && <Routing map={this.map} pickups={routePickups} user={this.props.user} />}
+                        {this.state.isMapInit && <Routing map={this.map} pickups={this.props.pickups} user={this.props.user} />}
                         <FullscreenControl position="topleft" />
                     </Map>
                 )}

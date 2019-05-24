@@ -12,6 +12,7 @@ class Routing extends MapLayer {
                 return L.latLng(pickup.lat, pickup.lng)
             })
         }
+        console.log(pickups)
         console.log(waypoints)
         const icon = L.icon({
             iconUrl:

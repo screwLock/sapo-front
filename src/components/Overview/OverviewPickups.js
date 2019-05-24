@@ -18,8 +18,7 @@ class OverviewPickups extends React.Component {
     };
 
     renderCards = () => {
-        const datePickups = this.props.pickups.filter((pickup) => isSameDay(new Date(pickup.pickupDate), this.props.selectedDate));
-        return datePickups.map((pickup, index) => {
+        return this.props.datePickups.map((pickup, index) => {
             return (
                 <Cell height={1} width={4} left={2} key={pickup.pickupID}>
                     <Draggable draggableId={pickup.pickupID} index={index}>
@@ -66,7 +65,7 @@ class OverviewPickups extends React.Component {
                 <div className="footer">
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
-                    <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.pickups, this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
+                    <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.datePickups, this.props.user)} rightIcon="document" id="createPDF">Convert to PDF</Button>
                     <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Create Route</Button>
                 </div>
             )
