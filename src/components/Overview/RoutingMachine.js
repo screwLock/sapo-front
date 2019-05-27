@@ -22,11 +22,24 @@ class Routing extends MapLayer {
         let leafletElement = L.Routing.control({
             waypoints: [L.latLng(user.lat, user.lng), ...waypoints],
             show: false,
-            createMarker: (i, wp) => {
-                return L.marker(wp.latLng, {
-                    draggable: false,
-                    icon
-                })
+            // addWaypoints and routeWhileDragging are false for read-only map
+            addWaypoints: false,
+            routeWhileDragging: false,
+            createMarker: (i, wp, nWps) => {
+                // start or end marker
+                if (i === 0 || i === nWps - 1) {
+                    return L.marker(wp.latLng, {
+                        draggable: false,
+                        icon
+                    }).bindPopup(`start`)
+                }
+                // the other markers
+                else {
+                    return L.marker(wp.latLng, {
+                        draggable: false,
+                        icon
+                    }).bindPopup(`gay`)
+                }
             }
         }).addTo(map.leafletElement);
         leafletElement.hide();
