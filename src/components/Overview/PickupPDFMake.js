@@ -14,6 +14,10 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
     const document = {
+        info:{
+            title: `${format(new Date(), 'MMMM Do')}`
+        },
+
         content: [{
             text: `Pickups for ${format(new Date(), 'MMMM Do YYYY')}`,
             link:`${makeURL(user, routePickups)}`,
@@ -39,7 +43,9 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
             },
             );
     });
-    pdfMake.createPdf(document).download();
+
+    // create the pdf with the supplied name
+    pdfMake.createPdf(document).download(`${format(new Date(), 'MMMM Do')}`);
 }
 
 const makeURL = (user, routePickups) => {
