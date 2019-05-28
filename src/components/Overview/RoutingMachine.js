@@ -9,7 +9,8 @@ class Routing extends MapLayer {
         let waypoints = []
         if (pickups.length > 0) {
             waypoints = pickups.map(pickup => {
-                return L.latLng(pickup.lat, pickup.lng)
+                // cramming popup info into the name argument
+                return L.Routing.waypoint(L.latLng(pickup.lat, pickup.lng), `<div>${pickup.streetAddress}, ${pickup.zipcode}<div><div>${pickup.lastName}, ${pickup.firstName}</div>`)
             })
         }
         console.log(pickups)
@@ -20,25 +21,26 @@ class Routing extends MapLayer {
             iconSize: [40, 40]
         })
         let leafletElement = L.Routing.control({
-            waypoints: [L.latLng(user.lat, user.lng), ...waypoints],
+            waypoints: [L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'), ...waypoints],
             show: false,
             // addWaypoints and routeWhileDragging are false for read-only map
             addWaypoints: false,
             routeWhileDragging: false,
             createMarker: (i, wp, nWps) => {
-                // start or end marker
+                // start and end marker
                 if (i === 0 || i === nWps - 1) {
                     return L.marker(wp.latLng, {
                         draggable: false,
                         icon
-                    }).bindPopup(`start`)
+                    // can use html in bindPopup
+                    }).bindPopup(`<b>${wp.name}</b>`)
                 }
                 // the other markers
                 else {
                     return L.marker(wp.latLng, {
                         draggable: false,
                         icon
-                    }).bindPopup(`gay`)
+                    }).bindPopup(`<b>${wp.name}</b>`)
                 }
             }
         }).addTo(map.leafletElement);

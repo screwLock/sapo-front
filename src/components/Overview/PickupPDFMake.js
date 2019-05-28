@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 export const makeDailyPickupsPDF = (pickups, user) => () => {
     const routePickups = pickups.filter(pickup => pickup.inRoute === true)
 
+    // don't create if no pickups
     if(routePickups.length === 0) {
        return false;
     }
