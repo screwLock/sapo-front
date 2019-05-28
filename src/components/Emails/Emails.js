@@ -1,10 +1,11 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, FormGroup, InputGroup, H3, Intent, Menu, MenuItem, Popover, Position, TextArea } from '@blueprintjs/core'
+import { Button, FormGroup, InputGroup, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 import produce from 'immer'
 import * as EmailValidator from 'email-validator'
 import { AppToaster } from '../Toaster'
-import { API } from "aws-amplify"
 
 
 class Emails extends React.Component {
@@ -42,20 +43,15 @@ class Emails extends React.Component {
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
+    handleQuillChange = (value) => this.setState({messageBody: value})
+
     saveSettings = async () => {
-        if (this.state.fromAddress.length === 0) {
-            this.showToast('FROM email address required')
-        }
-        else if (this.state.subjectLine.length === 0) {
+        if (this.state.subjectLine.length === 0) {
             this.showToast('Subject line required')
-        }
-        else if (!EmailValidator.validate(this.state.fromAddress)) {
-            this.showToast('FROM address is not a valid email address')
         }
         else {
             try {
                 await this.props.updateUserConfig('emails', {
-                    fromAddress: this.state.fromAddress,
                     ccAddresses: this.state.ccAddresses,
                     bccAddresses: this.state.bccAddresses,
                     subjectLine: this.state.subjectLine,
@@ -63,7 +59,6 @@ class Emails extends React.Component {
                 },
                     {
                         emails: {
-                            fromAddress: this.state.fromAddress,
                             ccAddresses: this.state.ccAddresses,
                             bccAddresses: this.state.bccAddresses,
                             subjectLine: this.state.subjectLine,
@@ -170,11 +165,6 @@ class Emails extends React.Component {
                 <H3>Manage Emails</H3>
                 <SettingsContainer>
                     <FormGroup
-                        label="FROM address"
-                    >
-                        <InputGroup name="fromAddress" onChange={this.handleChange} value={this.state.fromAddress} />
-                    </FormGroup>
-                    <FormGroup
                         label="CC addresses"
                     >
                         <InputGroup name="ccAddress" onChange={this.handleChange} rightElement={renderAddCC} />
@@ -194,12 +184,9 @@ class Emails extends React.Component {
                     <FormGroup
                         label='Message Body'
                     >
-                        <TextArea
-                            small='true'
-                            intent={Intent.PRIMARY}
-                            onChange={this.handleChange}
+                        <ReactQuill
+                            onChange={this.handleQuillChange}
                             value={this.state.messageBody}
-                            fill={true}
                             name='messageBody'
                         />
                     </FormGroup>

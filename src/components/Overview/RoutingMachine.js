@@ -1,6 +1,7 @@
 import { MapLayer, withLeaflet } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-routing-machine";
+delete L.Icon.Default.prototype._getIconUrl;
 
 class Routing extends MapLayer {
 
@@ -15,10 +16,26 @@ class Routing extends MapLayer {
         }
         console.log(pickups)
         console.log(waypoints)
-        const icon = L.icon({
-            iconUrl:
-                "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png",
-            iconSize: [40, 40]
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+            iconUrl: require('leaflet/dist/images/marker-icon.png'),
+            shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+          });
+        const pickupIcon = L.icon({
+            iconUrl: "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+            shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        })
+        const homeIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
         })
         let leafletElement = L.Routing.control({
             waypoints: [L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'), ...waypoints],
@@ -31,7 +48,7 @@ class Routing extends MapLayer {
                 if (i === 0 || i === nWps - 1) {
                     return L.marker(wp.latLng, {
                         draggable: false,
-                        icon
+                        homeIcon
                     // can use html in bindPopup
                     }).bindPopup(`<b>${wp.name}</b>`)
                 }
@@ -39,7 +56,7 @@ class Routing extends MapLayer {
                 else {
                     return L.marker(wp.latLng, {
                         draggable: false,
-                        icon
+                        pickupIcon
                     }).bindPopup(`<b>${wp.name}</b>`)
                 }
             }
