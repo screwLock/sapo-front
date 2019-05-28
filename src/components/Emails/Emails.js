@@ -49,6 +49,9 @@ class Emails extends React.Component {
         if (this.state.subjectLine.length === 0) {
             this.showToast('Subject line required')
         }
+        else if (this.state.messageBody.length > 500){
+            this.showToast('Message body has a limit of 500 characters')
+        }
         else {
             try {
                 await this.props.updateUserConfig('emails', {
@@ -183,6 +186,7 @@ class Emails extends React.Component {
                     </FormGroup>
                     <FormGroup
                         label='Message Body'
+                        helperText='500 character limit'
                     >
                         <ReactQuill
                             onChange={this.handleQuillChange}
