@@ -13,7 +13,6 @@ class Emails extends React.Component {
         super(props)
         this.state = {
             messageBody: '',
-            fromAddress: '',
             subjectLine: '',
             ccAddress: '',
             ccAddresses: [],
@@ -31,7 +30,6 @@ class Emails extends React.Component {
             let emails = this.props.userConfig.emails
             this.setState({
                 emails: emails,
-                fromAddress: emails.fromAddress,
                 ccAddresses: emails.ccAddresses,
                 bccAddresses: emails.bccAddresses,
                 subjectLine: emails.subjectLine,
