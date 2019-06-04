@@ -8,7 +8,7 @@ import * as EmailValidator from 'email-validator'
 import { AppToaster } from '../Toaster'
 
 
-class SubmittedEmails extends React.Component {
+class ConfirmedEmails extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -27,19 +27,18 @@ class SubmittedEmails extends React.Component {
             return;
         }
         if (this.props.userConfig.emails != null &&
-            this.props.userConfig.emails.submittedSubjectLine != null &&
-            this.props.userConfig.emails.submittedMessageBody != null
+            this.props.userConfig.emails.confirmedSubjectLine != null &&
+            this.props.userConfig.emails.confirmedMessageBody != null
         ) {
             let emails = this.props.userConfig.emails
             this.setState({
                 emails: emails,
-                ccAddresses: emails.submittedCCAddresses,
-                bccAddresses: emails.submittedBCCAddresses,
-                subjectLine: emails.submittedSubjectLine,
-                messageBody: emails.submittedMessageBody
+                ccAddresses: emails.confirmedCCAddresses,
+                bccAddresses: emails.confirmedBCCAddresses,
+                subjectLine: emails.confirmedSubjectLine,
+                messageBody: emails.confirmedMessageBody
             })
         }
-
     }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
@@ -56,17 +55,19 @@ class SubmittedEmails extends React.Component {
         else {
             try {
                 await this.props.updateUserConfig('emails', {
-                    submittedCCAddresses: this.state.ccAddresses,
-                    submittedBCCAddresses: this.state.bccAddresses,
-                    submittedSubjectLine: this.state.subjectLine,
-                    submittedMessageBody: this.state.messageBody,
+                    ...this.props.userConfig.emails,
+                    confirmedCCAddresses: this.state.ccAddresses,
+                    confirmedBCCAddresses: this.state.bccAddresses,
+                    confirmedSubjectLine: this.state.subjectLine,
+                    confirmedMessageBody: this.state.messageBody,
                 },
                     {
                         emails: {
-                            submittedCCAddresses: this.state.ccAddresses,
-                            submittedBCCAddresses: this.state.bccAddresses,
-                            submittedSubjectLine: this.state.subjectLine,
-                            submittedMessageBody: this.state.messageBody,
+                            ...this.props.userConfig.emails,
+                            confirmedCCAddresses: this.state.ccAddresses,
+                            confirmedBCCAddresses: this.state.bccAddresses,
+                            confirmedSubjectLine: this.state.subjectLine,
+                            confirmedMessageBody: this.state.messageBody,
                         }
                     }
                 )
@@ -188,4 +189,4 @@ const SettingsContainer = styled.div`
     width: 500px;
 `
 
-export default SubmittedEmails;
+export default ConfirmedEmails;
