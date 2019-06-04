@@ -6,7 +6,7 @@ import MaxPickups from './MaxPickups/MaxPickups'
 import Zipcodes from './Zipcodes/Zipcodes';
 import Employees from './Employees/Employees';
 import DonorPage from './DonorPage/DonorPage'
-import Emails from './Emails/Emails'
+import Emails from './Emails/SubmittedEmails'
 import Account from './Account/Account'
 
 class Main extends Component {
