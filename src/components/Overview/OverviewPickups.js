@@ -103,6 +103,13 @@ class OverviewPickups extends React.Component {
             return;
         }
 
+        // shouldn't reorder if nothing changed!
+        if ( result.destination.droppableId === result.source.droppableID &&
+            result.destination.index === result.source.index    
+        ){
+            return;
+        }
+
         const pickups = this.reorder(
             this.props.pickups,
             result.source.index,
