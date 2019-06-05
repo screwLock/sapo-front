@@ -17,15 +17,16 @@ class OverviewPickups extends React.Component {
         }
     };
 
-    renderCards = () => {
-        if (this.props.datePickups.length > 0) {
-            return this.props.datePickups.map((pickup, index) => {
+    renderCards = (pickups) => {
+        if (pickups.length > 0) {
+            return pickups.map((pickup, index) => {
                 return (
                     <Cell height={1} width={4} left={2} key={pickup.pickupID}>
-                        <Draggable draggableId={pickup.pickupID} index={index}>
+                        <Draggable draggableId={pickup.pickupID} index={pickup.index}>
                             {(provided) => (
                                 <OverviewCard pickup={pickup}
                                     isChecked={pickup.inRoute}
+                                    ordinal={index}
                                     // this is the problem
                                     // index should refer to this.props.pickups index
                                     // not datePickups index
@@ -69,13 +70,13 @@ class OverviewPickups extends React.Component {
 
     // in renderFooter(), a key was added to CustomerCallIn to ensure categories is set when loaded or changed
 
-    renderFooter = () => {
+    renderFooter = (pickups) => {
         if (Object.keys(this.props.userConfig).length > 0) {
             return (
                 <div className="footer">
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
-                    <Button minimal="false" onClick={makeDailyPickupsPDF(this.props.datePickups, this.props.user)} rightIcon="document" id="createPDF">Create Directions</Button>
+                    <Button minimal="false" onClick={makeDailyPickupsPDF(pickups, this.props.user)} rightIcon="document" id="createPDF">Create Directions</Button>
                     <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Preview Route On Map</Button>
                 </div>
             )
@@ -120,6 +121,7 @@ class OverviewPickups extends React.Component {
     };
 
     render() {
+        const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
         return (
             <div className="pickups">
                 {this.renderHeader()}
@@ -129,7 +131,7 @@ class OverviewPickups extends React.Component {
                             {(provided) => (
                                 <div ref={provided.innerRef}>
                                     <Grid columns={6}>
-                                        {this.renderCards()}
+                                        {this.renderCards(datePickups)}
                                         {provided.placeholder}
                                     </Grid>
                                 </div>
@@ -137,7 +139,7 @@ class OverviewPickups extends React.Component {
                         </Droppable>
                     </DragDropContext>
                 </div>
-                {this.renderFooter()}
+                {this.renderFooter(datePickups)}
             </div>
         );
     }

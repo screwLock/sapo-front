@@ -33,7 +33,7 @@ class OverviewCard extends Component {
                 ref={this.setRef}
             >
                 <StyledCard interactive={true} elevation={Elevation.TWO} className={'card'}>
-                    <H5 className={'cardHeader'} onClick={this.handleClick}>{`${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode}`}</H5>
+                    <H5 className={'cardHeader'} onClick={this.handleClick}>{`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode}`}</H5>
                     <H5>{`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</H5>
                     <Checkbox
                         label="Include In Route"

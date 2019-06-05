@@ -17,6 +17,8 @@ class Routing extends MapLayer {
                 return L.Routing.waypoint(L.latLng(pickup.lat, pickup.lng), `<div>${pickup.streetAddress}, ${pickup.zipcode}<div><div>${pickup.lastName}, ${pickup.firstName}</div>`)
             })
         }
+        // waypoints.push(L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'))
+        waypoints.unshift(L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'))
         console.log(routePickups)
         console.log(waypoints)
         L.Icon.Default.mergeOptions({
@@ -41,7 +43,7 @@ class Routing extends MapLayer {
             shadowSize: [41, 41]
         })
         let leafletElement = L.Routing.control({
-            waypoints: [L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'), ...waypoints],
+            waypoints: waypoints,
             show: false,
             // addWaypoints and routeWhileDragging are false for read-only map
             addWaypoints: false,

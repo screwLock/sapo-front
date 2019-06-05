@@ -118,7 +118,6 @@ class Overview extends Component {
   }
 
   render() {
-    const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate))
     return (
       <Grid columns={12}>
         <Cell width={12}><LeafletMap pickups={this.state.pickups}
@@ -136,7 +135,6 @@ class Overview extends Component {
           pickups={this.state.pickups}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
-          datePickups={datePickups}
           user={this.state.user}
           routes={this.state.routes}
           handleClick={this.selectPickup}
@@ -151,9 +149,11 @@ class Overview extends Component {
     );
   }
 
+  //  at the end of a drag, we need to change the pickup indices to reflect
+  //  the reordering
   onDragEnd = (pickups) => {
     this.setState({
-      pickups,
+      pickups: pickups.map((pickup, index) => { return {...pickup, index:index}})
     });
   };
 
