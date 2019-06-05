@@ -25,7 +25,11 @@ class OverviewPickups extends React.Component {
                         <Draggable draggableId={pickup.pickupID} index={index}>
                             {(provided) => (
                                 <OverviewCard pickup={pickup}
-                                    index={index}
+                                    isChecked={pickup.inRoute}
+                                    // this is the problem
+                                    // index should refer to this.props.pickups index
+                                    // not datePickups index
+                                    index={pickup.index}
                                     routes={this.props.routes}
                                     innerRef={provided.innerRef}
                                     provided={provided}

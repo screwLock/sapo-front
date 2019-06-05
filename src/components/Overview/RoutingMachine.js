@@ -1,4 +1,5 @@
 import { MapLayer, withLeaflet } from "react-leaflet";
+import { isSameDay } from 'date-fns'
 import L from "leaflet";
 import "leaflet-routing-machine";
 delete L.Icon.Default.prototype._getIconUrl;
@@ -6,15 +7,17 @@ delete L.Icon.Default.prototype._getIconUrl;
 class Routing extends MapLayer {
 
     createLeafletElement() {
-        const { map, pickups, user } = this.props
+        const { map, pickups, user, selectedDate } = this.props
+        const datePickups = pickups.filter((pickup) => isSameDay(pickup.pickupDate, selectedDate))
+        const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
         let waypoints = []
-        if (pickups.length > 0) {
-            waypoints = pickups.map(pickup => {
+        if (routePickups.length > 0) {
+            waypoints = routePickups.map(pickup => {
                 // cramming popup info into the name argument
                 return L.Routing.waypoint(L.latLng(pickup.lat, pickup.lng), `<div>${pickup.streetAddress}, ${pickup.zipcode}<div><div>${pickup.lastName}, ${pickup.firstName}</div>`)
             })
         }
-        console.log(pickups)
+        console.log(routePickups)
         console.log(waypoints)
         L.Icon.Default.mergeOptions({
             iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),

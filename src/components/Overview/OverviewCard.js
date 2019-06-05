@@ -8,7 +8,6 @@ class OverviewCard extends Component {
         super(props);
         this.state = {
             isOpen: false,
-            isChecked: this.props.pickup.inRoute
         }
     };
 
@@ -38,7 +37,7 @@ class OverviewCard extends Component {
                     <H5>{`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</H5>
                     <Checkbox
                         label="Include In Route"
-                        checked={this.state.isChecked}
+                        checked={this.props.isChecked}
                         inline={true}
                         onChange={this.handleCheckedChange}
                     />
@@ -47,7 +46,7 @@ class OverviewCard extends Component {
                         <div>Contact Number: {this.props.pickup.phoneNumber}</div>
                         <div></div>
                         <div>Order: 
-                            <ul>{this.props.pickup.donations.map(donation => (<li>{donation}</li>))}</ul>
+                            <ul>{this.props.pickup.donations.map(donation => (<li key={donation}>{donation}</li>))}</ul>
                         </div>
                     </Collapse>
                 </StyledCard>
@@ -60,7 +59,6 @@ class OverviewCard extends Component {
     }
 
     handleCheckedChange = ()  => {
-        this.setState({isChecked: !this.state.isChecked})
         this.props.handleRouteChange(this.props.index);       
     }
 

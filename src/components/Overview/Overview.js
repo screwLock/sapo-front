@@ -112,16 +112,17 @@ class Overview extends Component {
       }
     }).then(result => {
       // make sure we add an inRoute attribute for the directions API
-      this.setState({ pickups: result.map(pickup => { return {... pickup, inRoute: false} } )})
+      // also an index for changing this inRoute attribute in the Overview Cards
+      this.setState({ pickups: result.map((pickup, index) => { return {... pickup, inRoute: false, index: index} } )})
     });
   }
 
   render() {
     const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate))
-    const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
     return (
       <Grid columns={12}>
-        <Cell width={12}><LeafletMap pickups={routePickups}
+        <Cell width={12}><LeafletMap pickups={this.state.pickups}
+          selectedDate={this.state.selectedDate}
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}
           user={this.state.user}
