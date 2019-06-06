@@ -159,9 +159,10 @@ class ConfirmedEmails extends React.Component {
                             name='messageBody'
                         />
                     </FormGroup>
+                    <Caption>*Pickup haul and service details will be appended as lists after the message body*</Caption>
                     <ButtonRow>
                         <Button
-                            text='Save'
+                            text='Save Pickup Confirmed Email Format'
                             onClick={this.saveSettings}
                         />
                     </ButtonRow>
@@ -187,6 +188,10 @@ const ButtonRow = styled.div`
 const SettingsContainer = styled.div`
     margin-left: 20px;
     width: 500px;
+`
+const Caption = styled.p`
+    font-style: italic;
+    font-size: 12px;
 `
 
 export default ConfirmedEmails;

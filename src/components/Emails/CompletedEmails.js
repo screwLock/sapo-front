@@ -161,7 +161,7 @@ class CompletedEmails extends React.Component {
                     </FormGroup>
                     <ButtonRow>
                         <Button
-                            text='Save'
+                            text='Save Pickup Completed Email Format'
                             onClick={this.saveSettings}
                         />
                     </ButtonRow>
