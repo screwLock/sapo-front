@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
 import { StyledCard} from './styles/StyledCard'
+import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import { getConfirmation } from 'history/DOMUtils';
 
@@ -27,15 +28,19 @@ class OverviewCard extends Component {
         this.props.handleRouteChange(this.props.index);       
     }
 
+    handleStatusClick = () => {
+        console.log('clicks')
+    }
+
     setIcon = (pickup) => {
         if(pickup.confirmed && !pickup.completed){
             return 'tick'
         }
         else if(pickup.completed){
-            return 'tick circle'
+            return 'tick-circle'
         }
         else {
-            return 'minus'
+            return 'small-minus'
         }
     }
 
@@ -57,7 +62,7 @@ class OverviewCard extends Component {
                 <StyledCard interactive={true} elevation={Elevation.TWO} className={'card'}>
                     <H5 className={'cardHeader'} 
                         onClick={this.handleClick}>
-                        {`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode}`} 
+                        {`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode} `} 
                         <Icon icon={this.setIcon(this.props.pickup)}/>
                     </H5>
                     <H5>{`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</H5>
@@ -67,6 +72,7 @@ class OverviewCard extends Component {
                         inline={true}
                         onChange={this.handleCheckedChange}
                     />
+                    <Status onClick={this.handleStatusClick}>Change Status</Status>
                     <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
                         <div>Contact Name: {`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</div>
                         <div>Contact Number: {this.props.pickup.phoneNumber}</div>
@@ -81,5 +87,13 @@ class OverviewCard extends Component {
     }
 
 }
+
+const Status = styled.div`
+    &:hover {
+        font-weight: bold;
+        color: blue;
+    }
+`
+
 
 export default OverviewCard;
