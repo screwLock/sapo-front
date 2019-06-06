@@ -8,41 +8,46 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
     const routePickups = pickups.filter(pickup => pickup.inRoute === true)
 
     // don't create if no pickups
-    if(routePickups.length === 0) {
-       return false;
+    if (routePickups.length === 0) {
+        return false;
     }
 
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
     const document = {
-        info:{
+        info: {
             title: `${format(new Date(), 'MMMM Do')}`
         },
 
         content: [{
             text: `Pickups for ${format(new Date(), 'MMMM Do YYYY')}`,
-            link:`${makeURL(user, routePickups)}`,
+            link: `${makeURL(user, routePickups)}`,
             bold: true,
             color: 'blue',
             fontSize: 25,
             lineHeight: 4
         },
+        {
+            canvas: [
+                { type: 'line', x1: 5, y1: -50, x2: 510, y2: -50, lineWidth: 1 }, //Bottom line
+            ]
+        },
         ]
     }
-    routePickups.forEach( (pickup,index) => {
+    routePickups.forEach((pickup, index) => {
         document.content.push({
-                text:   `${index+1}) Name: ${pickup.lastName}, ${pickup.firstName} 
+            text: `${index + 1}) Name: ${pickup.lastName}, ${pickup.firstName} 
                         Address: ${pickup.streetAddress}
-                        Haul: ${pickup.donations.map( donation => {
-                            return(`${donation}`)
-                        })}
-                        Pickup Details: ${pickup.serviceDetails.map( detail => {
-                            return(`${detail}`)
-                        })}
+                        Haul: ${pickup.donations.map(donation => {
+                return (`${donation}`)
+            })}
+                        Pickup Details: ${pickup.serviceDetails.map(detail => {
+                return (`${detail}`)
+            })}
                         `,
-                lineHeight: 1
-            },
-            );
+            lineHeight: 1
+        },
+        );
     });
 
     // create the pdf with the supplied name
@@ -50,7 +55,7 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
 }
 
 const makeURL = (user, routePickups) => {
-    const waypoints = `&waypoints=${routePickups.map( pickup => `${pickup.lat},${pickup.lng}|`).join('')}`;
+    const waypoints = `&waypoints=${routePickups.map(pickup => `${pickup.lat},${pickup.lng}|`).join('')}`;
 
     const url = "https://www.google.com/maps/dir/?api=1";
     const origin = "&origin=" + user.lat + "," + user.lng;
