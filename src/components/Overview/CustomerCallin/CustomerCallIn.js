@@ -274,7 +274,6 @@ export class CustomerCallIn extends React.Component {
                                         email: this.state.email,
                                         confirmed: true,
                                         completed: false,
-                                        pickupID: `${this.state.email}..${this.state.selectedZipcode}..${new Date().toISOString()}`,
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails
                                     }
