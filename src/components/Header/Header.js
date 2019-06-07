@@ -22,8 +22,8 @@ class Header extends React.Component {
             this.props.history.push('/')
         }
         else{
-            // Bring up Login Dialog
-            this.setState({isAdminOpen: true})
+            // Bring up Login Dialog or close
+            this.setState({isAdminOpen: !this.state.isAdminOpen})
         }
     }
 

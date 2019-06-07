@@ -7,13 +7,15 @@ import OverviewCard from './OverviewCard.js'
 import { Card, Button, Overlay, Classes, Elevation } from '@blueprintjs/core'
 import { makeDailyPickupsPDF } from './PickupPDFMake'
 import { CustomerCallIn } from './CustomerCallin/CustomerCallIn'
+import StatusDialog from './StatusDialog'
 
 class OverviewPickups extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isAllOpen: false,
-            isOverlayOpen: false
+            isOverlayOpen: false,
+            isStatusOpen: false,
         }
     };
 
@@ -27,9 +29,8 @@ class OverviewPickups extends React.Component {
                                 <OverviewCard pickup={pickup}
                                     isChecked={pickup.inRoute}
                                     ordinal={index}
-                                    // this is the problem
-                                    // index should refer to this.props.pickups index
-                                    // not datePickups index
+                                    handleStatusOpen={this.handleStatusClick}
+                                    //use pickups index, not datepickups index!
                                     index={pickup.index}
                                     routes={this.props.routes}
                                     innerRef={provided.innerRef}
@@ -88,6 +89,9 @@ class OverviewPickups extends React.Component {
         }
     }
 
+    handleStatusClick = () => {
+        this.setState({ isStatusOpen: !this.state.isStatusOpen })
+    }
 
     handleOpenAllClick = () => {
         this.setState({ isAllOpen: !this.state.isAllOpen });
@@ -104,9 +108,9 @@ class OverviewPickups extends React.Component {
         }
 
         // shouldn't reorder if nothing changed!
-        if ( result.destination.droppableId === result.source.droppableID &&
-            result.destination.index === result.source.index    
-        ){
+        if (result.destination.droppableId === result.source.droppableID &&
+            result.destination.index === result.source.index
+        ) {
             return;
         }
 
@@ -130,24 +134,30 @@ class OverviewPickups extends React.Component {
     render() {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
         return (
-            <div className="pickups">
-                {this.renderHeader()}
-                <div className="cards">
-                    <DragDropContext onDragEnd={this.onDragEnd}>
-                        <Droppable droppableId="dropabble">
-                            {(provided) => (
-                                <div ref={provided.innerRef}>
-                                    <Grid columns={6}>
-                                        {this.renderCards(datePickups)}
-                                        {provided.placeholder}
-                                    </Grid>
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+            <React.Fragment>
+                <StatusDialog
+                    isOpen={this.state.isStatusOpen}
+                    handleOpen={this.handleStatusClick}
+                />
+                <div className="pickups">
+                    {this.renderHeader()}
+                    <div className="cards">
+                        <DragDropContext onDragEnd={this.onDragEnd}>
+                            <Droppable droppableId="dropabble">
+                                {(provided) => (
+                                    <div ref={provided.innerRef}>
+                                        <Grid columns={6}>
+                                            {this.renderCards(datePickups)}
+                                            {provided.placeholder}
+                                        </Grid>
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </div>
+                    {this.renderFooter(datePickups)}
                 </div>
-                {this.renderFooter(datePickups)}
-            </div>
+            </React.Fragment>
         );
     }
 }
