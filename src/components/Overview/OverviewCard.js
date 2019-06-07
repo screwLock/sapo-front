@@ -28,6 +28,12 @@ class OverviewCard extends Component {
         this.props.handleRouteChange(this.props.index);       
     }
 
+    handleStatusClick = (index) => () => {
+        console.log(index)
+        this.props.setIndex(index)
+        this.props.handleStatusOpen()
+    }
+
     setIcon = (pickup) => {
         if(pickup.confirmed && !pickup.completed){
             return 'tick'
@@ -68,7 +74,7 @@ class OverviewCard extends Component {
                         inline={true}
                         onChange={this.handleCheckedChange}
                     />
-                    <Status onClick={this.props.handleStatusOpen}>Change Status</Status>
+                    <Status onClick={this.handleStatusClick(this.props.index)}>Change Status</Status>
                     <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
                         <div>Contact Name: {`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</div>
                         <div>Contact Number: {this.props.pickup.phoneNumber}</div>

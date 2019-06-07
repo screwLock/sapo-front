@@ -16,6 +16,7 @@ class OverviewPickups extends React.Component {
             isAllOpen: false,
             isOverlayOpen: false,
             isStatusOpen: false,
+            statusIndex: '',
         }
     };
 
@@ -30,6 +31,7 @@ class OverviewPickups extends React.Component {
                                     isChecked={pickup.inRoute}
                                     ordinal={index}
                                     handleStatusOpen={this.handleStatusClick}
+                                    setIndex={this.handleStatusIndexChange}
                                     //use pickups index, not datepickups index!
                                     index={pickup.index}
                                     routes={this.props.routes}
@@ -93,6 +95,10 @@ class OverviewPickups extends React.Component {
         this.setState({ isStatusOpen: !this.state.isStatusOpen })
     }
 
+    handleStatusIndexChange = (index) => {
+        this.setState({ statusIndex: index})
+    }
+
     handleOpenAllClick = () => {
         this.setState({ isAllOpen: !this.state.isAllOpen });
     }
@@ -138,6 +144,8 @@ class OverviewPickups extends React.Component {
                 <StatusDialog
                     isOpen={this.state.isStatusOpen}
                     handleOpen={this.handleStatusClick}
+                    pickups={this.props.pickups}
+                    index={this.state.statusIndex}
                 />
                 <div className="pickups">
                     {this.renderHeader()}
