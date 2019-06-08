@@ -10,8 +10,8 @@ class StatusDialog extends React.Component {
         }
     }
 
-    handleConfirmClick = () => {
-        console.log('confirm')
+    handleCancelClick = () => {
+        console.log('canceled')
     }
 
     handleCompleteClick = () => {
@@ -24,6 +24,13 @@ class StatusDialog extends React.Component {
             return ''
         }
         const pickup = pickups[index]
+        let newStatus = ''
+        if(pickup.status === 'submitted'){
+            newStatus = 'confirmed'
+        }
+        else if(pickup.status === 'confirmed'){
+            newStatus = 'completed'
+        }
         return (
             <Dialog
                 isOpen={this.props.isOpen}
@@ -36,10 +43,9 @@ class StatusDialog extends React.Component {
                     <div>Contact Name: {`${pickup.lastName}, ${pickup.firstName}`}</div>
                     <div>Contact Number: {`${pickup.phoneNumber}`}</div>
                     <div>Email: {`${pickup.email}`}</div>
-                    <div>Confirmed? {`${pickup.confirmed.toString()}`}</div>
-                    <ButtonContainer onClick={this.handleConfirmClick}>Confirm and Send Email</ButtonContainer>
-                    <div>Completed? {`${pickup.completed.toString()}`}</div>
-                    <ButtonContainer onClick={this.handleCompleteClick}>Complete and Send Email </ButtonContainer>
+                    <div>Status: {`${pickup.status.toUpperCase()}`}</div>
+                    <ButtonContainer>Change Status to {newStatus.toUpperCase()} and Send {newStatus.toUpperCase()} Email</ButtonContainer>
+                    <ButtonContainer>Cancel Pickup</ButtonContainer>
                 </DialogContainer>
 
             </Dialog>
