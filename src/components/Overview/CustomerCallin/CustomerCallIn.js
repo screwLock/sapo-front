@@ -193,7 +193,7 @@ export class CustomerCallIn extends React.Component {
                 <H4>Pickup Address</H4>
                 <SubBlockContainer >
                     <FormGroup label='Street Address'>
-                        <InputGroup name='streetAddress' onBlur={this.handleBlur} autocomplete="new-street-address" />
+                        <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
                     </FormGroup>
                     <ContactForms>
                         <NameForm label='City'>
@@ -272,8 +272,7 @@ export class CustomerCallIn extends React.Component {
                                         lng: this.state.lng,
                                         phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
                                         email: this.state.email,
-                                        confirmed: true,
-                                        completed: false,
+                                        status: 'confirmed',
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails
                                     }
@@ -282,7 +281,7 @@ export class CustomerCallIn extends React.Component {
                                     this.showToast('Pickup Successfully Saved')
                                     // send email
                                 }).catch(error => {
-                                    alert(error)
+                                    this.showToast('ERROR: Pickup not saved!')
                                 })
                             })// end of setState
                     } //end of if

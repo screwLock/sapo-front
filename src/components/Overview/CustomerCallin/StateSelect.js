@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { countDecimalPlaces } from '@blueprintjs/core/lib/esm/common/utils';
 import { USER } from '@blueprintjs/icons/lib/esm/generated/iconContents';
 
@@ -104,6 +104,8 @@ const formatGroupLabel = data => (
     </div>
 );
 
+const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
+
 export class StateSelect extends React.Component {
     constructor(props) {
         super(props)
@@ -114,6 +116,7 @@ export class StateSelect extends React.Component {
                 options={groupedOptions}
                 formatGroupLabel={formatGroupLabel}
                 onChange={this.props.onChange}
+                components={{Input}}
             />
         )
     }

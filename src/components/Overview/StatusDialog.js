@@ -37,9 +37,9 @@ class StatusDialog extends React.Component {
                     <div>Contact Number: {`${pickup.phoneNumber}`}</div>
                     <div>Email: {`${pickup.email}`}</div>
                     <div>Confirmed? {`${pickup.confirmed.toString()}`}</div>
+                    <ButtonContainer onClick={this.handleConfirmClick}>Confirm and Send Email</ButtonContainer>
                     <div>Completed? {`${pickup.completed.toString()}`}</div>
-                    <div onClick={this.handleConfirmClick}>Confirm and Send Email</div>
-                    <div onClick={this.handleCompleteClick}>Complete and Send Email </div>
+                    <ButtonContainer onClick={this.handleCompleteClick}>Complete and Send Email </ButtonContainer>
                 </DialogContainer>
 
             </Dialog>
@@ -52,6 +52,10 @@ const DialogContainer = styled.div`
     width: 550px;
     margin: 20px;
     margin-top: 10px;
+`
+
+const ButtonContainer = styled.div`
+    margin: 50px;
 `
 
 export default StatusDialog;
