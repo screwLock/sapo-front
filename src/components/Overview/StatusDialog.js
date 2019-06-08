@@ -44,8 +44,12 @@ class StatusDialog extends React.Component {
                     <div>Contact Number: {`${pickup.phoneNumber}`}</div>
                     <div>Email: {`${pickup.email}`}</div>
                     <div>Status: {`${pickup.status.toUpperCase()}`}</div>
-                    <ButtonContainer>Change Status to {newStatus.toUpperCase()} and Send {newStatus.toUpperCase()} Email</ButtonContainer>
-                    <ButtonContainer>Cancel Pickup</ButtonContainer>
+                    <ButtonContainer>
+                        <Button intent={Intent.PRIMARY} text={`Change Status to ${newStatus.toUpperCase()} and Send ${newStatus.toUpperCase()} Email`}/>
+                    </ButtonContainer>
+                    <ButtonContainer>
+                        <Button intent={Intent.DANGER} text={`Cancel Pickup`}/>
+                    </ButtonContainer>
                 </DialogContainer>
 
             </Dialog>
@@ -61,7 +65,8 @@ const DialogContainer = styled.div`
 `
 
 const ButtonContainer = styled.div`
-    margin: 50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
 `
 
 export default StatusDialog;
