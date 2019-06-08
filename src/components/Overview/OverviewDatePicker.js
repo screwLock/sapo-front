@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 import { keyframes } from "styled-components"
-import { getDate } from "date-fns"
+import { getDate, getMonth } from "date-fns"
 
 class OverviewDatePicker extends Component {
   constructor(props) {
@@ -22,10 +22,14 @@ class OverviewDatePicker extends Component {
   }
 
   render() {
+    // get the pickups in the selected Month
+    let monthPickups = this.props.pickups.filter(pickup => {
+      return getMonth(pickup.pickupDate) === this.props.selectedMonth
+    })
     // we have to use getDate() so that we can safely ignore
     // the time part of the Date object
-    let unconfirmed = this.props.pickups.filter(pickup => {
-      return pickup.confirmed === false
+    let unconfirmed = monthPickups.filter(pickup => {
+      return pickup.status === 'submitted'
     }).map(pickup => {
       return getDate(new Date(pickup.pickupDate))
     })
