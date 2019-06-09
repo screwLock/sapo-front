@@ -44,6 +44,7 @@ class CancelDialog extends React.Component {
             >
                 <DialogContainer>
                     <FormGroup>
+                        <Cancel>Type 'Cancel SAPO' to cancel your membership.</Cancel>
                         <InputGroup name="cancelText" type="text" onChange={this.handleChange} />
                     </FormGroup>
                 </DialogContainer>
@@ -64,4 +65,10 @@ const DialogContainer = styled.div`
     margin-top: 10px;
 `
 
-export default CancelDialog
+const Cancel = styled.div`
+    margin-top: 5px;
+    margin-bottom: 25px;
+    font-weight: bold;
+`
+
+export default CancelDialog;
