@@ -274,8 +274,11 @@ export class CustomerCallIn extends React.Component {
                                         email: this.state.email,
                                         status: 'confirmed',
                                         donations: this.state.donations,
-                                        serviceDetails: this.state.serviceDetails
-                                    }
+                                        serviceDetails: this.state.serviceDetails,
+                                        ccAddresses: this.props.userConfig.emails.confirmedCCAddresses,
+                                        bccAddresses: this.props.userConfig.emails.confirmedBCCAddresses,
+                                        subjectLine: this.props.userConfig.emails.confirmedSubjectLine,
+                                        messageBody: this.props.userConfig.emails.confirmedMessageBody                                    }
                                 }).then(response => {
                                     this.handleClose()
                                     this.showToast('Pickup Successfully Saved')
@@ -344,8 +347,9 @@ export class CustomerCallIn extends React.Component {
     render() {
         return (
             <Dialog isOpen={this.props.isOverlayOpen}
-                onClose={this.props.onClose}
+                onClose={this.handleClose}
                 transitionDuration={100}
+                canOutsideClickClose={false}
                 title="Customer Call-In"
             >
                 <DialogContainer>
