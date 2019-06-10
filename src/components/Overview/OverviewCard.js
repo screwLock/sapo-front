@@ -76,7 +76,7 @@ class OverviewCard extends Component {
                         inline={true}
                         onChange={this.handleCheckedChange}
                     />
-                    <Status onClick={this.handleStatusClick(this.props.index)}>Change Status</Status>
+                    <Status onClick={this.handleStatusClick(this.props.index)} >Change Status</Status>
                     <Collapse isOpen={this.state.isOpen} transitionDuration={1}>
                         <div>Contact Name: {`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</div>
                         <div>Contact Number: {this.props.pickup.phoneNumber}</div>

@@ -146,6 +146,7 @@ class OverviewPickups extends React.Component {
                     handleOpen={this.handleStatusClick}
                     pickups={this.props.pickups}
                     index={this.state.statusIndex}
+                    userConfig={this.props.userConfig}
                 />
                 <div className="pickups">
                     {this.renderHeader()}
