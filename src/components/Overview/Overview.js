@@ -47,7 +47,7 @@ class Overview extends Component {
           lng: parseFloat(latlng[1])
         }
       }))
-      await this.getPickupsByMonth()
+      await this.getPickupsByMonth(this.state.selectedMonth)
       return;
     }
     else {
@@ -87,7 +87,7 @@ class Overview extends Component {
             this.showToast(`${error.response.status}`)
           }
         )
-        await this.getPickupsByMonth()
+        await this.getPickupsByMonth(this.state.selectedMonth)
 
       } catch (error) {
         this.showToast(`${error}`)
@@ -100,8 +100,7 @@ class Overview extends Component {
     this.setState({ newRoute: !this.state.newRoute });
   }
 
-  getPickupsByMonth = () => {
-    let currentMonth = this.state.selectedMonth
+  getPickupsByMonth = (currentMonth) => {
     let currentYear = getYear(new Date())
     let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0, 10)
     let startDate = new Date(currentYear, currentMonth - 1, 1).toISOString().substr(0, 10)
@@ -115,6 +114,12 @@ class Overview extends Component {
       // also an index for changing this inRoute attribute in the Overview Cards
       this.setState({ pickups: result.map((pickup, index) => { return {... pickup, inRoute: false, index: index} } )})
     });
+  }
+
+  updatePickups = (pickup, pickups, index) => {
+    let newPickups = [...pickups]
+    newPickups[index] = pickup
+    this.setState({pickups: newPickups})
   }
 
   render() {
@@ -143,6 +148,7 @@ class Overview extends Component {
           handleRouteChange={this.handleRouteChange}
           createRoute={this.createRoute}
           userConfig={this.props.userConfig}
+          updatePickups={this.updatePickups}
         />
         </Cell>
       </Grid>
@@ -178,7 +184,7 @@ class Overview extends Component {
   handleMonthChange = (month) => {
     this.setState({ selectedMonth: getMonth(month) },
       () => {
-        this.getPickupsByMonth()
+        this.getPickupsByMonth(getMonth(month))
       })
   }
 

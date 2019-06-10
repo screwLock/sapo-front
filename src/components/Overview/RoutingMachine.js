@@ -19,8 +19,6 @@ class Routing extends MapLayer {
         }
         // waypoints.push(L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'))
         waypoints.unshift(L.Routing.waypoint(L.latLng(user.lat, user.lng), 'Home'))
-        console.log(routePickups)
-        console.log(waypoints)
         L.Icon.Default.mergeOptions({
             iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
             iconUrl: require('leaflet/dist/images/marker-icon.png'),

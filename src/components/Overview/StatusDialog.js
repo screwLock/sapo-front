@@ -9,38 +9,7 @@ class StatusDialog extends React.Component {
         super(props)
     }
 
-    handleCancelClick = () => {
-        console.log('canceled')
-    }
-
-    handleCompleteClick = () => {
-        console.log('complete')
-    }
-
-    handleStatusChange = (pickup) => () => {
-        if(pickup == null){
-            return false
-        } 
-        const emails = this.props.userConfig.emails
-        let newStatus = ''
-        let ccAddresses = []
-        let bccAddresses = []
-        let subjectLine = ''
-        let messageBody = ''
-        if (pickup.status === 'submitted') {
-            newStatus = 'confirmed'
-            ccAddresses = emails.confirmedCCAddresses
-            bccAddresses = emails.confirmedBCCAddresses
-            subjectLine = emails.confirmedSubjectLine
-            messageBody = emails.confirmedMessageBody
-        }
-        else if (pickup.status === 'confirmed') {
-            newStatus = 'completed'
-            ccAddresses = emails.completedCCAddresses
-            bccAddresses = emails.completedBCCAddresses
-            subjectLine = emails.completedSubjectLine
-            messageBody = emails.completedMessageBody
-        }
+    callAPI = (pickup, newStatus = '', ccAddresses = [], bccAddresses = [], subjectLine = '', messageBody = '') => {
         API.put("sapo", "/pickups", {
             body: {
                 ...pickup,
@@ -51,11 +20,66 @@ class StatusDialog extends React.Component {
                 messageBody: messageBody,
             }
         }).then(response => {
-            this.props.handleOpen()
+            this.props.updatePickups({...pickup, status: newStatus}, this.props.pickups, this.props.index)
             this.showToast(`Pickup Updated to ${newStatus.toUpperCase()}`)
         }).catch(error => {
             this.showToast('ERROR: Pickup Not Updated!')
         })
+    }
+
+    handleCancelClick = (pickup) => () => {
+        if (pickup == null) {
+            return false
+        }
+        this.callAPI(
+            pickup,
+            'canceled',
+            this.props.userConfig.emails.canceledCCAddresses,
+            this.props.userConfig.emails.canceledBCCAddresses,
+            this.props.userConfig.emails.canceledSubjectLine,
+            this.props.userConfig.emails.canceledMessageBody
+        )
+    }
+
+    handleRejectedClick = (pickup) => () => {
+        if (pickup == null) {
+            return false
+        }
+        this.callAPI(
+            pickup,
+            'rejected',
+            this.props.userConfig.emails.rejectedCCAddresses,
+            this.props.userConfig.emails.rejectedBCCAddresses,
+            this.props.userConfig.emails.rejectedSubjectLine,
+            this.props.userConfig.emails.rejectedMessageBody
+        )
+    }
+
+    handleStatusChange = (pickup) => () => {
+        if (pickup == null) {
+            return false
+        }
+        else if (pickup.status === 'submitted') {
+            this.callAPI(
+                pickup,
+                'confirmed',
+                this.props.userConfig.emails.confirmedCCAddresses,
+                this.props.userConfig.emails.confirmedBCCAddresses,
+                this.props.userConfig.emails.confirmedSubjectLine,
+                this.props.userConfig.emails.confirmedMessageBody
+            )
+        }
+        else {
+            this.callAPI(
+                pickup,
+                'completed',
+                this.props.userConfig.emails.completedCCAddresses,
+                this.props.userConfig.emails.completedBCCAddresses,
+                this.props.userConfig.emails.completedSubjectLine,
+                this.props.userConfig.emails.completedMessageBody
+            )
+        }
+
     }
 
     showToast = (message) => {
@@ -67,12 +91,19 @@ class StatusDialog extends React.Component {
         if (pickups == null || index === '') {
             return ''
         }
+        if(pickups[index] == null){
+            return ''
+        }
+        //Remove the following if statement
+        if(pickups[index].status == null){
+            return ''
+        }
         const pickup = pickups[index]
         let newStatus = ''
         if (pickup.status === 'submitted') {
             newStatus = 'confirmed'
         }
-        else if (pickup.status === 'confirmed') {
+        else {
             newStatus = 'completed'
         }
         return (
@@ -95,10 +126,10 @@ class StatusDialog extends React.Component {
                         />
                     </ButtonContainer>
                     <ButtonContainer>
-                        <Button intent={Intent.DANGER} text={`Cancel Pickup`} />
+                        <Button intent={Intent.DANGER} text={`Cancel Pickup`} onClick={this.handleCancelClick(pickup)}/>
                     </ButtonContainer>
                     <ButtonContainer>
-                        <Button intent={Intent.DANGER} text={`Reject Submitted Pickup`} />
+                        <Button intent={Intent.DANGER} text={`Reject Submitted Pickup`} onClick={this.handleRejectedClick(pickup)}/>
                     </ButtonContainer>
                 </DialogContainer>
 

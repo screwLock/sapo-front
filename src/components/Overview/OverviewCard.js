@@ -43,8 +43,11 @@ class OverviewCard extends Component {
         else if(pickup.status === 'completed'){
             return 'tick-circle'
         }
-        else if(pickup.status === 'cancelled'){
-            return 'small-minus'
+        else if(pickup.status === 'canceled'){
+            return 'disable'
+        }
+        else if(pickup.status === 'rejected'){
+            return 'delete'
         }
     }
 
