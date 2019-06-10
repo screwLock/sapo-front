@@ -29,7 +29,6 @@ class OverviewCard extends Component {
     }
 
     handleStatusClick = (index) => () => {
-        console.log(index)
         this.props.setIndex(index)
         this.props.handleStatusOpen()
     }
