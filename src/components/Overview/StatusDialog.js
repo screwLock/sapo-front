@@ -50,6 +50,9 @@ class StatusDialog extends React.Component {
                     <ButtonContainer>
                         <Button intent={Intent.DANGER} text={`Cancel Pickup`}/>
                     </ButtonContainer>
+                    <ButtonContainer>
+                        <Button intent={Intent.DANGER} text={`Reject Submitted Pickup`}/>
+                    </ButtonContainer>
                 </DialogContainer>
 
             </Dialog>

@@ -5,6 +5,7 @@ import SubmittedEmails from './SubmittedEmails'
 import ConfirmedEmails from './ConfirmedEmails'
 import CompletedEmails from './CompletedEmails'
 import CanceledEmails from './CanceledEmails'
+import RejectedEmails from './RejectedEmails'
 
 class Emails extends React.Component {
     constructor(props) {
@@ -27,6 +28,7 @@ class Emails extends React.Component {
                     <Tab id="confirmed" title="Confirmed" panel={<ConfirmedEmails {...this.props}/>} />
                     <Tab id="completed" title="Completed" panel={<CompletedEmails {...this.props}/>} />
                     <Tab id="canceled" title="Canceled" panel={<CanceledEmails {...this.props}/>} />
+                    <Tab id="rejected" title="Rejected" panel={<RejectedEmails {...this.props}/>} />
                 </Tabs>
             </Container>
         )

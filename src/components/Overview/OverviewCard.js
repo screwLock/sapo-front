@@ -35,13 +35,16 @@ class OverviewCard extends Component {
     }
 
     setIcon = (pickup) => {
-        if(pickup.status){
+        if(pickup.status === 'submitted'){
+            return 'issue'
+        }
+        else if(pickup.status === 'confirmed'){
             return 'tick'
         }
-        else if(pickup.status){
+        else if(pickup.status === 'completed'){
             return 'tick-circle'
         }
-        else {
+        else if(pickup.status === 'cancelled'){
             return 'small-minus'
         }
     }
