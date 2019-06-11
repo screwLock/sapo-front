@@ -140,6 +140,7 @@ class Overview extends Component {
           pickups={this.state.pickups}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
+          handleRefresh={() => {this.getPickupsByMonth(this.state.selectedMonth)}}
           user={this.state.user}
           routes={this.state.routes}
           handleClick={this.selectPickup}

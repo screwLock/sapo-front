@@ -57,10 +57,12 @@ class OverviewPickups extends React.Component {
         return (
             <Header>
                 <h3>Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</h3>
-                <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="eye-open" id="openAll">
-                    {this.renderOpenAllButton()}
-                </Button>
-                <Button minimal="false" onClick={() => { console.log('click') }} icon='refresh' />
+                <HeaderButtons>
+                    <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="eye-open" id="openAll">
+                        {this.renderOpenAllButton()}
+                    </Button>
+                    <Button minimal="false" onClick={this.props.handleRefresh} icon='refresh' text='Refresh' />
+                </HeaderButtons>
             </Header>
         )
     }
@@ -178,6 +180,12 @@ const Header = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+`
+
+const HeaderButtons = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-self: flex-end;
 `
 
 const Footer = styled.div`
