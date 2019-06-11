@@ -5,7 +5,6 @@ import Routing from "./RoutingMachine"
 import styled from 'styled-components'
 import 'leaflet/dist/leaflet.css'
 import 'react-leaflet-fullscreen/dist/styles.css'
-import FullscreenControl from 'react-leaflet-fullscreen';
 
 
 class LeafletMap extends React.Component {
@@ -58,7 +57,6 @@ class LeafletMap extends React.Component {
                             url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
                         />
                         {this.state.isMapInit && <Routing map={this.map} pickups={this.props.pickups} user={this.props.user} selectedDate={this.props.selectedDate}/>}
-                        <FullscreenControl position="topleft" />
                     </Map>
                 )}
             </MapContainer>
