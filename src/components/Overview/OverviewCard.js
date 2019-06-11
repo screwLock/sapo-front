@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Button, Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
-import { StyledCard} from './styles/StyledCard'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import { getConfirmation } from 'history/DOMUtils';
@@ -97,6 +96,14 @@ class OverviewCard extends Component {
 
 const Status = styled.div`
     &:hover {
+        font-weight: bold;
+        color: blue;
+    }
+`
+const StyledCard = styled(Card)`
+    color: black;
+
+    .cardHeader:hover {
         font-weight: bold;
         color: blue;
     }
