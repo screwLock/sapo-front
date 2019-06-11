@@ -2,9 +2,9 @@ import * as React from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Grid, Cell } from "styled-css-grid"
 import { format, isSameDay } from 'date-fns'
-import './styles/pickups.css'
 import OverviewCard from './OverviewCard.js'
 import { Card, Button, Overlay, Classes, Elevation } from '@blueprintjs/core'
+import styled from 'styled-components'
 import { makeDailyPickupsPDF } from './PickupPDFMake'
 import { CustomerCallIn } from './CustomerCallin/CustomerCallIn'
 import StatusDialog from './StatusDialog'
@@ -55,12 +55,13 @@ class OverviewPickups extends React.Component {
 
     renderHeader = () => {
         return (
-            <div className="header">
+            <Header>
                 <h3>Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</h3>
                 <Button minimal="false" onClick={this.handleOpenAllClick} rightIcon="eye-open" id="openAll">
                     {this.renderOpenAllButton()}
                 </Button>
-            </div>
+                <Button minimal="false" onClick={() => { console.log('click') }} icon='refresh' />
+            </Header>
         )
     }
 
@@ -76,12 +77,12 @@ class OverviewPickups extends React.Component {
     renderFooter = (pickups) => {
         if (Object.keys(this.props.userConfig).length > 0) {
             return (
-                <div className="footer">
+                <Footer>
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
                     <Button minimal="false" onClick={makeDailyPickupsPDF(pickups, this.props.user)} rightIcon="document" id="createPDF">Create Directions</Button>
                     <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Preview Route On Map</Button>
-                </div>
+                </Footer>
             )
         }
         else {
@@ -96,7 +97,7 @@ class OverviewPickups extends React.Component {
     }
 
     handleStatusIndexChange = (index) => {
-        this.setState({ statusIndex: index})
+        this.setState({ statusIndex: index })
     }
 
     handleOpenAllClick = () => {
@@ -149,9 +150,9 @@ class OverviewPickups extends React.Component {
                     updatePickups={this.props.updatePickups}
                     userConfig={this.props.userConfig}
                 />
-                <div className="pickups">
+                <Pickups>
                     {this.renderHeader()}
-                    <div className="cards">
+                    <Cards>
                         <DragDropContext onDragEnd={this.onDragEnd}>
                             <Droppable droppableId="dropabble">
                                 {(provided) => (
@@ -164,12 +165,38 @@ class OverviewPickups extends React.Component {
                                 )}
                             </Droppable>
                         </DragDropContext>
-                    </div>
+                    </Cards>
                     {this.renderFooter(datePickups)}
-                </div>
+                </Pickups>
             </React.Fragment>
         );
     }
 }
+
+const Header = styled.div`
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+
+const Footer = styled.div`
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    align-self: flex-start;
+`
+
+const Pickups = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const Cards = styled.div`
+    overflow-y: auto;
+    height: 250px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+`
 
 export default OverviewPickups;
