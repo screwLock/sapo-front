@@ -6,7 +6,7 @@ import NewDialog from './NewDialog'
 import { AppToaster } from '../Toaster'
 import { API } from "aws-amplify"
 
-class DonorPage extends React.Component {
+class Categories extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -221,4 +221,4 @@ const ButtonRow = styled.div`
   margin-bottom: 15px;
 `
 
-export default DonorPage;
+export default Categories;

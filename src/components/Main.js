@@ -5,7 +5,7 @@ import BlackoutDates from './BlackoutDates/BlackoutDates';
 import MaxPickups from './MaxPickups/MaxPickups'
 import Zipcodes from './Zipcodes/Zipcodes';
 import Employees from './Employees/Employees';
-import DonorPage from './DonorPage/DonorPage'
+import Categories from './Categories/Categories'
 import Emails from './Emails/Emails'
 import Account from './Account/Account'
 
@@ -28,8 +28,8 @@ class Main extends Component {
           <Route exact path='/employees'
                  render = {() => <Employees {...this.props} />}
           />
-          <Route exact path='/donorPage'
-                 render = {() => <DonorPage {...this.props} />}
+          <Route exact path='/categories'
+                 render = {() => <Categories {...this.props} />}
           />
           <Route exact path='/emails'
                  render = {() => <Emails {...this.props} />}
