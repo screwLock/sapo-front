@@ -15,29 +15,41 @@ class CancelDialog extends React.Component {
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleSubmit = async event => {
-        event.preventDefault();
-        if (this.validateForm()) {
+    handleOpen = () => {
+        this.setState({cancelText: ''}, () => {
             this.props.handleOpen()
+        })
+    }
+
+    handleSubmit = async event => {
+        const customerId = this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
+        const subscription = this.props.authData.signInUserSession.idToken.payload['custom:subscriptionID'] 
+        event.preventDefault();
+        if (!this.validateForm()) {
+            return
+        }
+        else if(customerId === '-'){
+            this.showToast('You do not have an active Stripe subscription')
+            return
         }
         this.setState({ isProcessing: true });
 
         try {
             const postBody = {
-                customer: this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
-                subscription: this.props.authData.signInUserSession.idToken.payload['custom:subscriptionID'],
+                customer: customerId,
+                subscription: subscription,
             };
             await API.put("sapo", "/billing", {
                 body: postBody
             })
             this.setState({
                 isProcessing: false,
-            }, () => this.props.handleOpen());
+            }, () => this.handleOpen());
             this.showToast('Account canceled')
         } catch (error) {
             this.setState({
                 isProcessing: false,
-            }, () => this.props.handleOpen());
+            }, () => this.handleOpen());
             this.showToast(`Cancel Subscription Failed with Status Code ${error.response.status}.`)
 
         }

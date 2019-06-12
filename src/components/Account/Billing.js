@@ -27,7 +27,8 @@ class Billing extends React.Component {
         const prices = {
             basic: '$90.00',
             standard: '$149.99',
-            premium: '$199.00'
+            premium: '$199.00',
+            canceled: 'Canceled ($0.00)'
         }
         const membership = this.props.authData.signInUserSession.idToken.payload['custom:membership']
         const href = `https://donate.sapopros.com/?id=${this.props.authData.username}`

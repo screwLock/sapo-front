@@ -4,7 +4,18 @@ import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blue
 import produce from 'immer'
 import NewDialog from './NewDialog'
 import { AppToaster } from '../Toaster'
-import { API } from "aws-amplify"
+
+/****
+ *   Originally this was called the 'Donor Page' view, but was changed
+ *   to 'Categories'.  To avoid 'categories.categories' and to avoid the
+ *   problems that arise with changeing donorPage to categories throughout
+ *   these files, 'donorPage' will remain unchanged in the code and the db.
+ *   This deviates from the other keys in the userConfig table which correspond
+ *   to the name of the view, so keep in mind that donorPage is the top level
+ *   key, and that donorPage.categories refers to pickup categories, not the 
+ *   name of the view (Categories).
+ * 
+ ****/
 
 class Categories extends React.Component {
     constructor(props) {
@@ -13,7 +24,7 @@ class Categories extends React.Component {
             categories: [],
             restrictions: [],
             serviceDetails: [],
-            isCategoriesOpen: false,
+            isNewDialogOpen: false,
             selection: '',
         }
     }
@@ -88,15 +99,15 @@ class Categories extends React.Component {
     }
 
 
-    handleClick = (event) => {
+    handleSelectionClick = (event) => {
         this.setState({
             selection: event.target.textContent,
-            isCategoriesOpen: !this.state.isCategoriesOpen
+            isNewDialogOpen: !this.state.isNewDialogOpen
         })
     }
 
-    handleCategoriesOpen = () => {
-        this.setState({ isCategoriesOpen: !this.state.isCategoriesOpen })
+    handleNewDialogOpen = () => {
+        this.setState({ isNewDialogOpen: !this.state.isNewDialogOpen })
     }
 
     handleDelete = (index, listingType) => () => {
@@ -180,9 +191,9 @@ class Categories extends React.Component {
     render() {
         const DonorSelectMenu = (
             <Menu>
-                <MenuItem text="Add A New Category" onClick={this.handleClick} />
-                <MenuItem text="Add A New Item Restriction" onClick={this.handleClick} />
-                <MenuItem text="Add A New Service Detail" onClick={this.handleClick} />
+                <MenuItem text="Add A New Category" onClick={this.handleSelectionClick} />
+                <MenuItem text="Add A New Item Restriction" onClick={this.handleSelectionClick} />
+                <MenuItem text="Add A New Service Detail" onClick={this.handleSelectionClick} />
             </Menu>
         );
         return (
@@ -194,8 +205,8 @@ class Categories extends React.Component {
                     </Popover>
                 </ButtonRow>
                 <NewDialog addListing={this.addListing}
-                    isOpen={this.state.isCategoriesOpen}
-                    handleClose={this.handleCategoriesOpen}
+                    isOpen={this.state.isNewDialogOpen}
+                    handleClose={this.handleNewDialogOpen}
                     selection={this.state.selection}
                 />
                 {this.renderListings()}
