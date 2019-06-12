@@ -15,9 +15,31 @@ class CancelDialog extends React.Component {
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleSubmit = () => {
-        if(this.validateForm()){
+    handleSubmit = async event => {
+        event.preventDefault();
+        if (this.validateForm()) {
             this.props.handleOpen()
+        }
+        this.setState({ isProcessing: true });
+
+        try {
+            const postBody = {
+                customer: this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
+                subscription: this.props.authData.signInUserSession.idToken.payload['custom:subscriptionID'],
+            };
+            await API.put("sapo", "/billing", {
+                body: postBody
+            })
+            this.setState({
+                isProcessing: false,
+            }, () => this.props.handleOpen());
+            this.showToast('Account canceled')
+        } catch (error) {
+            this.setState({
+                isProcessing: false,
+            }, () => this.props.handleOpen());
+            this.showToast(`Cancel Subscription Failed with Status Code ${error.response.status}.`)
+
         }
     }
 
@@ -30,7 +52,7 @@ class CancelDialog extends React.Component {
             return true
         }
         else {
-            this.showToast('Incorrect text')
+            this.showToast('You must enter Cancel SAPO into the input form ')
             return false
         }
     }
