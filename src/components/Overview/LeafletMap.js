@@ -4,7 +4,6 @@ import "leaflet-routing-machine"
 import Routing from "./RoutingMachine"
 import styled from 'styled-components'
 import 'leaflet/dist/leaflet.css'
-import 'react-leaflet-fullscreen/dist/styles.css'
 
 
 class LeafletMap extends React.Component {
