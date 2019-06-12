@@ -187,7 +187,7 @@ class Categories extends React.Component {
         );
         return (
             <Container>
-                <H3>Design The Donor Page</H3>
+                <H3>Create Your Categories, Restrictions, And Service Details</H3>
                 <ButtonRow>
                     <Popover content={DonorSelectMenu} position={Position.RIGHT}>
                         <Button intent={Intent.PRIMARY}>Add A New ...</Button>
