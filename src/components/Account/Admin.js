@@ -7,7 +7,7 @@ class Admin extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selectedOption: '',
+            selectedOption: {value: 'admin1', label: 'Admin 1'},
             admin1: '',
             admin1pass: '',
             admin2: '',
@@ -71,7 +71,8 @@ class Admin extends React.Component {
                     <InputGroup name={`${this.state.selectedOption.value}`} 
                                 type="text" 
                                 onChange={this.handleInputChange} 
-                                disabled={this.state.selectedOption === ''}            
+                                disabled={this.state.selectedOption === ''}
+                                value={this.state[this.state.selectedOption.value]}             
                     />
                 </FormGroup>
                 <FormGroup
@@ -80,7 +81,8 @@ class Admin extends React.Component {
                     <InputGroup name={`${this.state.selectedOption.value}pass`} 
                                 type="text" 
                                 onChange={this.handleInputChange} 
-                                disabled={this.state.selectedOption === ''}            
+                                disabled={this.state.selectedOption === ''}
+                                value={this.state[`${this.state.selectedOption.value}pass`]}             
                     />
                 </FormGroup>
             </React.Fragment>
