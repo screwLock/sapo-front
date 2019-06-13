@@ -56,6 +56,7 @@ class AdminLogin extends React.Component {
                     >
                         <InputGroup name="password" type='password' onChange={this.handleChange} />
                     </FormGroup>
+                    <ForgotPassword>Forgot Your Password?</ForgotPassword>
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
@@ -71,6 +72,12 @@ class AdminLogin extends React.Component {
 const DialogContainer = styled.div`
     width: 250px;
     margin: 20px;
+`
+
+const ForgotPassword = styled.a`
+    margin: 10px;
+    font-size: 12px;
+    font-style: italic;
 `
 
 export default AdminLogin;
