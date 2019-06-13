@@ -1,13 +1,13 @@
 import * as React from 'react'
 import Select from 'react-select'
 import styled from 'styled-components'
-import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { FormGroup, H6, InputGroup } from "@blueprintjs/core"
 
 class Admin extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selectedOption: {value: 'admin1', label: 'Admin 1'},
+            selectedOption: { value: 'admin1', label: 'Admin 1' },
             admin1: '',
             admin1pass: '',
             admin2: '',
@@ -58,6 +58,7 @@ class Admin extends React.Component {
 
         return (
             <React.Fragment>
+            <H6>Change The Admin Usernames and Passwords</H6>
                 <SelectContainer>
                     <Select
                         value={this.state.selectedOption}
@@ -65,32 +66,39 @@ class Admin extends React.Component {
                         options={options}
                     />
                 </SelectContainer>
-                <FormGroup
-                    label={`${this.state.selectedOption.label}`}
-                >
-                    <InputGroup name={`${this.state.selectedOption.value}`} 
-                                type="text" 
-                                onChange={this.handleInputChange} 
-                                disabled={this.state.selectedOption === ''}
-                                value={this.state[this.state.selectedOption.value]}             
-                    />
-                </FormGroup>
-                <FormGroup
-                    label={`${this.state.selectedOption.label} Password`}
-                >
-                    <InputGroup name={`${this.state.selectedOption.value}pass`} 
-                                type="text" 
-                                onChange={this.handleInputChange} 
-                                disabled={this.state.selectedOption === ''}
-                                value={this.state[`${this.state.selectedOption.value}pass`]}             
-                    />
-                </FormGroup>
+                <FormContainer>
+                    <FormGroup
+                        label={`${this.state.selectedOption.label}`}
+                    >
+                        <InputGroup name={`${this.state.selectedOption.value}`}
+                            type="text"
+                            onChange={this.handleInputChange}
+                            disabled={this.state.selectedOption === ''}
+                            value={this.state[this.state.selectedOption.value]}
+                        />
+                    </FormGroup>
+                    <FormGroup
+                        label={`${this.state.selectedOption.label} Password`}
+                    >
+                        <InputGroup name={`${this.state.selectedOption.value}pass`}
+                            type="text"
+                            onChange={this.handleInputChange}
+                            disabled={this.state.selectedOption === ''}
+                            value={this.state[`${this.state.selectedOption.value}pass`]}
+                        />
+                    </FormGroup>
+                </FormContainer>
             </React.Fragment>
         )
     }
 }
 
 const SelectContainer = styled.div`
+    width: 250px;
+    margin: 20px;
+`
+
+const FormContainer = styled.div`
     width: 300px;
     margin: 20px;
 `
