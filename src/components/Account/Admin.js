@@ -1,12 +1,14 @@
 import * as React from 'react'
 import Select from 'react-select'
 import styled from 'styled-components'
-import { FormGroup, H6, InputGroup } from "@blueprintjs/core"
+import { Button, FormGroup, H6, InputGroup, Intent } from "@blueprintjs/core"
+import AdminDialog from './AdminDialog'
 
 class Admin extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            isAdminOpen: false,
             selectedOption: { value: 'admin1', label: 'Admin 1' },
             admin1: '',
             admin1pass: '',
@@ -21,6 +23,30 @@ class Admin extends React.Component {
         }
     }
 
+    getUsernamesAndPasswords = (membership) => {
+        if(membership === 'basic'){
+            return [
+                { admin: this.state.admin1, pass: this.state.admin1pass}
+            ]
+        }
+        else if(membership === 'standard'){
+            return [
+                { admin: this.state.admin1, pass: this.state.admin1pass},
+                { admin: this.state.admin2, pass: this.state.admin2pass},
+                { admin: this.state.admin3, pass: this.state.admin3pass}
+            ]
+        }
+        else if(membership === 'premium'){
+            return [
+                { admin: this.state.admin1, pass: this.state.admin1pass},
+                { admin: this.state.admin2, pass: this.state.admin2pass},
+                { admin: this.state.admin3, pass: this.state.admin3pass},
+                { admin: this.state.admin4, pass: this.state.admin4pass},
+                { admin: this.state.admin5, pass: this.state.admin5pass}
+            ]
+        }
+    }
+
     getSelectOptions = (membership) => {
         if (membership === 'basic') {
             return [
@@ -32,8 +58,6 @@ class Admin extends React.Component {
                 { value: 'admin1', label: 'Admin 1' },
                 { value: 'admin2', label: 'Admin 2' },
                 { value: 'admin3', label: 'Admin 3' },
-                { value: 'admin4', label: 'Admin 4' },
-                { value: 'admin5', label: 'Admin 5' },
             ]
         }
         else if (membership === 'premium') {
@@ -41,8 +65,14 @@ class Admin extends React.Component {
                 { value: 'admin1', label: 'Admin 1' },
                 { value: 'admin2', label: 'Admin 2' },
                 { value: 'admin3', label: 'Admin 3' },
+                { value: 'admin4', label: 'Admin 4' },
+                { value: 'admin5', label: 'Admin 5' },
             ]
         }
+    }
+
+    handleAdminOpen = () => {
+        this.setState({ isAdminOpen: !this.state.isAdminOpen })
     }
 
     handleInputChange = (e) => {
@@ -54,21 +84,21 @@ class Admin extends React.Component {
     }
 
     render() {
-        const options = this.getSelectOptions('standard')
+        const membership = 'standard'
 
         return (
             <React.Fragment>
-            <H6>Change The Admin Usernames and Passwords</H6>
+                <H6>Change The Admin Usernames and Passwords</H6>
                 <SelectContainer>
                     <Select
                         value={this.state.selectedOption}
                         onChange={this.handleSelectChange}
-                        options={options}
+                        options={this.getSelectOptions(membership)}
                     />
                 </SelectContainer>
                 <FormContainer>
                     <FormGroup
-                        label={`${this.state.selectedOption.label}`}
+                        label={`${this.state.selectedOption.label} Username`}
                     >
                         <InputGroup name={`${this.state.selectedOption.value}`}
                             type="text"
@@ -88,6 +118,14 @@ class Admin extends React.Component {
                         />
                     </FormGroup>
                 </FormContainer>
+                <Button text='Save Admin'
+                    onClick={this.handleAdminOpen}
+                    intent={Intent.PRIMARY}
+                />
+                <AdminDialog isOpen={this.state.isAdminOpen}
+                    handleOpen={this.handleAdminOpen}
+                    admins={this.getUsernamesAndPasswords(membership)}
+                />
             </React.Fragment>
         )
     }

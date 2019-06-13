@@ -41,6 +41,7 @@ class Billing extends React.Component {
                     <Button
                         onClick={this.handleChangeOpen}
                         text='Change Membership'
+                        intent={Intent.PRIMARY}
                     />
                 </MembButtonRow>
                 <StripeProvider apiKey={config.STRIPE_KEY}>
