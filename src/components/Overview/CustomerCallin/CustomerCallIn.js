@@ -278,7 +278,8 @@ export class CustomerCallIn extends React.Component {
                                         ccAddresses: this.props.userConfig.emails.confirmedCCAddresses,
                                         bccAddresses: this.props.userConfig.emails.confirmedBCCAddresses,
                                         subjectLine: this.props.userConfig.emails.confirmedSubjectLine,
-                                        messageBody: this.props.userConfig.emails.confirmedMessageBody                                    }
+                                        messageBody: this.props.userConfig.emails.confirmedMessageBody
+                                    }
                                 }).then(response => {
                                     this.handleClose()
                                     this.showToast('Pickup Successfully Saved')
@@ -345,6 +346,33 @@ export class CustomerCallIn extends React.Component {
     }
 
     render() {
+        const userConfig = this.props.userConfig
+        if (userConfig.zipcodes == null ||
+            userConfig.emails == null ||
+            userConfig.categories == null ||
+            userConfig.serviceDetails == null ||
+            userConfig.restrictions == null ||
+            userConfig.maxPickups == null ||
+            userConfig.blackoutDates == null) {
+            return (
+                <Dialog isOpen={this.props.isOverlayOpen}
+                    onClose={this.handleClose}
+                    transitionDuration={100}
+                    canOutsideClickClose={false}
+                    title="Customer Call-In"
+                >
+                    <DialogContainer>
+                        You need to setup the emails, zipcodes, max number of pickups, and categories
+                    before you can use the scheduling page!
+                    </DialogContainer>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.handleClose}>Cancel</Button>
+                        </div>
+                    </div>
+                </Dialog>
+            )
+        }
         return (
             <Dialog isOpen={this.props.isOverlayOpen}
                 onClose={this.handleClose}
@@ -409,39 +437,39 @@ export class CustomerCallIn extends React.Component {
 }
 
 const BlockContainer = styled.div`
-    margin-top: 5px;
-    margin-bottom: 5px;
-`;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            `;
 
 const SubBlockContainer = styled.div`
-    width: 350px;
-    margin: 10px;
-    margin-left: 20px;
-`
+                width: 350px;
+                margin: 10px;
+                margin-left: 20px;
+            `
 
 const DialogContainer = styled.div`
-    width: 400px;
-    margin: 20px;
-`
+                width: 400px;
+                margin: 20px;
+            `
 
 const ContactForms = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            `
 
 const NameForm = styled(FormGroup)`
-    width: 150px;
-`
+                width: 150px;
+            `
 
 const PhoneForm = styled(FormGroup)`
-    width: 125px;
-`
+                width: 125px;
+            `
 
 const SelectContainer = styled.div`
-    width: 250px;
-    margin-top: 25px;
-    margin-bottom: 25px;
-    margin-left: 20px;
-`
+                width: 250px;
+                margin-top: 25px;
+                margin-bottom: 25px;
+                margin-left: 20px;
+            `
 
