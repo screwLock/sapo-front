@@ -347,13 +347,15 @@ export class CustomerCallIn extends React.Component {
 
     render() {
         const userConfig = this.props.userConfig
+        // user needs to configure all the settings
         if (userConfig.zipcodes == null ||
             userConfig.emails == null ||
             userConfig.categories == null ||
             userConfig.serviceDetails == null ||
             userConfig.restrictions == null ||
             userConfig.maxPickups == null ||
-            userConfig.blackoutDates == null) {
+            userConfig.blackoutDates == null
+        ) {
             return (
                 <Dialog isOpen={this.props.isOverlayOpen}
                     onClose={this.handleClose}
@@ -373,65 +375,93 @@ export class CustomerCallIn extends React.Component {
                 </Dialog>
             )
         }
-        return (
-            <Dialog isOpen={this.props.isOverlayOpen}
-                onClose={this.handleClose}
-                transitionDuration={100}
-                canOutsideClickClose={false}
-                title="Customer Call-In"
-            >
-                <DialogContainer>
-                    <H4>Select The Pickup Zipcode</H4>
-                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
-                        onChange={this.handleZipcodeSelect}
-                        selectedZipcode={this.state.selectedZipcode}
-                    />
-                    <BlockContainer>
-                        <DatePicker disabledDays={this.state.disabledDays}
-                            onClick={this.handleDayClick}
-                            zipcode={this.state.selectedZipcode}
-                            selectedDate={this.state.selectedDate}
-                            isVisible={this.state.showDatePicker}
+        // user needs to configure the emails
+        else if (userConfig.emails.submittedMessageBody == null ||
+            userConfig.emails.confirmedMessageBody == null ||
+            userConfig.emails.canceledMessageBody == null ||
+            userConfig.emails.completedMessageBody == null ||
+            userConfig.emails.rejectedMessageBody == null
+        ) {
+            return (
+                <Dialog isOpen={this.props.isOverlayOpen}
+                    onClose={this.handleClose}
+                    transitionDuration={100}
+                    canOutsideClickClose={false}
+                    title="Customer Call-In"
+                >
+                    <DialogContainer>
+                        You need to setup each of the email types to use the scheduling page!
+                    </DialogContainer>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.handleClose}>Cancel</Button>
+                        </div>
+                    </div>
+                </Dialog>
+            )
+        }
+        // Settings complete, Show the Scheduling Dialog
+        else {
+            return (
+                <Dialog isOpen={this.props.isOverlayOpen}
+                    onClose={this.handleClose}
+                    transitionDuration={100}
+                    canOutsideClickClose={false}
+                    title="Customer Call-In"
+                >
+                    <DialogContainer>
+                        <H4>Select The Pickup Zipcode</H4>
+                        <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                            onChange={this.handleZipcodeSelect}
+                            selectedZipcode={this.state.selectedZipcode}
                         />
+                        <BlockContainer>
+                            <DatePicker disabledDays={this.state.disabledDays}
+                                onClick={this.handleDayClick}
+                                zipcode={this.state.selectedZipcode}
+                                selectedDate={this.state.selectedDate}
+                                isVisible={this.state.showDatePicker}
+                            />
 
-                    </BlockContainer>
-                    <p>
-                        {this.state.selectedDate
-                            ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
-                            : ''}
-                    </p>
-                    {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
-                    <div>
-                        <CategoryCheckboxes
-                            categories={this.state.categories}
-                            onChange={this.handleCategoryCheckedChange}
-                            isVisible={this.state.showPickupDetails}
-                        />
+                        </BlockContainer>
+                        <p>
+                            {this.state.selectedDate
+                                ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                                : ''}
+                        </p>
+                        {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
+                        <div>
+                            <CategoryCheckboxes
+                                categories={this.state.categories}
+                                onChange={this.handleCategoryCheckedChange}
+                                isVisible={this.state.showPickupDetails}
+                            />
+                        </div>
+                        <div>
+                            <ServiceDetailCheckboxes
+                                serviceDetails={this.state.serviceDetails}
+                                onChange={this.handleServiceCheckedChange}
+                                isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
+                            />
+                        </div>
+                        <div>
+                            <MandatoryCheckboxes
+                                mandatoryDetails={this.state.mandatoryDetails}
+                                onChange={this.handleMandatoryCheckedChange}
+                                // should not render if NO mandatory service details
+                                isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
+                            />
+                        </div>
+                    </DialogContainer>
+                    <div className={Classes.DIALOG_FOOTER}>
+                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                            <Button onClick={this.handleClose}>Cancel</Button>
+                            <Button onClick={this.handleSubmit}>Submit</Button>
+                        </div>
                     </div>
-                    <div>
-                        <ServiceDetailCheckboxes
-                            serviceDetails={this.state.serviceDetails}
-                            onChange={this.handleServiceCheckedChange}
-                            isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
-                        />
-                    </div>
-                    <div>
-                        <MandatoryCheckboxes
-                            mandatoryDetails={this.state.mandatoryDetails}
-                            onChange={this.handleMandatoryCheckedChange}
-                            // should not render if NO mandatory service details
-                            isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
-                        />
-                    </div>
-                </DialogContainer>
-                <div className={Classes.DIALOG_FOOTER}>
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.handleClose}>Cancel</Button>
-                        <Button onClick={this.handleSubmit}>Submit</Button>
-                    </div>
-                </div>
-            </Dialog>
-        )
+                </Dialog>
+            )
+        }
     }
 
 }
