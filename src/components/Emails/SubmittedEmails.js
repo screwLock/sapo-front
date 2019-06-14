@@ -56,6 +56,7 @@ class SubmittedEmails extends React.Component {
         else {
             try {
                 await this.props.updateUserConfig('emails', {
+                    ...this.props.userConfig.emails,
                     submittedCCAddresses: this.state.ccAddresses,
                     submittedBCCAddresses: this.state.bccAddresses,
                     submittedSubjectLine: this.state.subjectLine,
@@ -63,6 +64,7 @@ class SubmittedEmails extends React.Component {
                 },
                     {
                         emails: {
+                            ...this.props.userConfig.emails,
                             submittedCCAddresses: this.state.ccAddresses,
                             submittedBCCAddresses: this.state.bccAddresses,
                             submittedSubjectLine: this.state.subjectLine,
