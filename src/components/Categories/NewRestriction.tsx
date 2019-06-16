@@ -14,6 +14,7 @@ class NewRestriction extends React.Component<any, any> {
             radioRestriction: 'one',
             restrictions: [],
             restriction: '',
+            canSave: false
         }
     }
 
@@ -23,7 +24,7 @@ class NewRestriction extends React.Component<any, any> {
         return (
             <div>
                 <H3>Create a New Donation Restriction</H3>
-                <DialogContainer>
+                <Container>
                     <RadioGroup
                         inline={true}
                         onChange={this.handleRadioRestrictionChange}
@@ -41,17 +42,18 @@ class NewRestriction extends React.Component<any, any> {
                             )}
                         </ul>
                     </BlockContainer>
-                </DialogContainer>
+                    <ButtonRow>
+                        <Button text='Save Restrictions' disabled={!this.state.canSave} onClick={this.saveRestrictions}/>
+                    </ButtonRow>
+                </Container>
             </div>
         )
     }
 
     protected addRestriction = () => {
         if (!(this.state.restrictions.filter((d:any) => (d.name === this.state.selectedRestriction.name)).length > 0)) {
-            this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction) }), () => {
-                this.props.createSubmittable(this.state.restrictions);
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction) }))
+            this.setState({ canSave: true})
             return true
         }
         else {
@@ -65,10 +67,8 @@ class NewRestriction extends React.Component<any, any> {
             const customRestriction = {
                 name: this.state.restriction,
             }
-            this.setState(produce(draft => { draft.restrictions.push(customRestriction) }), () => {
-                this.props.createSubmittable(this.state.restrictions)
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.restrictions.push(customRestriction) }))
+            this.setState({canSave: true})
             return true;
         }
         else {
@@ -79,14 +79,13 @@ class NewRestriction extends React.Component<any, any> {
     protected handleDeleteRestriction = (index:number) => () => {
         const newRestrictions = [...this.state.restrictions];
         newRestrictions.splice(index, 1)
-        // need to ensure delete is reflected in restriction listings 
-        this.props.createSubmittable(newRestrictions)
         if(this.state.restrictions.length > 1) {
             this.setState({restrictions: newRestrictions})
         }
         else {
-            this.props.canSubmit(false)
-            this.setState({restrictions: newRestrictions})
+            this.setState({restrictions: newRestrictions, 
+                            canSave: false
+                        })
         }
     }
 
@@ -145,9 +144,13 @@ class NewRestriction extends React.Component<any, any> {
             return '';
         }
     }
+
+    protected saveRestrictions = () => {
+        console.log('save')
+    }
 }
 
-const DialogContainer = styled.div`
+const Container = styled.div`
     width: 400px;
     margin: 20px;
 `
@@ -156,5 +159,11 @@ const BlockContainer = styled.div`
     margin-top: 5px;
     margin-bottom: 5px;
 `;
+
+const ButtonRow = styled.div`
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
 
 export default NewRestriction;

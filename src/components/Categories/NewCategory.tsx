@@ -20,6 +20,7 @@ class NewCategory extends React.Component<any, any> {
             radioDonatable: 'one',
             showDonatables: false,
             donatableName: '',
+            canSave: false
         };
     }
 
@@ -27,7 +28,7 @@ class NewCategory extends React.Component<any, any> {
         return (
             <div>
                 <H3>Create a New Donation Category</H3>
-                <DialogContainer>
+                <Container>
                     <RadioGroup
                         inline={true}
                         onChange={this.handleRadioCategoryChange}
@@ -40,14 +41,17 @@ class NewCategory extends React.Component<any, any> {
                         {this.renderRadioCategoryChoice()}
                     </BlockContainer>
                     {this.renderDonatables()}
-                </DialogContainer>
+                    <ButtonRow>
+                        <Button text='Save Categories' disabled={!this.state.canSave} onClick={this.saveCategories}/>
+                    </ButtonRow>
+                </Container>
             </div >
         );
     }
 
     protected renderRadioCategoryChoice = () => {
         const CategorySelect = Select.ofType<Categories.ICategory>();
-        const selectStyle = {width: '200px'}
+        const selectStyle = { width: '200px' }
         if (this.state.radioCategory === 'one') {
             return (
                 <CategorySelect
@@ -78,28 +82,30 @@ class NewCategory extends React.Component<any, any> {
     }
 
     protected renderDonatables = () => {
-        const liStyle = {width: '200px'}
-        const ulStyle={ listStyleType: 'none', padding: '0px'}
+        const liStyle = { width: '200px' }
+        const ulStyle = { listStyleType: 'none', padding: '0px' }
         if (this.state.showDonatables && (this.state.categoryName !== '')) {
             return (
-                <BlockContainer>
-                    <H5>Now Add Donatables to {this.state.categoryName}</H5>
-                    <RadioGroup
-                        inline={true}
-                        onChange={this.handleRadioDonatableChange}
-                        selectedValue={this.state.radioDonatable}
-                    >
-                        <Radio inline={true} label="Select A Donatable" value='one' />
-                        <Radio inline={true} label="Create A Custom Donatable" value='two' />
-                    </RadioGroup>
-                    {this.renderRadioDonatableChoice()}
-                    <ul style={ulStyle}>
-                    {this.state.categoryDonatables.map(
-                        (donatable: any, index: number) => 
-                            (<li style={liStyle} key={donatable.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteDonatable(index)}/>{donatable.name}</li>)
-                        )}
-                    </ul>
-                </BlockContainer>
+                <React.Fragment>
+                    <BlockContainer>
+                        <H5>Now Add Donatables to {this.state.categoryName}</H5>
+                        <RadioGroup
+                            inline={true}
+                            onChange={this.handleRadioDonatableChange}
+                            selectedValue={this.state.radioDonatable}
+                        >
+                            <Radio inline={true} label="Select A Donatable" value='one' />
+                            <Radio inline={true} label="Create A Custom Donatable" value='two' />
+                        </RadioGroup>
+                        {this.renderRadioDonatableChoice()}
+                        <ul style={ulStyle}>
+                            {this.state.categoryDonatables.map(
+                                (donatable: any, index: number) =>
+                                    (<li style={liStyle} key={donatable.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteDonatable(index)} />{donatable.name}</li>)
+                            )}
+                        </ul>
+                    </BlockContainer>
+                </React.Fragment>
             )
         }
         else {
@@ -108,7 +114,7 @@ class NewCategory extends React.Component<any, any> {
     }
 
     protected renderRadioDonatableChoice = () => {
-        const selectStyle = {width: '200px'}
+        const selectStyle = { width: '200px' }
         const DonatableSelect = Select.ofType<Donatables.IDonatable>();
         if (this.state.radioDonatable === 'one') {
             return (
@@ -158,10 +164,6 @@ class NewCategory extends React.Component<any, any> {
                 draft.categoryName = category.name
         })
         )
-        // if category name is changed after donatables added, we need to change this in the submittable
-        if(this.state.categoryDonatables.length > 0){
-            this.props.createSubmittable({ name: category.name, donatables: this.state.categoryDonatables});
-        }
     }
 
     protected handleDonatableValueChange = (donatable: Donatables.IDonatable) => {
@@ -176,10 +178,8 @@ class NewCategory extends React.Component<any, any> {
                 name: this.state.selectedDonatable.name,
                 checked: false
             }
-            this.setState(produce(draft => { draft.categoryDonatables.push(newDonatable) }), () => {
-                this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables});
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.categoryDonatables.push(newDonatable) }))
+            this.setState({ canSave: true })
             return true
         }
         else {
@@ -194,10 +194,8 @@ class NewCategory extends React.Component<any, any> {
                 name: this.state.donatableName,
                 checked: false
             }
-            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }), () => {
-                this.props.createSubmittable({ name: this.state.categoryName, donatables: this.state.categoryDonatables}, 'categories');
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
+            this.setState({ canSave: true })
             return true;
         }
         else {
@@ -205,28 +203,22 @@ class NewCategory extends React.Component<any, any> {
         }
     }
 
-    protected handleDeleteDonatable = (index:number) => () => {
+    protected handleDeleteDonatable = (index: number) => () => {
         const donatables = [...this.state.categoryDonatables];
         donatables.splice(index, 1)
-        if(this.state.categoryDonatables.length > 1) {
-            this.setState({categoryDonatables: donatables})
-            // this prevents the deleted item from showing up in the rendered list of categories
-            this.props.createSubmittable({ name: this.state.categoryName, donatables}, 'categories');
+        if (this.state.categoryDonatables.length > 1) {
+            this.setState({ categoryDonatables: donatables })
         }
         else {
-            this.props.canSubmit(false);
-            this.setState({categoryDonatables: donatables});
-            // this prevents the deleted item from showing up in the rendered list of categories
-            this.props.createSubmittable({ name: this.state.categoryName, donatables}, 'categories');
+            this.setState({
+                categoryDonatables: donatables,
+                canSave: false,
+            });
         }
     }
 
     protected handleCategoryBlur = (e: any) => {
         this.setState({ categoryName: e.target.value, showDonatables: true });
-        // if category name is changed after donatables added, we need to change this in the submittable
-        if(this.state.categoryDonatables.length > 0){
-            this.props.createSubmittable({ name: e.target.value, donatables: this.state.categoryDonatables});
-        }
     }
 
     protected handleDonatableBlur = (e: any) => {
@@ -241,9 +233,13 @@ class NewCategory extends React.Component<any, any> {
         this.setState({ radioDonatable: e.currentTarget.value })
     }
 
+    protected saveCategories = () => {
+        console.log('save')
+    }
+
 }
 
-const DialogContainer = styled.div`
+const Container = styled.div`
     width: 400px;
     margin: 20px;
 `
@@ -252,5 +248,11 @@ const BlockContainer = styled.div`
     margin-top: 5px;
     margin-bottom: 5px;
 `;
+
+const ButtonRow = styled.div`
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
 
 export default NewCategory;

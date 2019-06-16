@@ -14,7 +14,8 @@ class NewServiceDetail extends React.Component<any, any> {
             radioServiceDetail: 'one',
             serviceDetails: [],
             serviceDetail: '',
-            isMandatory: false
+            isMandatory: false,
+            canSave: false,
         }
     }
 
@@ -24,7 +25,7 @@ class NewServiceDetail extends React.Component<any, any> {
         return (
             <div>
                 <H3>Create a New Service Detail</H3>
-                <DialogContainer>
+                <Container>
                     <RadioGroup
                         inline={true}
                         onChange={this.handleRadioServiceDetailChange}
@@ -42,17 +43,18 @@ class NewServiceDetail extends React.Component<any, any> {
                             )}
                         </ul>
                     </BlockContainer>
-                </DialogContainer>
+                    <ButtonRow>
+                        <Button text='Save Service Detail' disabled={!this.state.canSave} onClick={this.saveServiceDetails}/>
+                    </ButtonRow>
+                </Container>
             </div>
         )
     }
 
     protected addServiceDetail = () => {
         if (!(this.state.serviceDetails.filter((d: any) => (d.name === this.state.selectedServiceDetail.name)).length > 0)) {
-            this.setState(produce(draft => { draft.serviceDetails.push({ name: draft.selectedServiceDetail.name, isMandatory: this.state.isMandatory }) }), () => {
-                this.props.createSubmittable(this.state.serviceDetails);
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.serviceDetails.push({ name: draft.selectedServiceDetail.name, isMandatory: this.state.isMandatory }) }))
+            this.setState({ canSave: true})
             return true
         }
         else {
@@ -67,10 +69,8 @@ class NewServiceDetail extends React.Component<any, any> {
                 name: this.state.serviceDetail,
                 isMandatory: this.state.isMandatory
             }
-            this.setState(produce(draft => { draft.serviceDetails.push(customServiceDetail)}), () => {
-                this.props.createSubmittable(this.state.serviceDetails)
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.serviceDetails.push(customServiceDetail)}))
+            this.setState({ canSave: true})
             return true;
         }
         else {
@@ -82,13 +82,13 @@ class NewServiceDetail extends React.Component<any, any> {
         const newServiceDetails = [...this.state.serviceDetails];
         newServiceDetails.splice(index, 1)
         // need to ensure delete is reflected in service detail listings 
-        this.props.createSubmittable(newServiceDetails)
         if (this.state.serviceDetails.length > 1) {
             this.setState({ serviceDetails: newServiceDetails })
         }
         else {
-            this.props.canSubmit(false)
-            this.setState({ serviceDetails: newServiceDetails })
+            this.setState({ serviceDetails: newServiceDetails,
+                            canSave: false
+            })
         }
     }
 
@@ -155,9 +155,13 @@ class NewServiceDetail extends React.Component<any, any> {
             return '';
         }
     }
+
+    protected saveServiceDetails = () => {
+        console.log('save')
+    }
 }
 
-const DialogContainer = styled.div`
+const Container = styled.div`
     width: 400px;
     margin: 20px;
 `
@@ -165,6 +169,12 @@ const DialogContainer = styled.div`
 const BlockContainer = styled.div`
     margin-top: 5px;
     margin-bottom: 5px;
-`;
+`
+
+const ButtonRow = styled.div`
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
 
 export default NewServiceDetail;
