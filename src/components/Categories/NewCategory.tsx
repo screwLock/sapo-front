@@ -6,6 +6,7 @@ import * as Categories from "./types/Categories"
 import * as Donatables from "./types/Donatables"
 import { produce } from 'immer'
 import styled from 'styled-components'
+import { AppToaster } from '../Toaster'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 
 class NewCategory extends React.Component<any, any> {
@@ -22,6 +23,17 @@ class NewCategory extends React.Component<any, any> {
             donatableName: '',
             canSave: false
         };
+    }
+
+    public componentDidMount = async () => {
+        if (!this.props.authState) {
+            return;
+        }
+        if (this.props.userConfig.categories != null) {
+            this.setState({
+                categories: this.props.userConfig.categories
+            })
+        }
     }
 
     public render() {
@@ -42,7 +54,7 @@ class NewCategory extends React.Component<any, any> {
                     </BlockContainer>
                     {this.renderDonatables()}
                     <ButtonRow>
-                        <Button text='Save Categories' disabled={!this.state.canSave} onClick={this.saveCategories}/>
+                        <Button text='Save Categories' disabled={!this.state.canSave} onClick={this.saveCategories} />
                     </ButtonRow>
                 </Container>
             </div >
@@ -232,9 +244,29 @@ class NewCategory extends React.Component<any, any> {
     protected handleRadioDonatableChange = (e: any) => {
         this.setState({ radioDonatable: e.currentTarget.value })
     }
+    
+    protected showToast = (message: string) => {
+        AppToaster.show({ message: message });
+    }
 
-    protected saveCategories = () => {
-        console.log('save')
+    protected saveCategories = async () => {
+        if (this.state.categories.length === 0) {
+            this.showToast('Add at least one donations category')
+        }
+        else {
+            try {
+                await this.props.updateUserConfig('categories', {
+                    categories: this.state.categories,
+                },
+                    {
+                        categories: this.state.categories,
+                    }
+                )
+            }
+            catch (e) {
+                alert(e)
+            }
+        }
     }
 
 }

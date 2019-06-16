@@ -6,18 +6,6 @@ import NewCategory from './NewCategory'
 import NewRestriction from './NewRestriction'
 import NewServiceDetail from './NewServiceDetail'
 
-/****
- *   Originally this was called the 'Donor Page' view, but was changed
- *   to 'Categories'.  To avoid 'categories.categories' and to avoid the
- *   problems that arise with changeing donorPage to categories throughout
- *   these files, 'donorPage' will remain unchanged in the code and the db.
- *   This deviates from the other keys in the userConfig table which correspond
- *   to the name of the view, so keep in mind that donorPage is the top level
- *   key, and that donorPage.categories refers to pickup categories, not the 
- *   name of the view (Categories).
- * 
- ****/
-
 class Categories extends React.Component {
     constructor(props) {
         super(props)
