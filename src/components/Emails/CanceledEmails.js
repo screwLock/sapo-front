@@ -49,8 +49,8 @@ class CanceledEmails extends React.Component {
         if (this.state.subjectLine.length === 0) {
             this.showToast('Subject line required')
         }
-        else if (this.state.messageBody.length > 500) {
-            this.showToast('Message body has a limit of 500 characters')
+        else if (this.state.messageBody.length > 2500) {
+            this.showToast('Message body has a limit of 2500 characters')
         }
         else {
             try {
@@ -151,7 +151,7 @@ class CanceledEmails extends React.Component {
                     </FormGroup>
                     <FormGroup
                         label='Message Body'
-                        helperText='500 character limit'
+                        helperText='2500 character limit'
                     >
                         <ReactQuill
                             onChange={this.handleQuillChange}

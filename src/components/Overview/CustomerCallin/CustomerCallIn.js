@@ -51,7 +51,19 @@ export class CustomerCallIn extends React.Component {
         const userConfig = this.props.userConfig
         // this check should occur in the parent render function, but just so we don't
         // get a undefined error ...
-        if (userConfig.categories != null && userConfig.serviceDetails != null) {
+        if (userConfig.donorPage != null){
+            userConfig = userConfig.donorPage;
+            this.setState({
+                categories: userConfig.categories,
+                serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                    return detail.isMandatory === false
+                }),
+                mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                    return detail.isMandatory === true
+                })
+            })
+        }
+        else if (userConfig.categories != null && userConfig.serviceDetails != null) {
             this.setState({
                 categories: this.props.userConfig.categories,
                 serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {

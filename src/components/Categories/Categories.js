@@ -1,9 +1,12 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import { Button, H3, H5, Intent, Tab, Tabs, Popover, Position } from '@blueprintjs/core'
 import produce from 'immer'
 import NewDialog from './NewDialog'
 import { AppToaster } from '../Toaster'
+import NewCategory from './NewCategory'
+import NewRestriction from './NewRestriction'
+import NewServiceDetail from './NewServiceDetail'
 
 /****
  *   Originally this was called the 'Donor Page' view, but was changed
@@ -21,37 +24,8 @@ class Categories extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            categories: [],
-            restrictions: [],
-            serviceDetails: [],
-            isNewDialogOpen: false,
-            selection: '',
+            activeTabId: 'categories',
         }
-    }
-
-    componentDidMount = async () => {
-        if (!this.props.authState) {
-            return;
-        }
-        // need to also check for this.props.userConfig.donorPage
-        // due to the added to updateUserConfig used below
-        let userConfig = this.props.userConfig;
-        if (userConfig.donorPage != null){
-            userConfig = userConfig.donorPage;
-            this.setState({
-                categories: userConfig.categories,
-                restrictions: userConfig.restrictions,
-                serviceDetails: userConfig.serviceDetails
-            })
-        }
-        else if (userConfig.categories != null && userConfig.restrictions != null && userConfig.serviceDetails != null) {
-            this.setState({
-                categories: userConfig.categories,
-                restrictions: userConfig.restrictions,
-                serviceDetails: userConfig.serviceDetails
-            })
-        }
-
     }
 
     addListing = (listing, listingType) => {
@@ -98,18 +72,6 @@ class Categories extends React.Component {
         }
     }
 
-
-    handleSelectionClick = (event) => {
-        this.setState({
-            selection: event.target.textContent,
-            isNewDialogOpen: !this.state.isNewDialogOpen
-        })
-    }
-
-    handleNewDialogOpen = () => {
-        this.setState({ isNewDialogOpen: !this.state.isNewDialogOpen })
-    }
-
     handleDelete = (index, listingType) => () => {
         const newListings = [...this.state[listingType]];
         newListings.splice(index, 1)
@@ -145,7 +107,7 @@ class Categories extends React.Component {
                 <H5>Service Details</H5>
                 <ul style={ulStyle}>
                     {this.state.serviceDetails.map((serviceDetail, index) => {
-                        return (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}{(serviceDetail.isMandatory)? ` (mandatory)` : ''}</li>)
+                        return (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}{(serviceDetail.isMandatory) ? ` (mandatory)` : ''}</li>)
                     })}
                 </ul>
             </div>
@@ -184,38 +146,19 @@ class Categories extends React.Component {
         }
     }
 
-    showToast = (message) => {
-        AppToaster.show({ message: message });
+    handleTabChange = (newTabId) => {
+        this.setState({activeTabId: newTabId})
     }
 
     render() {
-        const DonorSelectMenu = (
-            <Menu>
-                <MenuItem text="Add A New Category" onClick={this.handleSelectionClick} />
-                <MenuItem text="Add A New Item Restriction" onClick={this.handleSelectionClick} />
-                <MenuItem text="Add A New Service Detail" onClick={this.handleSelectionClick} />
-            </Menu>
-        );
         return (
             <Container>
                 <H3>Create Your Categories, Restrictions, And Service Details</H3>
-                <ButtonRow>
-                    <Popover content={DonorSelectMenu} position={Position.RIGHT}>
-                        <Button intent={Intent.PRIMARY}>Add A New ...</Button>
-                    </Popover>
-                </ButtonRow>
-                <NewDialog addListing={this.addListing}
-                    isOpen={this.state.isNewDialogOpen}
-                    handleClose={this.handleNewDialogOpen}
-                    selection={this.state.selection}
-                />
-                {this.renderListings()}
-                <ButtonRow>
-                    <Button
-                        text='Save'
-                        onClick={this.saveSettings}
-                    />
-                </ButtonRow>
+                <Tabs id="categoriesTabs" onChange={this.handleTabChange} selectedTabId={this.state.activeTabId}>
+                    <Tab id="categories" title="Categories" panel={<NewCategory {...this.props}/>} />
+                    <Tab id="restrictions" title="Restrictions" panel={<NewRestriction />} {...this.props}/>
+                    <Tab id="serviceDetails" title="Service Details" panel={<NewServiceDetail {...this.props}/>}/>
+                </Tabs>
             </Container>
         );
     }
