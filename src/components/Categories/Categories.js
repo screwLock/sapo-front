@@ -100,38 +100,6 @@ class Categories extends React.Component {
         )
     }
 
-    saveSettings = async () => {
-        if (this.state.categories.length === 0) {
-            this.showToast('Add at least one donations category')
-        }
-        else if (this.state.restrictions.length === 0) {
-            this.showToast('Add at least one restricted item')
-        }
-        else if (this.state.serviceDetails.length === 0) {
-            this.showToast('Add at least one service detail')
-        }
-        else {
-            try {
-                // donorPage key here is overkill
-                // need to check for userConfig.donorPage in componentDidMount
-                await this.props.updateUserConfig('donorPage', {
-                    categories: this.state.categories,
-                    restrictions: this.state.restrictions,
-                    serviceDetails: this.state.serviceDetails
-                },
-                    {
-                        categories: this.state.categories,
-                        restrictions: this.state.restrictions,
-                        serviceDetails: this.state.serviceDetails
-                    }
-                )
-            }
-            catch (e) {
-                alert(e)
-            }
-        }
-    }
-
     handleTabChange = (newTabId) => {
         this.setState({activeTabId: newTabId})
     }
@@ -142,8 +110,8 @@ class Categories extends React.Component {
                 <H3>Create Your Categories, Restrictions, And Service Details</H3>
                 <Tabs id="categoriesTabs" onChange={this.handleTabChange} selectedTabId={this.state.activeTabId}>
                     <Tab id="categories" title="Categories" panel={<NewCategory {...this.props}/>} />
-                    <Tab id="restrictions" title="Restrictions" panel={<NewRestriction />} {...this.props}/>
-                    <Tab id="serviceDetails" title="Service Details" panel={<NewServiceDetail {...this.props}/>}/>
+                    <Tab id="restrictions" title="Restrictions" panel={<NewRestriction {...this.props}/>} />
+                    <Tab id="serviceDetails" title="Service Details" panel={<NewServiceDetail {...this.props}/>} />
                 </Tabs>
             </Container>
         );
