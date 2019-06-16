@@ -17,6 +17,7 @@ class NewCategory extends React.Component<any, any> {
             selectedDonatable: Donatables.PREPACKAGED_DONATABLES[0] as Donatables.IDonatable,
             categoryName: '',
             categoryDonatables: [],
+            categories: [],
             radioCategory: 'one',
             radioDonatable: 'one',
             showDonatables: false,
@@ -188,10 +189,9 @@ class NewCategory extends React.Component<any, any> {
         if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.selectedDonatable.name)).length > 0)) {
             const newDonatable = {
                 name: this.state.selectedDonatable.name,
-                checked: false
+                // checked: false
             }
-            this.setState(produce(draft => { draft.categoryDonatables.push(newDonatable) }))
-            this.setState({ canSave: true })
+            this.setState(produce(draft => { draft.categoryDonatables.push(newDonatable); draft.canSave = true }))
             return true
         }
         else {
@@ -204,10 +204,9 @@ class NewCategory extends React.Component<any, any> {
             && !(this.state.donatableName === '')) {
             const customDonatable = {
                 name: this.state.donatableName,
-                checked: false
+                // checked: false
             }
-            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable) }))
-            this.setState({ canSave: true })
+            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable); draft.canSave = true }))
             return true;
         }
         else {

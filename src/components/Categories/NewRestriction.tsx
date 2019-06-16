@@ -64,8 +64,7 @@ class NewRestriction extends React.Component<any, any> {
 
     protected addRestriction = () => {
         if (!(this.state.restrictions.filter((d: any) => (d.name === this.state.selectedRestriction.name)).length > 0)) {
-            this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction) }))
-            this.setState({ canSave: true })
+            this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction); draft.canSave = true }))
             return true
         }
         else {
@@ -79,8 +78,7 @@ class NewRestriction extends React.Component<any, any> {
             const customRestriction = {
                 name: this.state.restriction,
             }
-            this.setState(produce(draft => { draft.restrictions.push(customRestriction) }))
-            this.setState({ canSave: true })
+            this.setState(produce(draft => { draft.restrictions.push(customRestriction); draft.canSave = true }))
             return true;
         }
         else {
