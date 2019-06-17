@@ -58,48 +58,6 @@ class Categories extends React.Component {
         }
     }
 
-    handleDelete = (index, listingType) => () => {
-        const newListings = [...this.state[listingType]];
-        newListings.splice(index, 1)
-        this.setState({ [listingType]: newListings })
-    }
-
-    renderListings = () => {
-        const liStyle = { width: '500px' }
-        const ulStyle = { listStyleType: 'none', padding: '0px' }
-        const donatableStyle = { marginLeft: '20px' }
-        return (
-            <div>
-                <H5>Categories</H5>
-                <ul style={ulStyle}>
-                    {this.state.categories.map((category, index) => {
-                        return (<li style={liStyle} key={category.name}>
-                            <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'categories')} />
-                            {category.name}
-                            <ul style={{ listStyleType: 'disc' }}>
-                                {category.donatables.map((donatable, index) => {
-                                    return (<li style={donatableStyle} key={donatable.name}>{donatable.name}</li>)
-                                })}
-                            </ul>
-                        </li>)
-                    })}
-                </ul>
-                <H5>Restrictions</H5>
-                <ul style={ulStyle}>
-                    {this.state.restrictions.map((restriction, index) => {
-                        return (<li style={liStyle} key={restriction.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'restrictions')} />{restriction.name}</li>)
-                    })}
-                </ul>
-                <H5>Service Details</H5>
-                <ul style={ulStyle}>
-                    {this.state.serviceDetails.map((serviceDetail, index) => {
-                        return (<li style={liStyle} key={serviceDetail.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index, 'serviceDetails')} />{serviceDetail.name}{(serviceDetail.isMandatory) ? ` (mandatory)` : ''}</li>)
-                    })}
-                </ul>
-            </div>
-        )
-    }
-
     handleTabChange = (newTabId) => {
         this.setState({activeTabId: newTabId})
     }

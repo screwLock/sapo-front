@@ -13,8 +13,8 @@ class NewCategory extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
-            selectedCategory: Categories.PREPACKAGED_CATEGORIES[0] as Categories.ICategory,
-            selectedDonatable: Donatables.PREPACKAGED_DONATABLES[0] as Donatables.IDonatable,
+            selectedCategory: { name: 'Select A Category', donatables: [] } as Categories.ICategory,
+            selectedDonatable: { name: 'Select A Donatable' } as Donatables.IDonatable,
             categoryName: '',
             categoryDonatables: [],
             categories: [],
@@ -33,7 +33,7 @@ class NewCategory extends React.Component<any, any> {
         if (this.props.userConfig.categories != null) {
             this.setState({
                 categories: this.props.userConfig.categories
-            })
+            }, () => { console.log(this.state.categories) })
         }
     }
 
@@ -111,12 +111,7 @@ class NewCategory extends React.Component<any, any> {
                             <Radio inline={true} label="Create A Custom Donatable" value='two' />
                         </RadioGroup>
                         {this.renderRadioDonatableChoice()}
-                        <ul style={ulStyle}>
-                            {this.state.categoryDonatables.map(
-                                (donatable: any, index: number) =>
-                                    (<li style={liStyle} key={donatable.name}> <Button rightIcon='remove' minimal={true} onClick={this.handleDeleteDonatable(index)} />{donatable.name}</li>)
-                            )}
-                        </ul>
+                        {this.renderCategories()}
                     </BlockContainer>
                 </React.Fragment>
             )
@@ -159,7 +154,7 @@ class NewCategory extends React.Component<any, any> {
                 <div>
                     <ControlGroup>
                         <InputGroup placeholder="Donatable Name" name='donatable' onBlur={this.handleDonatableBlur} />
-                        <Button rightIcon="add" onClick={this.addCustomDonatable} />
+                        <Button rightIcon="add" onClick={this.addDonatable} />
                     </ControlGroup>
                 </div>
             )
@@ -167,6 +162,30 @@ class NewCategory extends React.Component<any, any> {
         else {
             return '';
         }
+    }
+
+    protected renderCategories = () => {
+        const liStyle = { width: '500px' }
+        const ulStyle = { listStyleType: 'none', padding: '0px' }
+        const donatableStyle = { marginLeft: '20px' }
+        return (
+            <div>
+                <H5>Categories</H5>
+                <ul style={ulStyle}>
+                    {this.state.categories.map((category: any, index: number) => {
+                        return (<li style={liStyle} key={category.name}>
+                            <Button rightIcon='remove' minimal={true} onClick={this.handleDelete(index)} />
+                            {category.name}
+                            <ul style={{ listStyleType: 'disc' }}>
+                                {category.donatables.map((donatable: any, index: number) => {
+                                    return (<li style={donatableStyle} key={donatable.name}>{donatable.name}</li>)
+                                })}
+                            </ul>
+                        </li>)
+                    })}
+                </ul>
+            </div>
+        )
     }
 
 
@@ -180,37 +199,68 @@ class NewCategory extends React.Component<any, any> {
     }
 
     protected handleDonatableValueChange = (donatable: Donatables.IDonatable) => {
-        this.setState(produce(draft => { draft.selectedDonatable = donatable })
+        this.setState(produce(draft => { draft.selectedDonatable = donatable, draft.donatableName = donatable.name })
         )
     }
 
 
-    protected addDonatable = () => {
-        if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.selectedDonatable.name)).length > 0)) {
-            const newDonatable = {
-                name: this.state.selectedDonatable.name,
-                // checked: false
-            }
-            this.setState(produce(draft => { draft.categoryDonatables.push(newDonatable); draft.canSave = true }))
-            return true
-        }
-        else {
-            return false;
-        }
+    // removes an object from an array with the associated key:value pair
+    // and returns the altered array
+    protected remove = (array: any[], key: string, value: string) => {
+        const index = array.findIndex(obj => obj[key] === value);
+        return index >= 0 ? [
+            ...array.slice(0, index),
+            ...array.slice(index + 1)
+        ] : array;
     }
 
-    protected addCustomDonatable = () => {
-        if (!(this.state.categoryDonatables.filter((d: any) => (d.name === this.state.donatableName)).length > 0)
-            && !(this.state.donatableName === '')) {
-            const customDonatable = {
-                name: this.state.donatableName,
-                // checked: false
+    protected addDonatable = () => {
+        let donatable = {};
+        // we need to make sure we are using the donatable that applies to the radio choice
+        // if it's from the select element...
+        if (this.state.selectedDonatable.name !==  'Select A Donatable' && this.state.radioDonatable === 'one') {
+            donatable = {
+                name: this.state.selectedDonatable.name,
             }
-            this.setState(produce(draft => { draft.categoryDonatables.push(customDonatable); draft.canSave = true }))
-            return true;
+        }
+        // or if it's from the input element
+        else if (this.state.donatableName.length > 0 && this.state.radioDonatable === 'two') {
+            donatable = {
+                name: this.state.donatableName,
+            }
         }
         else {
             return false;
+        }
+
+        let categoryNames = this.state.categories.map((category: any) => category.name);
+        // if the category name is present...
+        if (categoryNames.includes(this.state.categoryName)) {
+            // ... get the old category object ...
+            let oldCategory = this.state.categories.filter((category: any) => { category.name === this.state.categoryName })[0]
+            // ... create the newCategory from the old category
+            let newCategory = { name: oldCategory.name, donatables: [...oldCategory.donatables, donatable] }
+            let oldCategories = this.state.categories
+            // ... remove the old category
+            oldCategories = this.remove(oldCategories, oldCategory.name, this.state.categoryName)
+            let newCategories = oldCategories.push({ newCategory })
+            // ...and save the new categories
+            this.setState(produce(draft => {
+                draft.categories = newCategories
+            })
+            )
+            return true
+        }
+        // else create the category with the donatable
+        // if it does not exist
+        else {
+            let newCategory = this.state.categoryName
+            this.setState(produce(draft => {
+                draft.categories.push(
+                    { name: newCategory, donatables: [donatable] }
+                )
+            })
+            )
         }
     }
 
@@ -228,6 +278,12 @@ class NewCategory extends React.Component<any, any> {
         }
     }
 
+    protected handleDelete = (index: number) => () => {
+        const categories = [...this.state.categories];
+        categories.splice(index, 1)
+        this.setState({ categories: categories })
+    }
+
     protected handleCategoryBlur = (e: any) => {
         this.setState({ categoryName: e.target.value, showDonatables: true });
     }
@@ -243,7 +299,7 @@ class NewCategory extends React.Component<any, any> {
     protected handleRadioDonatableChange = (e: any) => {
         this.setState({ radioDonatable: e.currentTarget.value })
     }
-    
+
     protected showToast = (message: string) => {
         AppToaster.show({ message: message });
     }
