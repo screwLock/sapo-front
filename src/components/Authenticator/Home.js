@@ -53,9 +53,6 @@ class Home extends React.Component {
         AppToaster.show({ message: message });
     }
 
-    // only works with one key, will have to use custom function for
-    // donorPage!
-
     updateUserConfig = (key, update, jsonBody) => {
         jsonBody = { ...this.state.userConfig, ...jsonBody }
         /*
