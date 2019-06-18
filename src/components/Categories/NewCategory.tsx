@@ -215,15 +215,17 @@ class NewCategory extends React.Component<any, any> {
     }
 
     protected addDonatable = () => {
-        let donatable = {};
+        let donatable = {
+            name: ''
+        };
         // we need to make sure we are using the donatable that applies to the radio choice
-        // if it's from the select element...
-        if (this.state.selectedDonatable.name !==  'Select A Donatable' && this.state.radioDonatable === 'one') {
+        // if it's from the select element (radio choice === 'one')...
+        if (this.state.selectedDonatable.name !== 'Select A Donatable' && this.state.radioDonatable === 'one') {
             donatable = {
                 name: this.state.selectedDonatable.name,
             }
         }
-        // or if it's from the input element
+        // or if it's from the input element (radio choice === 'two')
         else if (this.state.donatableName.length > 0 && this.state.radioDonatable === 'two') {
             donatable = {
                 name: this.state.donatableName,
@@ -237,16 +239,21 @@ class NewCategory extends React.Component<any, any> {
         // if the category name is present...
         if (categoryNames.includes(this.state.categoryName)) {
             // ... get the old category object ...
-            let oldCategory = this.state.categories.filter((category: any) => { category.name === this.state.categoryName })[0]
+            let oldCategory = this.state.categories.find((category: any) => { return category.name === this.state.categoryName })
+            // ...make sure the donatable is not a duplicate
+            if (oldCategory.donatables.filter((d: any) => { return d.name === donatable.name }).length > 0) {
+                return false
+            }
             // ... create the newCategory from the old category
-            let newCategory = { name: oldCategory.name, donatables: [...oldCategory.donatables, donatable] }
-            let oldCategories = this.state.categories
+            let newDonatables = [...oldCategory.donatables, donatable]
+            let newCategory = { name: oldCategory.name, donatables: newDonatables }
+            let newCategories = [...this.state.categories]
             // ... remove the old category
-            oldCategories = this.remove(oldCategories, oldCategory.name, this.state.categoryName)
-            let newCategories = oldCategories.push({ newCategory })
+            newCategories = this.remove(newCategories, 'name', this.state.categoryName)
+            newCategories.push(newCategory)
             // ...and save the new categories
             this.setState(produce(draft => {
-                draft.categories = newCategories
+                draft.categories = [...newCategories]
             })
             )
             return true
