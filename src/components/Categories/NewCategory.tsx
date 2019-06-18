@@ -33,7 +33,7 @@ class NewCategory extends React.Component<any, any> {
         if (this.props.userConfig.categories != null) {
             this.setState({
                 categories: this.props.userConfig.categories
-            }, () => { console.log(this.state.categories) })
+            })
         }
     }
 
@@ -54,8 +54,12 @@ class NewCategory extends React.Component<any, any> {
                         {this.renderRadioCategoryChoice()}
                     </BlockContainer>
                     {this.renderDonatables()}
+                    {this.renderCategories()}
                     <ButtonRow>
-                        <Button text='Save Categories' disabled={!this.state.canSave} onClick={this.saveCategories} />
+                        <Button text='Save Categories' 
+                                disabled={(this.state.categories.length<=0)} 
+                                onClick={this.saveCategories} 
+                        />
                     </ButtonRow>
                 </Container>
             </div >
@@ -95,8 +99,6 @@ class NewCategory extends React.Component<any, any> {
     }
 
     protected renderDonatables = () => {
-        const liStyle = { width: '200px' }
-        const ulStyle = { listStyleType: 'none', padding: '0px' }
         if (this.state.showDonatables && (this.state.categoryName !== '')) {
             return (
                 <React.Fragment>
@@ -111,7 +113,6 @@ class NewCategory extends React.Component<any, any> {
                             <Radio inline={true} label="Create A Custom Donatable" value='two' />
                         </RadioGroup>
                         {this.renderRadioDonatableChoice()}
-                        {this.renderCategories()}
                     </BlockContainer>
                 </React.Fragment>
             )
@@ -317,9 +318,8 @@ class NewCategory extends React.Component<any, any> {
         }
         else {
             try {
-                await this.props.updateUserConfig('categories', {
-                    categories: this.state.categories,
-                },
+                await this.props.updateUserConfig('categories', 
+                    this.state.categories,
                     {
                         categories: this.state.categories,
                     }

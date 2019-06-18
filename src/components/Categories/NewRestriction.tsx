@@ -162,9 +162,8 @@ class NewRestriction extends React.Component<any, any> {
         }
         else {
             try {
-                await this.props.updateUserConfig('restrictions', {
-                    restrictions: this.state.restrictions,
-                },
+                await this.props.updateUserConfig('restrictions', 
+                    this.state.restrictions,
                     {
                         restrictions: this.state.restrictions,
                     }

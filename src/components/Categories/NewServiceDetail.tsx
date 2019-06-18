@@ -177,9 +177,8 @@ class NewServiceDetail extends React.Component<any, any> {
         }
         else {
             try {
-                await this.props.updateUserConfig('serviceDetails', {
-                    serviceDetails: this.state.serviceDetails,
-                },
+                await this.props.updateUserConfig('serviceDetails',
+                    this.state.serviceDetails,
                     {
                         serviceDetails: this.state.serviceDetails,
                     }
