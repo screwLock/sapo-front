@@ -57,20 +57,22 @@ class Home extends React.Component {
     // donorPage!
 
     updateUserConfig = (key, update, jsonBody) => {
-        jsonBody = { ...this.state.userConfig, ...jsonBody}
+        jsonBody = { ...this.state.userConfig, ...jsonBody }
+        /*
         this.setState(prevState => ({
             userConfig: {
                 ...prevState.userConfig,
                 [key]: update
             }
         }), () =>  {
-            API.post("sapo", "/users", {
-                body: jsonBody
-            }).then(response => {
-                this.showToast('Successfully Saved!')
-            }).catch(error => {
-                this.showToast(`Save Failed. Error with Status Code ${error.response.status}`)
-            })
+        */
+        API.post("sapo", "/users", {
+            body: jsonBody
+        }).then(response => {
+            this.showToast('Successfully Saved!')
+            this.setState({ userConfig: response.Attributes })
+        }).catch(error => {
+            this.showToast(`Save Failed. Error with Status Code ${error.response.status}`)
         })
     }
 
@@ -90,20 +92,20 @@ class Home extends React.Component {
                 ]}
             >
                 <Cell area="header">
-                                    <Header {...this.props} 
-                                        onAdminLogin={this.handleAdminLogin} 
-                                        isAdminLoggedIn={this.state.isAdminLoggedIn} 
-                                    />
+                    <Header {...this.props}
+                        onAdminLogin={this.handleAdminLogin}
+                        isAdminLoggedIn={this.state.isAdminLoggedIn}
+                    />
                 </Cell>
                 <Cell area="menu">
-                                    <NavBar {...this.props} />
+                    <NavBar {...this.props} />
                 </Cell>
                 <Cell area="content">
-                                    <Main {...this.props} 
-                                        getUserConfig={this.getUserConfig} 
-                                        updateUserConfig={this.updateUserConfig}
-                                        userConfig={this.state.userConfig}
-                                    />
+                    <Main {...this.props}
+                        getUserConfig={this.getUserConfig}
+                        updateUserConfig={this.updateUserConfig}
+                        userConfig={this.state.userConfig}
+                    />
                 </Cell>
             </Grid>
         )
@@ -126,12 +128,12 @@ class Home extends React.Component {
                         <Header {...this.props} onAdminLogin={this.handleAdminLogin} />
                     </Cell>
                     <Cell area="content">
-                                    <Main {...this.props} 
-                                        getUserConfig={this.getUserConfig} 
-                                        updateUserConfig={this.updateUserConfig}
-                                        userConfig={this.state.userConfig}
-                                    />
-                </Cell>
+                        <Main {...this.props}
+                            getUserConfig={this.getUserConfig}
+                            updateUserConfig={this.updateUserConfig}
+                            userConfig={this.state.userConfig}
+                        />
+                    </Cell>
                 </Grid>
             </div>
         )
