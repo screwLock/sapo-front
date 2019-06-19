@@ -54,17 +54,11 @@ class Home extends React.Component {
     }
 
     updateUserConfig = (key, update, jsonBody) => {
-        jsonBody = { ...this.state.userConfig, ...jsonBody }
-        /*
-        this.setState(prevState => ({
-            userConfig: {
-                ...prevState.userConfig,
-                [key]: update
-            }
-        }), () =>  {
-        */
         API.post("sapo", "/users", {
-            body: jsonBody
+            body: {
+                update: update,
+                key: key
+            }
         }).then(response => {
             this.showToast('Successfully Saved!')
             this.setState({ userConfig: response.Attributes })

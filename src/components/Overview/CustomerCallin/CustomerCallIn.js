@@ -51,7 +51,7 @@ export class CustomerCallIn extends React.Component {
         const userConfig = this.props.userConfig
         // this check should occur in the parent render function, but just so we don't
         // get a undefined error ...
-        if (userConfig.donorPage != null){
+        if (userConfig.donorPage != null) {
             userConfig = userConfig.donorPage;
             this.setState({
                 categories: userConfig.categories,
@@ -370,7 +370,7 @@ export class CustomerCallIn extends React.Component {
         ) {
             return (
                 <Dialog isOpen={this.props.isOverlayOpen}
-                    onClose={this.handleClose}
+                    onClose={this.props.onClose}
                     transitionDuration={100}
                     canOutsideClickClose={false}
                     title="Customer Call-In"
@@ -381,7 +381,7 @@ export class CustomerCallIn extends React.Component {
                     </DialogContainer>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleClose}>Cancel</Button>
+                            <Button onClick={this.props.onClose}>Cancel</Button>
                         </div>
                     </div>
                 </Dialog>
@@ -396,7 +396,7 @@ export class CustomerCallIn extends React.Component {
         ) {
             return (
                 <Dialog isOpen={this.props.isOverlayOpen}
-                    onClose={this.handleClose}
+                    onClose={this.props.onClose}
                     transitionDuration={100}
                     canOutsideClickClose={false}
                     title="Customer Call-In"
@@ -406,7 +406,7 @@ export class CustomerCallIn extends React.Component {
                     </DialogContainer>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleClose}>Cancel</Button>
+                            <Button onClick={this.props.onClose}>Cancel</Button>
                         </div>
                     </div>
                 </Dialog>
