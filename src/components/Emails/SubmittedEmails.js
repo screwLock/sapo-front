@@ -54,6 +54,9 @@ class SubmittedEmails extends React.Component {
         if (this.state.subjectLine.length === 0) {
             this.showToast('Subject line required')
         }
+        else if(this.state.messageBody.length === 0){
+            this.showToast('Message body is empty!')
+        }
         else if (this.state.content.length > 2500) {
             this.showToast('Message body has a limit of 2500 characters')
         }
