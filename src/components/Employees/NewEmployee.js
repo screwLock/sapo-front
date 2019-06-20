@@ -23,14 +23,16 @@ class NewEmployee extends React.Component {
         if (!this.validateForms()) {
             return false;
         }
+        // persist the employee object
         this.props.addEmployee({
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
             phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
-            employeeID: this.state.employeeID,
+            employeeID: this.state.employeeID || null,
             access: this.state.access
         });
+        // reset the dialog inputs
         this.setState({
             firstName: '',
             lastName: '',

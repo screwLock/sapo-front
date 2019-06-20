@@ -38,7 +38,7 @@ class EditEmployee extends React.Component {
             lastName: this.state.lastName,
             email: this.state.email,
             phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
-            employeeID: this.state.employeeID,
+            employeeID: this.state.employeeID || null,
             access: this.state.access
         });
         this.setState({
