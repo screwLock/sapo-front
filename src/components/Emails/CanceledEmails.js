@@ -12,6 +12,7 @@ class CanceledEmails extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            content: '',
             messageBody: '',
             subjectLine: '',
             ccAddress: '',
@@ -43,13 +44,16 @@ class CanceledEmails extends React.Component {
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleQuillChange = (value) => this.setState({ messageBody: value })
+    handleQuillChange = (content, delta, source, editor) => {
+        const text = editor.getText(content);
+        this.setState ({ content: text, messageBody: content });
+    }
 
     saveSettings = async () => {
         if (this.state.subjectLine.length === 0) {
             this.showToast('Subject line required')
         }
-        else if (this.state.messageBody.length > 2500) {
+        else if (this.state.content.length > 2500) {
             this.showToast('Message body has a limit of 2500 characters')
         }
         else {

@@ -12,6 +12,7 @@ class SubmittedEmails extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            content: '',
             messageBody: '',
             subjectLine: '',
             ccAddress: '',
@@ -44,14 +45,17 @@ class SubmittedEmails extends React.Component {
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleQuillChange = (value) => this.setState({ messageBody: value })
+    handleQuillChange = (content, delta, source, editor) => {
+        const text = editor.getText(content);
+        this.setState ({ content: text, messageBody: content });
+    }
 
     saveSettings = async () => {
         if (this.state.subjectLine.length === 0) {
             this.showToast('Subject line required')
         }
-        else if (this.state.messageBody.length > 500) {
-            this.showToast('Message body has a limit of 500 characters')
+        else if (this.state.content.length > 2500) {
+            this.showToast('Message body has a limit of 2500 characters')
         }
         else {
             try {
@@ -152,7 +156,7 @@ class SubmittedEmails extends React.Component {
                     </FormGroup>
                     <FormGroup
                         label='Message Body'
-                        helperText='500 character limit'
+                        helperText='2500 character limit'
                     >
                         <ReactQuill
                             onChange={this.handleQuillChange}
