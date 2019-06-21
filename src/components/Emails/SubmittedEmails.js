@@ -19,7 +19,6 @@ class SubmittedEmails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
-            emails: {},
         }
     }
 
@@ -27,13 +26,12 @@ class SubmittedEmails extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        if (this.props.userConfig.emails != null &&
-            this.props.userConfig.emails.submittedSubjectLine != null &&
-            this.props.userConfig.emails.submittedMessageBody != null
+        if (this.props.userConfig.submittedEmails != null &&
+            this.props.userConfig.submittedEmails.submittedSubjectLine != null &&
+            this.props.userConfig.submittedEmails.submittedMessageBody != null
         ) {
-            let emails = this.props.userConfig.emails
+            let emails = this.props.userConfig.submittedEmails
             this.setState({
-                emails: emails,
                 ccAddresses: emails.submittedCCAddresses,
                 bccAddresses: emails.submittedBCCAddresses,
                 subjectLine: emails.submittedSubjectLine,
@@ -62,16 +60,14 @@ class SubmittedEmails extends React.Component {
         }
         else {
             try {
-                await this.props.updateUserConfig('emails', {
-                    ...this.props.userConfig.emails,
-                    submittedCCAddresses: this.state.ccAddresses,
-                    submittedBCCAddresses: this.state.bccAddresses,
+                await this.props.updateUserConfig('submittedEmails', {
+                    submittedCCAddresses: this.state.ccAddresses || null,
+                    submittedBCCAddresses: this.state.bccAddresses || null,
                     submittedSubjectLine: this.state.subjectLine,
                     submittedMessageBody: this.state.messageBody,
                 },
                     {
                         emails: {
-                            ...this.props.userConfig.emails,
                             submittedCCAddresses: this.state.ccAddresses,
                             submittedBCCAddresses: this.state.bccAddresses,
                             submittedSubjectLine: this.state.subjectLine,

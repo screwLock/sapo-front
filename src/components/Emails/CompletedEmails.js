@@ -19,7 +19,6 @@ class CompletedEmails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
-            emails: {},
         }
     }
 
@@ -27,13 +26,12 @@ class CompletedEmails extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        if (this.props.userConfig.emails != null &&
-            this.props.userConfig.emails.completedSubjectLine != null &&
-            this.props.userConfig.emails.completedMessageBody != null
+        if (this.props.userConfig.completedEmails != null &&
+            this.props.userConfig.completedEmails.completedSubjectLine != null &&
+            this.props.userConfig.completedEmails.completedMessageBody != null
         ) {
-            let emails = this.props.userConfig.emails
+            let emails = this.props.userConfig.completedEmails
             this.setState({
-                emails: emails,
                 ccAddresses: emails.completedCCAddresses,
                 bccAddresses: emails.completedBCCAddresses,
                 subjectLine: emails.completedSubjectLine,
@@ -61,10 +59,9 @@ class CompletedEmails extends React.Component {
         }
         else {
             try {
-                await this.props.updateUserConfig('emails', {
-                    ...this.props.userConfig.emails,
-                    completedCCAddresses: this.state.ccAddresses,
-                    completedBCCAddresses: this.state.bccAddresses,
+                await this.props.updateUserConfig('completedEmails', {
+                    completedCCAddresses: this.state.ccAddresses || null,
+                    completedBCCAddresses: this.state.bccAddresses || null,
                     completedSubjectLine: this.state.subjectLine,
                     completedMessageBody: this.state.messageBody,
                 },

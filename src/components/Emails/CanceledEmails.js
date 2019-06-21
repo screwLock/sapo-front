@@ -19,7 +19,6 @@ class CanceledEmails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
-            emails: {},
         }
     }
 
@@ -27,13 +26,12 @@ class CanceledEmails extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        if (this.props.userConfig.emails != null &&
-            this.props.userConfig.emails.canceledSubjectLine != null &&
-            this.props.userConfig.emails.canceledMessageBody != null
+        if (this.props.userConfig.canceledEmails != null &&
+            this.props.userConfig.canceledEmails.canceledSubjectLine != null &&
+            this.props.userConfig.canceledEmails.canceledMessageBody != null
         ) {
-            let emails = this.props.userConfig.emails
+            let emails = this.props.userConfig.canceledEmails
             this.setState({
-                emails: emails,
                 ccAddresses: emails.canceledCCAddresses,
                 bccAddresses: emails.canceledBCCAddresses,
                 subjectLine: emails.canceledSubjectLine,
@@ -61,16 +59,14 @@ class CanceledEmails extends React.Component {
         }
         else {
             try {
-                await this.props.updateUserConfig('emails', {
-                    ...this.props.userConfig.emails,
-                    canceledCCAddresses: this.state.ccAddresses,
-                    canceledBCCAddresses: this.state.bccAddresses,
+                await this.props.updateUserConfig('canceledEmails', {
+                    canceledCCAddresses: this.state.ccAddresses || null,
+                    canceledBCCAddresses: this.state.bccAddresses || null,
                     canceledSubjectLine: this.state.subjectLine,
                     canceledMessageBody: this.state.messageBody,
                 },
                     {
                         emails: {
-                            ...this.props.userConfig.emails,
                             canceledCCAddresses: this.state.ccAddresses,
                             canceledBCCAddresses: this.state.bccAddresses,
                             canceledSubjectLine: this.state.subjectLine,

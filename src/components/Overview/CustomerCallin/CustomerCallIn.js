@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as React from 'react';
 import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent } from '@blueprintjs/core'
-import getDisabledDates from '../../Zipcodes/getDisabledDates'
+import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'
 import { StateSelect } from './StateSelect'
 import { produce } from 'immer'
@@ -361,7 +361,6 @@ export class CustomerCallIn extends React.Component {
         const userConfig = this.props.userConfig
         // user needs to configure all the settings
         if (userConfig.zipcodes == null ||
-            userConfig.emails == null ||
             userConfig.categories == null ||
             userConfig.serviceDetails == null ||
             userConfig.restrictions == null ||
@@ -388,11 +387,11 @@ export class CustomerCallIn extends React.Component {
             )
         }
         // user needs to configure the emails
-        else if (userConfig.emails.submittedMessageBody == null ||
-            userConfig.emails.confirmedMessageBody == null ||
-            userConfig.emails.canceledMessageBody == null ||
-            userConfig.emails.completedMessageBody == null ||
-            userConfig.emails.rejectedMessageBody == null
+        else if (userConfig.submittedEmails.submittedMessageBody == null ||
+            userConfig.confirmedEmails.confirmedMessageBody == null ||
+            userConfig.completedEmails.completedMessageBody == null ||
+            userConfig.canceledEmails.canceledMessageBody == null ||
+            userConfig.rejectedEmails.rejectedMessageBody == null
         ) {
             return (
                 <Dialog isOpen={this.props.isOverlayOpen}

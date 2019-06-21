@@ -18,7 +18,6 @@ class RejectedEmails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
-            emails: {},
         }
     }
 
@@ -26,13 +25,12 @@ class RejectedEmails extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        if (this.props.userConfig.emails != null &&
-            this.props.userConfig.emails.rejectedSubjectLine != null &&
-            this.props.userConfig.emails.rejectedMessageBody != null
+        if (this.props.userConfig.rejectedEmails != null &&
+            this.props.userConfig.rejectedEmails.rejectedSubjectLine != null &&
+            this.props.userConfig.rejectedEmails.rejectedMessageBody != null
         ) {
-            let emails = this.props.userConfig.emails
+            let emails = this.props.userConfig.rejectedEmails
             this.setState({
-                emails: emails,
                 ccAddresses: emails.rejectedCCAddresses,
                 bccAddresses: emails.rejectedBCCAddresses,
                 subjectLine: emails.rejectedSubjectLine,
@@ -60,16 +58,14 @@ class RejectedEmails extends React.Component {
         }
         else {
             try {
-                await this.props.updateUserConfig('emails', {
-                    ...this.props.userConfig.emails,
-                    rejectedCCAddresses: this.state.ccAddresses,
-                    rejectedBCCAddresses: this.state.bccAddresses,
+                await this.props.updateUserConfig('rejectedEmails', {
+                    rejectedCCAddresses: this.state.ccAddresses || null,
+                    rejectedBCCAddresses: this.state.bccAddresses || null,
                     rejectedSubjectLine: this.state.subjectLine,
                     rejectedMessageBody: this.state.messageBody,
                 },
                     {
                         emails: {
-                            ...this.props.userConfig.emails,
                             rejectedCCAddresses: this.state.ccAddresses,
                             rejectedBCCAddresses: this.state.bccAddresses,
                             rejectedSubjectLine: this.state.subjectLine,

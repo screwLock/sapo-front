@@ -19,7 +19,6 @@ class ConfirmedEmails extends React.Component {
             ccAddresses: [],
             bccAddress: '',
             bccAddresses: [],
-            emails: {},
         }
     }
 
@@ -27,13 +26,12 @@ class ConfirmedEmails extends React.Component {
         if (!this.props.authState) {
             return;
         }
-        if (this.props.userConfig.emails != null &&
-            this.props.userConfig.emails.confirmedSubjectLine != null &&
-            this.props.userConfig.emails.confirmedMessageBody != null
+        if (this.props.userConfig.confirmedEmails != null &&
+            this.props.userConfig.confirmedEmails.confirmedSubjectLine != null &&
+            this.props.userConfig.confirmedEmails.confirmedMessageBody != null
         ) {
-            let emails = this.props.userConfig.emails
+            let emails = this.props.userConfig.confirmedEmails
             this.setState({
-                emails: emails,
                 ccAddresses: emails.confirmedCCAddresses,
                 bccAddresses: emails.confirmedBCCAddresses,
                 subjectLine: emails.confirmedSubjectLine,
@@ -61,16 +59,14 @@ class ConfirmedEmails extends React.Component {
         }
         else {
             try {
-                await this.props.updateUserConfig('emails', {
-                    ...this.props.userConfig.emails,
-                    confirmedCCAddresses: this.state.ccAddresses,
-                    confirmedBCCAddresses: this.state.bccAddresses,
+                await this.props.updateUserConfig('confirmedEmails', {
+                    confirmedCCAddresses: this.state.ccAddresses || null,
+                    confirmedBCCAddresses: this.state.bccAddresses || null,
                     confirmedSubjectLine: this.state.subjectLine,
                     confirmedMessageBody: this.state.messageBody,
                 },
                     {
                         emails: {
-                            ...this.props.userConfig.emails,
                             confirmedCCAddresses: this.state.ccAddresses,
                             confirmedBCCAddresses: this.state.bccAddresses,
                             confirmedSubjectLine: this.state.subjectLine,
