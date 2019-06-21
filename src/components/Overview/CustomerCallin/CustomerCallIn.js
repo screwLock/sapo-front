@@ -287,10 +287,10 @@ export class CustomerCallIn extends React.Component {
                                         status: 'confirmed',
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails,
-                                        ccAddresses: this.props.userConfig.emails.confirmedCCAddresses,
-                                        bccAddresses: this.props.userConfig.emails.confirmedBCCAddresses,
-                                        subjectLine: this.props.userConfig.emails.confirmedSubjectLine,
-                                        messageBody: this.props.userConfig.emails.confirmedMessageBody
+                                        ccAddresses: this.props.userConfig.confirmedEmails.confirmedCCAddresses,
+                                        bccAddresses: this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
+                                        subjectLine: this.props.userConfig.confirmedEmails.confirmedSubjectLine,
+                                        messageBody: this.props.userConfig.confirmedEmails.confirmedMessageBody
                                     }
                                 }).then(response => {
                                     this.handleClose()
