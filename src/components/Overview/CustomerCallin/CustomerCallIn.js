@@ -387,11 +387,11 @@ export class CustomerCallIn extends React.Component {
             )
         }
         // user needs to configure the emails
-        else if (userConfig.submittedEmails.submittedMessageBody == null ||
-            userConfig.confirmedEmails.confirmedMessageBody == null ||
-            userConfig.completedEmails.completedMessageBody == null ||
-            userConfig.canceledEmails.canceledMessageBody == null ||
-            userConfig.rejectedEmails.rejectedMessageBody == null
+        else if (userConfig.submittedEmails == null ||
+            userConfig.confirmedEmails == null ||
+            userConfig.completedEmails == null ||
+            userConfig.canceledEmails == null ||
+            userConfig.rejectedEmails == null
         ) {
             return (
                 <Dialog isOpen={this.props.isOverlayOpen}
