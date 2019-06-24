@@ -31,7 +31,7 @@ class Billing extends React.Component {
             canceled: 'Canceled ($0.00)'
         }
         const membership = this.props.authData.signInUserSession.idToken.payload['custom:membership']
-        const href = `https://donate.sapopros.com/?id=${this.props.authData.username}`
+        const href = `https://account.sapopros.com/?id=${this.props.authData.username}`
         return (
             <React.Fragment>
                 <BillingInfoRow><H5>Current Membership Level: {membership.toUpperCase()}</H5></BillingInfoRow>
