@@ -34,10 +34,10 @@ class StatusDialog extends React.Component {
         this.callAPI(
             pickup,
             'canceled',
-            this.props.userConfig.emails.canceledCCAddresses,
-            this.props.userConfig.emails.canceledBCCAddresses,
-            this.props.userConfig.emails.canceledSubjectLine,
-            this.props.userConfig.emails.canceledMessageBody
+            this.props.userConfig.canceledEmails.canceledCCAddresses,
+            this.props.userConfig.canceledEmails.canceledBCCAddresses,
+            this.props.userConfig.canceledEmails.canceledSubjectLine,
+            this.props.userConfig.canceledEmails.canceledMessageBody
         )
     }
 
@@ -48,10 +48,10 @@ class StatusDialog extends React.Component {
         this.callAPI(
             pickup,
             'rejected',
-            this.props.userConfig.emails.rejectedCCAddresses,
-            this.props.userConfig.emails.rejectedBCCAddresses,
-            this.props.userConfig.emails.rejectedSubjectLine,
-            this.props.userConfig.emails.rejectedMessageBody
+            this.props.userConfig.rejectedEmails.rejectedCCAddresses,
+            this.props.userConfig.rejectedEmails.rejectedBCCAddresses,
+            this.props.userConfig.rejectedEmails.rejectedSubjectLine,
+            this.props.userConfig.rejectedEmails.rejectedMessageBody
         )
     }
 
@@ -63,20 +63,20 @@ class StatusDialog extends React.Component {
             this.callAPI(
                 pickup,
                 'confirmed',
-                this.props.userConfig.emails.confirmedCCAddresses,
-                this.props.userConfig.emails.confirmedBCCAddresses,
-                this.props.userConfig.emails.confirmedSubjectLine,
-                this.props.userConfig.emails.confirmedMessageBody
+                this.props.userConfig.confirmedEmails.confirmedCCAddresses,
+                this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
+                this.props.userConfig.confirmedEmails.confirmedSubjectLine,
+                this.props.userConfig.confirmedEmails.confirmedMessageBody
             )
         }
         else {
             this.callAPI(
                 pickup,
                 'completed',
-                this.props.userConfig.emails.completedCCAddresses,
-                this.props.userConfig.emails.completedBCCAddresses,
-                this.props.userConfig.emails.completedSubjectLine,
-                this.props.userConfig.emails.completedMessageBody
+                this.props.userConfig.completedEmails.completedCCAddresses,
+                this.props.userConfig.completedEmails.completedBCCAddresses,
+                this.props.userConfig.completedEmails.completedSubjectLine,
+                this.props.userConfig.completedEmails.completedMessageBody
             )
         }
 
