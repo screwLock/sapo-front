@@ -31,7 +31,7 @@ class Billing extends React.Component {
             canceled: 'Canceled ($0.00)'
         }
         const membership = this.props.authData.signInUserSession.idToken.payload['custom:membership']
-        const href = `https://account.sapopros.com/?id=${this.props.authData.username}`
+        const href = `https://schedule.sapopros.com/?id=${this.props.authData.username}`
         return (
             <React.Fragment>
                 <BillingInfoRow><H5>Current Membership Level: {membership.toUpperCase()}</H5></BillingInfoRow>
@@ -58,7 +58,7 @@ class Billing extends React.Component {
                     isOpen={this.state.isCancelOpen}
                     handleOpen={this.handleCancelOpen}
                 />
-                <URL>Your URL for your scheduling page: <a href={href} target="_blank">https://donate.sapopros.com/?id={this.props.authData.username}</a></URL>
+                <URL>Your URL for your scheduling page: <a href={href} target="_blank">https://schedule.sapopros.com/?id={this.props.authData.username}</a></URL>
                 <CancelButtonRow>
                     <Button
                         onClick={this.handleCancelOpen}
