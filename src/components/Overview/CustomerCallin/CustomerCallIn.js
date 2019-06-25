@@ -1,6 +1,6 @@
 /* eslint-disable */
 import * as React from 'react';
-import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent } from '@blueprintjs/core'
+import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent, TextArea } from '@blueprintjs/core'
 import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'
 import { StateSelect } from './StateSelect'
@@ -27,10 +27,12 @@ export class CustomerCallIn extends React.Component {
             lastName: '',
             organization: '',
             streetAddress: '',
+            apt: '',
             province: '',
             city: '',
             phoneNumber: '',
             email: '',
+            comments: '',
             categories: [],
             serviceDetails: [],
             mandatoryDetails: [],
@@ -130,6 +132,7 @@ export class CustomerCallIn extends React.Component {
             lastName: '',
             organization: '',
             streetAddress: '',
+            apt: '',
             province: '',
             city: '',
             phoneNumber: '',
@@ -140,6 +143,7 @@ export class CustomerCallIn extends React.Component {
             lng: '',
             showDatePicker: false,
             showPickupDetails: false,
+            comments: '',
             donations: [],
             selectedServiceDetails: [],
             categories: this.props.userConfig.categories,
@@ -199,23 +203,30 @@ export class CustomerCallIn extends React.Component {
 
     handleBlur = e => this.setState({ [e.target.name]: e.target.value })
 
+    handleCommentsChange = e => this.setState({ [e.target.name]: e.target.value })
+
     renderPickupAddress = () => {
         return (
             <BlockContainer>
                 <H4>Pickup Address</H4>
                 <SubBlockContainer >
-                    <FormGroup label='Street Address'>
-                        <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
-                    </FormGroup>
+                    <ContactForms>
+                        <StreetAddressForm label='Street Address'>
+                            <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
+                        </StreetAddressForm>
+                        <AptForm label='Apt #'>
+                            <InputGroup name='apt' onBlur={this.handleBlur} autoComplete="new-password" />
+                        </AptForm>
+                    </ContactForms>
                     <ContactForms>
                         <NameForm label='City'>
                             <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
                         </NameForm>
-                        <FormGroup label='State/Province'>
+                        <StateForm label='State/Province'>
                             <StateSelect onChange={this.handleStateSelect} />
-                        </FormGroup>
+                        </StateForm>
                     </ContactForms>
-                    <FormGroup label='Organization Name (If Not Residential)'>
+                    <FormGroup label='Organization Name (Required If Not Residential)'>
                         <InputGroup name='organization' onBlur={this.handleBlur} />
                     </FormGroup>
                 </SubBlockContainer>
@@ -277,6 +288,7 @@ export class CustomerCallIn extends React.Component {
                                         firstName: this.state.firstName,
                                         lastName: this.state.lastName,
                                         streetAddress: this.state.streetAddress,
+                                        apt: this.state.apt || null,
                                         city: this.state.city,
                                         province: this.state.province,
                                         organization: 'NA',
@@ -285,6 +297,7 @@ export class CustomerCallIn extends React.Component {
                                         phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
                                         email: this.state.email,
                                         status: 'confirmed',
+                                        comments: this.state.comments || null,
                                         donations: this.state.donations,
                                         serviceDetails: this.state.serviceDetails,
                                         ccAddresses: this.props.userConfig.confirmedEmails.confirmedCCAddresses,
@@ -455,6 +468,19 @@ export class CustomerCallIn extends React.Component {
                                 isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
                             />
                         </div>
+                        {this.state.showPickupDetails ? (
+                            <div>
+                                <H4>Additional Comments</H4>
+                                <CommentsTextArea
+                                    growVertically={true}
+                                    name='comments'
+                                    large={false}
+                                    intent={Intent.PRIMARY}
+                                    onChange={this.handleCommentsChange}
+                                    value={this.state.comments}
+                                />
+                            </div>
+                        ) : ''}
                         <div>
                             <MandatoryCheckboxes
                                 mandatoryDetails={this.state.mandatoryDetails}
@@ -494,18 +520,34 @@ const DialogContainer = styled.div`
             `
 
 const ContactForms = styled.div`
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-            `
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+
+const StreetAddressForm = styled(FormGroup)`
+            width: 275px;
+        `
+
+const AptForm = styled(FormGroup)`
+            width: 50px;
+        `
+
+const StateForm = styled(FormGroup)`
+            width: 100px;
+        `
 
 const NameForm = styled(FormGroup)`
-                width: 150px;
-            `
+            width: 150px;
+        `
 
 const PhoneForm = styled(FormGroup)`
-                width: 125px;
-            `
+            width: 125px;
+        `
+
+const CommentsTextArea = styled(TextArea)`
+            width: 400px;
+        `
 
 const SelectContainer = styled.div`
                 width: 250px;

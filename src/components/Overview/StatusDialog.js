@@ -7,6 +7,10 @@ import { AppToaster } from '../Toaster'
 class StatusDialog extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            isCancelInputOpen: false,
+            cancelInput: ''
+        }
     }
 
     callAPI = (pickup, newStatus = '', ccAddresses = [], bccAddresses = [], subjectLine = '', messageBody = '') => {
@@ -31,6 +35,8 @@ class StatusDialog extends React.Component {
         if (pickup == null) {
             return false
         }
+        // make cancel admin inbox open
+        // this.setState({ isCancelInputOpen: false})
         this.callAPI(
             pickup,
             'canceled',
@@ -40,6 +46,8 @@ class StatusDialog extends React.Component {
             this.props.userConfig.canceledEmails.canceledMessageBody
         )
     }
+
+    handleCancelInputChange = (e) => this.setState({ cancelInput: e.target.value });
 
     handleRejectedClick = (pickup) => () => {
         if (pickup == null) {
