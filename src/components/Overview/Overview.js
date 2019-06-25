@@ -150,6 +150,7 @@ class Overview extends Component {
           createRoute={this.createRoute}
           userConfig={this.props.userConfig}
           updatePickups={this.updatePickups}
+          payload={this.props.authData.signInUserSession.idToken.payload}
         />
         </Cell>
       </Grid>

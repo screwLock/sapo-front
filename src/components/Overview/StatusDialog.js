@@ -8,8 +8,24 @@ class StatusDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isCancelInputOpen: false,
-            cancelInput: ''
+            isCancelCredentialsOpen: false,
+            cancelUser: '',
+            cancelPassword: '',
+        }
+    }
+
+    authenticateAdmin = () => {
+        let payload = this.props.payload
+        if ((this.state.cancelUser === payload['custom:adminUserName1'] && this.state.cancelPassword === payload['custom:adminPassword1']) ||
+            (this.state.cancelUser === payload['custom:adminUserName2'] && this.state.cancelPassword === payload['custom:adminPassword2']) ||
+            (this.state.cancelUser === payload['custom:adminUserName3'] && this.state.cancelPassword === payload['custom:adminPassword3']) ||
+            (this.state.cancelUser === payload['custom:adminUserName4'] && this.state.cancelPassword === payload['custom:adminPassword4']) ||
+            (this.state.cancelUser === payload['custom:adminUserName5'] && this.state.cancelPassword === payload['custom:adminPassword5'])
+        ) {
+            return true
+        }
+        else {
+            return false
         }
     }
 
@@ -24,7 +40,7 @@ class StatusDialog extends React.Component {
                 messageBody: messageBody,
             }
         }).then(response => {
-            this.props.updatePickups({...pickup, status: newStatus}, this.props.pickups, this.props.index)
+            this.props.updatePickups({ ...pickup, status: newStatus }, this.props.pickups, this.props.index)
             this.showToast(`Pickup Updated to ${newStatus.toUpperCase()}`)
         }).catch(error => {
             this.showToast('ERROR: Pickup Not Updated!')
@@ -35,19 +51,34 @@ class StatusDialog extends React.Component {
         if (pickup == null) {
             return false
         }
-        // make cancel admin inbox open
-        // this.setState({ isCancelInputOpen: false})
-        this.callAPI(
-            pickup,
-            'canceled',
-            this.props.userConfig.canceledEmails.canceledCCAddresses,
-            this.props.userConfig.canceledEmails.canceledBCCAddresses,
-            this.props.userConfig.canceledEmails.canceledSubjectLine,
-            this.props.userConfig.canceledEmails.canceledMessageBody
-        )
+        if (this.authenticateAdmin()) {
+            this.callAPI(
+                pickup,
+                'canceled',
+                this.props.userConfig.canceledEmails.canceledCCAddresses,
+                this.props.userConfig.canceledEmails.canceledBCCAddresses,
+                this.props.userConfig.canceledEmails.canceledSubjectLine,
+                this.props.userConfig.canceledEmails.canceledMessageBody
+            )
+        }
+        else {
+            this.showToast('Incorrect admin credentials')
+        }
     }
 
-    handleCancelInputChange = (e) => this.setState({ cancelInput: e.target.value });
+    handleChange = e => this.setState({ [e.target.name]: e.target.value })
+
+    handleCancelOpen = () => {
+        this.setState({ isCancelCredentialsOpen: true })
+    }
+
+    handleDialogClose = () => {
+        this.setState({
+            isCancelCredentialsOpen: false,
+            cancelUser: '',
+            cancelPassword: '',
+        }, this.props.handleOpen)
+    }
 
     handleRejectedClick = (pickup) => () => {
         if (pickup == null) {
@@ -99,11 +130,11 @@ class StatusDialog extends React.Component {
         if (pickups == null || index === '') {
             return ''
         }
-        if(pickups[index] == null){
+        if (pickups[index] == null) {
             return ''
         }
         //Remove the following if statement
-        if(pickups[index].status == null){
+        if (pickups[index].status == null) {
             return ''
         }
         const pickup = pickups[index]
@@ -117,7 +148,7 @@ class StatusDialog extends React.Component {
         return (
             <Dialog
                 isOpen={this.props.isOpen}
-                onClose={this.props.handleOpen}
+                onClose={this.handleDialogClose}
                 title='Change Pickup Status'
             >
                 <DialogContainer>
@@ -133,11 +164,23 @@ class StatusDialog extends React.Component {
                             onClick={this.handleStatusChange(pickup)}
                         />
                     </ButtonContainer>
+                    {!this.state.isCancelCredentialsOpen ?
+                        (
+                            <ButtonContainer>
+                                <Button intent={Intent.DANGER} text={`Cancel Pickup`} onClick={this.handleCancelOpen} />
+                            </ButtonContainer>
+                        ) : (
+                            <CancelForm>
+                                <InputGroup name='cancelUser' onChange={this.handleChange} />
+                                <InputGroup name='cancelPassword' onChange={this.handleChange} />
+                                <ButtonContainer>
+                                    <Button intent={Intent.DANGER} text={`Cancel Pickup`} onClick={this.handleCancelClick(pickup)} />
+                                </ButtonContainer>
+                            </CancelForm>
+                        )
+                    }
                     <ButtonContainer>
-                        <Button intent={Intent.DANGER} text={`Cancel Pickup`} onClick={this.handleCancelClick(pickup)}/>
-                    </ButtonContainer>
-                    <ButtonContainer>
-                        <Button intent={Intent.DANGER} text={`Reject Submitted Pickup`} onClick={this.handleRejectedClick(pickup)}/>
+                        <Button intent={Intent.DANGER} text={`Reject Submitted Pickup`} onClick={this.handleRejectedClick(pickup)} />
                     </ButtonContainer>
                 </DialogContainer>
 
@@ -154,6 +197,12 @@ const DialogContainer = styled.div`
 `
 
 const ButtonContainer = styled.div`
+    margin-top: 25px;
+    margin-bottom: 25px;
+`
+
+const CancelForm = styled.div`
+    width: 150px;
     margin-top: 25px;
     margin-bottom: 25px;
 `

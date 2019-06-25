@@ -151,6 +151,7 @@ class OverviewPickups extends React.Component {
                     index={this.state.statusIndex}
                     updatePickups={this.props.updatePickups}
                     userConfig={this.props.userConfig}
+                    payload = {this.props.payload}
                 />
                 <Pickups>
                     {this.renderHeader()}
