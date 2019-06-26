@@ -11,6 +11,8 @@ class StatusDialog extends React.Component {
             isCancelCredentialsOpen: false,
             cancelUser: '',
             cancelPassword: '',
+            rejectUser: '',
+            rejectPassword: ''
         }
     }
 
@@ -77,6 +79,8 @@ class StatusDialog extends React.Component {
             isCancelCredentialsOpen: false,
             cancelUser: '',
             cancelPassword: '',
+            rejectUser: '',
+            rejectPassword: ''
         }, this.props.handleOpen)
     }
 

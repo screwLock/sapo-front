@@ -26,6 +26,7 @@ class OverviewDatePicker extends Component {
     let monthPickups = this.props.pickups.filter(pickup => {
       return getMonth(pickup.pickupDate) === this.props.selectedMonth
     })
+    // get the days with pickups that have 'unconfirmed' status
     // we have to use getDate() so that we can safely ignore
     // the time part of the Date object
     let unconfirmed = monthPickups.filter(pickup => {
@@ -33,17 +34,37 @@ class OverviewDatePicker extends Component {
     }).map(pickup => {
       return getDate(new Date(pickup.pickupDate))
     })
+
+    // get the days with pickups that have 'confirmed' status
+    // if a day contains a unconfirmed (submitted) date,
+    // then the unconfirmed style should take priority
+    // so confirmedDays should never return a day with
+    // an unconfirmed day
+    let confirmed = monthPickups.filter(pickup => {
+      return pickup.status === 'confirmed'
+    }).map(pickup => {
+      return getDate(new Date(pickup.pickupDate))
+    }).filter(confirmed => {
+      return !unconfirmed.includes(confirmed)
+    })
+
+    // supply a function to the modifiers of day-picker
     // highlighted should be same month as selectedDate
     // as well as !confirmed
     const unconfirmedDays = (day) => {
       return unconfirmed.includes(getDate(day))
     }
 
-    const modifiers = {
-      unconfirmedDays: unconfirmedDays
+    const confirmedDays = (day) => {
+      return confirmed.includes(getDate(day))
     }
 
-    const pulse = keyframes `
+    const modifiers = {
+      unconfirmedDays: unconfirmedDays,
+      confirmedDays: confirmedDays
+    }
+
+    const pulse = keyframes`
       0% {
         color: red;
       }
@@ -55,17 +76,21 @@ class OverviewDatePicker extends Component {
       }
     `
 
-    const highlightedStyle = `.DayPicker-Day--unconfirmedDays {
+    const dayStyles = `.DayPicker-Day--unconfirmedDays {
       color: red;
       font-weight: 800;
       animation-name: ${pulse};
       animation-duration: 2s;
       animation-iteration-count: infinite;
+    } 
+    .DayPicker-Day--confirmedDays {
+      color: #33a532;
+      font-weight: 800;
     }`
 
     return (
       <div>
-        <style>{highlightedStyle}</style>
+        <style>{dayStyles}</style>
         <DayPicker
           modifiers={modifiers}
           onDayClick={this.handleDayClick}
