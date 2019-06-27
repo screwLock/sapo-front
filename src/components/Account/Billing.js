@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import { Button, H5, Intent } from '@blueprintjs/core'
+import { format } from 'date-fns'
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import BillingForm from './BillingForm'
 import CancelDialog from './CancelDialog'
@@ -25,17 +26,17 @@ class Billing extends React.Component {
 
     render() {
         const prices = {
-            basic: '$90.00',
-            standard: '$149.99',
-            premium: '$199.00',
-            canceled: 'Canceled ($0.00)'
+            'SAPO Basic': '$90.00',
+            'SAPO Standard': '$149.99',
+            'SAPO Premium': '$199.00',
+            'canceled': 'Canceled ($0.00)'
         }
-        const membership = this.props.authData.signInUserSession.idToken.payload['custom:membership']
+        const membership = this.props.membership
         const href = `https://schedule.sapopros.com/?id=${this.props.authData.username}`
         return (
             <React.Fragment>
                 <BillingInfoRow><H5>Current Membership Level: {membership.toUpperCase()}</H5></BillingInfoRow>
-                <BillingInfoRow><H5>Next Statement Date: {this.props.nextStatement.toUpperCase()}</H5></BillingInfoRow>
+                <BillingInfoRow><H5>Next Statement Date: {format(new Date(this.props.nextStatement*1000), 'MM/DD/YYYY')}</H5></BillingInfoRow>
                 <BillingInfoRow><H5>Monthly Cost: {`${prices[membership]}`}</H5></BillingInfoRow>
                 <MembButtonRow>
                     <Button

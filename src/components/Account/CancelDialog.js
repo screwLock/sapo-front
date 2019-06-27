@@ -44,7 +44,10 @@ class CancelDialog extends React.Component {
             })
             this.setState({
                 isProcessing: false,
-            }, () => this.handleOpen());
+            }, () => {
+                this.handleOpen();
+                this.props.updateCustomerInfo();
+            });
             this.showToast('Account canceled')
         } catch (error) {
             this.setState({

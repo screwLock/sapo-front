@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { AppToaster } from '../Toaster'
+import { AppToaster } from '../../Toaster'
 import { CardElement, injectStripe } from 'react-stripe-elements'
-import { API, Auth } from "aws-amplify"
-import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog, Radio, RadioGroup } from "@blueprintjs/core"
+import { API } from "aws-amplify"
+import { Button, Classes, FormGroup, InputGroup, Intent, Dialog, Radio, RadioGroup } from "@blueprintjs/core"
 import styled from 'styled-components'
 
-class BillingForm extends React.Component {
+class PayForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,7 +42,7 @@ class BillingForm extends React.Component {
             })
             // exit if a source was not created
             if (source == null) {
-                this.setState({ isProcessing: false})
+                this.setState({ isProcessing: false })
                 this.showToast('There was an error creating the source')
                 return false
             }
@@ -63,8 +63,9 @@ class BillingForm extends React.Component {
                 plan: 'basic'
             }, () => {
                 this.props.handleOpen();
-                this.props.updateCustomerInfo();
-            });
+                this.props.updateCustomerInfo()
+            }
+            );
             this.showToast('Card successfully charged')
         } catch (error) {
             this.setState({
@@ -111,6 +112,7 @@ class BillingForm extends React.Component {
                             <Radio label="Basic" value="basic" />
                             <Radio label="Standard" value="standard" />
                             <Radio label="Premium" value="premium" />
+                            <Radio label="Cancel" value="canceled" />
                         </RadioGroup>
                     </CardRow>
                     <CardRow>
@@ -158,4 +160,4 @@ const CardElementRow = styled.div`
     margin-bottom: 20px;
 `
 
-export default injectStripe(BillingForm);
+export default injectStripe(PayForm);

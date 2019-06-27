@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
 import Main from '../Main'
-import Unpaid from './Unpaid'
+import Unpaid from './Unpaid/Unpaid'
 import { AppToaster } from '../Toaster'
 import { API } from "aws-amplify"
 
@@ -14,7 +14,8 @@ class Home extends React.Component {
         onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); },
         delinquent: false,
         plan: '',
-        nextStatement: ''
+        nextStatement: '',
+        membership: ''
     };
 
     constructor(props) {
@@ -41,11 +42,13 @@ class Home extends React.Component {
         try {
             const userConfig = await this.getUserConfig();
             const customerInfo = await this.getCustomerInfo();
-            this.setState({ userConfig: userConfig, 
-                            delinquent: customerInfo.delinquent, 
-                            plan: customerInfo.plan,
-                            nextStatement: customerInfo.nextStatement
-                         }
+            this.setState({
+                userConfig: userConfig,
+                delinquent: customerInfo.delinquent,
+                plan: customerInfo.plan,
+                nextStatement: customerInfo.nextStatement,
+                membership: customerInfo.membership
+            }
             );
         } catch (e) {
             alert(e);
@@ -61,9 +64,20 @@ class Home extends React.Component {
     getCustomerInfo = () => {
         return API.get("sapo", '/billing', {
             'queryStringParameters': {
-              'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
+                'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
             }
-          });
+        });
+    }
+
+    updateCustomerInfo = async () => {
+        const customerInfo = await this.getCustomerInfo()
+        this.setState({
+            delinquent: customerInfo.delinquent,
+            plan: customerInfo.plan,
+            nextStatement: customerInfo.nextStatement,
+            membership: customerInfo.membership
+        }
+        );
     }
 
     showToast = (message) => {
@@ -113,6 +127,9 @@ class Home extends React.Component {
                         getUserConfig={this.getUserConfig}
                         updateUserConfig={this.updateUserConfig}
                         userConfig={this.state.userConfig}
+                        updateCustomerInfo={this.updateCustomerInfo}
+                        membership={this.state.membership}
+                        nextStatement={this.state.nextStatement}
                     />
                 </Cell>
             </Grid>
@@ -133,13 +150,16 @@ class Home extends React.Component {
                     ]}
                 >
                     <Cell area="header">
-                        <Header {...this.props} onAdminLogin={this.handleAdminLogin} />
+                        <Header {...this.props}
+                            onAdminLogin={this.handleAdminLogin}
+                        />
                     </Cell>
                     <Cell area="content">
                         <Main {...this.props}
                             getUserConfig={this.getUserConfig}
                             updateUserConfig={this.updateUserConfig}
                             userConfig={this.state.userConfig}
+                            updateCustomerInfo={this.updateCustomerInfo}
                         />
                     </Cell>
                 </Grid>
@@ -149,9 +169,13 @@ class Home extends React.Component {
 
     render() {
         const cancelPlanId = 'plan_FELBVjWmU3oVJl'
-        if(this.state.delinquent == true || this.state.plan === cancelPlanId){
+        if (this.state.delinquent === true || this.state.plan === cancelPlanId) {
             return (
-                <Unpaid {...this.props} membership={this.props.authData.signInUserSession.idToken.payload['custom:membership']}/>
+                <Unpaid {...this.props}
+                    membership={this.state.membership}
+                    nextStatement={this.state.nextStatement}
+                    updateCustomerInfo={this.updateCustomerInfo}
+                />
             )
         }
         else if (this.state.isAdminLoggedIn) {
