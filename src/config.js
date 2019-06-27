@@ -38,7 +38,7 @@ const prod = {
     APP_CLIENT_ID: "4tqg813uev9m2ukopsi4fs9hhq",
     IDENTITY_POOL_ID: "us-east-1:b4073e9a-e0a6-4cb4-a953-aa97e309aa9c"
   },
-  STRIPE_KEY: "pk_test_ZokTubwC6G4D2q2COo4Gj9O4",
+  STRIPE_KEY: "pk_live_YP0FsqFHk72iq9N3ZGWK5W11",
   HERE_APP_ID: 'u3uFI5c0XaweKx6Yh31t',
   HERE_APP_CODE: 'wUPW8ZhbclB20ZTwqRC4fA',
   GOOGLE_MAP_KEY: 'AIzaSyDOs_VPiyP8PWQ70b7uNtPhKftBgwsFhw8'
