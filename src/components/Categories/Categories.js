@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, H3, H5, Intent, Tab, Tabs, Popover, Position } from '@blueprintjs/core'
+import { H3, Tab, Tabs } from '@blueprintjs/core'
 import produce from 'immer'
 import NewCategory from './NewCategory'
 import NewRestriction from './NewRestriction'
@@ -79,12 +79,6 @@ class Categories extends React.Component {
 
 const Container = styled.div`
   margin: 25px;
-`
-
-const ButtonRow = styled.div`
-  margin-left: 10px;
-  margin-top: 15px;
-  margin-bottom: 15px;
 `
 
 export default Categories;

@@ -26,10 +26,10 @@ class Billing extends React.Component {
 
     render() {
         const prices = {
-            'SAPO Basic': '$90.00',
+            'SAPO Basic': '$59.99',
             'SAPO Standard': '$149.99',
-            'SAPO Premium': '$199.00',
-            'canceled': 'Canceled ($0.00)'
+            'SAPO Premium': '$199.99',
+            'Canceled': 'Canceled ($0.00)'
         }
         const membership = this.props.membership
         const href = `https://schedule.sapopros.com/?id=${this.props.authData.username}`

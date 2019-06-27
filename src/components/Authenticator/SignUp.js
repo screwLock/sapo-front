@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { AnchorButton, Button, Checkbox, Classes, FormGroup, InputGroup, Intent, Dialog, Alignment } from "@blueprintjs/core"
+import { Button, Checkbox, FormGroup, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Redirect, withRouter } from "react-router-dom"
 import * as EmailValidator from 'email-validator'
