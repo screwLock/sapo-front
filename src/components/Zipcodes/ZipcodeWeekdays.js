@@ -60,7 +60,7 @@ class ZipcodeWeekdays extends React.Component {
               onChange={this.props.onChange(index)}
             />
             <Checkbox
-              label='Every 5th'
+              label='Every Last'
               key='5th'
               name='fifth'
               checked={weekday.fifth && !weekday.all}
