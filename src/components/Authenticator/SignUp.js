@@ -179,6 +179,10 @@ class SignUp extends React.Component {
             this.setState({ error: 'Admin username should not be the login email' })
             return false
         }
+        else if (!EmailValidator.validate(this.state.adminUserName)) {
+            this.setState({ error: 'Enter a valid admin email address' })
+            return false
+        }
         else if (this.state.adminPassword.length <= 0) {
             this.setState({ error: 'Pleae enter an admin password' })
             return false
@@ -309,9 +313,9 @@ class SignUp extends React.Component {
                         </FormGroup>
                         <TitleRow>Administrative Login</TitleRow>
                         <FormGroup
-                            label="Admin Username"
+                            label="Admin Email"
                             labelFor="text-input"
-                            helperText="This username will be used for administrative login"
+                            helperText="This email will be used for administrative login and can NOT be the same as the sign-in email"
                         >
                             <InputGroup name="adminUserName" onChange={this.handleChange} />
                         </FormGroup>
