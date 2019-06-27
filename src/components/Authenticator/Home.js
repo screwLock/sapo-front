@@ -4,14 +4,17 @@ import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
 import Main from '../Main'
+import Unpaid from './Unpaid'
 import { AppToaster } from '../Toaster'
-import { API, Auth } from "aws-amplify"
+import { API } from "aws-amplify"
 
 class Home extends React.Component {
     static defaultProps = {
-        authData: {},
         authState: 'LoggedIn',
         onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); },
+        delinquent: false,
+        plan: '',
+        nextStatement: ''
     };
 
     constructor(props) {
@@ -37,7 +40,13 @@ class Home extends React.Component {
 
         try {
             const userConfig = await this.getUserConfig();
-            this.setState({ userConfig });
+            const customerInfo = await this.getCustomerInfo();
+            this.setState({ userConfig: userConfig, 
+                            delinquent: customerInfo.delinquent, 
+                            plan: customerInfo.plan,
+                            nextStatement: customerInfo.nextStatement
+                         }
+            );
         } catch (e) {
             alert(e);
         }
@@ -47,6 +56,14 @@ class Home extends React.Component {
 
     getUserConfig = () => {
         return API.get("sapo", '/users');
+    }
+
+    getCustomerInfo = () => {
+        return API.get("sapo", '/billing', {
+            'queryStringParameters': {
+              'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
+            }
+          });
     }
 
     showToast = (message) => {
@@ -131,7 +148,13 @@ class Home extends React.Component {
     }
 
     render() {
-        if (this.state.isAdminLoggedIn) {
+        const cancelPlanId = 'plan_FELBVjWmU3oVJl'
+        if(this.state.delinquent == true || this.state.plan === cancelPlanId){
+            return (
+                <Unpaid {...this.props} membership={this.props.authData.signInUserSession.idToken.payload['custom:membership']}/>
+            )
+        }
+        else if (this.state.isAdminLoggedIn) {
             return this.renderAdmin()
         }
         else {

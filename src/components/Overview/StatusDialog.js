@@ -9,6 +9,7 @@ class StatusDialog extends React.Component {
         super(props)
         this.state = {
             isCancelCredentialsOpen: false,
+            isRejectCredentialsOpen: false,
             cancelUser: '',
             cancelPassword: '',
             rejectUser: '',
@@ -16,13 +17,13 @@ class StatusDialog extends React.Component {
         }
     }
 
-    authenticateAdmin = () => {
+    authenticateAdmin = (user, pass) => {
         let payload = this.props.payload
-        if ((this.state.cancelUser === payload['custom:adminUserName1'] && this.state.cancelPassword === payload['custom:adminPassword1']) ||
-            (this.state.cancelUser === payload['custom:adminUserName2'] && this.state.cancelPassword === payload['custom:adminPassword2']) ||
-            (this.state.cancelUser === payload['custom:adminUserName3'] && this.state.cancelPassword === payload['custom:adminPassword3']) ||
-            (this.state.cancelUser === payload['custom:adminUserName4'] && this.state.cancelPassword === payload['custom:adminPassword4']) ||
-            (this.state.cancelUser === payload['custom:adminUserName5'] && this.state.cancelPassword === payload['custom:adminPassword5'])
+        if ((user === payload['custom:adminUserName1'] && pass === payload['custom:adminPassword1']) ||
+            (user === payload['custom:adminUserName2'] && pass === payload['custom:adminPassword2']) ||
+            (user === payload['custom:adminUserName3'] && pass === payload['custom:adminPassword3']) ||
+            (user === payload['custom:adminUserName4'] && pass === payload['custom:adminPassword4']) ||
+            (user === payload['custom:adminUserName5'] && pass === payload['custom:adminPassword5'])
         ) {
             return true
         }
@@ -53,7 +54,7 @@ class StatusDialog extends React.Component {
         if (pickup == null) {
             return false
         }
-        if (this.authenticateAdmin()) {
+        if (this.authenticateAdmin(this.state.cancelUser, this.state.cancelPassword)) {
             this.callAPI(
                 pickup,
                 'canceled',
@@ -74,9 +75,14 @@ class StatusDialog extends React.Component {
         this.setState({ isCancelCredentialsOpen: true })
     }
 
+    handleRejectOpen = () => {
+        this.setState({ isRejectCredentialsOpen: true })
+    }
+
     handleDialogClose = () => {
         this.setState({
             isCancelCredentialsOpen: false,
+            isRejectCredentialsOpen: false,
             cancelUser: '',
             cancelPassword: '',
             rejectUser: '',
@@ -84,18 +90,23 @@ class StatusDialog extends React.Component {
         }, this.props.handleOpen)
     }
 
-    handleRejectedClick = (pickup) => () => {
+    handleRejectClick = (pickup) => () => {
         if (pickup == null) {
             return false
         }
-        this.callAPI(
-            pickup,
-            'rejected',
-            this.props.userConfig.rejectedEmails.rejectedCCAddresses,
-            this.props.userConfig.rejectedEmails.rejectedBCCAddresses,
-            this.props.userConfig.rejectedEmails.rejectedSubjectLine,
-            this.props.userConfig.rejectedEmails.rejectedMessageBody
-        )
+        if (this.authenticateAdmin(this.state.rejectUser, this.state.rejectPassword)) {
+            this.callAPI(
+                pickup,
+                'rejected',
+                this.props.userConfig.rejectedEmails.rejectedCCAddresses,
+                this.props.userConfig.rejectedEmails.rejectedBCCAddresses,
+                this.props.userConfig.rejectedEmails.rejectedSubjectLine,
+                this.props.userConfig.rejectedEmails.rejectedMessageBody
+            )
+        }
+        else {
+            this.showToast('Incorrect admin credentials')
+        }
     }
 
     handleStatusChange = (pickup) => () => {
@@ -175,17 +186,29 @@ class StatusDialog extends React.Component {
                             </ButtonContainer>
                         ) : (
                             <CancelForm>
-                                <InputGroup name='cancelUser' onChange={this.handleChange} />
-                                <InputGroup name='cancelPassword' onChange={this.handleChange} />
+                                <span>Admin: </span><InputGroup name='cancelUser' onChange={this.handleChange} />
+                                <span>Pass: </span><InputGroup name='cancelPassword' onChange={this.handleChange} />
                                 <ButtonContainer>
                                     <Button intent={Intent.DANGER} text={`Cancel Pickup`} onClick={this.handleCancelClick(pickup)} />
                                 </ButtonContainer>
                             </CancelForm>
                         )
                     }
-                    <ButtonContainer>
-                        <Button intent={Intent.DANGER} text={`Reject Submitted Pickup`} onClick={this.handleRejectedClick(pickup)} />
-                    </ButtonContainer>
+                    {!this.state.isRejectCredentialsOpen ?
+                        (
+                            <ButtonContainer>
+                                <Button intent={Intent.DANGER} text={`Reject Pickup`} onClick={this.handleRejectOpen} />
+                            </ButtonContainer>
+                        ) : (
+                            <CancelForm>
+                                <span>Admin: </span><InputGroup name='rejectUser' onChange={this.handleChange} />
+                                <span>Pass: </span><InputGroup name='rejectPassword' onChange={this.handleChange} />
+                                <ButtonContainer>
+                                    <Button intent={Intent.DANGER} text={`Reject Pickup`} onClick={this.handleRejectClick(pickup)} />
+                                </ButtonContainer>
+                            </CancelForm>
+                        )
+                    }
                 </DialogContainer>
 
             </Dialog>
@@ -206,6 +229,9 @@ const ButtonContainer = styled.div`
 `
 
 const CancelForm = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: 150px;
     margin-top: 25px;
     margin-bottom: 25px;

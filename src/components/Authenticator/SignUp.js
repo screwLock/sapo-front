@@ -258,6 +258,7 @@ class SignUp extends React.Component {
                         <FormGroup
                             label="Organization Street Address"
                             labelFor="text-input"
+                            helperText="This is the address that will be used for routing"
                         >
                             <InputGroup name="streetAddress" onChange={this.handleChange} />
                         </FormGroup>

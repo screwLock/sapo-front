@@ -2,11 +2,11 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
 import { Elements, StripeProvider } from 'react-stripe-elements';
-import BillingForm from './BillingForm'
-import CancelDialog from './CancelDialog'
+import BillingForm from '../Account/BillingForm'
+import CancelDialog from '../Account/CancelDialog'
 import config from '../../config'
 
-class Billing extends React.Component {
+class Unpaid extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -30,12 +30,12 @@ class Billing extends React.Component {
             premium: '$199.00',
             canceled: 'Canceled ($0.00)'
         }
-        const membership = this.props.authData.signInUserSession.idToken.payload['custom:membership']
+        const membership = this.props.membership
         const href = `https://schedule.sapopros.com/?id=${this.props.authData.username}`
         return (
             <React.Fragment>
                 <BillingInfoRow><H5>Current Membership Level: {membership.toUpperCase()}</H5></BillingInfoRow>
-                <BillingInfoRow><H5>Next Statement Date: {this.props.nextStatement.toUpperCase()}</H5></BillingInfoRow>
+                <BillingInfoRow><H5>Next Statement Date:</H5></BillingInfoRow>
                 <BillingInfoRow><H5>Monthly Cost: {`${prices[membership]}`}</H5></BillingInfoRow>
                 <MembButtonRow>
                     <Button
@@ -58,7 +58,6 @@ class Billing extends React.Component {
                     isOpen={this.state.isCancelOpen}
                     handleOpen={this.handleCancelOpen}
                 />
-                <URL>Your URL for your scheduling page: <a href={href} target="_blank">https://schedule.sapopros.com/?id={this.props.authData.username}</a></URL>
                 <CancelButtonRow>
                     <Button
                         onClick={this.handleCancelOpen}
@@ -90,4 +89,4 @@ const BillingInfoRow = styled.div`
     margin-bottom: 10px;
 `
 
-export default Billing;
+export default Unpaid;
