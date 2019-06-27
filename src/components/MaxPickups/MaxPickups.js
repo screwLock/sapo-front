@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import produce from 'immer'
-import { Button, H3, Intent, Menu, MenuItem, NumericInput, Popover, Position } from '@blueprintjs/core'
+import { Button, H3, NumericInput } from '@blueprintjs/core'
 
 class MaxPickups extends React.Component {
     constructor(props) {

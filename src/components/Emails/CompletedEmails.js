@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, FormGroup, InputGroup, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import { Button, FormGroup, InputGroup, Intent } from '@blueprintjs/core'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import produce from 'immer'

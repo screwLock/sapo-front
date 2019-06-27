@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
+import { Button, H3, H5, Intent} from '@blueprintjs/core'
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import { format } from 'date-fns'
 import PayForm from './PayForm'

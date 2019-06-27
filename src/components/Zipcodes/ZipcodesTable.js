@@ -1,7 +1,6 @@
 import * as React from 'react'
 import ReactTable from 'react-table'
 import { Button, Intent } from '@blueprintjs/core'
-import DayPicker from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import "react-table/react-table.css"
 import getDisabledDates from './getDisabledDates'

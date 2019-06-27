@@ -14,7 +14,6 @@ class AdminLogin extends React.Component {
 
     authenticateAdmin = () => {
         let payload = this.props.authData.signInUserSession.idToken.payload
-        let admins = []
         if ((this.state.username === payload['custom:adminUserName1'] && this.state.password === payload['custom:adminPassword1']) ||
             (this.state.username === payload['custom:adminUserName2'] && this.state.password === payload['custom:adminPassword2']) ||
             (this.state.username === payload['custom:adminUserName3'] && this.state.password === payload['custom:adminPassword3']) ||

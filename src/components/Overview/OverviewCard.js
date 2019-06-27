@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
+import { Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
 import styled from 'styled-components'
-import { Draggable } from 'react-beautiful-dnd'
-import { getConfirmation } from 'history/DOMUtils';
 
 class OverviewCard extends Component {
     constructor(props) {

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { AppToaster } from '../Toaster'
 import { CardElement, injectStripe } from 'react-stripe-elements'
-import { API, Auth } from "aws-amplify"
-import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog, Radio, RadioGroup } from "@blueprintjs/core"
+import { API } from "aws-amplify"
+import { Button, Classes, FormGroup, InputGroup, Intent, Dialog, Radio, RadioGroup } from "@blueprintjs/core"
 import styled from 'styled-components'
 
 class BillingForm extends React.Component {

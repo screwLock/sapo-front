@@ -6,7 +6,6 @@ import { Button, H3, Intent } from '@blueprintjs/core';
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer'
 import EmployeesTable from './EmployeesTables'
-import { API } from "aws-amplify"
 
 class Employees extends React.Component {
   constructor(props) {

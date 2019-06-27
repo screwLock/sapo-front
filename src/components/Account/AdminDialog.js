@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Classes, Intent, Dialog } from "@blueprintjs/core"
 
 class AdminDialog extends React.Component {
     constructor(props){

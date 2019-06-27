@@ -1,8 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, FormGroup, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 class SignIn extends React.Component {
     static defaultProps = {
@@ -56,7 +56,7 @@ class SignIn extends React.Component {
         this.setState({ loading: true });
         try {
             // console.log(`onConfirmSignIn:: ${this.state.email}, ${token}`);
-            const data = await Auth.confirmSignIn(this.state.user, token);
+            // const data = await Auth.confirmSignIn(this.state.user, token);
             // console.log(`onConfirmSignIn::Response#2: ${JSON.stringify(data, null, 2)}`);
             const profile = await Auth.currentUser();
             this.props.onAuthStateChange(true, profile);

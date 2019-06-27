@@ -3,7 +3,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Grid, Cell } from "styled-css-grid"
 import { format, isSameDay } from 'date-fns'
 import OverviewCard from './OverviewCard.js'
-import { Card, Button, Overlay, Classes, Elevation } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { makeDailyPickupsPDF } from './PickupPDFMake'
 import { CustomerCallIn } from './CustomerCallin/CustomerCallIn'

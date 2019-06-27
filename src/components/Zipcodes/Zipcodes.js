@@ -7,7 +7,6 @@ import ZipcodesTable from './ZipcodesTable'
 import EditZipcode from './EditZipcode'
 import PreviewDates from './PreviewDates'
 import { AppToaster } from '../Toaster'
-import { API } from "aws-amplify"
 
 class Zipcodes extends React.Component {
     constructor(props) {

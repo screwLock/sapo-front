@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { H4, H6, Checkbox } from '@blueprintjs/core'
+import { H4, Checkbox } from '@blueprintjs/core'
 import styled from 'styled-components'
 
 class MandatoryCheckboxes extends React.PureComponent {
