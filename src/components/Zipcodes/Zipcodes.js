@@ -18,39 +18,44 @@ class Zipcodes extends React.Component {
             previewDisabledDates: [],
             isPreviewOpen: false,
             editIndex: '',
-            editZipcode: { zipcode: '', weekdays: []},
+            editZipcode: { zipcode: '', weekdays: [] },
         }
     }
 
     componentDidMount = async () => {
         if (!this.props.authState) {
-          return;
+            return;
         }
         try {
-          // const userConfig = await this.props.getUserConfig();
-          if (this.props.userConfig.zipcodes != null) {
-            // this.setState({ userConfig, zipcodes: userConfig.zipcodes });
-            this.setState({zipcodes: this.props.userConfig.zipcodes})
-          }
-          // else {
-          //  this.setState({ userConfig })
-          // }
+            // const userConfig = await this.props.getUserConfig();
+            if (this.props.userConfig.zipcodes != null) {
+                // this.setState({ userConfig, zipcodes: userConfig.zipcodes });
+                this.setState({ zipcodes: this.props.userConfig.zipcodes })
+            }
+            // else {
+            //  this.setState({ userConfig })
+            // }
         } catch (e) {
-          alert(e);
+            alert(e);
         }
     }
 
     addZipcode = (zipcode) => {
-        this.setState(
-            produce(draft => {
-                draft.zipcodes.push(zipcode)
-            }), async () => await this.saveZipcodes()
-        )
+        if (this.props.membership !== 'SAPO Basic' || this.state.zipcodes.length < 5) {
+            this.setState(
+                produce(draft => {
+                    draft.zipcodes.push(zipcode)
+                }), async () => await this.saveZipcodes()
+            )
+        }
+        else {
+            this.showToast('You are limited to 5 zipcodes under the Basic plan.  Please upgrade for unlimited zipcodes!')
+        }
     }
 
     saveZipcodes = () => {
-        this.props.updateUserConfig('zipcodes', this.state.zipcodes, { zipcodes: this.state.zipcodes})
-      }
+        this.props.updateUserConfig('zipcodes', this.state.zipcodes, { zipcodes: this.state.zipcodes })
+    }
 
     editZipcode = (edit) => {
         let zipcodes = [...this.state.zipcodes]
@@ -64,14 +69,20 @@ class Zipcodes extends React.Component {
 
     createEditZipcode = (index) => {
         if (this.state.zipcodes[index]) {
-            this.setState({ editZipcode: { weekdays: this.state.zipcodes[index].weekdays.slice(),
-                            zipcode: this.state.zipcodes[index].zipcode }
-                        })
+            this.setState({
+                editZipcode: {
+                    weekdays: this.state.zipcodes[index].weekdays.slice(),
+                    zipcode: this.state.zipcodes[index].zipcode
+                }
+            })
         }
         else {
-            this.setState({ editZipcode: { weekdays: [], 
-                                           zipcode: '' } 
-                        })
+            this.setState({
+                editZipcode: {
+                    weekdays: [],
+                    zipcode: ''
+                }
+            })
         }
     }
 
@@ -98,15 +109,15 @@ class Zipcodes extends React.Component {
 
     handleEditZipcodeOpen = (index) => {
         // change the Edit Index to the new index
-        this.setState({ editIndex: index }, 
-        // now change the edit zipcode to the indexed zipcode
+        this.setState({ editIndex: index },
+            // now change the edit zipcode to the indexed zipcode
             () => this.createEditZipcode(index))
         // now close the dialog (can be async)
         this.setState({ isEditZipcodeOpen: !this.state.isEditZipcodeOpen })
     }
 
     handleEditZipcodeClose = () => {
-        this.setState({ isEditZipcodeOpen: false})
+        this.setState({ isEditZipcodeOpen: false })
     }
 
     handlePreviewClose = () => {

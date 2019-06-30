@@ -64,7 +64,8 @@ class Home extends React.Component {
     getCustomerInfo = () => {
         return API.get("sapo", '/billing', {
             'queryStringParameters': {
-                'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID']
+                'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
+                'email': this.props.authData.signInUserSession.idToken.payload.email
             }
         });
     }

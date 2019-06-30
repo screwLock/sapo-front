@@ -92,7 +92,6 @@ const getDisabledDates = (weekdays, iDate = new Date()) => {
     let dateRange = eachDay(startDate, endDate)
     // get the dates from the zipcode checkboxes
     let convertedDates = convertToDates(weekdays)
-    console.log(convertedDates)
 
     //get the difference of the two date arrays
     return [dateRange, convertedDates].sort((a,b)=> b.length - a.length).reduce((a,b)=>a.filter(o => !b.some(v => isSameDay(o,v))));

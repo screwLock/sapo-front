@@ -48,19 +48,19 @@ class Admin extends React.Component {
     }
 
     getSelectOptions = (membership) => {
-        if (membership === 'basic') {
+        if (membership === 'SAPO Basic') {
             return [
                 { value: 'admin1', label: 'Admin 1' }
             ]
         }
-        else if (membership === 'standard') {
+        else if (membership === 'SAPO Standard') {
             return [
                 { value: 'admin1', label: 'Admin 1' },
                 { value: 'admin2', label: 'Admin 2' },
                 { value: 'admin3', label: 'Admin 3' },
             ]
         }
-        else if (membership === 'premium') {
+        else if (membership === 'SAPO Premium') {
             return [
                 { value: 'admin1', label: 'Admin 1' },
                 { value: 'admin2', label: 'Admin 2' },
