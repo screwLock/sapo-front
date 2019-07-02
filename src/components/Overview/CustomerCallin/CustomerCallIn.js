@@ -472,7 +472,6 @@ export class CustomerCallIn extends React.Component {
                             <div>
                                 <H4>Additional Comments</H4>
                                 <CommentsTextArea
-                                    growVertically={true}
                                     name='comments'
                                     large={false}
                                     intent={Intent.PRIMARY}
