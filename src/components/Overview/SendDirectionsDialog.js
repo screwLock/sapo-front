@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Classes, H5, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { API } from "aws-amplify"
 import { AppToaster } from '../Toaster'
@@ -13,8 +13,10 @@ class SendDirectionsDialog extends React.Component {
         }
     }
 
-    handleDialogClose = () => {
-        this.props.handleOpen()
+    handleClose = () => {
+        this.setState({ employee: {} },
+            this.props.handleOpen
+        )
     }
 
     handleEmployeeSelect = (employee, action) => {
@@ -26,21 +28,56 @@ class SendDirectionsDialog extends React.Component {
                 break;
             case 'clear':
                 this.setState({
-                    employee: '',
+                    employee: {},
                 });
                 break;
         }
+    }
+
+    handleSubmit = () => {
+        const employee = this.state.employee
+        if(Object.entries(employee).length !== 0){
+            API.post("sapo", '/routing', {
+                body: {
+                    email: employee.value,
+                    pickups: this.props.pickups,
+                    user: this.props.user
+                }
+            }).then(response => {
+                this.showToast('Successfully Saved!')
+            }).catch(error => {
+                this.showToast(`Save Failed`)
+            })
+        }
+        else {
+            this.showToast('You need to select a driver to send routes to')
+        }
+    }
+
+    showToast = (message) => {
+        AppToaster.show({ message: message });
     }
 
     render() {
         return (
             <Dialog
                 isOpen={this.props.isOpen}
-                onClose={this.handleDialogClose}
-                title='Send Directions to Employees'
+                onClose={this.handleClose}
+                title='Send Directions to Drivers'
             >
                 <DialogContainer>
                     <div>
+                        <H5>Route:</H5>
+                        <ol>
+                            {this.props.pickups.map(pickup => {
+                                return (
+                                    <li key={pickup.email}>{pickup.streetAddress}, {pickup.zipcode}</li>
+                                )
+                            })}
+                        </ol>
+                    </div>
+                    <div>
+                        <H5>Send To Driver:</H5>
                         <EmployeeSelect
                             onChange={this.handleEmployeeSelect}
                             employees={this.props.userConfig.employees}
@@ -48,6 +85,12 @@ class SendDirectionsDialog extends React.Component {
                         />
                     </div>
                 </DialogContainer>
+                <div className={Classes.DIALOG_FOOTER}>
+                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
+                    </div>
+                </div>
             </Dialog>
         )
     }

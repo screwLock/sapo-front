@@ -78,13 +78,13 @@ class OverviewPickups extends React.Component {
 
     // in renderFooter(), a key was added to CustomerCallIn to ensure categories is set when loaded or changed
 
-    renderFooter = (pickups) => {
+    renderFooter = (routePickups) => {
         if (Object.keys(this.props.userConfig).length > 0) {
             return (
                 <Footer>
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
-                    <Button minimal="false" onClick={this.handleSendDirectionsClick} rightIcon="document" id="createPDF">Create Directions</Button>
+                    <Button minimal="false" onClick={this.handleSendDirectionsClick(routePickups)} rightIcon="document" id="createPDF">Create Directions</Button>
                     <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Preview Route On Map</Button>
                 </Footer>
             )
@@ -96,11 +96,9 @@ class OverviewPickups extends React.Component {
         }
     }
 
-    handleSendDirectionsClick = () => {
-        const routePickups = this.props.pickups.filter(pickup => pickup.inRoute === true)
-
+    handleSendDirectionsClick = (pickups) => () => {
         // don't create if no pickups
-        if (routePickups.length === 0 ||
+        if (pickups.length === 0 ||
             this.props.userConfig.employees == null ||
             this.props.userConfig.employees.length === 0
         ) {
@@ -157,13 +155,16 @@ class OverviewPickups extends React.Component {
 
     render() {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
+        const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
+
         return (
             <React.Fragment>
                 <SendDirectionsDialog
                     isOpen={this.state.isSendDirectionsOpen}
-                    handleOpen={this.handleSendDirectionsClick}
+                    handleOpen={this.handleSendDirectionsClick(routePickups)}
                     userConfig={this.props.userConfig}
-                    pickups={this.props.datePickups}
+                    pickups={routePickups}
+                    user={this.props.user}
                 />
                 <StatusDialog
                     isOpen={this.state.isStatusOpen}
@@ -190,7 +191,7 @@ class OverviewPickups extends React.Component {
                             </Droppable>
                         </DragDropContext>
                     </Cards>
-                    {this.renderFooter(datePickups)}
+                    {this.renderFooter(routePickups)}
                 </Pickups>
             </React.Fragment>
         );
