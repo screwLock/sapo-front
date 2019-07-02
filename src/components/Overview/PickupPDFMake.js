@@ -1,9 +1,6 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { format } from 'date-fns'
-import * as smsLink from 'sms-link'
-
-
 
 export const makeDailyPickupsPDF = (pickups, user) => () => {
     const routePickups = pickups.filter(pickup => pickup.inRoute === true)
