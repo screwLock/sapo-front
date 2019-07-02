@@ -63,7 +63,7 @@ class SendDirectionsDialog extends React.Component {
             <Dialog
                 isOpen={this.props.isOpen}
                 onClose={this.handleClose}
-                title='Send Directions to Drivers'
+                title='Dispatch Routes To Drivers'
             >
                 <DialogContainer>
                     <div>

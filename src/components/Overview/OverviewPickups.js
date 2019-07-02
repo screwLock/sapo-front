@@ -84,7 +84,7 @@ class OverviewPickups extends React.Component {
                 <Footer>
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} />
-                    <Button minimal="false" onClick={this.handleSendDirectionsClick(routePickups)} rightIcon="document" id="createPDF">Create Directions</Button>
+                    <Button minimal="false" onClick={this.handleSendDirectionsClick(routePickups)} rightIcon="document" id="createPDF">Dispatch Routes</Button>
                     <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Preview Route On Map</Button>
                 </Footer>
             )
