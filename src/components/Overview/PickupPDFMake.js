@@ -1,6 +1,7 @@
 import pdfMake from 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 import { format } from 'date-fns'
+import * as smsLink from 'sms-link'
 
 
 
@@ -39,15 +40,24 @@ export const makeDailyPickupsPDF = (pickups, user) => () => {
             text: `${index + 1}) Name: ${pickup.lastName}, ${pickup.firstName} 
                         Address: ${pickup.streetAddress}
                         Haul: ${pickup.donations.map(donation => {
-                return (`${donation}`)
+                return (` ${donation}`)
             })}
                         Pickup Details: ${pickup.serviceDetails.map(detail => {
-                return (`${detail}`)
+                return (` ${detail.name}`)
             })}
+                        Phone: ${pickup.phoneNumber}
                         `,
             lineHeight: 1
         },
         );
+        document.content.push({
+            text: `Call ${pickup.phoneNumber}\n`,
+            link: `tel:${pickup.phoneNumber}`
+        })
+        document.content.push({
+            text: `Text ${pickup.phoneNumber}\n`,
+            link: `sms:${pickup.phoneNumber}`
+        })
     });
 
     // create the pdf with the supplied name
@@ -61,5 +71,6 @@ const makeURL = (user, routePickups) => {
     const origin = "&origin=" + user.lat + "," + user.lng;
     const destination = "&destination=" + user.lat + "," + user.lng;
     const travelMode = "&travelmode=driving"
-    return new URL(url + origin + destination + travelMode + waypoints);
+    //return new URL(url + origin + destination + travelMode + waypoints);
+    return url + origin + destination + travelMode + waypoints
 }
