@@ -105,7 +105,7 @@ class OverviewCard extends Component {
                         })
                             }</ul>
                         </div>
-                        <div>Comments: {this.props.comments ? `${this.props.comments}` : 'None'}</div>
+                        <div>Comments: {this.props.pickup.comments ? `${this.props.pickup.comments}` : 'None'}</div>
                     </Collapse>
                 </StyledCard>
             </div>

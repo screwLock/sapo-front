@@ -37,7 +37,7 @@ export class CustomerCallIn extends React.Component {
             serviceDetails: [],
             mandatoryDetails: [],
             selectedServiceDetails: [],
-            donations: [],
+            donations: {},
             disabledDays: [],
             lat: '',
             lng: '',
@@ -80,20 +80,30 @@ export class CustomerCallIn extends React.Component {
 
     handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
         // add or remove from the donations array
-        const donations = [...this.state.donations]
+        let donations = {...this.state.donations}
         const name = this.state.categories[cIndex].donatables[dIndex].name
-        if (donations.includes(name)) {
-            donations.splice(donations.indexOf(name), 1);
+        if (donations.hasOwnProperty(name)) {
+            delete donations[name]
         }
         else {
-            donations.push(name)
-            donations.sort()
+
+            donations[name] = 1
         }
         // save the checkbox change and new array
         this.setState(
             produce(this.state, draft => {
                 draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
-                draft.donations = [...donations]
+                draft.donations = {...donations}
+            })
+        )
+    }
+
+    handleDonationQuantityChange = (e) => {
+        let donations = { ...this.state.donations}
+        donations[e.target.name] = e.target.value
+        this.setState(
+            produce(this.state, draft => {
+                draft.donations = {...donations}
             })
         )
     }
@@ -299,7 +309,7 @@ export class CustomerCallIn extends React.Component {
                                         status: 'confirmed',
                                         comments: this.state.comments || null,
                                         donations: this.state.donations,
-                                        serviceDetails: this.state.serviceDetails,
+                                        serviceDetails: this.state.selectedServiceDetails,
                                         ccAddresses: this.props.userConfig.confirmedEmails.confirmedCCAddresses,
                                         bccAddresses: this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
                                         subjectLine: this.props.userConfig.confirmedEmails.confirmedSubjectLine,
@@ -354,7 +364,7 @@ export class CustomerCallIn extends React.Component {
             this.showToast('Enter a valid phone number')
             return false
         }
-        else if (this.state.donations.length === 0) {
+        else if (Object.getOwnPropertyNames(this.state.donations).length === 0) {
             this.showToast('You have not selected any donations')
             return false
         }
@@ -457,8 +467,11 @@ export class CustomerCallIn extends React.Component {
                         <div>
                             <CategoryCheckboxes
                                 categories={this.state.categories}
+                                restrictions={this.props.userConfig.restrictions}
+                                donations={this.state.donations}
                                 onChange={this.handleCategoryCheckedChange}
                                 isVisible={this.state.showPickupDetails}
+                                handleQuantityChange={this.handleDonationQuantityChange}
                             />
                         </div>
                         <div>
