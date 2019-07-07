@@ -310,6 +310,7 @@ export class CustomerCallIn extends React.Component {
                                         comments: this.state.comments || null,
                                         donations: this.state.donations,
                                         serviceDetails: this.state.selectedServiceDetails,
+                                        route: null,
                                         ccAddresses: this.props.userConfig.confirmedEmails.confirmedCCAddresses,
                                         bccAddresses: this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
                                         subjectLine: this.props.userConfig.confirmedEmails.confirmedSubjectLine,
