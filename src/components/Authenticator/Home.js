@@ -15,7 +15,8 @@ class Home extends React.Component {
         delinquent: false,
         plan: '',
         nextStatement: '',
-        membership: ''
+        membership: '',
+        last4: ''
     };
 
     constructor(props) {
@@ -47,7 +48,8 @@ class Home extends React.Component {
                 delinquent: customerInfo.delinquent,
                 plan: customerInfo.plan,
                 nextStatement: customerInfo.nextStatement,
-                membership: customerInfo.membership
+                membership: customerInfo.membership,
+                last4: customerInfo.last4,
             }
             );
         } catch (e) {
@@ -76,7 +78,8 @@ class Home extends React.Component {
             delinquent: customerInfo.delinquent,
             plan: customerInfo.plan,
             nextStatement: customerInfo.nextStatement,
-            membership: customerInfo.membership
+            membership: customerInfo.membership,
+            last4: customerInfo.last4
         }
         );
     }
@@ -131,6 +134,7 @@ class Home extends React.Component {
                         updateCustomerInfo={this.updateCustomerInfo}
                         membership={this.state.membership}
                         nextStatement={this.state.nextStatement}
+                        last4={this.state.last4}
                     />
                 </Cell>
             </Grid>

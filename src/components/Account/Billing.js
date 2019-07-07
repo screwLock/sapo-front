@@ -25,11 +25,18 @@ class Billing extends React.Component {
     }
 
     render() {
+        let last4 = ''
         const prices = {
             'SAPO Basic': '$59.99',
             'SAPO Standard': '$149.99',
             'SAPO Premium': '$199.99',
             'Canceled': 'Canceled ($0.00)'
+        }
+        if(this.props.last4 === 'No Payment Info Supplied'){
+            last4 = this.props.last4
+        }
+        else {
+            last4 = `**** **** **** ${this.props.last4}`
         }
         const membership = this.props.membership
         const href = `https://schedule.sapopros.com/?id=${this.props.authData.username}`
@@ -38,6 +45,7 @@ class Billing extends React.Component {
                 <BillingInfoRow><H5>Current Membership Level: {membership.toUpperCase()}</H5></BillingInfoRow>
                 <BillingInfoRow><H5>Next Statement Date: {format(new Date(this.props.nextStatement*1000), 'MM/DD/YYYY')}</H5></BillingInfoRow>
                 <BillingInfoRow><H5>Monthly Cost: {`${prices[membership]}`}</H5></BillingInfoRow>
+                <BillingInfoRow><H5>Credit Card: {`${last4}`}</H5></BillingInfoRow>
                 <MembButtonRow>
                     <Button
                         onClick={this.handleChangeOpen}

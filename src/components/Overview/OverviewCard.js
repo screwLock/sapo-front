@@ -22,7 +22,7 @@ class OverviewCard extends Component {
     }
 
     handleCheckedChange = () => {
-        this.props.handleRouteChange(this.props.index);       
+        this.props.handleRouteChange(this.props.index);
     }
 
     handleStatusClick = (index) => () => {
@@ -31,19 +31,19 @@ class OverviewCard extends Component {
     }
 
     setIcon = (pickup) => {
-        if(pickup.status === 'submitted'){
+        if (pickup.status === 'submitted') {
             return 'issue'
         }
-        else if(pickup.status === 'confirmed'){
+        else if (pickup.status === 'confirmed') {
             return 'tick'
         }
-        else if(pickup.status === 'completed'){
+        else if (pickup.status === 'completed') {
             return 'tick-circle'
         }
-        else if(pickup.status === 'canceled'){
+        else if (pickup.status === 'canceled') {
             return 'disable'
         }
-        else if(pickup.status === 'rejected'){
+        else if (pickup.status === 'rejected') {
             return 'delete'
         }
     }
@@ -53,10 +53,17 @@ class OverviewCard extends Component {
         this.ref = ref;
         // give the dom ref to react-beautiful-dnd
         this.props.innerRef(ref);
-      };
+    };
 
     render() {
         const { provided, innerRef, pickup } = this.props;
+        let headerAddress;
+        if(this.props.pickup.apt == null){
+            headerAddress =`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode} `
+        }
+        else {
+            headerAddress =`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.apt}, ${this.props.pickup.zipcode} `
+        }
         return (
             <div
                 {...provided.draggableProps}
@@ -64,10 +71,10 @@ class OverviewCard extends Component {
                 ref={this.setRef}
             >
                 <StyledCard interactive={true} elevation={Elevation.TWO} className={'card'}>
-                    <H5 className={'cardHeader'} 
+                    <H5 className={'cardHeader'}
                         onClick={this.handleClick}>
-                        {`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode} `} 
-                        <Icon icon={this.setIcon(this.props.pickup)}/>
+                        {headerAddress}
+                        <Icon icon={this.setIcon(this.props.pickup)} />
                     </H5>
                     <H5>{`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</H5>
                     <Checkbox
@@ -81,9 +88,24 @@ class OverviewCard extends Component {
                         <div>Contact Name: {`${this.props.pickup.lastName}, ${this.props.pickup.firstName}`}</div>
                         <div>Contact Number: {this.props.pickup.phoneNumber}</div>
                         <div></div>
-                        <div>Order: 
-                            <ul>{this.props.pickup.donations.map(donation => (<li key={donation}>{donation}</li>))}</ul>
+                        <div>Order:
+                            {/* this is for early pickups when donations was an array instead of an object} */}
+                            {/* from here on out, donations is an object with key-value pairs of name: qty */}
+                            {/* should probably delete ALL pickups before 7/8/19 from dynamoDB */}
+                            {Array.isArray(this.props.pickup.donations) ? (
+                                <ul>{this.props.pickup.donations.map(donation => (<li key={donation}>{donation}</li>))}</ul>
+                            ) : (<ul>{Object.entries(this.props.pickup.donations).map((kv) => {
+                                return (<li key={kv[0]}>{`${kv[0]} - Qty: ${kv[1]}`}</li>)
+                            })} </ul>
+                                )}
                         </div>
+                        <div>Pickup Details: 
+                            <ul>{this.props.pickup.serviceDetails.map(detail => {
+                            return (<li key={detail}>{`${detail}`}</li>)
+                        })
+                            }</ul>
+                        </div>
+                        <div>Comments: {this.props.comments ? `${this.props.comments}` : 'None'}</div>
                     </Collapse>
                 </StyledCard>
             </div>
