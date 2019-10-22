@@ -306,7 +306,7 @@ export class CustomerCallIn extends React.Component {
                                         lng: this.state.lng,
                                         phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
                                         email: this.state.email,
-                                        status: 'confirmed',
+                                        status: 'submitted',
                                         comments: this.state.comments || null,
                                         donations: this.state.donations,
                                         serviceDetails: this.state.selectedServiceDetails,
