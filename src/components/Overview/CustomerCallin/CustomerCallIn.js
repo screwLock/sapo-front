@@ -311,10 +311,10 @@ export class CustomerCallIn extends React.Component {
                                         donations: this.state.donations,
                                         serviceDetails: this.state.selectedServiceDetails,
                                         route: null,
-                                        ccAddresses: this.props.userConfig.confirmedEmails.confirmedCCAddresses,
-                                        bccAddresses: this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
-                                        subjectLine: this.props.userConfig.confirmedEmails.confirmedSubjectLine,
-                                        messageBody: this.props.userConfig.confirmedEmails.confirmedMessageBody
+                                        ccAddresses: this.props.userConfig.submittedEmails.submittedCCAddresses,
+                                        bccAddresses: this.props.userConfig.submittedEmails.submittedBCCAddresses,
+                                        subjectLine: this.props.userConfig.submittedEmails.submittedSubjectLine,
+                                        messageBody: this.props.userConfig.submittedEmails.submittedMessageBody
                                     }
                                 }).then(response => {
                                     this.handleClose()
