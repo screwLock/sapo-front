@@ -181,7 +181,7 @@ export class CustomerCallIn extends React.Component {
                     showDatePicker: true,
                     selectedDate: null,
                     disabledDays: [...getDisabledDates(this.props.userConfig.zipcodes.find(zip => zip.zipcode === zipcode.value).weekdays),
-                    ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)),
+                    ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)), ...this.props.exceededDays.map(eDay => new Date(eDay)),
                     { before: addDays(new Date(), 1) }
                     ]
                 });
@@ -320,6 +320,7 @@ export class CustomerCallIn extends React.Component {
                                     this.handleClose()
                                     this.showToast('Pickup Successfully Saved')
                                     // send email
+                                    // TODO:  we should recalculate max pickups again
                                 }).catch(error => {
                                     this.showToast('ERROR: Pickup not saved!')
                                 })

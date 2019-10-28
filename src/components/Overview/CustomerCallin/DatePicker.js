@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { H4 } from '@blueprintjs/core'
+import { addMonths } from 'date-fns'
 import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 
@@ -18,6 +19,7 @@ class DatePicker extends React.PureComponent {
                         onDayClick={this.props.onClick}
                         selectedDays={this.props.selectedDate}
                         fromMonth={new Date()}
+                        toMonth={addMonths(new Date(), 4)}
                     />
                 </React.Fragment>
             )

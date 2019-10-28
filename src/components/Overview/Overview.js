@@ -5,7 +5,7 @@ import produce from 'immer';
 import LeafletMap from './LeafletMap'
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
-import { format, getMonth, getYear, isSameDay, lastDayOfMonth } from 'date-fns'
+import { addMonths, getMonth, getYear, lastDayOfMonth } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
 import config from '../../config'
@@ -23,6 +23,7 @@ class Overview extends Component {
       selectedDate: new Date(),
       selectedMonth: getMonth(new Date()),
       unconfirmedDates: [],
+      exceededDays: [],
       user: {},
       newRoute: false,
       search: ''
@@ -48,6 +49,7 @@ class Overview extends Component {
         }
       }))
       await this.getPickupsByMonth(this.state.selectedMonth)
+      await this.getMaxedPickupsForNMonths(6)
       return;
     }
     else {
@@ -88,6 +90,7 @@ class Overview extends Component {
           }
         )
         await this.getPickupsByMonth(this.state.selectedMonth)
+        await this.getMaxedPickupsForNMonths(6)
 
       } catch (error) {
         this.showToast(`${error}`)
@@ -98,6 +101,23 @@ class Overview extends Component {
 
   createRoute = () => {
     this.setState({ newRoute: !this.state.newRoute });
+  }
+
+  // here is where we check which dates are maxed out for pickups
+  // n should correspond to the toMonth of the DatePicker
+  getMaxedPickupsForNMonths = (n) => {
+    // current Month ...
+    let startDate = new Date()
+    // ... to N months from current month
+    let endDate = addMonths(new Date(), n)
+    return API.get("sapo", "/maxedDays", {
+      'queryStringParameters': {
+        'startDate': startDate.toISOString(),
+        'endDate': endDate.toISOString()
+      }
+    }).then(result => {
+      this.setState({exceededDays: result})
+    })
   }
 
   getPickupsByMonth = (currentMonth) => {
@@ -112,14 +132,14 @@ class Overview extends Component {
     }).then(result => {
       // make sure we add an inRoute attribute for the directions API
       // also an index for changing this inRoute attribute in the Overview Cards
-      this.setState({ pickups: result.map((pickup, index) => { return {... pickup, inRoute: false, index: index} } )})
+      this.setState({ pickups: result.map((pickup, index) => { return { ...pickup, inRoute: false, index: index } }) })
     });
   }
 
   updatePickups = (pickup, pickups, index) => {
     let newPickups = [...pickups]
     newPickups[index] = pickup
-    this.setState({pickups: newPickups})
+    this.setState({ pickups: newPickups })
   }
 
   render() {
@@ -140,7 +160,7 @@ class Overview extends Component {
           pickups={this.state.pickups}
         /></Cell>
         <Cell width={7}><OverviewPickups pickups={this.state.pickups}
-          handleRefresh={() => {this.getPickupsByMonth(this.state.selectedMonth)}}
+          handleRefresh={() => { this.getPickupsByMonth(this.state.selectedMonth) }}
           user={this.state.user}
           routes={this.state.routes}
           handleClick={this.selectPickup}
@@ -151,6 +171,7 @@ class Overview extends Component {
           userConfig={this.props.userConfig}
           updatePickups={this.updatePickups}
           payload={this.props.authData.signInUserSession.idToken.payload}
+          exceededDays={this.state.exceededDays}
         />
         </Cell>
       </Grid>
@@ -161,7 +182,7 @@ class Overview extends Component {
   //  the reordering
   onDragEnd = (pickups) => {
     this.setState({
-      pickups: pickups.map((pickup, index) => { return {...pickup, index:index}})
+      pickups: pickups.map((pickup, index) => { return { ...pickup, index: index } })
     });
   };
 
@@ -194,7 +215,7 @@ class Overview extends Component {
   // unconfirmed pickups should be shown based
   // on the month of the selected day
   selectDate = (date) => {
-      this.setState({selectedDate: date})
+    this.setState({ selectedDate: date })
   }
 }
 
