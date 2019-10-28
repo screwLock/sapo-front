@@ -35,7 +35,6 @@ const StyledHeaderAccount = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
-        margin-right: 25px;
 `;
 
 

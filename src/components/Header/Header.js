@@ -53,12 +53,11 @@ class Header extends React.Component {
 const Header1 = styled.h1`
     padding-left: 20px;
     padding-bottom: 10px;
+    padding-right: 25px;
     color: black;
     border-width: medium;
     border-bottom: solid;
     border-color: lightgrey;
 `;
-
-
 
 export default withRouter(Header);
