@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
-import * as EmailValidator from 'email-validator'
+import * as EmailValidator from 'email-validator' 
 import AccessLevelSelect from "./Access_Level_Select"
 
 
@@ -30,7 +30,8 @@ class NewEmployee extends React.Component {
             email: this.state.email,
             phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
             employeeID: this.state.employeeID || null,
-            access: this.state.access
+            access: this.state.access,
+            ID:  Date.now() + Math.random().toString(36).substr(2, 9)
         });
         // reset the dialog inputs
         this.setState({

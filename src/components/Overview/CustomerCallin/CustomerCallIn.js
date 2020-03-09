@@ -4,6 +4,7 @@ import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Inte
 import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'
 import { StateSelect } from './StateSelect'
+import EmployeeSelect from './EmployeeSelect'
 import { produce } from 'immer'
 import { addDays } from 'date-fns'
 import CategoryCheckboxes from './CategoryCheckboxes'
@@ -44,8 +45,10 @@ export class CustomerCallIn extends React.Component {
             pickupID: '',
             selectedDate: null,
             selectedZipcode: '',
+            selectedEmployee: null,
             showDatePicker: false,
             showPickupDetails: false,
+            submitDisabled: false,
         }
     }
 
@@ -80,7 +83,7 @@ export class CustomerCallIn extends React.Component {
 
     handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
         // add or remove from the donations array
-        let donations = {...this.state.donations}
+        let donations = { ...this.state.donations }
         const name = this.state.categories[cIndex].donatables[dIndex].name
         if (donations.hasOwnProperty(name)) {
             delete donations[name]
@@ -93,17 +96,17 @@ export class CustomerCallIn extends React.Component {
         this.setState(
             produce(this.state, draft => {
                 draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
-                draft.donations = {...donations}
+                draft.donations = { ...donations }
             })
         )
     }
 
     handleDonationQuantityChange = (e) => {
-        let donations = { ...this.state.donations}
+        let donations = { ...this.state.donations }
         donations[e.target.name] = e.target.value
         this.setState(
             produce(this.state, draft => {
-                draft.donations = {...donations}
+                draft.donations = { ...donations }
             })
         )
     }
@@ -148,6 +151,7 @@ export class CustomerCallIn extends React.Component {
             phoneNumber: '',
             email: '',
             selectedZipcode: '',
+            selectedEmployee: null,
             selectedDate: null,
             lat: '',
             lng: '',
@@ -162,13 +166,15 @@ export class CustomerCallIn extends React.Component {
             }),
             mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
                 return detail.isMandatory === true
-            })
+            }),
+            submitDisabled: false
         })
         this.props.onClose()
     }
 
     handleSubmit = () => {
         if (this.validateForms()) {
+            this.setState({ submitDisabled: true })
             this.getLatLng()
         }
     }
@@ -206,6 +212,21 @@ export class CustomerCallIn extends React.Component {
             case 'clear':
                 this.setState({
                     province: '',
+                });
+                break;
+        }
+    }
+
+    handleEmployeeSelect = (employee, action) => {
+        switch (action.action) {
+            case 'select-option':
+                this.setState({
+                    selectedEmployee: employee.value,
+                });
+                break;
+            case 'clear':
+                this.setState({
+                    selectedEmployee: null,
                 });
                 break;
         }
@@ -311,6 +332,7 @@ export class CustomerCallIn extends React.Component {
                                         donations: this.state.donations,
                                         serviceDetails: this.state.selectedServiceDetails,
                                         route: null,
+                                        createdBy: this.state.selectedEmployee.ID,
                                         ccAddresses: this.props.userConfig.submittedEmails.submittedCCAddresses,
                                         bccAddresses: this.props.userConfig.submittedEmails.submittedBCCAddresses,
                                         subjectLine: this.props.userConfig.submittedEmails.submittedSubjectLine,
@@ -323,12 +345,14 @@ export class CustomerCallIn extends React.Component {
                                     // TODO:  we should recalculate max pickups again
                                 }).catch(error => {
                                     this.showToast('ERROR: Pickup not saved!')
+                                    this.setState({ submitDisabled: false })
                                 })
                             })// end of setState
                     } //end of if
                 }
                 else {
                     this.showToast('Not a valid street address')
+                    this.setState({ submitDisabled: false })
                 }
             }, (e) => {
                 alert(e);
@@ -375,6 +399,10 @@ export class CustomerCallIn extends React.Component {
         else if ((this.state.mandatoryDetails.length > 0)
             && (this.state.mandatoryDetails.filter(detail => { return detail.checked === true }).length !== this.state.mandatoryDetails.length)) {
             this.showToast('Customer must certify that all requirements are met')
+            return false
+        }
+        else if (this.state.selectedEmployee === '') {
+            this.showToast('Please select your employee signature')
             return false
         }
         else {
@@ -503,11 +531,19 @@ export class CustomerCallIn extends React.Component {
                                 isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
                             />
                         </div>
+                        <div>
+                            {this.state.showPickupDetails ? (
+                                <EmployeeSelect employees={this.props.userConfig.employees}
+                                    onChange={this.handleEmployeeSelect}
+                                    selectedEmployee={this.state.selectedEmployee}
+                                />
+                            ) : ''}
+                        </div>
                     </DialogContainer>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                             <Button onClick={this.handleClose}>Cancel</Button>
-                            <Button onClick={this.handleSubmit}>Submit</Button>
+                            <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
                         </div>
                     </div>
                 </Dialog>
