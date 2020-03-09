@@ -42,6 +42,7 @@ class OverviewPickups extends React.Component {
                                     handleClick={this.props.handleClick}
                                     isAllOpen={this.state.isAllOpen}
                                     handleRouteChange={this.props.handleRouteChange}
+                                    userConfig={this.props.userConfig}
                                 />
                             )}
                         </Draggable>

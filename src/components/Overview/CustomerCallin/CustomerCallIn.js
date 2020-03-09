@@ -401,7 +401,7 @@ export class CustomerCallIn extends React.Component {
             this.showToast('Customer must certify that all requirements are met')
             return false
         }
-        else if (this.state.selectedEmployee === '') {
+        else if (this.state.selectedEmployee === null) {
             this.showToast('Please select your employee signature')
             return false
         }

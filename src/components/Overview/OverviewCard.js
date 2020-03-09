@@ -57,12 +57,26 @@ class OverviewCard extends Component {
 
     render() {
         const { provided, innerRef, pickup } = this.props;
-        let headerAddress;
+        let headerAddress, createdBy, employee;
         if(this.props.pickup.apt == null){
             headerAddress =`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.zipcode} `
         }
         else {
             headerAddress =`${this.props.ordinal + 1}) ${this.props.pickup.streetAddress}, ${this.props.pickup.apt}, ${this.props.pickup.zipcode} `
+        }
+        //need to cover old submissions before createdBy was persisted
+        if(this.props.pickup.createdBy == null){
+            createdBy = 'N/A'
+        }
+        else if(this.props.pickup.createdBy === 'Donor'){
+            createdBy = 'Donor'
+        }
+        else {
+            //TODO:  Add employee contact info
+            employee = this.props.userConfig.employees.find(employee => {
+                return employee.ID = this.props.pickup.createdBy
+            })
+            createdBy = `${employee.lastName}, ${employee.firstName}`
         }
         return (
             <div
@@ -106,6 +120,7 @@ class OverviewCard extends Component {
                             }</ul>
                         </div>
                         <div>Comments: {this.props.pickup.comments ? `${this.props.pickup.comments}` : 'None'}</div>
+                        <div>Submitted By: {createdBy}</div>
                     </Collapse>
                 </StyledCard>
             </div>
