@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { StateSelect } from './StateSelect'
 import EmployeeSelect from './EmployeeSelect'
 import { produce } from 'immer'
-import { addDays } from 'date-fns'
+import { addDays, addMonths } from 'date-fns'
 import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
 import MandatoryCheckboxes from './MandatoryCheckboxes'
@@ -79,6 +79,26 @@ export class CustomerCallIn extends React.Component {
                 })
             })
         }
+    }
+
+    // here is where we check which dates are maxed out for pickups
+    // n should correspond to the toMonth of the DatePicker
+    getMaxedPickupsForNMonths = async (n) => {
+        // current Month ...
+        let startDate = new Date()
+        // ... to N months from current month
+        let endDate = addMonths(new Date(), n)
+        return API.get("sapo", "/maxedDays", {
+            'queryStringParameters': {
+                'startDate': startDate.toISOString(),
+                'endDate': endDate.toISOString()
+            }
+        }).then(result => {
+            return result
+        }).catch(error => {
+            console.log(error)
+            return []
+        })
     }
 
     handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
@@ -179,15 +199,16 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    handleZipcodeSelect = (zipcode, action) => {
+    handleZipcodeSelect = async (zipcode, action) => {
         switch (action.action) {
             case 'select-option':
+                let exceededDays = await this.getMaxedPickupsForNMonths(6)
                 this.setState({
                     selectedZipcode: zipcode.value,
                     showDatePicker: true,
                     selectedDate: null,
                     disabledDays: [...getDisabledDates(this.props.userConfig.zipcodes.find(zip => zip.zipcode === zipcode.value).weekdays),
-                    ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)), ...this.props.exceededDays.map(eDay => new Date(eDay)),
+                    ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)), ...exceededDays.map(eDay => new Date(eDay)),
                     { before: addDays(new Date(), 1) }
                     ]
                 });

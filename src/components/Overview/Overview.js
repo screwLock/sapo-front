@@ -5,7 +5,7 @@ import produce from 'immer';
 import LeafletMap from './LeafletMap'
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
-import { addMonths, getMonth, getYear, lastDayOfMonth } from 'date-fns'
+import { getMonth, getYear, lastDayOfMonth } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
 import config from '../../config'
@@ -23,7 +23,6 @@ class Overview extends Component {
       selectedDate: new Date(),
       selectedMonth: getMonth(new Date()),
       unconfirmedDates: [],
-      exceededDays: [],
       user: {},
       newRoute: false,
       search: ''
@@ -49,7 +48,6 @@ class Overview extends Component {
         }
       }))
       await this.getPickupsByMonth(this.state.selectedMonth)
-      await this.getMaxedPickupsForNMonths(6)
       return;
     }
     else {
@@ -90,7 +88,6 @@ class Overview extends Component {
           }
         )
         await this.getPickupsByMonth(this.state.selectedMonth)
-        await this.getMaxedPickupsForNMonths(6)
 
       } catch (error) {
         this.showToast(`${error}`)
@@ -101,23 +98,6 @@ class Overview extends Component {
 
   createRoute = () => {
     this.setState({ newRoute: !this.state.newRoute });
-  }
-
-  // here is where we check which dates are maxed out for pickups
-  // n should correspond to the toMonth of the DatePicker
-  getMaxedPickupsForNMonths = (n) => {
-    // current Month ...
-    let startDate = new Date()
-    // ... to N months from current month
-    let endDate = addMonths(new Date(), n)
-    return API.get("sapo", "/maxedDays", {
-      'queryStringParameters': {
-        'startDate': startDate.toISOString(),
-        'endDate': endDate.toISOString()
-      }
-    }).then(result => {
-      this.setState({exceededDays: result})
-    })
   }
 
   getPickupsByMonth = (currentMonth) => {
@@ -171,7 +151,6 @@ class Overview extends Component {
           userConfig={this.props.userConfig}
           updatePickups={this.updatePickups}
           payload={this.props.authData.signInUserSession.idToken.payload}
-          exceededDays={this.state.exceededDays}
         />
         </Cell>
       </Grid>
