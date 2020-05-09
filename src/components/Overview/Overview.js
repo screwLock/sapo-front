@@ -88,7 +88,6 @@ class Overview extends Component {
           }
         )
         await this.getPickupsByMonth(this.state.selectedMonth)
-
       } catch (error) {
         this.showToast(`${error}`)
       }

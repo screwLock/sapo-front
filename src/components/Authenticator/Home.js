@@ -30,7 +30,7 @@ class Home extends React.Component {
             username: this.props.authData.username || '',
             password: this.props.authData.password || '',
             user: null,
-            userConfig: {},
+            userConfig: null,
             isAdminLoggedIn: false
         };
     }
@@ -183,11 +183,16 @@ class Home extends React.Component {
                 />
             )
         }
-        else if (this.state.isAdminLoggedIn) {
+        else if (this.state.isAdminLoggedIn && this.state.userConfig) {
             return this.renderAdmin()
         }
-        else {
+        else if (this.state.userConfig){
             return this.renderNonAdmin()
+        }
+        else {
+            return (
+                <div>Loading...</div>
+            )
         }
     }
 }
