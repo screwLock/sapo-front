@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { AppToaster } from '../Toaster'
 import { CardElement, injectStripe } from 'react-stripe-elements'
-import { Button, Classes, FormGroup, H3, InputGroup, Intent, Dialog, Radio, RadioGroup } from "@blueprintjs/core"
+import { API } from "aws-amplify"
+import { Button, Classes, FormGroup, InputGroup, Intent, Dialog, Radio, RadioGroup } from "@blueprintjs/core"
 import styled from 'styled-components'
 
 class BillingForm extends React.Component {
@@ -9,27 +10,72 @@ class BillingForm extends React.Component {
         super(props);
         this.state = {
             plan: "",
+            cardholderName: '',
             isProcessing: false,
             isCardComplete: false
         };
     }
-    
 
     handleCardFieldChange = event => {
         this.setState({
-          isCardComplete: event.complete
+            isCardComplete: event.complete
         });
     }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleSubmitClick = async event => {
+    handleSubmit = async event => {
         event.preventDefault();
-        // this.setState({ isProcessing: true });
-        // const { token, error } = await this.props.stripe.createToken({ name });
-        // this.setState({ isProcessing: false });
-        // this.props.onSubmit(this.state.storage, { token, error });
-        // this.showToast('Card successfully charged')
+        if (!this.validateForm()) {
+            return
+        }
+        this.setState({ isProcessing: true });
+        // create the Stripe source
+        try {
+            let source = await this.props.stripe.createSource({
+                type: 'card',
+                owner: {
+                    name: this.state.cardholderName,
+                    email: this.props.authData.signInUserSession.idToken.payload.email
+                },
+
+            })
+            // exit if a source was not created
+            if (source == null) {
+                this.setState({ isProcessing: false})
+                this.showToast('There was an error creating the source')
+                return false
+            }
+            const postBody = {
+                source: source.source.id,
+                email: this.props.authData.signInUserSession.idToken.payload.email,
+                plan: this.state.plan,
+                customer: this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
+                subscription: this.props.authData.signInUserSession.idToken.payload['custom:subscriptionID'],
+            };
+            await API.post("sapo", "/billing", {
+                body: postBody
+            })
+            this.setState({
+                isProcessing: false,
+                cardholderName: '',
+                isCardComplete: false,
+                plan: 'basic'
+            }, () => {
+                this.props.handleOpen();
+                this.props.updateCustomerInfo();
+            });
+            this.showToast('Card successfully charged')
+        } catch (error) {
+            this.setState({
+                isProcessing: false,
+                cardholderName: '',
+                isCardComplete: false,
+                plan: 'basic'
+            }, () => this.props.handleOpen());
+            this.showToast(`Charge Failed. Error with Status Code ${error.response.status}`)
+
+        }
     }
 
     showToast = (message) => {
@@ -37,10 +83,13 @@ class BillingForm extends React.Component {
     }
 
     validateForm = () => {
-        return (
-            this.state.plan !== "" &&
-            this.state.isCardComplete
-        );
+        if (this.state.plan.length > 0 && this.state.isCardComplete && this.state.cardholderName.length > 0) {
+            return true
+        }
+        else {
+            this.showToast('All fields are required')
+            return false
+        }
     }
 
     render() {
@@ -51,28 +100,40 @@ class BillingForm extends React.Component {
                 isOpen={this.props.isOpen}
             >
                 <DialogContainer>
-                    <PlanRadioGroup
-                        label="Choose A MemberShip"
-                        onChange={this.handleChange}
-                        selectedValue={this.state.plan}
-                        name='plan'
-                        inline={true}
-                    >
-                        <Radio label="Bronze" value="Bronze" />
-                        <Radio label="Silver" value="Silver" />
-                        <Radio label="Gold" value="Gold" />
-                    </PlanRadioGroup>
-                    <CardElement
-                        onChange={this.handleCardFieldChange}
-                        style={{
-                            base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
-                        }}
-                    />
+                    <CardRow>
+                        <RadioGroup
+                            label="Choose A MemberShip"
+                            onChange={this.handleChange}
+                            selectedValue={this.state.plan}
+                            name='plan'
+                            inline={true}
+                        >
+                            <Radio label="Basic" value="basic" />
+                            <Radio label="Standard" value="standard" />
+                            <Radio label="Premium" value="premium" />
+                        </RadioGroup>
+                    </CardRow>
+                    <CardRow>
+                        <FormGroup
+                            label="Cardholder's Name"
+                            labelFor="text-input"
+                        >
+                            <InputGroup name="cardholderName" type="text" onChange={this.handleChange} />
+                        </FormGroup>
+                    </CardRow>
+                    <CardElementRow>
+                        <CardElement
+                            onChange={this.handleCardFieldChange}
+                            style={{
+                                base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
+                            }}
+                        />
+                    </CardElementRow>
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button onClick={this.props.handleOpen}>Cancel</Button>
-                        <Button onClick={this.handleSubmit} intent={Intent.PRIMARY}>Submit</Button>
+                        <Button onClick={this.props.handleOpen} loading={this.state.isProcessing}>Cancel</Button>
+                        <Button onClick={this.handleSubmit} intent={Intent.PRIMARY} loading={this.state.isProcessing}>Submit</Button>
                     </div>
                 </div>
             </Dialog>
@@ -86,8 +147,15 @@ const DialogContainer = styled.div`
     margin-top: 10px;
 `
 
-const PlanRadioGroup = styled(RadioGroup)`
+const CardRow = styled.div`
     margin-bottom: 10px;
+    margin-top: 10px;
+    width: 75%;
+`
+
+const CardElementRow = styled.div`
+    margin-top: 20px;
+    margin-bottom: 20px;
 `
 
 export default injectStripe(BillingForm);

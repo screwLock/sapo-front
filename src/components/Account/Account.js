@@ -1,38 +1,29 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, H3, H5, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
-import { Elements, StripeProvider } from 'react-stripe-elements';
-import BillingForm from './BillingForm'
+import { H3, Tab, Tabs } from '@blueprintjs/core'
+import Billing from './Billing'
+import Admin from './Admin'
 
 class Account extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isBillingOpen: false
+            activeTabId: 'billing' 
         }
     }
 
-    handleOpen = () => {
-        this.setState( {isBillingOpen : !this.state.isBillingOpen} )
+    handleTabChange = (newTabId) => {
+        this.setState({activeTabId: newTabId})
     }
 
     render() {
         return (
             <Container>
                 <H3>Manage Account Info</H3>
-                <H5>Current Membership Level:</H5>
-                <Button 
-                    onClick={this.handleOpen}
-                    text='Change Membership'
-                />
-                <StripeProvider apiKey='pk_test_ZokTubwC6G4D2q2COo4Gj9O4'>
-                    <Elements>
-                        <BillingForm 
-                            isOpen={this.state.isBillingOpen}
-                            handleOpen={this.handleOpen}
-                        />
-                    </Elements>
-                </StripeProvider>
+                <Tabs id="TabsAdmin" onChange={this.handleTabChange} selectedTabId={this.state.activeTabId}>
+                    <Tab id="billing" title="Billing" panel={<Billing {...this.props}/>} />
+                    <Tab id='admin' title="Admin" panel={<Admin {...this.props}/>}/>
+                </Tabs>
             </Container>
 
         )
@@ -40,7 +31,7 @@ class Account extends React.Component {
 }
 
 const Container = styled.div`
-  margin: 25px;
+    margin: 25px;
 `
 
 export default Account;

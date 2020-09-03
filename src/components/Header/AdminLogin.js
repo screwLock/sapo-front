@@ -4,20 +4,26 @@ import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
 
 class AdminLogin extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
-            email: '',
+            username: '',
             password: '',
         }
     }
 
     authenticateAdmin = () => {
-        if(this.state.email === 'admin' && this.state.password === 'admin'){
+        let payload = this.props.authData.signInUserSession.idToken.payload
+        if ((this.state.username === payload['custom:adminUserName1'] && this.state.password === payload['custom:adminPassword1']) ||
+            (this.state.username === payload['custom:adminUserName2'] && this.state.password === payload['custom:adminPassword2']) ||
+            (this.state.username === payload['custom:adminUserName3'] && this.state.password === payload['custom:adminPassword3']) ||
+            (this.state.username === payload['custom:adminUserName4'] && this.state.password === payload['custom:adminPassword4']) ||
+            (this.state.username === payload['custom:adminUserName5'] && this.state.password === payload['custom:adminPassword5'])
+        ) {
             this.props.onAdminLogin()
         }
         else {
-            this.showToast('Incorrect email or password')
+            this.showToast('Incorrect username or password')
         }
     }
 
@@ -40,15 +46,16 @@ class AdminLogin extends React.Component {
             >
                 <DialogContainer>
                     <FormGroup
-                        label="Admin Email"
+                        label="Admin Username"
                     >
-                        <InputGroup name='email' onChange={this.handleChange} />
+                        <InputGroup name='username' onChange={this.handleChange} />
                     </FormGroup>
                     <FormGroup
                         label="Admin Password"
                     >
                         <InputGroup name="password" type='password' onChange={this.handleChange} />
                     </FormGroup>
+                    <ForgotPassword>Forgot Your Password?</ForgotPassword>
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
@@ -64,6 +71,12 @@ class AdminLogin extends React.Component {
 const DialogContainer = styled.div`
     width: 250px;
     margin: 20px;
+`
+
+const ForgotPassword = styled.a`
+    margin: 10px;
+    font-size: 12px;
+    font-style: italic;
 `
 
 export default AdminLogin;

@@ -4,13 +4,20 @@ import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
 import Main from '../Main'
-import { API, Auth } from "aws-amplify";
+import Unpaid from './Unpaid/Unpaid'
+import LoadingScreen from './LoadingScreen'
+import { AppToaster } from '../Toaster'
+import { API } from "aws-amplify"
 
 class Home extends React.Component {
     static defaultProps = {
-        authData: {},
         authState: 'LoggedIn',
         onAuthStateChange: (next, data) => { console.log(`SignIn:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); },
+        delinquent: false,
+        plan: '',
+        nextStatement: '',
+        membership: '',
+        last4: ''
     };
 
     constructor(props) {
@@ -24,7 +31,7 @@ class Home extends React.Component {
             username: this.props.authData.username || '',
             password: this.props.authData.password || '',
             user: null,
-            userConfig: {},
+            userConfig: null,
             isAdminLoggedIn: false
         };
     }
@@ -36,8 +43,16 @@ class Home extends React.Component {
 
         try {
             const userConfig = await this.getUserConfig();
-            this.setState({ userConfig });
-            // console.log(userConfig)
+            const customerInfo = await this.getCustomerInfo();
+            this.setState({
+                userConfig: userConfig,
+                delinquent: customerInfo.delinquent,
+                plan: customerInfo.plan,
+                nextStatement: customerInfo.nextStatement,
+                membership: customerInfo.membership,
+                last4: customerInfo.last4,
+            }
+            );
         } catch (e) {
             alert(e);
         }
@@ -49,20 +64,42 @@ class Home extends React.Component {
         return API.get("sapo", '/users');
     }
 
-    // only works with one key, will have to use custom function for
-    // donorPage!
+    getCustomerInfo = () => {
+        return API.get("sapo", '/billing', {
+            'queryStringParameters': {
+                'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
+                'email': this.props.authData.signInUserSession.idToken.payload.email
+            }
+        });
+    }
+
+    updateCustomerInfo = async () => {
+        const customerInfo = await this.getCustomerInfo()
+        this.setState({
+            delinquent: customerInfo.delinquent,
+            plan: customerInfo.plan,
+            nextStatement: customerInfo.nextStatement,
+            membership: customerInfo.membership,
+            last4: customerInfo.last4
+        }
+        );
+    }
+
+    showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
 
     updateUserConfig = (key, update, jsonBody) => {
-        jsonBody = { ...this.state.userConfig, ...jsonBody}
-        this.setState(prevState => ({
-            userConfig: {
-                ...prevState.userConfig,
-                [key]: update
+        API.post("sapo", "/users", {
+            body: {
+                update: update,
+                key: key
             }
-        }), () =>  {
-            API.post("sapo", "/users", {
-                body: jsonBody
-            })
+        }).then(response => {
+            this.showToast('Successfully Saved!')
+            this.setState({ userConfig: response.Attributes })
+        }).catch(error => {
+            this.showToast(`Save Failed. Error with Status Code ${error.response.status}`)
         })
     }
 
@@ -81,9 +118,26 @@ class Home extends React.Component {
                     "footer footer  footer"
                 ]}
             >
-                <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} isAdminLoggedIn={this.state.isAdminLoggedIn} /></Cell>
-                <Cell area="menu"><NavBar {...this.props} /></Cell>
-                <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
+                <Cell area="header">
+                    <Header {...this.props}
+                        onAdminLogin={this.handleAdminLogin}
+                        isAdminLoggedIn={this.state.isAdminLoggedIn}
+                    />
+                </Cell>
+                <Cell area="menu">
+                    <NavBar {...this.props} />
+                </Cell>
+                <Cell area="content">
+                    <Main {...this.props}
+                        getUserConfig={this.getUserConfig}
+                        updateUserConfig={this.updateUserConfig}
+                        userConfig={this.state.userConfig}
+                        updateCustomerInfo={this.updateCustomerInfo}
+                        membership={this.state.membership}
+                        nextStatement={this.state.nextStatement}
+                        last4={this.state.last4}
+                    />
+                </Cell>
             </Grid>
         )
 
@@ -101,19 +155,45 @@ class Home extends React.Component {
                         "footer footer  footer"
                     ]}
                 >
-                    <Cell area="header"><Header {...this.props} onAdminLogin={this.handleAdminLogin} /></Cell>
-                    <Cell area="content"><Main {...this.props} getUserConfig={this.getUserConfig} updateUserConfig={this.updateUserConfig} /></Cell>
+                    <Cell area="header">
+                        <Header {...this.props}
+                            onAdminLogin={this.handleAdminLogin}
+                        />
+                    </Cell>
+                    <Cell area="content">
+                        <Main {...this.props}
+                            getUserConfig={this.getUserConfig}
+                            updateUserConfig={this.updateUserConfig}
+                            userConfig={this.state.userConfig}
+                            updateCustomerInfo={this.updateCustomerInfo}
+                        />
+                    </Cell>
                 </Grid>
             </div>
         )
     }
 
     render() {
-        if (this.state.isAdminLoggedIn) {
+        const cancelPlanId = 'plan_FELBVjWmU3oVJl'
+        if (this.state.delinquent === true || this.state.plan === cancelPlanId) {
+            return (
+                <Unpaid {...this.props}
+                    membership={this.state.membership}
+                    nextStatement={this.state.nextStatement}
+                    updateCustomerInfo={this.updateCustomerInfo}
+                />
+            )
+        }
+        else if (this.state.isAdminLoggedIn && this.state.userConfig) {
             return this.renderAdmin()
         }
-        else {
+        else if (this.state.userConfig){
             return this.renderNonAdmin()
+        }
+        else {
+            return (
+                <LoadingScreen />
+            )
         }
     }
 }

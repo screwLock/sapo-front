@@ -3,6 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import PickupMarker from './PickupMarker'
 import './styles/pickupMarker.css';
 import { isSameDay } from 'date-fns';
+import config from '../../config'
 
 class OverviewMap extends React.Component {
   constructor(props) {
@@ -26,14 +27,15 @@ class OverviewMap extends React.Component {
 
   render() {
     const center = this.getCenter(this.props.selectedPickup, this.props.center);
-    const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
+    const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate));
+    console.log(datePickups)
     const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
     const user = this.props.user;
     const zoom = this.props.zoom;
     return (
       <div className='google-map' style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyDOs_VPiyP8PWQ70b7uNtPhKftBgwsFhw8' }}
+          bootstrapURLKeys={{ key: config.GOOGLE_MAP_KEY }}
           defaultCenter={{'lat': user.lat, 'lng': user.lng}}
           defaultZoom={zoom}
           center={center}
@@ -45,7 +47,6 @@ class OverviewMap extends React.Component {
             return <PickupMarker
               lat={pickup.lat}
               lng={pickup.lng}
-              name={pickup.name}
               selectedPickup={this.props.selectedPickup}
               pickup={pickup}
               onClick={this.props.onClick}

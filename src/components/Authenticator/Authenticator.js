@@ -29,9 +29,9 @@ class Authenticator extends React.Component {
     onAuthStateChange = (newState, newData) => {
         const data = Object.assign({}, this.state.authData, newData);
         this.setState({ authState: newState, authData: data });
-        if (newState === true) {
+        /* if (newState === true) {
             this.props.onAuthenticated(data);
-        }
+        }*/
     }
 
     render() {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Checkbox, Classes, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Classes, Dialog } from "@blueprintjs/core"
 import styled from 'styled-components'
 
 class Terms extends React.Component {

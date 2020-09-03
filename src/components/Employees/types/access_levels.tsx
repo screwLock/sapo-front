@@ -10,6 +10,7 @@ export interface IAccessLevel {
 export const ACCESS_LEVELS: IAccessLevel[] = [
     { accessLevel: "Volunteer" },
     { accessLevel: "Contractor" },
+    { accessLevel: "Driver" },
     { accessLevel: "Employee" },
     { accessLevel: "Manager"}
 ];

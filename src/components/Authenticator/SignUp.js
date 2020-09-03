@@ -1,16 +1,17 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { AnchorButton, Button, Checkbox, Classes, FormGroup, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, Checkbox, FormGroup, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Redirect, withRouter } from "react-router-dom"
 import * as EmailValidator from 'email-validator'
 import Terms from './Terms'
+import { postalCodeValidator } from '../Zipcodes/postalCodeValidator'
 
 class SignUp extends React.Component {
     static defaultProps = {
         authData: {},
         authState: false,
-        onAuthStateChange: (next, data) => { console.log(`SignUp:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
+        // onAuthStateChange: (next, data) => { console.log(`SignUp:onAuthStateChange(${next}, ${JSON.stringify(data, null, 2)})`); }
     };
 
     constructor(props) {
@@ -25,15 +26,21 @@ class SignUp extends React.Component {
             firstName: '',
             lastName: '',
             organization: '',
+            streetAddress: '',
+            city: '',
+            state: '',
+            zipcode: '',
             email: '',
             phone: '',
+            isNonProfit: false,
+            ein: '',
             password: '',
             confirmPassword: '',
-            adminEmail: '',
+            adminUserName: '',
             adminPassword: '',
             adminConfirmPassword: '',
             access: 'admin',
-            isChecked: false,
+            isTermsChecked: false,
             isTermsOpen: false,
         };
     }
@@ -43,7 +50,7 @@ class SignUp extends React.Component {
     }
 
     handleCheckedChange = (e) => {
-        this.setState({ isChecked: !this.state.isChecked })
+        this.setState({ [e.target.name]: !this.state[e.target.name] })
     }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value })
@@ -62,27 +69,50 @@ class SignUp extends React.Component {
     }
 
     onSignUp = async () => {
+        let ein = this.state.ein;
+        if(this.state.ein.length === 0 && this.state.isNonProfit === false){
+            ein = 'NA'
+        }
         try {
             this.setState({ loading: true });
             const response = await Auth.signUp({
                 username: this.state.email,
                 password: this.state.password,
                 attributes: {
-                    'custom:first_name': this.state.firstName,
-                    'custom:last_name': this.state.lastName,
-                    'custom:phone': this.state.phone,
-                    'custom:organization': this.state.organization,
-                    'custom:access': this.state.access,
+                    phone_number: `+${this.state.phone.replace(/[^A-Za-z0-9]/g, '')}`,
+                    // we'll use the name standard attribute for organization name
+                    name: this.state.organization,
+                    given_name: this.state.firstName,
+                    family_name: this.state.lastName,
+                    // we'll combine all the address parameters into one attribute field
+                    address: `${this.state.streetAddress}@${this.state.city}@${this.state.state}@${this.state.zipcode.replace(/[^A-Za-z0-9]/g, '')}`,
+                    updated_at: Date.now().toString(),
+                    'custom:isNonProfit': this.state.isNonProfit.toString(),
+                    'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g,''),
+                    'custom:membership': 'trial',
+                    'custom:stripeID': '-',
+                    'custom:LatLng': '@',
+                    'custom:adminUserName1': this.state.adminUserName,
+                    'custom:adminPassword1': this.state.adminPassword,
+                    'custom:adminUserName2': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword2': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName3': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword3': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName4': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword4': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminUserName5': Math.random().toString(36).replace('0.', ''),
+                    'custom:adminPassword5': Math.random().toString(36).replace('0.', ''),
+                    'custom:createdAt': new Date().toISOString(),
                 }
             });
-            console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
+            // console.log(`SignUp::onSignUp(): Response#1 = ${JSON.stringify(response, null, 2)}`);
             if (response.userConfirmed === false) {
                 this.setState({ authData: response, modalShowing: true, loading: false, successShowing: true });
             } else {
                 this.onAuthStateChange('default', { username: response.username });
             }
         } catch (err) {
-            console.log(`SignUp::onSignUp(): Error ${JSON.stringify(err, null, 2)}`);
+            // console.log(`SignUp::onSignUp(): Error ${JSON.stringify(err, null, 2)}`);
             this.setState({ error: err.message, loading: false });
         }
     }
@@ -91,13 +121,13 @@ class SignUp extends React.Component {
         try {
             this.setState({ loading: true });
             const response = await Auth.confirmSignUp(this.state.email, token);
-            console.log(`SignUp::onConfirmSubmitted(): Response#2 = ${JSON.stringify(response, null, 2)}`);
+            // console.log(`SignUp::onConfirmSubmitted(): Response#2 = ${JSON.stringify(response, null, 2)}`);
             this.setState({ loading: false });
             if (response === 'SUCCESS') {
                 this.props.onAuthStateChange('default', { email: this.state.email });
             }
         } catch (err) {
-            console.log(`SignUp::onConfirmSubmitted(): Error ${JSON.stringify(err, null, 2)}`);
+            // console.log(`SignUp::onConfirmSubmitted(): Error ${JSON.stringify(err, null, 2)}`);
             this.setState({ error: err.message, loading: false });
         }
     }
@@ -111,7 +141,12 @@ class SignUp extends React.Component {
             this.state.firstName.length === 0 ||
             this.state.lastName.length === 0 ||
             this.state.phone.length === 0 ||
-            this.state.organization.length === 0
+            this.state.organization.length === 0 ||
+            this.state.streetAddress.length === 0 ||
+            this.state.city.length === 0 ||
+            this.state.state.length === 0 ||
+            this.state.zipcode.length === 0 ||
+            this.state.adminUserName.length === 0
         ) {
             this.setState({ error: 'Required fields are missing' })
             return false
@@ -124,6 +159,14 @@ class SignUp extends React.Component {
             this.setState({ error: 'Enter a valid phone number' })
             return false
         }
+        else if (!postalCodeValidator(this.state.zipcode)) {
+            this.setState({error: 'Enter a valid postal code'})
+            return false
+        }
+        else if (this.state.isNonProfit === true && this.state.ein.length === 9) {
+            this.setState({ error: 'Nonprofits must supply an valid EIN/BN/Tax ID' })
+            return false
+        }
         else if (this.state.password !== this.state.confirmPassword) {
             this.setState({ error: 'Your passwords do not match' })
             return false
@@ -132,33 +175,44 @@ class SignUp extends React.Component {
             this.setState({ error: 'Your password does not meet the requirements' })
             return false
         }
-        else if (!EmailValidator.validate(this.state.adminEmail)){
-            this.setState({ error: 'Enter a valid admin email'})
+        else if (this.state.adminUserName === this.state.email) {
+            this.setState({ error: 'Admin username should not be the login email' })
             return false
         }
-        else if (this.state.adminEmail === this.state.email){
-            this.setState({ error: 'Login email should not be the same as the admin email'})
+        else if (!EmailValidator.validate(this.state.adminUserName)) {
+            this.setState({ error: 'Enter a valid admin email address' })
             return false
         }
-        else if (this.state.adminPassword.length <= 0){
-            this.setState({ error: 'Pleae enter an admin password'})
+        else if (this.state.adminPassword.length <= 0) {
+            this.setState({ error: 'Pleae enter an admin password' })
             return false
         }
-        else if (this.state.adminConfirmPassword.length <= 0){
-            this.setState({ error: 'Please confirm your admin password'})
+        else if (this.state.adminConfirmPassword.length <= 0) {
+            this.setState({ error: 'Please confirm your admin password' })
             return false
         }
-        else if(this.state.adminPassword !== this.state.adminConfirmPassword){
-            this.setState({ error: 'Your admin passwords do not match'})
+        else if (this.state.adminPassword !== this.state.adminConfirmPassword) {
+            this.setState({ error: 'Your admin passwords do not match' })
             return false
         }
-        else if (!this.state.isChecked) {
+        else if (!this.state.isTermsChecked) {
             this.setState({ error: 'You must agree to the terms of service' })
             return false
         }
         else {
             return true
         }
+    }
+
+    renderEIN = () => {
+        return (
+            <FormGroup
+                label="EIN/BN/Tax ID"
+                labelFor="text-input"
+            >
+                <InputGroup name="ein" onChange={this.handleChange} />
+            </FormGroup>
+        )
     }
 
 
@@ -169,7 +223,7 @@ class SignUp extends React.Component {
     }
 
     render() {
-        const errorComponent = this.state.error !== null
+        const errorComponent = (this.state.error !== null && !this.state.successShowing)
             ? this.state.error
             : '';
 
@@ -206,11 +260,44 @@ class SignUp extends React.Component {
                             <InputGroup name="organization" onChange={this.handleChange} />
                         </FormGroup>
                         <FormGroup
+                            label="Organization Street Address"
+                            labelFor="text-input"
+                            helperText="This is the address that will be used for routing"
+                        >
+                            <InputGroup name="streetAddress" onChange={this.handleChange} />
+                        </FormGroup>
+                        <AddressRow>
+                            <FormGroup
+                                label="City"
+                                labelFor="text-input"
+                            >
+                                <InputGroup name="city" onChange={this.handleChange} style={{width:'160px'}}/>
+                            </FormGroup>
+                            <FormGroup
+                                label="Zipcode"
+                                labelFor="text-input"
+                            >
+                                <InputGroup name="zipcode" onChange={this.handleChange} style={{width: '80px'}} maxLength='6'/>
+                            </FormGroup>
+                            <FormGroup
+                                label="State"
+                                labelFor="text-input"
+                            >
+                                <InputGroup name="state" onChange={this.handleChange} style={{width: '50px'}} maxLength='2'/>
+                            </FormGroup>
+                        </AddressRow>
+                        <FormGroup
                             label="Phone"
                             labelFor="text-input"
                         >
                             <InputGroup name="phone" onChange={this.handleChange} />
                         </FormGroup>
+                        <NonprofitContainer>
+                            <CheckboxContainer>Is Your Organization A Nonprofit?
+                                <SignUpCheckbox checked={this.state.isNonProfit} onChange={this.handleCheckedChange} name='isNonProfit' inline={true} />
+                            </CheckboxContainer>
+                            {this.state.isNonProfit ? this.renderEIN() : ''}
+                        </NonprofitContainer>
                         <FormGroup
                             label="Password"
                             labelFor="text-input"
@@ -228,9 +315,9 @@ class SignUp extends React.Component {
                         <FormGroup
                             label="Admin Email"
                             labelFor="text-input"
-                            helperText="This email will be used for administrative login"
+                            helperText="This email will be used for administrative login and can NOT be the same as the sign-in email"
                         >
-                            <InputGroup name="adminEmail" onChange={this.handleChange}/>
+                            <InputGroup name="adminUserName" onChange={this.handleChange} />
                         </FormGroup>
                         <FormGroup
                             label="Admin Password"
@@ -244,10 +331,10 @@ class SignUp extends React.Component {
                         >
                             <InputGroup name="adminConfirmPassword" onChange={this.handleChange} type='password' />
                         </FormGroup>
-                        <TermsContainer>I accept the
+                        <CheckboxContainer>I accept the
                             <a onClick={this.handleTermsOpen}> SAPO terms of service.</a>
-                            <TermsCheckbox checked={this.state.isChecked} inline={true} onChange={this.handleCheckedChange} />
-                        </TermsContainer>
+                            <SignUpCheckbox checked={this.state.isTermsChecked} inline={true} onChange={this.handleCheckedChange} name='isTermsChecked' />
+                        </CheckboxContainer>
                         <ButtonRow>
                             <Button
                                 loading={this.state.loading}
@@ -300,6 +387,11 @@ const TitleRow = styled.div`
     margin-bottom: 15px;
 `;
 
+const AddressRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
 const ButtonRow = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -314,11 +406,15 @@ const SuccessContainer = styled.p`
     color:blue;
 `;
 
-const TermsContainer = styled.div`
+const NonprofitContainer = styled.div`
+    margin-bottom: 20px;
+`;
+
+const CheckboxContainer = styled.div`
     margin-top: 10px;
 `;
 
-const TermsCheckbox = styled(Checkbox)`
+const SignUpCheckbox = styled(Checkbox)`
     margin-left: 10px;
 `
 

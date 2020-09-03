@@ -1,8 +1,9 @@
-import * as React from 'react';
-import GoogleMapReact from 'google-map-react';
-import PickupMarker from './PickupMarker'
-import './styles/pickupMarker.css';
-import { isSameDay } from 'date-fns';
+import * as React from 'react'
+import GoogleMapReact from 'google-map-react'
+import PickupMarker from './markers/PickupMarker'
+import './styles/pickupMarker.css'
+import { isSameDay } from 'date-fns'
+import config from '../../config'
 
 class OverviewMap extends React.Component {
   constructor(props) {
@@ -11,8 +12,9 @@ class OverviewMap extends React.Component {
 
   apiIsLoaded = (map, maps, pickups) => {
     if (map && (pickups && pickups.length)) {
-      const directionsService = new google.maps.DirectionsService();
-      const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+      // added 'new' to DirectionsService() and DirectionsRenderer
+      const directionsService = new maps.DirectionsService();
+      const directionsDisplay = new maps.DirectionsRenderer({ suppressMarkers: true });
       directionsDisplay.setDirections({ routes: [] });
       directionsService.route({
         origin: { lat: this.props.user.lat, lng: this.props.user.lng },
@@ -29,7 +31,7 @@ class OverviewMap extends React.Component {
           directionsDisplay.setDirections(response);
           console.log(response.routes[0])
         } else {
-          window.alert('Directions request failed due to ' + status);
+          console.log('Directions request failed due to ' + status);
         }
       });
     }
@@ -51,14 +53,15 @@ class OverviewMap extends React.Component {
 
   render() {
     const center = this.getCenter(this.props.selectedPickup, this.props.center);
-    const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.date, this.props.selectedDate));
+    const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate));
     const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
+    console.log(routePickups)
     const user = this.props.user;
     const zoom = this.props.zoom;
     return (
       <div className='google-map' style={{ height: '100vh', width: '100%' }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyDOs_VPiyP8PWQ70b7uNtPhKftBgwsFhw8' }}
+          bootstrapURLKeys={{ key: config.GOOGLE_MAP_KEY }}
           defaultZoom={zoom}
           center={center}
           key={this.props.routeKey}
@@ -67,10 +70,9 @@ class OverviewMap extends React.Component {
         >
           {datePickups.map((pickup, index) => {
             return <PickupMarker
-              key={pickup.id}
+              key={pickup.pickupID}
               lat={pickup.lat}
               lng={pickup.lng}
-              name={pickup.name}
               selectedPickup={this.props.selectedPickup}
               pickup={pickup}
               onClick={this.props.onClick}

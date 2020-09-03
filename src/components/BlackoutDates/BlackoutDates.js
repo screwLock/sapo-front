@@ -1,9 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, H3, Intent, Menu, MenuItem, Popover, Position } from '@blueprintjs/core'
-import { AppToaster } from '../Toaster'
+import { Button, H3, Intent } from '@blueprintjs/core'
 import { produce } from 'immer'
-import { API } from "aws-amplify"
 import BlackoutDatesPicker from './BlackoutDatesPicker'
 import BlackoutDatesTable from './BlackoutDatesTable'
 
@@ -13,7 +11,6 @@ class BlackoutDates extends React.Component {
     this.state = {
       dates: [],
       isDialogOpen: false,
-      userConfig: {}
     }
   }
 
@@ -21,19 +18,9 @@ class BlackoutDates extends React.Component {
     if (!this.props.authState) {
       return;
     }
-    try {
-      const userConfig = await this.props.getUserConfig();
-      if (userConfig.blackoutDates !== null) {
-        this.setState({ userConfig, dates: userConfig.blackoutDates });
-      }
-      else {
-        this.setState({ userConfig })
-      }
-    } catch (e) {
-      alert(e);
+    if (this.props.userConfig.blackoutDates != null) {
+      this.setState({ dates: this.props.userConfig.blackoutDates });
     }
-
-    // this.setState({ isLoading: false });
   }
 
   addDates = (newDates, newReason) => {
@@ -43,8 +30,8 @@ class BlackoutDates extends React.Component {
         produce(draft => {
           draft.dates = [...draft.dates, ...datesWithReason]
         }), async () => await this.props.updateUserConfig('blackoutDates',
-        this.state.dates,
-        { blackoutDates: this.state.dates })
+          this.state.dates,
+          { blackoutDates: this.state.dates })
       )
     }
     else {

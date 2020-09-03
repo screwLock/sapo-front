@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, Classes, FormGroup, Icon, InputGroup, Intent, Dialog } from "@blueprintjs/core"
+import { Button, FormGroup, Icon, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Link, withRouter } from "react-router-dom";
 

@@ -12,8 +12,9 @@ class NavBar extends Component {
           <li><StyledNavLink exact to='/' activeClassName="selected">Overview</StyledNavLink></li>
           <li><StyledNavLink to='/blackoutDates' activeClassName="selected">Blackout Dates</StyledNavLink></li>
           <li><StyledNavLink to='/zipcodes' activeClassName="selected">Zipcodes</StyledNavLink></li>
+          <li><StyledNavLink to='/maxPickups' activeClassName="selected">Max Pickups</StyledNavLink></li>
           <li><StyledNavLink to='/employees' activeClassName="selected">Employees</StyledNavLink></li>
-          <li><StyledNavLink to='/donorPage' activeClassName="selected">Donor Page</StyledNavLink></li>
+          <li><StyledNavLink to='/categories' activeClassName="selected">Categories</StyledNavLink></li>
           <li><StyledNavLink to='/emails' activeClassName="selected">Emails</StyledNavLink></li>
           <li><StyledNavLink to='/account' activeClassName="selected">Account</StyledNavLink></li>
         </ul>

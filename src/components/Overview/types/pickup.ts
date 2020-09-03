@@ -1,5 +1,5 @@
 export interface IPickup {
-    name: string;
+    streetAddress: string;
     lat: number;
     lng: number;
     date: Date;

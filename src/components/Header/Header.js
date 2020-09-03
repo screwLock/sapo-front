@@ -22,8 +22,8 @@ class Header extends React.Component {
             this.props.history.push('/')
         }
         else{
-            // Bring up Login Dialog
-            this.setState({isAdminOpen: true})
+            // Bring up Login Dialog or close
+            this.setState({isAdminOpen: !this.state.isAdminOpen})
         }
     }
 
@@ -42,8 +42,8 @@ class Header extends React.Component {
                     {...props}
                 />
                 <Grid columns={12}>
-                    <Cell width={10}>SAPO</Cell>
-                    <Cell width={2}><HeaderAccount {...props} handleAdminOpen={this.handleOpen}/></Cell>
+                    <Cell width={7}>SAPO</Cell>
+                    <Cell width={5}><HeaderAccount {...props} handleAdminOpen={this.handleOpen}/></Cell>
                 </Grid>
             </Header1>
         );
@@ -53,12 +53,11 @@ class Header extends React.Component {
 const Header1 = styled.h1`
     padding-left: 20px;
     padding-bottom: 10px;
+    padding-right: 25px;
     color: black;
     border-width: medium;
     border-bottom: solid;
     border-color: lightgrey;
 `;
-
-
 
 export default withRouter(Header);

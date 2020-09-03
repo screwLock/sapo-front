@@ -7,7 +7,7 @@ const Levels = Select.ofType<IAccessLevel>();
 
 
 class AccessLevelSelect extends React.Component<any, any> {
-    constructor(props){
+    constructor(props:any){
         super(props)
         this.state = {
             level: ACCESS_LEVELS[0] as IAccessLevel,

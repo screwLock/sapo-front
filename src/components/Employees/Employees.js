@@ -6,7 +6,6 @@ import { Button, H3, Intent } from '@blueprintjs/core';
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer'
 import EmployeesTable from './EmployeesTables'
-import { API } from "aws-amplify"
 
 class Employees extends React.Component {
   constructor(props) {
@@ -24,7 +23,6 @@ class Employees extends React.Component {
         employeeID: '',
         access: 'Volunteer'
       },
-      userConfig: {}
     }
   }
 
@@ -55,12 +53,8 @@ class Employees extends React.Component {
       return;
     }
     try {
-      const userConfig = await this.props.getUserConfig();
-      if (userConfig.employees !== null) {
-        this.setState({ userConfig, employees: userConfig.employees });
-      }
-      else {
-        this.setState({ userConfig })
+      if (this.props.userConfig.employees != null) {
+        this.setState({ employees: this.props.userConfig.employees });
       }
     } catch (e) {
       alert(e);

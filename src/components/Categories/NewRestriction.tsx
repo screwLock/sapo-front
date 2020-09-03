@@ -4,26 +4,39 @@ import { produce } from 'immer'
 import styled from 'styled-components'
 import { Select } from '@blueprintjs/select'
 import * as Restrictions from './types/DonatableRestrictions'
+import { AppToaster } from '../Toaster'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 
 class NewRestriction extends React.Component<any, any> {
-    constructor(props) {
+    constructor(props: any) {
         super(props)
         this.state = {
             selectedRestriction: Restrictions.PREPACKAGED_RESTRICTIONS[0] as Restrictions.IDonatableRestriction,
             radioRestriction: 'one',
             restrictions: [],
             restriction: '',
+            canSave: false
+        }
+    }
+
+    public componentDidMount = async () => {
+        if (!this.props.authState) {
+            return;
+        }
+        if (this.props.userConfig.restrictions != null) {
+            this.setState({
+                restrictions: this.props.userConfig.restrictions
+            })
         }
     }
 
     public render() {
-        const liStyle = {width: '200px'}
-        const ulStyle={ listStyleType: 'none', padding: '0px'}
+        const liStyle = { width: '200px' }
+        const ulStyle = { listStyleType: 'none', padding: '0px' }
         return (
             <div>
                 <H3>Create a New Donation Restriction</H3>
-                <DialogContainer>
+                <Container>
                     <RadioGroup
                         inline={true}
                         onChange={this.handleRadioRestrictionChange}
@@ -41,17 +54,17 @@ class NewRestriction extends React.Component<any, any> {
                             )}
                         </ul>
                     </BlockContainer>
-                </DialogContainer>
+                    <ButtonRow>
+                        <Button text='Save Restrictions' disabled={!this.state.canSave} onClick={this.saveRestrictions} />
+                    </ButtonRow>
+                </Container>
             </div>
         )
     }
 
     protected addRestriction = () => {
-        if (!(this.state.restrictions.filter((d) => (d.name === this.state.selectedRestriction.name)).length > 0)) {
-            this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction) }), () => {
-                this.props.createSubmittable(this.state.restrictions);
-            })
-            this.props.canSubmit(true);
+        if (!(this.state.restrictions.filter((d: any) => (d.name === this.state.selectedRestriction.name)).length > 0)) {
+            this.setState(produce(draft => { draft.restrictions.push(draft.selectedRestriction); draft.canSave = true }))
             return true
         }
         else {
@@ -65,10 +78,7 @@ class NewRestriction extends React.Component<any, any> {
             const customRestriction = {
                 name: this.state.restriction,
             }
-            this.setState(produce(draft => { draft.restrictions.push(customRestriction) }), () => {
-                this.props.createSubmittable(this.state.restrictions)
-            })
-            this.props.canSubmit(true);
+            this.setState(produce(draft => { draft.restrictions.push(customRestriction); draft.canSave = true }))
             return true;
         }
         else {
@@ -76,29 +86,29 @@ class NewRestriction extends React.Component<any, any> {
         }
     }
 
-    protected handleDeleteRestriction = (index:number) => () => {
+    protected handleDeleteRestriction = (index: number) => () => {
         const newRestrictions = [...this.state.restrictions];
         newRestrictions.splice(index, 1)
-        // need to ensure delete is reflected in restriction listings 
-        this.props.createSubmittable(newRestrictions)
-        if(this.state.restrictions.length > 1) {
-            this.setState({restrictions: newRestrictions})
+        if (this.state.restrictions.length > 1) {
+            this.setState({ restrictions: newRestrictions })
         }
         else {
-            this.props.canSubmit(false)
-            this.setState({restrictions: newRestrictions})
+            this.setState({
+                restrictions: newRestrictions,
+                canSave: false
+            })
         }
     }
 
-    protected handleRestrictionBlur = (e) => {
+    protected handleRestrictionBlur = (e: any) => {
         this.setState({ restriction: e.target.value });
     }
 
-    protected handleRestrictionValueChange = (restriction) => {
+    protected handleRestrictionValueChange = (restriction: any) => {
         this.setState(produce(draft => { draft.selectedRestriction = restriction }))
     }
 
-    protected handleRadioRestrictionChange = (e) => {
+    protected handleRadioRestrictionChange = (e: any) => {
         this.setState({ radioRestriction: e.currentTarget.value })
     }
 
@@ -145,9 +155,32 @@ class NewRestriction extends React.Component<any, any> {
             return '';
         }
     }
+
+    protected saveRestrictions = async () => {
+        if (this.state.restrictions.length === 0) {
+            this.showToast('Add at least one restricted item')
+        }
+        else {
+            try {
+                await this.props.updateUserConfig('restrictions', 
+                    this.state.restrictions,
+                    {
+                        restrictions: this.state.restrictions,
+                    }
+                )
+            }
+            catch (e) {
+                alert(e)
+            }
+        }
+    }
+
+    protected showToast = (message: string) => {
+        AppToaster.show({ message: message });
+    }
 }
 
-const DialogContainer = styled.div`
+const Container = styled.div`
     width: 400px;
     margin: 20px;
 `
@@ -156,5 +189,11 @@ const BlockContainer = styled.div`
     margin-top: 5px;
     margin-bottom: 5px;
 `;
+
+const ButtonRow = styled.div`
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+`
 
 export default NewRestriction;
