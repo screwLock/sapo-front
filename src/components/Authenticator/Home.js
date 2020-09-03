@@ -5,6 +5,7 @@ import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
 import Main from '../Main'
 import Unpaid from './Unpaid/Unpaid'
+import LoadingScreen from './LoadingScreen'
 import { AppToaster } from '../Toaster'
 import { API } from "aws-amplify"
 
@@ -191,7 +192,7 @@ class Home extends React.Component {
         }
         else {
             return (
-                <div>Loading...</div>
+                <LoadingScreen />
             )
         }
     }
