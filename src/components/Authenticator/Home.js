@@ -40,22 +40,29 @@ class Home extends React.Component {
         if (!this.props.authState) {
             return;
         }
-
-        try {
-            const userConfig = await this.getUserConfig();
-            const customerInfo = await this.getCustomerInfo();
-            this.setState({
-                userConfig: userConfig,
-                delinquent: customerInfo.delinquent,
-                plan: customerInfo.plan,
-                nextStatement: customerInfo.nextStatement,
-                membership: customerInfo.membership,
-                last4: customerInfo.last4,
-            }
-            );
-        } catch (e) {
-            alert(e);
-        }
+        /*
+         * do while loop do to occasional 500 error from aws.
+         * keep on look out for additional errors
+         * also, maybe counter should be included... 
+         */
+        do {
+            try {
+                const userConfig = await this.getUserConfig();
+                const customerInfo = await this.getCustomerInfo();
+                this.setState({
+                    userConfig: userConfig,
+                    delinquent: customerInfo.delinquent,
+                    plan: customerInfo.plan,
+                    nextStatement: customerInfo.nextStatement,
+                    membership: customerInfo.membership,
+                    last4: customerInfo.last4,
+                }
+                );
+            } catch (e) {
+                alert(e);
+                continue;
+            } break;
+        } while (true)
 
         // this.setState({ isLoading: false });
     }
@@ -187,7 +194,7 @@ class Home extends React.Component {
         else if (this.state.isAdminLoggedIn && this.state.userConfig) {
             return this.renderAdmin()
         }
-        else if (this.state.userConfig){
+        else if (this.state.userConfig) {
             return this.renderNonAdmin()
         }
         else {
