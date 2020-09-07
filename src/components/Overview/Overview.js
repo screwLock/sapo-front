@@ -5,7 +5,7 @@ import produce from 'immer';
 import EmbedMap from './Maps/EmbedMap'
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
-import { getMonth, getYear, lastDayOfMonth } from 'date-fns'
+import { getMonth, getYear, lastDayOfMonth, isSameDay } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
 import config from '../../config'
@@ -24,6 +24,7 @@ class Overview extends Component {
       selectedMonth: getMonth(new Date()),
       unconfirmedDates: [],
       user: {},
+      src: '',
       newRoute: false,
       search: ''
     }
@@ -44,9 +45,11 @@ class Overview extends Component {
         user: {
           ...prevState.user,
           lat: parseFloat(latlng[0]),
-          lng: parseFloat(latlng[1])
+          lng: parseFloat(latlng[1]),
+        },
+        src: `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAP_KEY}&q=${parseFloat(latlng[0])},${parseFloat(latlng[1])}`
         }
-      }))
+      ))
       await this.getPickupsByMonth(this.state.selectedMonth)
       return;
     }
@@ -95,10 +98,6 @@ class Overview extends Component {
     }
   }
 
-  createRoute = () => {
-    this.setState({ newRoute: !this.state.newRoute });
-  }
-
   getPickupsByMonth = (currentMonth) => {
     let currentYear = getYear(new Date())
     let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0, 10)
@@ -115,21 +114,62 @@ class Overview extends Component {
     });
   }
 
+  getPickups = () => {
+    return this.state.pickups
+  }
+
   updatePickups = (pickup, pickups, index) => {
     let newPickups = [...pickups]
     newPickups[index] = pickup
     this.setState({ pickups: newPickups })
   }
 
+  updateNewRoute = (isNewRoute) => {
+    const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate));
+    const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
+    let src = '';
+    const origin = [this.state.user.lat, this.state.user.lng];
+    let destination = '&destination='
+    // pickups is empty, show the client's location on the place url
+    if(routePickups.length === 0 && isNewRoute === false) {
+        src = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAP_KEY}&q=${origin}`
+    }
+    // only one pickup, use no waypoints in the direction url
+    else if(routePickups.length === 1  && isNewRoute === true) {
+        destination = `${destination}${routePickups[0].lat},${routePickups[0].lng}`
+        src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${destination}`
+    }
+    // pickups === 2, one waypoint and no pipes
+    else if(routePickups.length === 2 && isNewRoute === true) {
+        destination = `${destination}${routePickups[routePickups.length-1].lat},${routePickups[routePickups.length-1].lng}`
+        let waypoints = '&waypoints=';
+        waypoints = `${waypoints}${routePickups[0].lat},${routePickups[0].lng}`
+        src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${waypoints}${destination}`
+    }
+    // pickups > 2, all but last waypoint have pipes
+    else if(routePickups.length > 2 && isNewRoute === true) {
+        destination = `${destination}${routePickups[routePickups.length-1].lat},${routePickups[routePickups.length-1].lng}`
+        // waypointPickups is the actual waypoints we will use
+        let waypointPickups = [ ...routePickups];
+        waypointPickups.splice(waypointPickups.length-1);
+        waypointPickups.splice(waypointPickups.length-2);
+        let waypoints = '&waypoints=' + waypointPickups.map( pickup => `${pickup.lat},${pickup.lng}|` );
+        //no pipe on the last waypoint
+        waypoints = `${waypoints}${routePickups[routePickups.length-2].lat},${routePickups[routePickups.length-2].lng}`
+        src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${waypoints}${destination}`
+    }
+
+    this.setState({ src: src})
+  }
+
   render() {
     return (
       <Grid columns={12}>
-        <Cell width={12}><EmbedMap pickups={this.state.pickups}
+        <Cell width={12}><EmbedMap
           selectedDate={this.state.selectedDate}
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}
-          user={this.state.user}
-          routeKey={this.state.newRoute}
+          src={this.state.src}
         />
         </Cell>
         <Cell width={4}><OverviewDatePicker selectedDate={this.state.selectedDate}
@@ -146,7 +186,7 @@ class Overview extends Component {
           selectedDate={this.state.selectedDate}
           onDragEnd={this.onDragEnd}
           handleRouteChange={this.handleRouteChange}
-          createRoute={this.createRoute}
+          updateNewRoute={this.updateNewRoute}
           userConfig={this.props.userConfig}
           updatePickups={this.updatePickups}
           payload={this.props.authData.signInUserSession.idToken.payload}
