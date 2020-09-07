@@ -59,7 +59,7 @@ class Home extends React.Component {
                 }
                 );
             } catch (e) {
-                alert(e);
+                console.error(e);
                 continue;
             } break;
         } while (true)
