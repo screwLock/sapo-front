@@ -114,10 +114,6 @@ class Overview extends Component {
     });
   }
 
-  getPickups = () => {
-    return this.state.pickups
-  }
-
   updatePickups = (pickup, pickups, index) => {
     let newPickups = [...pickups]
     newPickups[index] = pickup
@@ -131,7 +127,7 @@ class Overview extends Component {
     const origin = [this.state.user.lat, this.state.user.lng];
     let destination = '&destination='
     // pickups is empty, show the client's location on the place url
-    if(routePickups.length === 0 && isNewRoute === false) {
+    if(routePickups.length === 0 && isNewRoute === true) {
         src = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAP_KEY}&q=${origin}`
     }
     // only one pickup, use no waypoints in the direction url
