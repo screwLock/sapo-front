@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Grid, Cell } from "styled-css-grid";
 import produce from 'immer';
-import LeafletMap from './LeafletMap'
+import EmbedMap from './Maps/EmbedMap'
 import OverviewPickups from './OverviewPickups.js';
 import OverviewDatePicker from './OverviewDatePicker.js';
 import { getMonth, getYear, lastDayOfMonth } from 'date-fns'
@@ -12,7 +12,7 @@ import config from '../../config'
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
 // we have to import map.css here to hide the directions panel 
-import './map.css'
+// import './map.css'
 
 class Overview extends Component {
   constructor(props) {
@@ -124,7 +124,7 @@ class Overview extends Component {
   render() {
     return (
       <Grid columns={12}>
-        <Cell width={12}><LeafletMap pickups={this.state.pickups}
+        <Cell width={12}><EmbedMap pickups={this.state.pickups}
           selectedDate={this.state.selectedDate}
           selectedPickup={this.state.selectedPickup}
           onClick={this.selectPickup}

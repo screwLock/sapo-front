@@ -3,7 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import PickupMarker from './PickupMarker'
 import './styles/pickupMarker.css';
 import { isSameDay } from 'date-fns';
-import config from '../../config'
+import config from '../../../config'
 
 class OverviewMap extends React.Component {
   constructor(props) {
