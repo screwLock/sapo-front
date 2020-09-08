@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
 import styled from 'styled-components'
 import { Grid, Cell } from "styled-css-grid";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -38,7 +37,6 @@ class Pickups extends React.Component {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
                 return (
-                    <Cell height={10} width={4} left={2} key={pickup.pickupID}>
                         <Draggable draggableId={pickup.pickupID} index={pickup.index}>
                             {(provided) => (
                                 <PickupCard pickup={pickup}
@@ -56,12 +54,11 @@ class Pickups extends React.Component {
                                 />
                             )}
                         </Draggable>
-                    </Cell>
                 );
             });
         } else {
             return (
-                <Cell height={1} width={4} left={2}>No Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</Cell>
+                <div>No Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</div>
             )
         }
     }
@@ -78,31 +75,43 @@ class Pickups extends React.Component {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
         const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
         return (
-            <Cards>
+            <React.Fragment>
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Droppable droppableId="dropabble">
-                        {(provided) => (
-                            <div ref={provided.innerRef}>
-                                <Grid columns={6}>
+                    <Droppable droppableId="dropabble" direction="horizontal">
+                        {(provided, snapshot) => (
+                            <div ref={provided.innerRef}
+                                style={getListStyle(snapshot.isDraggingOver)}
+                                {...provided.droppableProps}
+                            >
                                     {this.renderCards(datePickups)}
                                     {provided.placeholder}
-                                </Grid>
                             </div>
                         )}
                     </Droppable>
                 </DragDropContext>
-            </Cards>
+            </React.Fragment>
         )
     }
 }
 
-const Cards = styled.div`
-    overflow-y: auto;
-    height: 250px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-`
+const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? 'lightblue' : 'lightgrey',
+    display: 'flex',
+    padding: 8,
+    overflow: 'auto',
+});
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+    padding: 16 * 2,
+    margin: `0 16px 0 0`,
+  
+    // change background colour if dragging
+    background: isDragging ? 'lightgreen' : 'grey',
+  
+    // styles we need to apply on draggables
+    ...draggableStyle,
+  });
 
 export default Pickups

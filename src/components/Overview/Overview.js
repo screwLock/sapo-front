@@ -158,14 +158,6 @@ class Overview extends React.Component {
         this.setState({ src: src })
     }
 
-    // we also need to get the pickups for the selected month
-    handleMonthChange = (month) => {
-        this.setState({ selectedMonth: getMonth(month) },
-            () => {
-                this.getPickupsByMonth(getMonth(month))
-            })
-    }
-
     //  at the end of a drag, we need to change the pickup indices to reflect
     //  the reordering
     onDragEnd = (pickups) => {
@@ -213,6 +205,7 @@ class Overview extends React.Component {
                 {...this.state} 
                 handleClick={this.selectDate}
                 onDragEnd={this.onDragEnd}
+                handleMonthChange={this.handleMonthChange}
                 />
         )
     }
