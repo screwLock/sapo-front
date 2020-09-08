@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
 
 class PickupCard extends React.Component{
     constructor(props){
@@ -21,7 +22,9 @@ class PickupCard extends React.Component{
                 {...provided.dragHandleProps}
                 ref={this.setRef}
             >
-            Fuck
+            <Card interactive={true} elevation={Elevation.TWO} className={'card'}>
+                <H5>${pickup.pickupID}</H5>
+            </Card>
             </div>
         )
     }
