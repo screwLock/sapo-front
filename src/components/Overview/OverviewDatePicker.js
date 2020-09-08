@@ -3,7 +3,6 @@ import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 import { keyframes } from "styled-components"
 import { getDate, getMonth } from "date-fns"
-import 
 
 class OverviewDatePicker extends Component {
   constructor(props) {
