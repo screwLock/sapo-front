@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css'
 import { keyframes } from "styled-components"
-import { getDate, getMonth } from "date-fns"
-import dayStyles from './datePickerStyles/dayStyles'
+import { getDate, getMonth, isSameDay } from "date-fns"
+import dayStyles, {unconfirmedSelected} from './datePickerStyles/dayStyles'
 import datePickerFullScreenStyles from './datePickerStyles/datePickerFullScreenStyles'
+import BlackoutDates from '../../BlackoutDates/BlackoutDates';
 
 class DatePickerFullScreen extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class DatePickerFullScreen extends Component {
     }
 
     render() {
+        let modifiersStyles;
         // get the pickups in the selected Month
         let monthPickups = this.props.pickups.filter(pickup => {
             return getMonth(pickup.pickupDate) === this.props.selectedMonth
@@ -36,6 +38,23 @@ class DatePickerFullScreen extends Component {
         }).map(pickup => {
             return getDate(new Date(pickup.pickupDate))
         })
+
+        // we need to check if the selected date is 'unconfirmed'
+        // for styling purposes
+        if(unconfirmed.includes(getDate(this.props.selectedDate))){
+            modifiersStyles = {
+                selected: unconfirmedSelected
+            }
+        }
+        else {
+            modifiersStyles = {
+                selected: {
+                    backgroundColor: '#555555'
+                }
+            }
+        }
+
+        // we need to check if unconfirmed 
 
         // get the days with pickups that have 'confirmed' status
         // if a day contains a unconfirmed (submitted) date,
@@ -63,7 +82,7 @@ class DatePickerFullScreen extends Component {
 
         const modifiers = {
             unconfirmedDays: unconfirmedDays,
-            confirmedDays: confirmedDays
+            confirmedDays: confirmedDays,
         }
 
 
@@ -72,6 +91,7 @@ class DatePickerFullScreen extends Component {
                 <style>{dayStyles + datePickerFullScreenStyles}</style>
                 <DayPicker
                     modifiers={modifiers}
+                    modifiersStyles={modifiersStyles}
                     onDayClick={this.handleDayClick}
                     onMonthChange={this.props.handleMonthChange}
                     selectedDays={this.props.selectedDate}
