@@ -9,7 +9,8 @@ class Pickups extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isDragDisabled: false
+            isDragDisabled: false,
+            isAStatusOpen: false
         }
     }
 
@@ -43,8 +44,11 @@ class Pickups extends React.Component {
         return result;
     };
 
-    changeIsDragDisabled = (status) => {
-        this.setState({isDragDisabled: status})
+    changeIsDragDisabled = (boolean) => {
+        this.setState({isDragDisabled: boolean})
+    }
+    changeIsAStatusOpen = (boolean) => {
+        this.setState({ isAStatusOpen: boolean})
     }
 
     renderCards = (pickups) => {
@@ -67,6 +71,8 @@ class Pickups extends React.Component {
                                     userConfig={this.props.userConfig}
                                     changeIsDragDisabled={this.changeIsDragDisabled}
                                     isDragDisabled={this.state.isDragDisabled}
+                                    changeIsAStatusOpen={this.changeIsAStatusOpen}
+                                    isAStatusOpen={this.state.isAStatusOpen}
                                 />
                             )}
                         </Draggable>

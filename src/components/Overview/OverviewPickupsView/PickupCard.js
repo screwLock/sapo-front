@@ -1,12 +1,13 @@
 import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
+import { Icon } from '@blueprintjs/core'
 
 class PickupCard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isButtonClicked: false,
+            isStatusOpen: false,
         }
     }
 
@@ -22,8 +23,18 @@ class PickupCard extends React.Component {
     };
 
     onStatusButtonClick = () => {
-        this.setState({ isButtonClicked: !this.state.isButtonClicked })
+        if (this.props.isAStatusOpen) {
+            return;
+        }
+        this.setState({ isStatusOpen: true })
         this.props.changeIsDragDisabled(true)
+        this.props.changeIsAStatusOpen(true)
+    }
+
+    onBackButtonClick = () => {
+        this.setState({ isStatusOpen: false })
+        this.props.changeIsDragDisabled(false)
+        this.props.changeIsAStatusOpen(false)
     }
 
     render() {
@@ -32,7 +43,7 @@ class PickupCard extends React.Component {
             confirmed: {
                 color1: '#187bcd',
                 color2: '#1167b1'
-            },            
+            },
             completed: {
                 color1: '#187bcd',
                 color2: '#1167b1'
@@ -52,20 +63,27 @@ class PickupCard extends React.Component {
                 {...provided.dragHandleProps}
                 innerRef={this.setRef}
             >
-                {!this.state.isButtonClicked ? (
+                {!this.state.isStatusOpen ? (
                     <React.Fragment>
-                        <StatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2}/>
+                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
                         <PickupInfo>
-                            <h5>{pickup.streetAddress} {pickup.zipcode}</h5>
-                            <h5>{pickup.lastName}, {pickup.firstName}</h5>
+                            <div>{pickup.streetAddress} {pickup.zipcode}</div>
+                            <div>{pickup.lastName}, {pickup.firstName}</div>
                         </PickupInfo>
+                        <ActionColumn>
+                            <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' /></a></div>
+                            <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' /></a></div>
+                            <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' /></a></div>
+                        </ActionColumn>
                     </React.Fragment>
                 ) : (<React.Fragment>
                     <React.Fragment>
-                        <StatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2}/>
-                        <button>Confirm</button>
-                        <button>Cancel</button>
-                        <button>Reject</button>
+                        <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                        <StatusButtonRow>
+                            <Button color='blue'>Confirm</Button>
+                            <Button color='red'>Cancel</Button>
+                            <Button color='red'>Reject</Button>
+                        </StatusButtonRow>
                     </React.Fragment>
                 </React.Fragment>
                     )}
@@ -79,6 +97,7 @@ const Card = styled.div`
     flex-direction: row;
     background-color: transparent;
     width: 80%;
+    height: 8em;
     margin: 1em;
     border-width: 0.05em; 
     border-color: lightgrey;
@@ -86,7 +105,7 @@ const Card = styled.div`
     border-style: solid;
 `
 
-const StatusButton = styled.button`
+const OpenStatusButton = styled.button`
     background-color: ${props => props.color1};
     width: 10%;
     border: none;
@@ -100,8 +119,34 @@ const StatusButton = styled.button`
 const PickupInfo = styled.div`
     display: flex;
     flex-direction: column;
-    width: 90%;
-    text-align: center;
+    width: 80%;
+    padding-left: 1em;
+`
+
+const ActionColumn = styled.div`
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      width: 10%;
+      height: 100%;
+`
+
+const StatusButtonRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
+`
+
+const Button = styled.button`
+      background-color: transparent;
+      color: ${props => props.color};
+      border-width: 0.05em; 
+      border-color: ${props => props.color};
+      border-radius: 0.2em;
+      border-style: solid;
+      height: 100%;
 `
 
 export default PickupCard
