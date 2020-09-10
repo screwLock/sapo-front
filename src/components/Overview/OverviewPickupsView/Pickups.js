@@ -77,7 +77,7 @@ class Pickups extends React.Component {
         return (
             <React.Fragment>
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Droppable droppableId="dropabble" direction="horizontal">
+                    <Droppable droppableId="dropabble" direction="vertical">
                         {(provided, snapshot) => (
                             <div ref={provided.innerRef}
                                 style={getListStyle(snapshot.isDraggingOver)}
@@ -97,6 +97,7 @@ class Pickups extends React.Component {
 const getListStyle = isDraggingOver => ({
     background: isDraggingOver ? 'lightblue' : 'lightgrey',
     display: 'flex',
+    flexDirection: 'column',
     padding: 8,
     overflow: 'auto',
 });
