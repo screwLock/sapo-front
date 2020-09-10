@@ -23,7 +23,7 @@ class PickupCard extends React.Component {
 
     onStatusButtonClick = () => {
         this.setState({ isButtonClicked: !this.state.isButtonClicked })
-        this.props.changeIsDragDisabled(!this.props.isDragDisabled)
+        this.props.changeIsDragDisabled(true)
     }
 
     render() {
