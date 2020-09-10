@@ -43,7 +43,7 @@ class Pickups extends React.Component {
         return result;
     };
 
-    isDragDisabled = (status) => {
+    changeIsDragDisabled = (status) => {
         this.setState({isDragDisabled: status})
     }
 
@@ -65,7 +65,8 @@ class Pickups extends React.Component {
                                     handleClick={this.props.handleClick}
                                     handleRouteChange={this.props.handleRouteChange}
                                     userConfig={this.props.userConfig}
-                                    isDragDisabled={this.isDragDisabled}
+                                    changeIsDragDisabled={this.changeIsDragDisabled}
+                                    isDragDisabled={this.state.isDragDisabled}
                                 />
                             )}
                         </Draggable>
