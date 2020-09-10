@@ -13,6 +13,7 @@ class PickupCard extends React.Component {
 
     componentDidMount() {
         this.props.changeIsDragDisabled(false)
+        this.props.changeIsAStatusOpen(false)
     }
 
     setRef = ref => {
