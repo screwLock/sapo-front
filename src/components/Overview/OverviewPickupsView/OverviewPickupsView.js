@@ -23,12 +23,18 @@ class OverviewPickupsView extends React.Component {
             <Column>
                 <Row>
                     <DatePickerFullScreen {...this.props} />
-                    <Pickups {...this.props} />
+                    <PickupsContainer>
+                        <Pickups {...this.props} />
+                    </PickupsContainer>
                 </Row>
             </Column>
         )
     }
 }
+
+const PickupsContainer = styled.div`
+    width: 50%;
+`
 
 const Column = styled.div`
     display: flex;
@@ -37,7 +43,8 @@ const Column = styled.div`
 
 const Row = styled.div`
     display: flex;
-    display: flex-direction: row;
+    flex-direction: row;
+    justify-content: space-evenly;
 `
 
 export default OverviewPickupsView;

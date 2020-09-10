@@ -1,9 +1,12 @@
 import * as React from 'react'
-import { Card, Checkbox, Collapse, Elevation, H5, Icon } from "@blueprintjs/core"
+import styled from 'styled-components'
 
-class PickupCard extends React.Component{
-    constructor(props){
+class PickupCard extends React.Component {
+    constructor(props) {
         super(props)
+        this.state = {
+            isButtonClicked: false,
+        }
     }
 
     setRef = ref => {
@@ -13,21 +16,55 @@ class PickupCard extends React.Component{
         this.props.innerRef(ref);
     };
 
-    render(){
-        const { provided, innerRef, pickup } = this.props;
+    onStatusButtonClick = () => {
+        this.setState({ isButtonClicked: !this.state.isButtonClicked })
+    }
 
-        return(
-            <div
+    render() {
+        const { provided, innerRef, pickup } = this.props;
+        return (
+            <Card
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                ref={this.setRef}
+                innerRef={this.setRef}
             >
-            <Card interactive={true} elevation={Elevation.TWO} className={'card'}>
-                <H5>${pickup.pickupID}</H5>
+                {!this.state.isButtonClicked ? (
+                    <React.Fragment>
+                        <StatusButton onClick={this.onStatusButtonClick} />
+                        <PickupInfo>
+                            <h5>{pickup.streetAddress} {pickup.zipcode}</h5>
+                        </PickupInfo>
+                    </React.Fragment>
+                ) : (<React.Fragment>
+                        <h5>clicked</h5>
+                    </React.Fragment>
+                    )}
             </Card>
-            </div>
         )
     }
 }
+
+const Card = styled.div`
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 1em; 
+`
+const StatusButton = styled.button`
+    background-color: blue;
+    width: 10%;
+    border: none;
+    :hover{
+        background-color: red;
+      }
+`
+
+const PickupInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`
 
 export default PickupCard

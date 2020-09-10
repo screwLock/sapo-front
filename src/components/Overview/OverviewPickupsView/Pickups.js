@@ -1,6 +1,5 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Grid, Cell } from "styled-css-grid";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
@@ -33,6 +32,14 @@ class Pickups extends React.Component {
         this.props.onDragEnd(pickups);
     };
 
+    reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+
+        return result;
+    };
+
     renderCards = (pickups) => {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
@@ -63,14 +70,6 @@ class Pickups extends React.Component {
         }
     }
 
-    reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-
-        return result;
-    };
-
     render() {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
         const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
@@ -80,9 +79,10 @@ class Pickups extends React.Component {
                     <Droppable droppableId="dropabble" direction="vertical">
                         {(provided, snapshot) => (
                             <div ref={provided.innerRef}
-                                style={getListStyle(snapshot.isDraggingOver)}
+                                style={ListContainer(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
+                                    <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
                                     {this.renderCards(datePickups)}
                                     {provided.placeholder}
                             </div>
@@ -94,12 +94,14 @@ class Pickups extends React.Component {
     }
 }
 
-const getListStyle = isDraggingOver => ({
+const ListContainer = isDraggingOver => ({
     background: isDraggingOver ? 'lightblue' : 'lightgrey',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     padding: 8,
     overflow: 'auto',
+    height: '100%'
 });
 
 const getItemStyle = (isDragging, draggableStyle) => ({
