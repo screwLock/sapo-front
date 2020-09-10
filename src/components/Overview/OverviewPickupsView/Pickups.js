@@ -8,6 +8,9 @@ import PickupCard from './PickupCard'
 class Pickups extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            isDragDisabled: false
+        }
     }
 
     onDragEnd = result => {
@@ -40,11 +43,15 @@ class Pickups extends React.Component {
         return result;
     };
 
+    isDragDisabled = (status) => {
+        this.setState({isDragDisabled: status})
+    }
+
     renderCards = (pickups) => {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
                 return (
-                        <Draggable draggableId={pickup.pickupID} index={pickup.index}>
+                        <Draggable draggableId={pickup.pickupID} index={pickup.index} isDragDisabled={this.state.isDragDisabled}>
                             {(provided) => (
                                 <PickupCard pickup={pickup}
                                     isChecked={pickup.inRoute}
@@ -58,6 +65,7 @@ class Pickups extends React.Component {
                                     handleClick={this.props.handleClick}
                                     handleRouteChange={this.props.handleRouteChange}
                                     userConfig={this.props.userConfig}
+                                    isDragDisabled={this.isDragDisabled}
                                 />
                             )}
                         </Draggable>
@@ -95,7 +103,7 @@ class Pickups extends React.Component {
 }
 
 const ListContainer = isDraggingOver => ({
-    background: isDraggingOver ? 'lightblue' : 'lightgrey',
+    background: isDraggingOver ? 'lightblue' : 'transparent',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

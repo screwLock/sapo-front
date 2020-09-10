@@ -1,5 +1,6 @@
 import * as React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+import { Draggable } from 'react-beautiful-dnd'
 
 class PickupCard extends React.Component {
     constructor(props) {
@@ -7,6 +8,10 @@ class PickupCard extends React.Component {
         this.state = {
             isButtonClicked: false,
         }
+    }
+
+    componentDidMount() {
+        this.props.isDragDisabled(false)
     }
 
     setRef = ref => {
@@ -18,10 +23,29 @@ class PickupCard extends React.Component {
 
     onStatusButtonClick = () => {
         this.setState({ isButtonClicked: !this.state.isButtonClicked })
+        this.props.isDragDisabled(true)
     }
 
     render() {
         const { provided, innerRef, pickup } = this.props;
+        const colors = {
+            confirmed: {
+                color1: '#187bcd',
+                color2: '#1167b1'
+            },            
+            completed: {
+                color1: '#187bcd',
+                color2: '#1167b1'
+            },
+            cancelled: {
+                color1: '#187bcd',
+                color2: '#1167b1'
+            },
+            submitted: {
+                color1: '#187bcd',
+                color2: '#1167b1'
+            }
+        }
         return (
             <Card
                 {...provided.draggableProps}
@@ -30,14 +54,20 @@ class PickupCard extends React.Component {
             >
                 {!this.state.isButtonClicked ? (
                     <React.Fragment>
-                        <StatusButton onClick={this.onStatusButtonClick} />
+                        <StatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2}/>
                         <PickupInfo>
                             <h5>{pickup.streetAddress} {pickup.zipcode}</h5>
+                            <h5>{pickup.lastName}, {pickup.firstName}</h5>
                         </PickupInfo>
                     </React.Fragment>
                 ) : (<React.Fragment>
-                        <h5>clicked</h5>
+                    <React.Fragment>
+                        <StatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2}/>
+                        <button>Confirm</button>
+                        <button>Cancel</button>
+                        <button>Reject</button>
                     </React.Fragment>
+                </React.Fragment>
                     )}
             </Card>
         )
@@ -47,24 +77,31 @@ class PickupCard extends React.Component {
 const Card = styled.div`
     display: flex;
     flex-direction: row;
-    background-color: white;
+    background-color: transparent;
     width: 80%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin: 1em; 
+    margin: 1em;
+    border-width: 0.05em; 
+    border-color: lightgrey;
+    border-radius: 0.2em;
+    border-style: solid;
 `
+
 const StatusButton = styled.button`
-    background-color: blue;
+    background-color: ${props => props.color1};
     width: 10%;
     border: none;
+    transition: background 250ms ease-in-out, 
+    transform 150ms ease;
     :hover{
-        background-color: red;
+        background-color: ${props => props.color2};
       }
 `
 
 const PickupInfo = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    width: 90%;
+    text-align: center;
 `
 
 export default PickupCard
