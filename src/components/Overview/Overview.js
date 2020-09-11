@@ -166,7 +166,7 @@ class Overview extends React.Component {
         });
     };
 
-    selectPickup = (pickup) => {
+    selectPickup = (pickup) => () => {
         this.setState({
             selectedPickup: pickup,
         })
@@ -206,6 +206,8 @@ class Overview extends React.Component {
                 handleClick={this.selectDate}
                 onDragEnd={this.onDragEnd}
                 handleMonthChange={this.handleMonthChange}
+                selectPickup={this.selectPickup}
+                selectedPickup={this.state.selectedPickup}
                 />
         )
     }

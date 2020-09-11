@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
+import PickupInfo from './PickupInfo'
 
 
 class Pickups extends React.Component {
@@ -10,7 +11,8 @@ class Pickups extends React.Component {
         super(props)
         this.state = {
             isDragDisabled: false,
-            isAStatusOpen: false
+            isAStatusOpen: false,
+            isPickupInfoOpen: false,
         }
     }
 
@@ -45,37 +47,42 @@ class Pickups extends React.Component {
     };
 
     changeIsDragDisabled = (boolean) => {
-        this.setState({isDragDisabled: boolean})
+        this.setState({ isDragDisabled: boolean })
     }
     changeIsAStatusOpen = (boolean) => {
-        this.setState({ isAStatusOpen: boolean})
+        this.setState({ isAStatusOpen: boolean })
+    }
+    changeIsPickupInfoOpen = (boolean) => {
+        this.setState({ isPickupInfoOpen: boolean })
     }
 
     renderCards = (pickups) => {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
                 return (
-                        <Draggable draggableId={pickup.pickupID} index={pickup.index} isDragDisabled={this.state.isDragDisabled}>
-                            {(provided) => (
-                                <PickupCard pickup={pickup}
-                                    isChecked={pickup.inRoute}
-                                    ordinal={index}
-                                    // setIndex={this.handleStatusIndexChange}
-                                    //use pickups index, not datepickups index!
-                                    index={pickup.index}
-                                    routes={this.props.routes}
-                                    innerRef={provided.innerRef}
-                                    provided={provided}
-                                    handleClick={this.props.handleClick}
-                                    handleRouteChange={this.props.handleRouteChange}
-                                    userConfig={this.props.userConfig}
-                                    changeIsDragDisabled={this.changeIsDragDisabled}
-                                    isDragDisabled={this.state.isDragDisabled}
-                                    changeIsAStatusOpen={this.changeIsAStatusOpen}
-                                    isAStatusOpen={this.state.isAStatusOpen}
-                                />
-                            )}
-                        </Draggable>
+                    <Draggable draggableId={pickup.pickupID} index={pickup.index} isDragDisabled={this.state.isDragDisabled}>
+                        {(provided) => (
+                            <PickupCard pickup={pickup}
+                                isChecked={pickup.inRoute}
+                                ordinal={index}
+                                // setIndex={this.handleStatusIndexChange}
+                                //use pickups index, not datepickups index!
+                                index={pickup.index}
+                                routes={this.props.routes}
+                                innerRef={provided.innerRef}
+                                provided={provided}
+                                handleClick={this.props.handleClick}
+                                handleRouteChange={this.props.handleRouteChange}
+                                userConfig={this.props.userConfig}
+                                changeIsDragDisabled={this.changeIsDragDisabled}
+                                isDragDisabled={this.state.isDragDisabled}
+                                changeIsAStatusOpen={this.changeIsAStatusOpen}
+                                isAStatusOpen={this.state.isAStatusOpen}
+                                changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
+                                selectPickup={this.props.selectPickup(pickup)}
+                            />
+                        )}
+                    </Draggable>
                 );
             });
         } else {
@@ -88,6 +95,7 @@ class Pickups extends React.Component {
     render() {
         const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
         const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
+        const selectedPickup = this.props.selectedPickup
         return (
             <React.Fragment>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -97,9 +105,17 @@ class Pickups extends React.Component {
                                 style={ListContainer(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
-                                    <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
-                                    {this.renderCards(datePickups)}
-                                    {provided.placeholder}
+                                <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
+                                {!this.state.isPickupInfoOpen ?
+                                    this.renderCards(datePickups) :
+                                    (
+                                        <PickupInfo
+                                            pickup={selectedPickup}
+                                            changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
+                                        />
+                                    )
+                                }
+                                {provided.placeholder}
                             </div>
                         )}
                     </Droppable>
@@ -124,12 +140,12 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: 'none',
     padding: 16 * 2,
     margin: `0 16px 0 0`,
-  
+
     // change background colour if dragging
     background: isDragging ? 'lightgreen' : 'grey',
-  
+
     // styles we need to apply on draggables
     ...draggableStyle,
-  });
+});
 
 export default Pickups

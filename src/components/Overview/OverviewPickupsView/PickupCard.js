@@ -38,6 +38,11 @@ class PickupCard extends React.Component {
         this.props.changeIsAStatusOpen(false)
     }
 
+    onPickupInfoClick = () => {
+        this.props.changeIsPickupInfoOpen(true);
+        this.props.selectPickup();
+    }
+
     render() {
         const { provided, innerRef, pickup } = this.props;
         const colors = {
@@ -50,6 +55,10 @@ class PickupCard extends React.Component {
                 color2: '#1167b1'
             },
             cancelled: {
+                color1: '#187bcd',
+                color2: '#1167b1'
+            },
+            rejected: {
                 color1: '#187bcd',
                 color2: '#1167b1'
             },
@@ -68,7 +77,7 @@ class PickupCard extends React.Component {
                     <React.Fragment>
                         <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
                         <PickupInfo>
-                            <div>{pickup.streetAddress} {pickup.zipcode}</div>
+                            <div onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</div>
                             <div>{pickup.lastName}, {pickup.firstName}</div>
                         </PickupInfo>
                         <ActionColumn>
@@ -98,7 +107,7 @@ const Card = styled.div`
     flex-direction: row;
     background-color: transparent;
     width: 80%;
-    height: 8em;
+    height: 7em;
     margin: 1em;
     border-width: 0.05em; 
     border-color: lightgrey;
@@ -141,13 +150,14 @@ const StatusButtonRow = styled.div`
 `
 
 const Button = styled.button`
-      background-color: transparent;
-      color: ${props => props.color};
+      background-color: ${props => props.color};;
+      color: white;
       border-width: 0.05em; 
       border-color: ${props => props.color};
       border-radius: 0.2em;
       border-style: solid;
       height: 100%;
+      width: 20%;
 `
 
 export default PickupCard
