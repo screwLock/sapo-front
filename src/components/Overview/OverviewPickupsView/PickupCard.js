@@ -8,6 +8,7 @@ class PickupCard extends React.Component {
         super(props)
         this.state = {
             isStatusOpen: false,
+            isRatingOpen: false,
         }
     }
 
@@ -33,14 +34,25 @@ class PickupCard extends React.Component {
     }
 
     onBackButtonClick = () => {
-        this.setState({ isStatusOpen: false })
+        this.setState({ isStatusOpen: false, isRatingOpen: false })
         this.props.changeIsDragDisabled(false)
         this.props.changeIsAStatusOpen(false)
     }
 
     onPickupInfoClick = () => {
-        this.props.changeIsPickupInfoOpen(true);
-        this.props.selectPickup();
+        if (!this.props.isAStatusOpen) {
+            this.props.changeIsPickupInfoOpen(true);
+            this.props.selectPickup();
+        }
+    }
+
+    onRatingButtonClick = () => {
+        if (this.props.isAStatusOpen) {
+            return;
+        }
+        this.setState({ isRatingOpen: true })
+        this.props.changeIsDragDisabled(true)
+        this.props.changeIsAStatusOpen(true)
     }
 
     render() {
@@ -67,36 +79,47 @@ class PickupCard extends React.Component {
                 color2: '#1167b1'
             }
         }
+
+        // conditional rendering for card
+        let cardContent;
+        if (!this.state.isStatusOpen && !this.state.isRatingOpen) {
+            cardContent =
+                <React.Fragment>
+                    <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                    <PickupInfo>
+                        <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
+                        <div>{pickup.lastName}, {pickup.firstName}</div>
+                        <RatingButton onClick={this.onRatingButtonClick}>Rate This Pickup</RatingButton>
+                    </PickupInfo>
+                    <ActionColumn>
+                        <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' /></a></div>
+                        <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' /></a></div>
+                        <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' /></a></div>
+                    </ActionColumn>
+                </React.Fragment>
+        } else if (this.state.isStatusOpen) {
+            cardContent =
+                <React.Fragment>
+                    <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                    <StatusButtonRow>
+                        <Button color='blue'>Confirm</Button>
+                        <Button color='red'>Cancel</Button>
+                        <Button color='red'>Reject</Button>
+                    </StatusButtonRow>
+                </React.Fragment>
+        } else if (this.state.isRatingOpen) {
+            cardContent =
+                <React.Fragment>
+                    asdf
+                </React.Fragment>
+        }
         return (
             <Card
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 innerRef={this.setRef}
             >
-                {!this.state.isStatusOpen ? (
-                    <React.Fragment>
-                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
-                        <PickupInfo>
-                            <div onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</div>
-                            <div>{pickup.lastName}, {pickup.firstName}</div>
-                        </PickupInfo>
-                        <ActionColumn>
-                            <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' /></a></div>
-                            <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' /></a></div>
-                            <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' /></a></div>
-                        </ActionColumn>
-                    </React.Fragment>
-                ) : (<React.Fragment>
-                    <React.Fragment>
-                        <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
-                        <StatusButtonRow>
-                            <Button color='blue'>Confirm</Button>
-                            <Button color='red'>Cancel</Button>
-                            <Button color='red'>Reject</Button>
-                        </StatusButtonRow>
-                    </React.Fragment>
-                </React.Fragment>
-                    )}
+                {cardContent}
             </Card>
         )
     }
@@ -124,6 +147,20 @@ const OpenStatusButton = styled.button`
     :hover{
         background-color: ${props => props.color2};
       }
+`
+
+const PickupInfoButton = styled.div`
+      cursor: pointer;
+`
+
+const RatingButton = styled.div`
+      background-color: white;
+      border: none;
+      :hover {
+        font-color: #1167b1;
+        font-weight: 600;
+      }
+      cursor: pointer;
 `
 
 const PickupInfo = styled.div`
