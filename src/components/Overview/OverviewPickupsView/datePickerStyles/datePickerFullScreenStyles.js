@@ -1,7 +1,8 @@
 const datePickerFullScreenStyles = `
 .DayPicker {
     display: inline-block;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    margin-left: 5em;
   }
 
 .DayPicker-Day {
