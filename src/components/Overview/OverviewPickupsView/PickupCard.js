@@ -9,6 +9,7 @@ class PickupCard extends React.Component {
         this.state = {
             isStatusOpen: false,
             isRatingOpen: false,
+            isActionsOpen: false,
         }
     }
 
@@ -41,7 +42,8 @@ class PickupCard extends React.Component {
 
     onPickupInfoClick = () => {
         if (!this.props.isACardTabOpen) {
-            this.props.changeIsPickupInfoOpen(true);
+            this.props.changeIsPickupContainerOpen(true);
+            this.props.changeIsPickupInfoOpen(true)
             this.props.selectPickup();
         }
     }

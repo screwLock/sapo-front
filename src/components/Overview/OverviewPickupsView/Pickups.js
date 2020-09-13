@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
-import PickupInfo from './PickupInfo'
+import PickupContainer from './PickupContainer'
 
 
 class Pickups extends React.Component {
@@ -13,6 +13,8 @@ class Pickups extends React.Component {
             isDragDisabled: false,
             isACardTabOpen: false,
             isPickupInfoOpen: false,
+            isCustomerCallInOpen: false,
+            isPickupContainerOpen: false,
         }
     }
 
@@ -55,6 +57,21 @@ class Pickups extends React.Component {
     changeIsPickupInfoOpen = (boolean) => {
         this.setState({ isPickupInfoOpen: boolean })
     }
+    changeIsCustomerCallInOpen = (boolean) => {
+        this.setState({ isCustomerCallInOpen: boolean })
+    }
+
+    changeIsPickupContainerOpen = (boolean) => {
+        this.setState({ isPickupContainerOpen: boolean })
+    }
+
+    onCustomerCallInClick = () => {
+        this.setState( {
+            isPickupInfoOpen: false,
+            isPickupContainerOpen: true,
+            isCustomerCallInOpen: true,
+        })
+    }
 
     renderCards = (pickups) => {
         if (pickups.length > 0) {
@@ -78,8 +95,9 @@ class Pickups extends React.Component {
                                 isDragDisabled={this.state.isDragDisabled}
                                 changeIsACardTabOpen={this.changeIsACardTabOpen}
                                 isACardTabOpen={this.state.isACardTabOpen}
-                                changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
+                                changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
                                 selectPickup={this.props.selectPickup(pickup)}
+                                changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
                             />
                         )}
                     </Draggable>
@@ -105,15 +123,25 @@ class Pickups extends React.Component {
                                 style={ListContainer(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
-                                <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')} <button /></h1>
-                                {!this.state.isPickupInfoOpen ?
-                                    this.renderCards(datePickups) :
-                                    (
-                                        <PickupInfo
-                                            pickup={selectedPickup}
-                                            changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
-                                        />
-                                    )
+                                {
+                                    !this.state.isCustomerCallInOpen
+                                    ? (<h1>{format(this.props.selectedDate, 'dddd Do, YYYY')} <button onClick={this.onCustomerCallInClick} /></h1>)
+                                    : (<h1>Customer Call-In</h1>)
+                                }
+                                {
+                                    !this.state.isPickupContainerOpen
+                                        ? this.renderCards(datePickups)
+                                        :
+                                        (
+                                            <PickupContainer
+                                                pickup={selectedPickup}
+                                                changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
+                                                isCustomerCallInOpen={this.state.isCustomerCallInOpen}
+                                                changeIsCustomerCallInOpen={this.changeIsCustomerCallInOpen}
+                                                isPickupInfoOpen={this.state.isPickupInfoOpen}
+                                                changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
+                                            />
+                                        )
                                 }
                                 {provided.placeholder}
                             </div>
