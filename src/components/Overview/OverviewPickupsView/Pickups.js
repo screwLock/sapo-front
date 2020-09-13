@@ -11,7 +11,7 @@ class Pickups extends React.Component {
         super(props)
         this.state = {
             isDragDisabled: false,
-            isAStatusOpen: false,
+            isACardTabOpen: false,
             isPickupInfoOpen: false,
         }
     }
@@ -49,8 +49,8 @@ class Pickups extends React.Component {
     changeIsDragDisabled = (boolean) => {
         this.setState({ isDragDisabled: boolean })
     }
-    changeIsAStatusOpen = (boolean) => {
-        this.setState({ isAStatusOpen: boolean })
+    changeIsACardTabOpen = (boolean) => {
+        this.setState({ isACardTabOpen: boolean })
     }
     changeIsPickupInfoOpen = (boolean) => {
         this.setState({ isPickupInfoOpen: boolean })
@@ -61,7 +61,7 @@ class Pickups extends React.Component {
             return pickups.map((pickup, index) => {
                 return (
                     <Draggable draggableId={pickup.pickupID} index={pickup.index} isDragDisabled={this.state.isDragDisabled}>
-                        {(provided) => (
+                        {(provided, snapshot) => (
                             <PickupCard pickup={pickup}
                                 isChecked={pickup.inRoute}
                                 ordinal={index}
@@ -76,8 +76,8 @@ class Pickups extends React.Component {
                                 userConfig={this.props.userConfig}
                                 changeIsDragDisabled={this.changeIsDragDisabled}
                                 isDragDisabled={this.state.isDragDisabled}
-                                changeIsAStatusOpen={this.changeIsAStatusOpen}
-                                isAStatusOpen={this.state.isAStatusOpen}
+                                changeIsACardTabOpen={this.changeIsACardTabOpen}
+                                isACardTabOpen={this.state.isACardTabOpen}
                                 changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
                                 selectPickup={this.props.selectPickup(pickup)}
                             />
@@ -105,7 +105,7 @@ class Pickups extends React.Component {
                                 style={ListContainer(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
-                                <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
+                                <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')} <button /></h1>
                                 {!this.state.isPickupInfoOpen ?
                                     this.renderCards(datePickups) :
                                     (
@@ -125,15 +125,26 @@ class Pickups extends React.Component {
     }
 }
 
-const ListContainer = isDraggingOver => ({
-    background: isDraggingOver ? 'lightblue' : 'transparent',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: 8,
-    overflow: 'auto',
-    height: '100%'
-});
+const ListContainer = isDraggingOver =>
+    isDraggingOver ?
+        ({
+            background: 'blue',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: 8,
+            overflow: 'auto',
+            height: '100%'
+        }) :
+        ({
+            background: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: 8,
+            overflow: 'auto',
+            height: '100%'
+        })
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer

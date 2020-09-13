@@ -14,7 +14,7 @@ class PickupCard extends React.Component {
 
     componentDidMount() {
         this.props.changeIsDragDisabled(false)
-        this.props.changeIsAStatusOpen(false)
+        this.props.changeIsACardTabOpen(false)
     }
 
     setRef = ref => {
@@ -25,34 +25,34 @@ class PickupCard extends React.Component {
     };
 
     onStatusButtonClick = () => {
-        if (this.props.isAStatusOpen) {
+        if (this.props.isACardTabOpen) {
             return;
         }
         this.setState({ isStatusOpen: true })
         this.props.changeIsDragDisabled(true)
-        this.props.changeIsAStatusOpen(true)
+        this.props.changeIsACardTabOpen(true)
     }
 
     onBackButtonClick = () => {
         this.setState({ isStatusOpen: false, isRatingOpen: false })
         this.props.changeIsDragDisabled(false)
-        this.props.changeIsAStatusOpen(false)
+        this.props.changeIsACardTabOpen(false)
     }
 
     onPickupInfoClick = () => {
-        if (!this.props.isAStatusOpen) {
+        if (!this.props.isACardTabOpen) {
             this.props.changeIsPickupInfoOpen(true);
             this.props.selectPickup();
         }
     }
 
     onRatingButtonClick = () => {
-        if (this.props.isAStatusOpen) {
+        if (this.props.isACardTabOpen) {
             return;
         }
         this.setState({ isRatingOpen: true })
         this.props.changeIsDragDisabled(true)
-        this.props.changeIsAStatusOpen(true)
+        this.props.changeIsACardTabOpen(true)
     }
 
     render() {
@@ -134,13 +134,14 @@ const Card = styled.div`
     margin: 1em;
     border-width: 0.05em; 
     border-color: lightgrey;
-    border-radius: 0.2em;
+    border-radius: 0.5em 0.5em 0.5em 0.5em;
     border-style: solid;
 `
 
-const OpenStatusButton = styled.button`
+const OpenStatusButton = styled.div`
     background-color: ${props => props.color1};
     width: 10%;
+    cursor: pointer;
     border: none;
     transition: background 250ms ease-in-out, 
     transform 150ms ease;
@@ -187,14 +188,15 @@ const StatusButtonRow = styled.div`
 `
 
 const Button = styled.button`
-      background-color: ${props => props.color};;
-      color: white;
-      border-width: 0.05em; 
-      border-color: ${props => props.color};
-      border-radius: 0.2em;
-      border-style: solid;
-      height: 100%;
-      width: 20%;
+    background-color: ${props => props.color};;
+    color: white;
+    border-width: 0.05em; 
+    border-color: ${props => props.color};
+    border-radius: 0.2em;
+    border-style: solid;
+    height: 75%;
+    align-self: center;
+    width: 20%;
 `
 
 export default PickupCard
