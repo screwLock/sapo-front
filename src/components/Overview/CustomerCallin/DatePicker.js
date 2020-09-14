@@ -1,8 +1,8 @@
-import * as React from 'react'
-import { H4 } from '@blueprintjs/core'
+import * as React from './node_modules/react'
+import { H4 } from './node_modules/@blueprintjs/core'
 import { addMonths } from 'date-fns'
-import DayPicker from 'react-day-picker'
-import 'react-day-picker/lib/style.css'
+import DayPicker from './node_modules/react-day-picker'
+import './node_modules/react-day-picker/lib/style.css'
 
 class DatePicker extends React.PureComponent {
     constructor(props) {

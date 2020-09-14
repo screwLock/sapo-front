@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { H4, Checkbox } from '@blueprintjs/core'
-import styled from 'styled-components'
+import * as React from './node_modules/react'
+import { H4, Checkbox } from './node_modules/@blueprintjs/core'
+import styled from './node_modules/styled-components'
 
 class ServiceDetailCheckboxes extends React.Component {
     constructor(props) {

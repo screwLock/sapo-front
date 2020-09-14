@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ReactTable from 'react-table'
 import { Button, Intent } from '@blueprintjs/core'
-import 'react-day-picker/lib/style.css';
+import '../Overview/CustomerCallIn/node_modules/react-day-picker/lib/style.css';
 import "react-table/react-table.css"
 import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'

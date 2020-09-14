@@ -1,11 +1,11 @@
 /* eslint-disable */
-import * as React from 'react';
-import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent, TextArea } from '@blueprintjs/core'
+import * as React from './node_modules/react';
+import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent, TextArea } from './node_modules/@blueprintjs/core'
 import getDisabledDates from './getDisabledDates'
-import styled from 'styled-components'
+import styled from './node_modules/styled-components'
 import { StateSelect } from './StateSelect'
 import EmployeeSelect from './EmployeeSelect'
-import { produce } from 'immer'
+import { produce } from './node_modules/immer'
 import { addDays, addMonths } from 'date-fns'
 import CategoryCheckboxes from './CategoryCheckboxes'
 import ServiceDetailCheckboxes from './ServiceDetailCheckboxes'
@@ -13,11 +13,11 @@ import MandatoryCheckboxes from './MandatoryCheckboxes'
 import ZipcodeSelect from './ZipcodeSelect'
 import DatePicker from './DatePicker'
 import { AppToaster } from '../../Toaster'
-import * as EmailValidator from 'email-validator'
-import { API } from "aws-amplify"
+import * as EmailValidator from './node_modules/email-validator'
+import { API } from "./node_modules/aws-amplify"
 import config from '../../../config'
-import 'here-js-api/scripts/mapsjs-core'
-import 'here-js-api/scripts/mapsjs-service'
+import './node_modules/here-js-api/scripts/mapsjs-core'
+import './node_modules/here-js-api/scripts/mapsjs-service'
 
 
 export class CustomerCallIn extends React.Component {

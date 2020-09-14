@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, Classes, FormGroup, InputGroup, Intent, Dialog } from '@blueprintjs/core'
 import DayPicker, { DateUtils } from 'react-day-picker';
-import 'react-day-picker/lib/style.css'
+import '../Overview/CustomerCallIn/node_modules/react-day-picker/lib/style.css'
 import styled from 'styled-components'
 import { AppToaster } from '../Toaster'
 

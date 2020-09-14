@@ -1,7 +1,7 @@
-import * as React from 'react'
-import { H5 } from '@blueprintjs/core'
-import Select from 'react-select'
-import styled from 'styled-components'
+import * as React from './node_modules/react'
+import { H5 } from './node_modules/@blueprintjs/core'
+import Select from './node_modules/react-select'
+import styled from './node_modules/styled-components'
 
 
 class EmployeeSelect extends React.PureComponent {

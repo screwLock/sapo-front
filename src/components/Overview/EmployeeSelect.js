@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Select, { components } from 'react-select';
+import Select, { components } from './CustomerCallIn/node_modules/react-select';
 import styled from 'styled-components'
 
 const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;

@@ -1,7 +1,7 @@
-import * as React from 'react'
-import Select, { components } from 'react-select';
-import { countDecimalPlaces } from '@blueprintjs/core/lib/esm/common/utils';
-import { USER } from '@blueprintjs/icons/lib/esm/generated/iconContents';
+import * as React from './node_modules/react'
+import Select, { components } from './node_modules/react-select';
+import { countDecimalPlaces } from './node_modules/@blueprintjs/core/lib/esm/common/utils';
+import { USER } from './node_modules/@blueprintjs/icons/lib/esm/generated/iconContents';
 
 // create abbreviations for the states and provinces
 const stateOptions = [

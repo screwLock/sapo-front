@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css'
+import '../CustomerCallIn/node_modules/react-day-picker/lib/style.css'
 import { keyframes } from "styled-components"
 import { getDate, getMonth } from "date-fns"
 import dayStyles from './datePickerStyles/dayStyles'

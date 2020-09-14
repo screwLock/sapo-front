@@ -6,7 +6,7 @@ import OverviewCard from './OverviewCard.js'
 import { Button } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { makeDailyPickupsPDF } from './PickupPDFMake'
-import { CustomerCallIn } from './CustomerCallin/CustomerCallIn'
+import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 import StatusDialog from './StatusDialog'
 import SendDirectionsDialog from './SendDirectionsDialog.js';
 

@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput} from '@blueprintjs/core'
-import styled from 'styled-components'
+import * as React from './node_modules/react'
+import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput} from './node_modules/@blueprintjs/core'
+import styled from './node_modules/styled-components'
 
 class CategoryCheckboxes extends React.Component {
     constructor(props) {

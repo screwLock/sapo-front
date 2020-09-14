@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Select from 'react-select'
+import Select from '../Overview/CustomerCallIn/node_modules/react-select'
 import styled from 'styled-components'
 import { Button, FormGroup, H6, InputGroup, Intent } from "@blueprintjs/core"
 import AdminDialog from './AdminDialog'

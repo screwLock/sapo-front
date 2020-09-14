@@ -1,6 +1,6 @@
 import * as React from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
+import './CustomerCallIn/node_modules/react-day-picker/lib/style.css';
 
 export default class OverviewDateInput extends React.Component {
   constructor(props) {
