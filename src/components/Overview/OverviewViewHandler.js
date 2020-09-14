@@ -8,6 +8,13 @@ import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 class OverviewViewHandler extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            view: 'dailyPickups'
+        }
+    }
+
+    changeView = (view) => {
+        this.setState({ view: view})
     }
 
     getView = (view) => {
@@ -35,7 +42,7 @@ class OverviewViewHandler extends React.Component {
 
     render() {
         return (
-            this.getView('customerCallIn')
+            this.getView(this.state.view)
         )
     }
 }
