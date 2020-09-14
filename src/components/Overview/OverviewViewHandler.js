@@ -24,16 +24,23 @@ class OverviewViewHandler extends React.Component {
                     <Row>
                         <DatePickerFullScreen {...this.props} />
                         <PickupsContainer>
-                            <Pickups {...this.props} />
+                            <Pickups {...this.props} changeView={this.changeView}/>
                         </PickupsContainer>
                     </Row>
                 </Column>
             )
         }
-        if (view === 'customerCallIn') {
+        else if (view === 'customerCallIn') {
             return (
                 <Column>
-                    <CustomerCallIn {...this.props} />
+                    <CustomerCallIn {...this.props} changeView={this.changeView}/>
+                </Column>
+            )
+        }
+        else if (view === 'incompleteSetup') {
+            return (
+                <Column>
+                    <div>Setup Not Complete</div>
                 </Column>
             )
         }

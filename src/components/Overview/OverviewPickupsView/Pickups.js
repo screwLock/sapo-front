@@ -115,6 +115,7 @@ class Pickups extends React.Component {
                                 {...provided.droppableProps}
                             >
                                 <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
+                                <h5 onClick={() => {this.props.changeView('customerCallIn')}}>New Pickup</h5>
                                 {
                                     !this.state.isPickupContainerOpen
                                         ? this.renderCards(datePickups)

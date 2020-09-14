@@ -189,7 +189,7 @@ export class CustomerCallIn extends React.Component {
             }),
             submitDisabled: false
         })
-        this.props.onClose()
+        this.props.changeView('dailyPickups')
     }
 
     handleSubmit = () => {
@@ -432,129 +432,81 @@ export class CustomerCallIn extends React.Component {
     }
 
     render() {
-        const userConfig = this.props.userConfig
-        // user needs to configure all the settings
-        if (userConfig.zipcodes == null ||
-            userConfig.categories == null ||
-            userConfig.serviceDetails == null ||
-            userConfig.restrictions == null ||
-            userConfig.maxPickups == null ||
-            userConfig.blackoutDates == null
-        ) {
-            return (
-                <React.Fragment>
-                    <DialogContainer>
-                        You need to setup the emails, zipcodes, max number of pickups, and categories
-                        before you can use the scheduling page!
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.props.onClose}>Cancel</Button>
-                        </div>
-                    </div>
-                </React.Fragment>
-            )
-        }
-        // user needs to configure the emails
-        else if (userConfig.submittedEmails == null ||
-            userConfig.confirmedEmails == null ||
-            userConfig.completedEmails == null ||
-            userConfig.canceledEmails == null ||
-            userConfig.rejectedEmails == null
-        ) {
-            return (
-                <React.Fragment>
-                    <DialogContainer>
-                        You need to setup each of the email types to use the scheduling page!
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.props.onClose}>Cancel</Button>
-                        </div>
-                    </div>
-                </React.Fragment>
-            )
-        }
-        // Settings complete, Show the Scheduling Dialog
-        else {
-            return (
-                <React.Fragment>
-                    <DialogContainer>
-                        <H4>Select The Pickup Zipcode</H4>
-                        <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
-                            onChange={this.handleZipcodeSelect}
-                            selectedZipcode={this.state.selectedZipcode}
+        return (
+            <React.Fragment>
+                <DialogContainer>
+                    <H4>Select The Pickup Zipcode</H4>
+                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                        onChange={this.handleZipcodeSelect}
+                        selectedZipcode={this.state.selectedZipcode}
+                    />
+                    <BlockContainer>
+                        <DatePicker disabledDays={this.state.disabledDays}
+                            onClick={this.handleDayClick}
+                            zipcode={this.state.selectedZipcode}
+                            selectedDate={this.state.selectedDate}
+                            isVisible={this.state.showDatePicker}
                         />
-                        <BlockContainer>
-                            <DatePicker disabledDays={this.state.disabledDays}
-                                onClick={this.handleDayClick}
-                                zipcode={this.state.selectedZipcode}
-                                selectedDate={this.state.selectedDate}
-                                isVisible={this.state.showDatePicker}
-                            />
 
-                        </BlockContainer>
-                        <p>
-                            {this.state.selectedDate
-                                ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
-                                : ''}
-                        </p>
-                        {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
-                        <div>
-                            <CategoryCheckboxes
-                                categories={this.state.categories}
-                                restrictions={this.props.userConfig.restrictions}
-                                donations={this.state.donations}
-                                onChange={this.handleCategoryCheckedChange}
-                                isVisible={this.state.showPickupDetails}
-                                handleQuantityChange={this.handleDonationQuantityChange}
-                            />
-                        </div>
-                        <div>
-                            <ServiceDetailCheckboxes
-                                serviceDetails={this.state.serviceDetails}
-                                onChange={this.handleServiceCheckedChange}
-                                isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
-                            />
-                        </div>
-                        {this.state.showPickupDetails ? (
-                            <div>
-                                <H4>Additional Comments</H4>
-                                <CommentsTextArea
-                                    name='comments'
-                                    large={false}
-                                    intent={Intent.PRIMARY}
-                                    onChange={this.handleCommentsChange}
-                                    value={this.state.comments}
-                                />
-                            </div>
-                        ) : ''}
-                        <div>
-                            <MandatoryCheckboxes
-                                mandatoryDetails={this.state.mandatoryDetails}
-                                onChange={this.handleMandatoryCheckedChange}
-                                // should not render if NO mandatory service details
-                                isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
-                            />
-                        </div>
-                        <div>
-                            {this.state.showPickupDetails ? (
-                                <EmployeeSelect employees={this.props.userConfig.employees}
-                                    onChange={this.handleEmployeeSelect}
-                                    selectedEmployee={this.state.selectedEmployee}
-                                />
-                            ) : ''}
-                        </div>
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleClose}>Cancel</Button>
-                            <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
-                        </div>
+                    </BlockContainer>
+                    <p>
+                        {this.state.selectedDate
+                            ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                            : ''}
+                    </p>
+                    {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
+                    <div>
+                        <CategoryCheckboxes
+                            categories={this.state.categories}
+                            restrictions={this.props.userConfig.restrictions}
+                            donations={this.state.donations}
+                            onChange={this.handleCategoryCheckedChange}
+                            isVisible={this.state.showPickupDetails}
+                            handleQuantityChange={this.handleDonationQuantityChange}
+                        />
                     </div>
-                </React.Fragment>
-            )
-        }
+                    <div>
+                        <ServiceDetailCheckboxes
+                            serviceDetails={this.state.serviceDetails}
+                            onChange={this.handleServiceCheckedChange}
+                            isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
+                        />
+                    </div>
+                    {this.state.showPickupDetails ? (
+                        <div>
+                            <H4>Additional Comments</H4>
+                            <CommentsTextArea
+                                name='comments'
+                                large={false}
+                                intent={Intent.PRIMARY}
+                                onChange={this.handleCommentsChange}
+                                value={this.state.comments}
+                            />
+                        </div>
+                    ) : ''}
+                    <div>
+                        <MandatoryCheckboxes
+                            mandatoryDetails={this.state.mandatoryDetails}
+                            onChange={this.handleMandatoryCheckedChange}
+                            // should not render if NO mandatory service details
+                            isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
+                        />
+                    </div>
+                    <div>
+                        {this.state.showPickupDetails ? (
+                            <EmployeeSelect employees={this.props.userConfig.employees}
+                                onChange={this.handleEmployeeSelect}
+                                selectedEmployee={this.state.selectedEmployee}
+                            />
+                        ) : ''}
+                    </div>
+                </DialogContainer>
+                <div>
+                    <Button onClick={this.handleClose}>Cancel</Button>
+                    <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
+                </div>
+            </React.Fragment>
+        )
     }
 
 }
