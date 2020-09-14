@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as React from 'react'
 import OverviewMapView from './OverviewMapView'
-import OverviewPickupsView from './OverviewPickupsView/OverviewPickupsView'
+import OverviewViewHandler from './OverviewViewHandler'
 import { Grid, Cell } from "styled-css-grid";
 import produce from 'immer';
 import EmbedMap from './Maps/EmbedMap'
@@ -201,7 +201,7 @@ class Overview extends React.Component {
 
     render() {
         return (
-            <OverviewPickupsView 
+            <OverviewViewHandler 
                 {...this.state} 
                 handleClick={this.selectDate}
                 onDragEnd={this.onDragEnd}
