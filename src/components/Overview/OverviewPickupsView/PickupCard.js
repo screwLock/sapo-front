@@ -29,13 +29,22 @@ class PickupCard extends React.Component {
         if (this.props.isACardTabOpen) {
             return;
         }
-        this.setState({ isStatusOpen: true })
+        this.setState({ isStatusOpen: true, isRatingOpen: false, isActionsOpen: false })
+        this.props.changeIsDragDisabled(true)
+        this.props.changeIsACardTabOpen(true)
+    }
+
+    onActionsButtonClick = () => {
+        if (this.props.isACardTabOpen) {
+            return;
+        }
+        this.setState({ isStatusOpen: false, isRatingOpen: false, isActionsOpen: true })
         this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
     }
 
     onBackButtonClick = () => {
-        this.setState({ isStatusOpen: false, isRatingOpen: false })
+        this.setState({ isStatusOpen: false, isRatingOpen: false, isActionsOpen: false })
         this.props.changeIsDragDisabled(false)
         this.props.changeIsACardTabOpen(false)
     }
@@ -84,7 +93,7 @@ class PickupCard extends React.Component {
 
         // conditional rendering for card
         let cardContent;
-        if (!this.state.isStatusOpen && !this.state.isRatingOpen) {
+        if (!this.state.isStatusOpen && !this.state.isRatingOpen && !this.state.isActionsOpen) {
             cardContent =
                 <React.Fragment>
                     <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
@@ -93,10 +102,10 @@ class PickupCard extends React.Component {
                         <div>{pickup.lastName}, {pickup.firstName}</div>
                         <RatingButton onClick={this.onRatingButtonClick}>Rate This Pickup</RatingButton>
                     </PickupInfo>
-                    <ActionColumn>
-                        <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' /></a></div>
-                        <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' /></a></div>
-                        <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' /></a></div>
+                    <ActionColumn onClick={this.onActionsButtonClick}> 
+                        <div><Icon icon='phone' /></div>
+                        <div><Icon icon='envelope' /></div>
+                        <div><Icon icon='geolocation' /></div>
                     </ActionColumn>
                 </React.Fragment>
         } else if (this.state.isStatusOpen) {
@@ -112,8 +121,17 @@ class PickupCard extends React.Component {
         } else if (this.state.isRatingOpen) {
             cardContent =
                 <React.Fragment>
-                    asdf
+                    <div onClick={this.onBackButtonClick}>back</div>
                 </React.Fragment>
+        } else if (this.state.isActionsOpen) {
+            cardContent =
+                <ActionRow>
+                    <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50}/></a></div>
+                    <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50}/></a></div>
+                    <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50}/></a></div>
+                    <div onClick={this.onBackButtonClick}>Back</div>
+                </ActionRow>
+
         }
         return (
             <Card
@@ -173,12 +191,20 @@ const PickupInfo = styled.div`
     padding-left: 1em;
 `
 
-const ActionColumn = styled.div`
+const ActionColumn = styled.button`
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
       width: 10%;
       height: 100%;
+`
+
+const ActionRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 80%;
+    height: 80%;
 `
 
 const StatusButtonRow = styled.div`
