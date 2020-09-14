@@ -1,5 +1,5 @@
 import * as React from 'react'
-import styled from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 import { Button, FormGroup, Icon, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Link, withRouter } from "react-router-dom";
@@ -80,7 +80,7 @@ class ForgotPassword extends React.Component {
           label="Enter Your Email"
           labelFor="text-input"
         >
-          <InputGroup name="email" onChange={this.handleChange} />
+          <InputGroup name="email" autoFocus onChange={this.handleChange} />
         </FormGroup>
         <ButtonRow>
           <Button
@@ -161,6 +161,15 @@ class ForgotPassword extends React.Component {
   }
 }
 
+const fadeIn = keyframes`
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+`;
+
 const Container = styled.div`
     overflow: hidden;
     position: absolute;
@@ -183,6 +192,8 @@ const Logo = styled.div`
     text-align: center;
     padding: 20px 20px 0;
     margin:0;
+    animation: ${fadeIn} 1s ease-in;
+    opacity: 1;
 `;
 
 const ButtonRow = styled.div`

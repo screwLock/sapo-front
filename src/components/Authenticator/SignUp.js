@@ -1,5 +1,5 @@
 import * as React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Button, Checkbox, FormGroup, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Redirect, withRouter } from "react-router-dom"
@@ -70,7 +70,7 @@ class SignUp extends React.Component {
 
     onSignUp = async () => {
         let ein = this.state.ein;
-        if(this.state.ein.length === 0 && this.state.isNonProfit === false){
+        if (this.state.ein.length === 0 && this.state.isNonProfit === false) {
             ein = 'NA'
         }
         try {
@@ -88,7 +88,7 @@ class SignUp extends React.Component {
                     address: `${this.state.streetAddress}@${this.state.city}@${this.state.state}@${this.state.zipcode.replace(/[^A-Za-z0-9]/g, '')}`,
                     updated_at: Date.now().toString(),
                     'custom:isNonProfit': this.state.isNonProfit.toString(),
-                    'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g,''),
+                    'custom:ein': ein.replace(/[^a-zA-Z0-9-_]+/g, ''),
                     'custom:membership': 'trial',
                     'custom:stripeID': '-',
                     'custom:LatLng': '@',
@@ -160,7 +160,7 @@ class SignUp extends React.Component {
             return false
         }
         else if (!postalCodeValidator(this.state.zipcode)) {
-            this.setState({error: 'Enter a valid postal code'})
+            this.setState({ error: 'Enter a valid postal code' })
             return false
         }
         else if (this.state.isNonProfit === true && this.state.ein.length === 9) {
@@ -238,7 +238,7 @@ class SignUp extends React.Component {
                             label="First Name"
                             labelFor="text-input"
                         >
-                            <InputGroup name="firstName" onChange={this.handleChange} />
+                            <InputGroup name="firstName" autoFocus onChange={this.handleChange} />
                         </FormGroup>
                         <FormGroup
                             label="Last Name"
@@ -271,19 +271,19 @@ class SignUp extends React.Component {
                                 label="City"
                                 labelFor="text-input"
                             >
-                                <InputGroup name="city" onChange={this.handleChange} style={{width:'160px'}}/>
+                                <InputGroup name="city" onChange={this.handleChange} style={{ width: '160px' }} />
                             </FormGroup>
                             <FormGroup
                                 label="Zipcode"
                                 labelFor="text-input"
                             >
-                                <InputGroup name="zipcode" onChange={this.handleChange} style={{width: '80px'}} maxLength='6'/>
+                                <InputGroup name="zipcode" onChange={this.handleChange} style={{ width: '80px' }} maxLength='6' />
                             </FormGroup>
                             <FormGroup
                                 label="State"
                                 labelFor="text-input"
                             >
-                                <InputGroup name="state" onChange={this.handleChange} style={{width: '50px'}} maxLength='2'/>
+                                <InputGroup name="state" onChange={this.handleChange} style={{ width: '50px' }} maxLength='2' />
                             </FormGroup>
                         </AddressRow>
                         <FormGroup
@@ -357,6 +357,15 @@ class SignUp extends React.Component {
     }
 }
 
+const fadeIn = keyframes`
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+`;
+
 const Container = styled.div`
     width: 100%;
     height: 100%;
@@ -379,6 +388,8 @@ const Logo = styled.div`
     text-align: center;
     padding: 20px 20px 0;
     margin:0;
+    animation: ${fadeIn} 1s ease-in;
+    opacity: 1;
 `;
 
 const TitleRow = styled.div`

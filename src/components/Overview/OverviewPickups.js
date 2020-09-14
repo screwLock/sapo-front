@@ -6,7 +6,7 @@ import OverviewCard from './OverviewCard.js'
 import { Button } from '@blueprintjs/core'
 import styled from 'styled-components'
 import { makeDailyPickupsPDF } from './PickupPDFMake'
-import { CustomerCallIn } from './CustomerCallin/CustomerCallIn'
+import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 import StatusDialog from './StatusDialog'
 import SendDirectionsDialog from './SendDirectionsDialog.js';
 
@@ -86,7 +86,7 @@ class OverviewPickups extends React.Component {
                     <Button minimal="false" onClick={this.toggleOverlay} rightIcon="phone">Customer Call In</Button>
                     <CustomerCallIn isOverlayOpen={this.state.isOverlayOpen} onClose={this.toggleOverlay} userConfig={this.props.userConfig} exceededDays={this.props.exceededDays}/>
                     <Button minimal="false" onClick={this.handleSendDirectionsClick(routePickups)} rightIcon="document" id="createPDF">Dispatch Routes</Button>
-                    <Button minimal="false" onClick={this.props.createRoute} rightIcon="map-create">Preview Route On Map</Button>
+                    <Button minimal="false" onClick={()=>{this.props.updateNewRoute(true)}} rightIcon="map-create">Preview Route On Map</Button>
                 </Footer>
             )
         }
