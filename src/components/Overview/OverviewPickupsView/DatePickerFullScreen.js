@@ -3,7 +3,7 @@ import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css'
 import { keyframes } from "styled-components"
 import { getDate, getMonth, isSameDay } from "date-fns"
-import dayStyles, {unconfirmedSelected} from './datePickerStyles/dayStyles'
+import dayStyles, { unconfirmedSelected } from './datePickerStyles/dayStyles'
 import datePickerFullScreenStyles from './datePickerStyles/datePickerFullScreenStyles'
 import BlackoutDates from '../../BlackoutDates/BlackoutDates';
 
@@ -41,7 +41,7 @@ class DatePickerFullScreen extends Component {
 
         // we need to check if the selected date is 'unconfirmed'
         // for styling purposes
-        if(unconfirmed.includes(getDate(this.props.selectedDate))){
+        if (unconfirmed.includes(getDate(this.props.selectedDate))) {
             modifiersStyles = {
                 selected: unconfirmedSelected
             }
@@ -85,6 +85,41 @@ class DatePickerFullScreen extends Component {
             confirmedDays: confirmedDays,
         }
 
+        const Weekday = ({ weekday, className, localeUtils, locale }) => {
+            const weekdayName = localeUtils.formatWeekdayLong(weekday, locale);
+            return (
+                <div className={className} title={weekdayName}>
+                    {weekdayName.slice(0, 2).toUpperCase()}
+                </div>
+            );
+        }
+
+        const Navbar = ({
+            nextMonth,
+            previousMonth,
+            onPreviousClick,
+            onNextClick,
+            className,
+            localeUtils,
+          }) => {
+            const styleLeft = {
+              float: 'left',
+            };
+            const styleRight = {
+              float: 'right',
+            };
+            return (
+              <div className={className}>
+                <button style={styleLeft} onClick={() => onPreviousClick()}>
+                ←
+                </button>
+                <button style={styleRight} onClick={() => onNextClick()}>
+                →
+                </button>
+              </div>
+            );
+          }
+
 
         return (
             <div>
@@ -95,6 +130,7 @@ class DatePickerFullScreen extends Component {
                     onDayClick={this.handleDayClick}
                     onMonthChange={this.props.handleMonthChange}
                     selectedDays={this.props.selectedDate}
+                    weekdayElement={<Weekday />}
                 />
             </div>
         );

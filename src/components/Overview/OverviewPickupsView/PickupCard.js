@@ -76,7 +76,7 @@ class PickupCard extends React.Component {
                 color1: '#187bcd',
                 color2: '#1167b1'
             },
-            cancelled: {
+            canceled: {
                 color1: '#187bcd',
                 color2: '#1167b1'
             },
