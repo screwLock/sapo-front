@@ -208,6 +208,7 @@ class Overview extends React.Component {
                 handleMonthChange={this.handleMonthChange}
                 selectPickup={this.selectPickup}
                 selectedPickup={this.state.selectedPickup}
+                userConfig={this.props.userConfig}
                 />
         )
     }

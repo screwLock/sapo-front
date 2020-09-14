@@ -65,14 +65,6 @@ class Pickups extends React.Component {
         this.setState({ isPickupContainerOpen: boolean })
     }
 
-    onCustomerCallInClick = () => {
-        this.setState( {
-            isPickupInfoOpen: false,
-            isPickupContainerOpen: true,
-            isCustomerCallInOpen: true,
-        })
-    }
-
     renderCards = (pickups) => {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
@@ -97,7 +89,6 @@ class Pickups extends React.Component {
                                 isACardTabOpen={this.state.isACardTabOpen}
                                 changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
                                 selectPickup={this.props.selectPickup(pickup)}
-                                changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
                             />
                         )}
                     </Draggable>
@@ -123,11 +114,7 @@ class Pickups extends React.Component {
                                 style={ListContainer(snapshot.isDraggingOver)}
                                 {...provided.droppableProps}
                             >
-                                {
-                                    !this.state.isCustomerCallInOpen
-                                    ? (<h1>{format(this.props.selectedDate, 'dddd Do, YYYY')} <button onClick={this.onCustomerCallInClick} /></h1>)
-                                    : (<h1>Customer Call-In</h1>)
-                                }
+                                <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
                                 {
                                     !this.state.isPickupContainerOpen
                                         ? this.renderCards(datePickups)
@@ -136,10 +123,7 @@ class Pickups extends React.Component {
                                             <PickupContainer
                                                 pickup={selectedPickup}
                                                 changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
-                                                isCustomerCallInOpen={this.state.isCustomerCallInOpen}
-                                                changeIsCustomerCallInOpen={this.changeIsCustomerCallInOpen}
-                                                isPickupInfoOpen={this.state.isPickupInfoOpen}
-                                                changeIsPickupInfoOpen={this.changeIsPickupInfoOpen}
+                                                userConfig={this.props.userConfig}
                                             />
                                         )
                                 }

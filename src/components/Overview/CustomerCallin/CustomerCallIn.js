@@ -442,22 +442,17 @@ export class CustomerCallIn extends React.Component {
             userConfig.blackoutDates == null
         ) {
             return (
-                <Dialog isOpen={this.props.isOverlayOpen}
-                    onClose={this.props.onClose}
-                    transitionDuration={100}
-                    canOutsideClickClose={false}
-                    title="Customer Call-In"
-                >
+                <React.Fragment>
                     <DialogContainer>
                         You need to setup the emails, zipcodes, max number of pickups, and categories
-                    before you can use the scheduling page!
+                        before you can use the scheduling page!
                     </DialogContainer>
                     <div className={Classes.DIALOG_FOOTER}>
                         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                             <Button onClick={this.props.onClose}>Cancel</Button>
                         </div>
                     </div>
-                </Dialog>
+                </React.Fragment>
             )
         }
         // user needs to configure the emails
@@ -468,12 +463,7 @@ export class CustomerCallIn extends React.Component {
             userConfig.rejectedEmails == null
         ) {
             return (
-                <Dialog isOpen={this.props.isOverlayOpen}
-                    onClose={this.props.onClose}
-                    transitionDuration={100}
-                    canOutsideClickClose={false}
-                    title="Customer Call-In"
-                >
+                <React.Fragment>
                     <DialogContainer>
                         You need to setup each of the email types to use the scheduling page!
                     </DialogContainer>
@@ -482,18 +472,13 @@ export class CustomerCallIn extends React.Component {
                             <Button onClick={this.props.onClose}>Cancel</Button>
                         </div>
                     </div>
-                </Dialog>
+                </React.Fragment>
             )
         }
         // Settings complete, Show the Scheduling Dialog
         else {
             return (
-                <Dialog isOpen={this.props.isOverlayOpen}
-                    onClose={this.handleClose}
-                    transitionDuration={100}
-                    canOutsideClickClose={false}
-                    title="Customer Call-In"
-                >
+                <React.Fragment>
                     <DialogContainer>
                         <H4>Select The Pickup Zipcode</H4>
                         <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
@@ -567,7 +552,7 @@ export class CustomerCallIn extends React.Component {
                             <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
                         </div>
                     </div>
-                </Dialog>
+                </React.Fragment>
             )
         }
     }

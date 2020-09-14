@@ -52,7 +52,6 @@ class PickupCard extends React.Component {
     onPickupInfoClick = () => {
         if (!this.props.isACardTabOpen) {
             this.props.changeIsPickupContainerOpen(true);
-            this.props.changeIsPickupInfoOpen(true)
             this.props.selectPickup();
         }
     }

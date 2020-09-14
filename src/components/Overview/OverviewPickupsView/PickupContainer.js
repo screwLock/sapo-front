@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { CustomerCallIn } from '../CustomerCallin/CustomerCallIn'
 
 class PickupContainer extends React.Component {
     constructor(props) {
@@ -28,8 +29,6 @@ class PickupContainer extends React.Component {
     handleClickOutside = (event) => {
         if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
             this.props.changeIsPickupContainerOpen(false)
-            this.props.changeIsPickupInfoOpen(false)
-            this.props.changeIsCustomerCallInOpen(false)
         }
     }
 
@@ -39,8 +38,6 @@ class PickupContainer extends React.Component {
             <div
                 ref={this.setWrapperRef}
             >
-            {this.props.isPickupInfoOpen
-            ? (
                 <React.Fragment>
                     <h3>{pickup.lastName}, {pickup.firstName}</h3>
                     <h3>{pickup.streetAddress}, {pickup.zipcode}</h3>
@@ -67,11 +64,6 @@ class PickupContainer extends React.Component {
                     <div>Comments: {pickup.comments ? `${pickup.comments}` : 'None'}</div>
                     <div>Submitted By: {pickup.createdBy}</div>
                 </React.Fragment>
-            )
-            : (
-                <div>CustomerCallIn</div>
-            )
-            }
             </div>
         )
     }
