@@ -3,6 +3,10 @@ import Select, {components} from 'react-select'
 import SimpleBar from 'simplebar-react';
 import 'C:/Users/helml/Desktop/sapo-front/node_modules/simplebar-react/dist/simplebar.min.css';
 
+// Input needs to be outside of the render method to prevent 
+// rerender of HOC components everytime input value changes
+const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
+
 class CategorySelect extends React.PureComponent {
     constructor(props) {
         super(props)
@@ -40,7 +44,6 @@ class CategorySelect extends React.PureComponent {
                 options: categoryOptions,
             },
         ];
-        const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
         return (
                 <Select
                     value={{ value: selectedCategory, label: selectedCategory.name }}

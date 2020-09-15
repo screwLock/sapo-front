@@ -105,6 +105,8 @@ const formatGroupLabel = data => (
     </div>
 );
 
+// Input needs to be outside of the render method to prevent 
+// rerender of HOC components everytime input value changes
 const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
 
 const renderScrollbar = props => {
