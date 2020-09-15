@@ -45,7 +45,7 @@ class EmployeeSelect extends React.PureComponent {
         const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
         return (
                 <Select
-                    value={{ value: selectedEmployee, label: `${selectedEmployee.lastName}, ${selectedEmployee.firstName}` }}
+                    value={{ value: selectedEmployee, label: selectedEmployee.firstName === ''? '':`${selectedEmployee.lastName}, ${selectedEmployee.firstName}` }}
                     onChange={this.props.onChange}
                     options={groupedOptions}
                     isClearable={true}
