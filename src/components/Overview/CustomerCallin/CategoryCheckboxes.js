@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput} from '@blueprintjs/core'
+import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput } from '@blueprintjs/core'
 import styled from 'styled-components'
 
 class CategoryCheckboxes extends React.Component {
@@ -18,7 +18,7 @@ class CategoryCheckboxes extends React.Component {
         if (this.props.isVisible) {
             return (
                 <BlockContainer>
-                <H4>Select Donations
+                    <H4>Select Donations
                         <Button onClick={this.handleRestrictionsClick}
                             minimal={true}
                         ><RText>*See Prohibited Items</RText></Button>
@@ -32,6 +32,7 @@ class CategoryCheckboxes extends React.Component {
                             </Callout>
                         </Collapse>
                     </Restrictions>
+                    <CategoryScroll>
                     {this.props.categories.map((category, cIndex) => {
                         return (
                             <React.Fragment key={category.name}>
@@ -39,13 +40,13 @@ class CategoryCheckboxes extends React.Component {
                                 <SubBlockContainer>
                                     {category.donatables.map((donatable, dIndex) => {
                                         return (
-                                            <CategoryContainer key={`Category${category.name+donatable.name}`}>
-                                                <Checkbox name={donatable.name}
-                                                    key={category.name + donatable.name}
-                                                    value={this.props.categories[cIndex].donatables[dIndex].checked}
-                                                    label={donatable.name}
-                                                    onChange={this.props.onChange(cIndex, dIndex)}
-                                                />
+                                            <CategoryContainer key={`Category${category.name + donatable.name}`}>
+                                                    <Checkbox name={donatable.name}
+                                                        key={category.name + donatable.name}
+                                                        value={this.props.categories[cIndex].donatables[dIndex].checked}
+                                                        label={donatable.name}
+                                                        onChange={this.props.onChange(cIndex, dIndex)}
+                                                    />
                                                 {this.props.categories[cIndex].donatables[dIndex].checked ? (
                                                     <FormGroup label="Qty" inline={true}>
                                                         <NumericInput
@@ -57,9 +58,9 @@ class CategoryCheckboxes extends React.Component {
                                                             disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
                                                             buttonPosition='none'
                                                             style={{
-                                                                width: '40px',
-                                                                height: '25px',
-                                                                padding: '10px',
+                                                                width: '3em',
+                                                                height: '2em',
+                                                                padding: '1em',
                                                             }}
                                                         />
                                                     </FormGroup>
@@ -72,6 +73,7 @@ class CategoryCheckboxes extends React.Component {
                             </React.Fragment>
                         )
                     })}
+                    </CategoryScroll>
                 </BlockContainer>
             )
         }
@@ -83,27 +85,34 @@ class CategoryCheckboxes extends React.Component {
 
 
 const BlockContainer = styled.div`
-    margin-top: 5px;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    width: 100%;
 `;
 
 const CategoryContainer = styled.span`
     display: flex;
     justify-content: space-between;
-    height: 30px;
+    height: 3em;
+`
+
+const CategoryScroll = styled.div`
+    height: 90vh;
+    overflow: auto;
+    width: 100%;
 `
 
 const SubBlockContainer = styled.div`
-    width: 300px;
-    margin: 10px;
-    margin-left: 20px;
+    width: 100%;
+    margin: 1em;
+    margin-left: 1em;
 `;
 
 const Restrictions = styled.div`
-    margin-top: 15px;
-    margin-bottom: 15px;
-    margin-left: 25px;
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
 `
 
 const RText = styled.sup`

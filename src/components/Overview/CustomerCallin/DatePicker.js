@@ -10,6 +10,21 @@ class DatePicker extends React.PureComponent {
     }
 
     render() {
+        const modifiersStyles = {
+            selected: {
+                backgroundColor: '#555555'
+            }
+        }
+
+        const Weekday = ({ weekday, className, localeUtils, locale }) => {
+            const weekdayName = localeUtils.formatWeekdayLong(weekday, locale);
+            return (
+                <div className={className} title={weekdayName}>
+                    {weekdayName.slice(0, 2).toUpperCase()}
+                </div>
+            );
+        }
+
         if (this.props.isVisible) {
             return (
                 <React.Fragment>
@@ -20,6 +35,8 @@ class DatePicker extends React.PureComponent {
                         selectedDays={this.props.selectedDate}
                         fromMonth={new Date()}
                         toMonth={addMonths(new Date(), 4)}
+                        modifiersStyles={modifiersStyles}
+                        weekdayElement={<Weekday />}
                     />
                 </React.Fragment>
             )
