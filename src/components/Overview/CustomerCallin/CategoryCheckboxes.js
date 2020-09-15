@@ -1,12 +1,29 @@
 import * as React from 'react'
 import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput } from '@blueprintjs/core'
 import styled from 'styled-components'
+import CategorySelect from './CategorySelect'
 
 class CategoryCheckboxes extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isRestrictionsOpen: false
+            isRestrictionsOpen: false,
+            selectedCategory: null,
+        }
+    }
+
+    handleCategorySelect = (category, action) => {
+        switch (action.action) {
+            case 'select-option':
+                this.setState({
+                    selectedCategory: category.value,
+                });
+                break;
+            case 'clear':
+                this.setState({
+                    selectedCategory: null,
+                });
+                break;
         }
     }
 
@@ -32,6 +49,7 @@ class CategoryCheckboxes extends React.Component {
                             </Callout>
                         </Collapse>
                     </Restrictions>
+                    <CategorySelect onChange={this.handleCategorySelect} categories={this.props.categories} selectedCategory={this.state.selectedCategory}/>
                     <CategoryScroll>
                     {this.props.categories.map((category, cIndex) => {
                         return (

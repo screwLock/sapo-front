@@ -3,13 +3,13 @@ import Select, {components} from 'react-select'
 import SimpleBar from 'simplebar-react';
 import 'C:/Users/helml/Desktop/sapo-front/node_modules/simplebar-react/dist/simplebar.min.css';
 
-class EmployeeSelect extends React.PureComponent {
+class CategorySelect extends React.PureComponent {
     constructor(props) {
         super(props)
     }
 
     render() {
-        let category;
+        let selectedCategory;
         if (this.props.selectedCategory != null) {
             selectedCategory = this.props.selectedCategory
         }
@@ -18,7 +18,7 @@ class EmployeeSelect extends React.PureComponent {
                 name: ''
             }
         }
-        const categoryOptions = this.props.categories.map(category => ({ value: category.name, label: `${category.name}` }));
+        const categoryOptions = this.props.categories.map(category => ({ value: category, label: `${category.name}` }));
         const renderScrollbar = props => {
             return (
               <SimpleBar style={{ maxHeight: 300 }}>{props.children}</SimpleBar>
@@ -43,7 +43,7 @@ class EmployeeSelect extends React.PureComponent {
         const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
         return (
                 <Select
-                    value={{ value: selectedCategory.name, label: `${selectedCategory.name}` }}
+                    value={{ value: selectedCategory, label: selectedCategory.name }}
                     onChange={this.props.onChange}
                     options={groupedOptions}
                     isClearable={true}
@@ -54,4 +54,4 @@ class EmployeeSelect extends React.PureComponent {
     }
 }
 
-export default EmployeeSelect
+export default CategorySelect
