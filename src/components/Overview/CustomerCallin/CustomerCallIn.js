@@ -216,6 +216,7 @@ export class CustomerCallIn extends React.Component {
             case 'clear':
                 this.setState({
                     selectedZipcode: '',
+                    selectedDate: null,
                     showDatePicker: false,
                     showPickupDetails: false
                 });
