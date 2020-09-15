@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Select, {components} from 'react-select'
-import styled from 'styled-components'
-
+import SimpleBar from 'simplebar-react';
+import 'C:/Users/helml/Desktop/sapo-front/node_modules/simplebar-react/dist/simplebar.min.css';
 
 class ZipcodeSelect extends React.PureComponent {
     constructor(props) {
@@ -9,9 +9,13 @@ class ZipcodeSelect extends React.PureComponent {
     }
 
     render() {
+        const renderScrollbar = props => {
+            return (
+              <SimpleBar style={{ maxHeight: 300 }}>{props.children}</SimpleBar>
+            );
+          };
         const groupStyles = {
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'space-between',
         };
 
@@ -35,7 +39,7 @@ class ZipcodeSelect extends React.PureComponent {
                 options={groupedOptions}
                 formatGroupLabel={formatGroupLabel}
                 isClearable={true}
-                components={{Input}}
+                components={{Input, MenuList: renderScrollbar}}
             />
         )
     }

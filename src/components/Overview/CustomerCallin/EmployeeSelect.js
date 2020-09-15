@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { H5 } from '@blueprintjs/core'
-import Select from 'react-select'
-import styled from 'styled-components'
-
+import Select, {components} from 'react-select'
+import SimpleBar from 'simplebar-react';
+import 'C:/Users/helml/Desktop/sapo-front/node_modules/simplebar-react/dist/simplebar.min.css';
 
 class EmployeeSelect extends React.PureComponent {
     constructor(props) {
@@ -11,7 +10,7 @@ class EmployeeSelect extends React.PureComponent {
 
     render() {
         let selectedEmployee;
-        if(this.props.selectedEmployee != null){
+        if (this.props.selectedEmployee != null) {
             selectedEmployee = this.props.selectedEmployee
         }
         else {
@@ -22,26 +21,39 @@ class EmployeeSelect extends React.PureComponent {
             }
         }
         const employeeOptions = this.props.employees.map(employee => ({ value: employee, label: `${employee.lastName}, ${employee.firstName}` }));
+        const renderScrollbar = props => {
+            return (
+              <SimpleBar style={{ maxHeight: 300 }}>{props.children}</SimpleBar>
+            );
+          };
+        const groupStyles = {
+            display: 'flex',
+            justifyContent: 'space-between',
+        };
+
+        const formatGroupLabel = data => (
+            <div style={groupStyles}>
+                <span>{data.label}</span>
+            </div>
+        );
+        const groupedOptions = [
+            {
+                label: 'Employees',
+                options: employeeOptions,
+            },
+        ];
+        const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
         return (
-            <React.Fragment>
-                <SelectContainer>
-                    <H5>Employee Signature</H5>
-                    <Select
-                        value={{ value: selectedEmployee, label: `${selectedEmployee.lastName}, ${selectedEmployee.firstName}` }}
-                        onChange={this.props.onChange}
-                        options={employeeOptions}
-                        isClearable={true}
-                    />
-                </SelectContainer>
-            </React.Fragment>
+                <Select
+                    value={{ value: selectedEmployee, label: `${selectedEmployee.lastName}, ${selectedEmployee.firstName}` }}
+                    onChange={this.props.onChange}
+                    options={groupedOptions}
+                    isClearable={true}
+                    formatGroupLabel={formatGroupLabel}
+                    components={{Input, MenuList: renderScrollbar}}
+                />
         )
     }
 }
-
-const SelectContainer = styled.div`
-    width: 250px;
-    margin-top: 25px;
-    margin-bottom: 25px;
-`
 
 export default EmployeeSelect
