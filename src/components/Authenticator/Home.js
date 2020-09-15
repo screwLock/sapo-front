@@ -121,7 +121,7 @@ class Home extends React.Component {
                 rows={"70px 1fr 45px"}
                 areas={[
                     "header header  header",
-                    "menu   content ads   ",
+                    "menu   content content   ",
                     "footer footer  footer"
                 ]}
             >
