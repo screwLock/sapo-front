@@ -106,7 +106,7 @@ const formatGroupLabel = data => (
 
 const Input = ({ autoComplete, ...props }) => <components.Input {...props} autoComplete="new-password" />;
 
-export class StateSelect extends React.Component {
+class StateSelect extends React.Component {
     constructor(props) {
         super(props)
     }
@@ -121,3 +121,5 @@ export class StateSelect extends React.Component {
         )
     }
 }
+
+export default StateSelect

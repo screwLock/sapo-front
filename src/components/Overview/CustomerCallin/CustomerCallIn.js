@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent, TextArea } from '@blueprintjs/core'
 import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'
-import { StateSelect } from './StateSelect'
+import StateSelect from './StateSelect'
 import EmployeeSelect from './EmployeeSelect'
 import { produce } from 'immer'
 import { addDays, addMonths } from 'date-fns'
