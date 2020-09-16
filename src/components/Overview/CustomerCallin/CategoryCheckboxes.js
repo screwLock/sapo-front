@@ -8,20 +8,23 @@ class CategoryCheckboxes extends React.Component {
         super(props)
         this.state = {
             isRestrictionsOpen: false,
-            selectedCategory: null,
+            selectedDonatable: null,
+            cIndex: '',
         }
     }
 
-    handleCategorySelect = (category, action) => {
+    handleCategorySelect = (donatable, action) => {
         switch (action.action) {
             case 'select-option':
                 this.setState({
-                    selectedCategory: category.value,
+                    selectedDonatable: donatable.value,
+                    cIndex: donatable.index
                 });
                 break;
             case 'clear':
                 this.setState({
-                    selectedCategory: null,
+                    selectedDonatable: null,
+                    cIndex: ''
                 });
                 break;
         }
@@ -32,6 +35,7 @@ class CategoryCheckboxes extends React.Component {
     }
 
     render() {
+        const cIndex = this.state.cIndex
         if (this.props.isVisible) {
             return (
                 <BlockContainer>
@@ -49,27 +53,26 @@ class CategoryCheckboxes extends React.Component {
                             </Callout>
                         </Collapse>
                     </Restrictions>
-                    <CategorySelect onChange={this.handleCategorySelect} categories={this.props.categories} selectedCategory={this.state.selectedCategory}/>
+                    <CategorySelect onChange={this.handleDonatableChange} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
                     <CategoryScroll>
-                    {this.props.categories.map((category, cIndex) => {
-                        return (
-                            <React.Fragment key={category.name}>
-                                <H6>{category.name}</H6>
+                        {/*this.state.selectedCategory ? (
+                            <React.Fragment>
+                                <H6>{this.state.selectedCategory.name}</H6>
                                 <SubBlockContainer>
-                                    {category.donatables.map((donatable, dIndex) => {
+                                    {this.props.categories[cIndex].donatables.map((donatable, dIndex) => {
                                         return (
-                                            <CategoryContainer key={`Category${category.name + donatable.name}`}>
-                                                    <Checkbox name={donatable.name}
-                                                        key={category.name + donatable.name}
-                                                        value={this.props.categories[cIndex].donatables[dIndex].checked}
-                                                        label={donatable.name}
-                                                        onChange={this.props.onChange(cIndex, dIndex)}
-                                                    />
+                                            <CategoryContainer key={`Category${this.state.selectedCategory.name + donatable.name}`}>
+                                                <Checkbox name={donatable.name}
+                                                    key={this.state.selectedCategory.name + donatable.name}
+                                                    value={this.state.selectedCategory.donatables[dIndex].checked}
+                                                    label={donatable.name}
+                                                    onChange={this.props.onChange(cIndex, dIndex)}
+                                                />
                                                 {this.props.categories[cIndex].donatables[dIndex].checked ? (
                                                     <FormGroup label="Qty" inline={true}>
                                                         <NumericInput
                                                             autoFocus
-                                                            key={`NI${category.name + donatable.name}`}
+                                                            key={`NI${this.state.selectedCategory.name + donatable.name}`}
                                                             name={donatable.name}
                                                             value={this.props.donations[donatable.name]}
                                                             onBlur={this.props.handleQuantityChange}
@@ -89,8 +92,10 @@ class CategoryCheckboxes extends React.Component {
                                     })}
                                 </SubBlockContainer>
                             </React.Fragment>
-                        )
-                    })}
+                        ) : (
+                                <React.Fragment>''</React.Fragment>
+                            )
+                        */}
                     </CategoryScroll>
                 </BlockContainer>
             )
