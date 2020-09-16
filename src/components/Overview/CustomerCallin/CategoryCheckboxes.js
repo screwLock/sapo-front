@@ -18,7 +18,7 @@ class CategoryCheckboxes extends React.Component {
         switch (action.action) {
             case 'select-option':
                 this.setState({
-                    selectedDonatable: donatable,
+                    selectedDonatable: this.props.categories[donatable.cIndex].donatables[donatable.dIndex],
                     cIndex: donatable.cIndex,
                     dIndex: donatable.dIndex
                 });
@@ -63,11 +63,12 @@ class CategoryCheckboxes extends React.Component {
                             <CategoryContainer key={`Category${selectedDonatable.name}`}>
                                 {this.props.categories[cIndex].donatables[dIndex].checked ? (
                                     <FormGroup label="Qty" inline={true}>
+                                        {this.props.categories[cIndex].donatables[dIndex].name}
                                         <NumericInput
                                             autoFocus
-                                            key={`NIselectedDonatable.name}`}
-                                            name={selectedDonatable.name}
-                                            value={selectedDonatable.name}
+                                            key={`NI${selectedDonatable.name}`}
+                                            name={this.state.selectedDonatable.name}
+                                            value={this.props.donations[this.state.selectedDonatable.name]}
                                             onBlur={this.props.handleQuantityChange}
                                             disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
                                             buttonPosition='none'

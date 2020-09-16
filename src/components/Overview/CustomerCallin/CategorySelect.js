@@ -19,7 +19,8 @@ class CategorySelect extends React.PureComponent {
         }
         else {
             selectedDonatable = {
-                name: ''
+                name: '',
+                checked: false,
             }
         }
 

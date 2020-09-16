@@ -101,7 +101,7 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
-    handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
+    handleCategoryCheckedChange = (cIndex, dIndex) => {
         // add or remove from the donations array
         let donations = { ...this.state.donations }
         const name = this.state.categories[cIndex].donatables[dIndex].name
