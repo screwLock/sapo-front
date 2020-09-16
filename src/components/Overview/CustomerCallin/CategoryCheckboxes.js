@@ -10,21 +10,25 @@ class CategoryCheckboxes extends React.Component {
             isRestrictionsOpen: false,
             selectedDonatable: null,
             cIndex: '',
+            dIndex: '',
         }
     }
 
-    handleCategorySelect = (donatable, action) => {
+    handleDonatableSelect = (donatable, action) => {
         switch (action.action) {
             case 'select-option':
                 this.setState({
-                    selectedDonatable: donatable.value,
-                    cIndex: donatable.index
+                    selectedDonatable: donatable,
+                    cIndex: donatable.cIndex,
+                    dIndex: donatable.dIndex
                 });
+                this.props.onChange(donatable.cIndex, donatable.dIndex)
                 break;
             case 'clear':
                 this.setState({
                     selectedDonatable: null,
-                    cIndex: ''
+                    cIndex: '',
+                    dIndex: '',
                 });
                 break;
         }
@@ -35,7 +39,7 @@ class CategoryCheckboxes extends React.Component {
     }
 
     render() {
-        const cIndex = this.state.cIndex
+        const { cIndex, dIndex, selectedDonatable } = this.state;
         if (this.props.isVisible) {
             return (
                 <BlockContainer>
@@ -53,50 +57,34 @@ class CategoryCheckboxes extends React.Component {
                             </Callout>
                         </Collapse>
                     </Restrictions>
-                    <CategorySelect onChange={this.handleDonatableChange} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
-                    <CategoryScroll>
-                        {/*this.state.selectedCategory ? (
-                            <React.Fragment>
-                                <H6>{this.state.selectedCategory.name}</H6>
-                                <SubBlockContainer>
-                                    {this.props.categories[cIndex].donatables.map((donatable, dIndex) => {
-                                        return (
-                                            <CategoryContainer key={`Category${this.state.selectedCategory.name + donatable.name}`}>
-                                                <Checkbox name={donatable.name}
-                                                    key={this.state.selectedCategory.name + donatable.name}
-                                                    value={this.state.selectedCategory.donatables[dIndex].checked}
-                                                    label={donatable.name}
-                                                    onChange={this.props.onChange(cIndex, dIndex)}
-                                                />
-                                                {this.props.categories[cIndex].donatables[dIndex].checked ? (
-                                                    <FormGroup label="Qty" inline={true}>
-                                                        <NumericInput
-                                                            autoFocus
-                                                            key={`NI${this.state.selectedCategory.name + donatable.name}`}
-                                                            name={donatable.name}
-                                                            value={this.props.donations[donatable.name]}
-                                                            onBlur={this.props.handleQuantityChange}
-                                                            disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
-                                                            buttonPosition='none'
-                                                            style={{
-                                                                width: '3em',
-                                                                height: '2em',
-                                                                padding: '1em',
-                                                            }}
-                                                        />
-                                                    </FormGroup>
-                                                ) : ''
-                                                }
-                                            </CategoryContainer>
-                                        )
-                                    })}
-                                </SubBlockContainer>
-                            </React.Fragment>
-                        ) : (
-                                <React.Fragment>''</React.Fragment>
-                            )
-                        */}
-                    </CategoryScroll>
+                    <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
+                    {this.state.selectedDonatable != null? (
+                        <SubBlockContainer>
+                            <CategoryContainer key={`Category${selectedDonatable.name}`}>
+                                {this.props.categories[cIndex].donatables[dIndex].checked ? (
+                                    <FormGroup label="Qty" inline={true}>
+                                        <NumericInput
+                                            autoFocus
+                                            key={`NIselectedDonatable.name}`}
+                                            name={selectedDonatable.name}
+                                            value={selectedDonatable.name}
+                                            onBlur={this.props.handleQuantityChange}
+                                            disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
+                                            buttonPosition='none'
+                                            style={{
+                                                width: '3em',
+                                                height: '2em',
+                                                padding: '1em',
+                                            }}
+                                        />
+                                    </FormGroup>
+                                )
+                                    : (<div></div>)
+                                }
+                            </CategoryContainer>
+                        </SubBlockContainer>
+                    ) : (<div></div>)
+                    }
                 </BlockContainer>
             )
         }

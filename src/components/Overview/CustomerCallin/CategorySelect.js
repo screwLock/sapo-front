@@ -13,16 +13,6 @@ class CategorySelect extends React.PureComponent {
     }
 
     render() {
-        /*let selectedCategory;
-        if (this.props.selectedCategory != null) {
-            selectedCategory = this.props.selectedCategory
-        }
-        else {
-            selectedCategory = {
-                name: ''
-            }
-        }
-        */
         let selectedDonatable;
         if (this.props.selectedDonatable != null) {
             selectedDonatable = this.props.selectedDonatable
@@ -32,11 +22,15 @@ class CategorySelect extends React.PureComponent {
                 name: ''
             }
         }
-        const categoryOptions = this.props.categories.map((category, index) => ({
+
+        // create the options for the select dropdown
+        const categoryOptions = this.props.categories.map((category, cIndex) => ({
             label: `${category.name}`
-            , index: index,
-            options: category.donatables.map((donatable, index) => ({ value: donatable, index, label: `${donatable.name}` }))
+            , cIndex,
+            options: category.donatables.map((donatable, dIndex) => ({ value: donatable, cIndex, dIndex, label: `${donatable.name}` }))
         }));
+
+        // create a better looking scroolbar
         const renderScrollbar = props => {
             return (
                 <SimpleBar style={{ maxHeight: 300 }}>{props.children}</SimpleBar>
@@ -52,6 +46,9 @@ class CategorySelect extends React.PureComponent {
                 <span>{data.label}</span>
             </div>
         );
+
+        // filter function to include both labels and the values for the search
+        // in the select component
         const filterOption = ({ label, value }, string) => {
             // default search
             if (label.includes(string) || value.hasOwnProperty(string)) return true;
