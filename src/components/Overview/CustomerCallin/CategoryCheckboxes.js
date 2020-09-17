@@ -36,7 +36,6 @@ class CategoryCheckboxes extends React.Component {
     handleBlur = (cIndex, dIndex, name) => (e) => {
         if (e.target.value === '0' || e.target.value === '') {
             const filteredDonatables = this.state.selectedDonatables.filter(sd => (sd.value.name !== name))
-            console.log(filteredDonatables)
             this.setState({ selectedDonatables: filteredDonatables })
         }
         this.props.handleQuantityChange(cIndex, dIndex)(e)
