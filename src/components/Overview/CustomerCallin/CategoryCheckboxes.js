@@ -47,57 +47,52 @@ class CategoryCheckboxes extends React.Component {
 
     render() {
         const { selectedDonatable, selectedDonatables } = this.state;
-        if (this.props.isVisible) {
-            return (
-                <BlockContainer>
-                    <H4>Select Donations
+        return (
+            <BlockContainer>
+                <H4>Select Donations
                         <Button onClick={this.handleRestrictionsClick}
-                            minimal={true}
-                        ><RText>*See Prohibited Items</RText></Button>
-                    </H4>
-                    <Restrictions>
-                        <Collapse isOpen={this.state.isRestrictionsOpen}>
-                            <Callout intent={Intent.WARNING} title='Prohibited Items'>
-                                {this.props.restrictions.map(restriction => {
-                                    return (<li key={restriction.name}>{restriction.name}</li>)
-                                })}
-                            </Callout>
-                        </Collapse>
-                    </Restrictions>
-                    <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
-                    {selectedDonatables.length !== 0 ? (
-                        <SubBlockContainer>
-                            {selectedDonatables.map(sd => {
-                                return (
-                                    <CategoryContainer key={`Category${sd.value.name}`}>
-                                        <FormGroup label={`${sd.value.name}`} inline={true}>
-                                            <NumericInput
-                                                autoFocus
-                                                key={`NI${sd.value.name}`}
-                                                name={sd.value.name}
-                                                value={this.props.donations[sd.value.name]}
-                                                onBlur={this.handleBlur(sd.cIndex, sd.dIndex, sd.value.name)}
-                                                // disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
-                                                buttonPosition='none'
-                                                style={{
-                                                    width: '3em',
-                                                    height: '2em',
-                                                    padding: '1em',
-                                                }}
-                                            />
-                                        </FormGroup>
-                                    </CategoryContainer>
-                                )
+                        minimal={true}
+                    ><RText>*See Prohibited Items</RText></Button>
+                </H4>
+                <Restrictions>
+                    <Collapse isOpen={this.state.isRestrictionsOpen}>
+                        <Callout intent={Intent.WARNING} title='Prohibited Items'>
+                            {this.props.restrictions.map(restriction => {
+                                return (<li key={restriction.name}>{restriction.name}</li>)
                             })}
-                        </SubBlockContainer>
-                    ) : (<div></div>)
-                    }
-                </BlockContainer>
-            )
-        }
-        else {
-            return ''
-        }
+                        </Callout>
+                    </Collapse>
+                </Restrictions>
+                <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
+                {selectedDonatables.length !== 0 ? (
+                    <SubBlockContainer>
+                        {selectedDonatables.map(sd => {
+                            return (
+                                <CategoryContainer key={`Category${sd.value.name}`}>
+                                    <FormGroup label={`${sd.value.name}`} inline={true}>
+                                        <NumericInput
+                                            autoFocus
+                                            key={`NI${sd.value.name}`}
+                                            name={sd.value.name}
+                                            value={this.props.donations[sd.value.name]}
+                                            onBlur={this.handleBlur(sd.cIndex, sd.dIndex, sd.value.name)}
+                                            // disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
+                                            buttonPosition='none'
+                                            style={{
+                                                width: '3em',
+                                                height: '2em',
+                                                padding: '1em',
+                                            }}
+                                        />
+                                    </FormGroup>
+                                </CategoryContainer>
+                            )
+                        })}
+                    </SubBlockContainer>
+                ) : (<div></div>)
+                }
+            </BlockContainer>
+        )
     }
 }
 
