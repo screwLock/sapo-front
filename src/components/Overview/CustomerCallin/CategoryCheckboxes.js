@@ -114,12 +114,6 @@ const CategoryContainer = styled.span`
     height: 3em;
 `
 
-const CategoryScroll = styled.div`
-    height: 90vh;
-    overflow: auto;
-    width: 100%;
-`
-
 const SubBlockContainer = styled.div`
     width: 100%;
     margin: 1em;
@@ -131,9 +125,7 @@ const SubBlockContainer = styled.div`
 
 const Restrictions = styled.div`
     width: 100%;
-    margin-top: 1em;
     margin-bottom: 1em;
-    margin-left: 1em;
 `
 
 const RText = styled.sup`

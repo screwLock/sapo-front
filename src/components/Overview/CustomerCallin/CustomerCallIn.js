@@ -317,9 +317,12 @@ export class CustomerCallIn extends React.Component {
             )
         }
 
-        handleDayClick = (date) => {
+        handleDayClick = (date, modifiers = {}) => {
+            if (modifiers.disabled) {
+                return;
+            }
             this.setState({
-                selectedDate: date,
+                selectedDate: modifiers.selected ? undefined : date,
                 showPickupDetails: true
             })
         }
