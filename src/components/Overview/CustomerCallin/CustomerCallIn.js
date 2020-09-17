@@ -101,12 +101,12 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
-    handleCategoryCheckedChange = (cIndex, dIndex) => {
-        // add or remove from the donations array
+    handleCategorySelect = (cIndex, dIndex) => {
+        // add to the donations array
         let donations = { ...this.state.donations }
         const name = this.state.categories[cIndex].donatables[dIndex].name
         if (donations.hasOwnProperty(name)) {
-            delete donations[name]
+            return;
         }
         else {
 
@@ -115,445 +115,456 @@ export class CustomerCallIn extends React.Component {
         // save the checkbox change and new array
         this.setState(
             produce(this.state, draft => {
-                draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
+                draft.categories[cIndex].donatables[dIndex].checked=true,
                 draft.donations = { ...donations }
             })
         )
     }
 
-    handleDonationQuantityChange = (e) => {
+    handleDonationQuantityChange = (cIndex, dIndex) => (e) => {
         let donations = { ...this.state.donations }
-        donations[e.target.name] = e.target.value
-        this.setState(
-            produce(this.state, draft => {
-                draft.donations = { ...donations }
-            })
-        )
-    }
-
-    handleServiceCheckedChange = (sdIndex) => (e) => {
-        // add or remove from the selected array
-        const selectedServiceDetails = [...this.state.selectedServiceDetails]
-        const name = this.state.serviceDetails[sdIndex].name
-        if (selectedServiceDetails.includes(name)) {
-            selectedServiceDetails.splice(selectedServiceDetails.indexOf(name), 1);
+        if (e.target.value === '0' || e.target.value === '') {
+            delete donations[e.target.name]
+            this.setState(
+                produce(this.state, draft => {
+                    draft.donations = { ...donations },
+                        draft.categories[cIndex].donatables[dIndex].checked=false
+                })
+            )
         }
         else {
-            selectedServiceDetails.push(name)
-            selectedServiceDetails.sort()
+            donations[e.target.name] = e.target.value
+            this.setState(
+                produce(this.state, draft => {
+                    draft.donations = { ...donations }
+                })
+            )
         }
-        // save the checkbox change and new selected array
-        this.setState(
-            produce(this.state, draft => {
-                draft.serviceDetails[sdIndex].checked = !draft.serviceDetails[sdIndex].checked
-                draft.selectedServiceDetails = [...selectedServiceDetails]
+    }
+
+        handleServiceCheckedChange = (sdIndex) => (e) => {
+            // add or remove from the selected array
+            const selectedServiceDetails = [...this.state.selectedServiceDetails]
+            const name = this.state.serviceDetails[sdIndex].name
+            if (selectedServiceDetails.includes(name)) {
+                selectedServiceDetails.splice(selectedServiceDetails.indexOf(name), 1);
+            }
+            else {
+                selectedServiceDetails.push(name)
+                selectedServiceDetails.sort()
+            }
+            // save the checkbox change and new selected array
+            this.setState(
+                produce(this.state, draft => {
+                    draft.serviceDetails[sdIndex].checked = !draft.serviceDetails[sdIndex].checked
+                    draft.selectedServiceDetails = [...selectedServiceDetails]
+                })
+            )
+        }
+
+        handleMandatoryCheckedChange = (mIndex) => (e) => {
+            this.setState(
+                produce(this.state, draft => {
+                    draft.mandatoryDetails[mIndex].checked = !draft.mandatoryDetails[mIndex].checked
+                })
+            )
+        }
+
+        handleClose = () => {
+            this.setState({
+                firstName: '',
+                lastName: '',
+                organization: '',
+                streetAddress: '',
+                apt: '',
+                province: '',
+                city: '',
+                phoneNumber: '',
+                email: '',
+                selectedZipcode: '',
+                selectedEmployee: null,
+                selectedDate: null,
+                lat: '',
+                lng: '',
+                showDatePicker: false,
+                showPickupDetails: false,
+                comments: '',
+                donations: [],
+                selectedServiceDetails: [],
+                categories: this.props.userConfig.categories,
+                serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                    return detail.isMandatory === false
+                }),
+                mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
+                    return detail.isMandatory === true
+                }),
+                submitDisabled: false
             })
-        )
-    }
-
-    handleMandatoryCheckedChange = (mIndex) => (e) => {
-        this.setState(
-            produce(this.state, draft => {
-                draft.mandatoryDetails[mIndex].checked = !draft.mandatoryDetails[mIndex].checked
-            })
-        )
-    }
-
-    handleClose = () => {
-        this.setState({
-            firstName: '',
-            lastName: '',
-            organization: '',
-            streetAddress: '',
-            apt: '',
-            province: '',
-            city: '',
-            phoneNumber: '',
-            email: '',
-            selectedZipcode: '',
-            selectedEmployee: null,
-            selectedDate: null,
-            lat: '',
-            lng: '',
-            showDatePicker: false,
-            showPickupDetails: false,
-            comments: '',
-            donations: [],
-            selectedServiceDetails: [],
-            categories: this.props.userConfig.categories,
-            serviceDetails: this.props.userConfig.serviceDetails.filter(detail => {
-                return detail.isMandatory === false
-            }),
-            mandatoryDetails: this.props.userConfig.serviceDetails.filter(detail => {
-                return detail.isMandatory === true
-            }),
-            submitDisabled: false
-        })
-        this.props.changeView('dailyPickups')
-    }
-
-    handleSubmit = () => {
-        if (this.validateForms()) {
-            this.setState({ submitDisabled: true })
-            this.getLatLng()
+            this.props.changeView('dailyPickups')
         }
-    }
 
-    handleZipcodeSelect = async (zipcode, action) => {
-        switch (action.action) {
-            case 'select-option':
-                let exceededDays = await this.getMaxedPickupsForNMonths(6)
-                this.setState({
-                    selectedZipcode: zipcode.value,
-                    showDatePicker: true,
-                    selectedDate: null,
-                    disabledDays: [...getDisabledDates(this.props.userConfig.zipcodes.find(zip => zip.zipcode === zipcode.value).weekdays),
-                    ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)), ...exceededDays.map(eDay => new Date(eDay)),
-                    { before: addDays(new Date(), 1) }
-                    ]
-                });
-                break;
-            case 'clear':
-                this.setState({
-                    selectedZipcode: '',
-                    selectedDate: null,
-                    showDatePicker: false,
-                    showPickupDetails: false
-                });
-                break;
+        handleSubmit = () => {
+            if (this.validateForms()) {
+                this.setState({ submitDisabled: true })
+                this.getLatLng()
+            }
         }
-    }
 
-    handleStateSelect = (st, action) => {
-        switch (action.action) {
-            case 'select-option':
-                this.setState({
-                    province: st.value,
-                });
-                break;
-            case 'clear':
-                this.setState({
-                    province: '',
-                });
-                break;
+        handleZipcodeSelect = async (zipcode, action) => {
+            switch (action.action) {
+                case 'select-option':
+                    let exceededDays = await this.getMaxedPickupsForNMonths(6)
+                    this.setState({
+                        selectedZipcode: zipcode.value,
+                        showDatePicker: true,
+                        selectedDate: null,
+                        disabledDays: [...getDisabledDates(this.props.userConfig.zipcodes.find(zip => zip.zipcode === zipcode.value).weekdays),
+                        ...this.props.userConfig.blackoutDates.map(bDate => new Date(bDate.date)), ...exceededDays.map(eDay => new Date(eDay)),
+                        { before: addDays(new Date(), 1) }
+                        ]
+                    });
+                    break;
+                case 'clear':
+                    this.setState({
+                        selectedZipcode: '',
+                        selectedDate: null,
+                        showDatePicker: false,
+                        showPickupDetails: false
+                    });
+                    break;
+            }
         }
-    }
 
-    handleEmployeeSelect = (employee, action) => {
-        switch (action.action) {
-            case 'select-option':
-                this.setState({
-                    selectedEmployee: employee.value,
-                });
-                break;
-            case 'clear':
-                this.setState({
-                    selectedEmployee: null,
-                });
-                break;
+        handleStateSelect = (st, action) => {
+            switch (action.action) {
+                case 'select-option':
+                    this.setState({
+                        province: st.value,
+                    });
+                    break;
+                case 'clear':
+                    this.setState({
+                        province: '',
+                    });
+                    break;
+            }
         }
-    }
 
-    handleBlur = e => this.setState({ [e.target.name]: e.target.value })
-
-    handleCommentsChange = e => this.setState({ [e.target.name]: e.target.value })
-
-    renderPickupAddress = () => {
-        return (
-            <BlockContainer>
-                <H4>Pickup Address</H4>
-                <SubBlockContainer >
-                    <ContactForms>
-                        <StreetAddressForm label='Street Address'>
-                            <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
-                        </StreetAddressForm>
-                        <AptForm label='Apt #'>
-                            <InputGroup name='apt' onBlur={this.handleBlur} autoComplete="new-password" />
-                        </AptForm>
-                    </ContactForms>
-                    <ContactForms>
-                        <NameForm label='City'>
-                            <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </NameForm>
-                        <StateForm label='State/Province'>
-                            <StateSelect onChange={this.handleStateSelect} />
-                        </StateForm>
-                    </ContactForms>
-                    <FormGroup label='Organization Name (Required If Not Residential)'>
-                        <InputGroup name='organization' onBlur={this.handleBlur} />
-                    </FormGroup>
-                </SubBlockContainer>
-                <H4>Contact Info</H4>
-                <SubBlockContainer>
-                    <ContactForms>
-                        <NameForm label='First Name'>
-                            <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </NameForm>
-                        <FormGroup label='Last Name'>
-                            <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </FormGroup>
-                    </ContactForms>
-                    <ContactForms>
-                        <FormGroup label='Email'>
-                            <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </FormGroup>
-                        <PhoneForm label='Phone Number'>
-                            <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </PhoneForm>
-                    </ContactForms>
-                </SubBlockContainer>
-            </BlockContainer>
-        )
-    }
-
-    handleDayClick = (date) => {
-        this.setState({
-            selectedDate: date,
-            showPickupDetails: true
-        })
-    }
-
-    getLatLng = () => {
-        const platform = new H.service.Platform({
-            'app_id': config.HERE_APP_ID,
-            'app_code': config.HERE_APP_CODE,
-            useHTTPS: true
-        });
-        const geocoder = platform.getGeocodingService();
-
-        let lat = ''
-        let lng = ''
-
-        //get the lat and lng from a geocoder call
-        geocoder.geocode({ searchText: `${this.state.streetAddress + this.state.selectedZipcode}` },
-            (result) => {
-                if (result.Response.View[0]) {
-                    lat = result.Response.View[0].Result[0].Location.DisplayPosition.Latitude
-                    lng = result.Response.View[0].Result[0].Location.DisplayPosition.Longitude
-                    //after setting lat/lng in state, create the pickup and persist the data
-                    if (!(lng === '') && !(lat === '')) {
-                        this.setState({ lat: lat, lng: lng },
-                            () => {
-                                API.post("sapo", "/pickups", {
-                                    body: {
-                                        zipcode: this.state.selectedZipcode,
-                                        pickupDate: this.state.selectedDate.toISOString(),
-                                        firstName: this.state.firstName.toUpperCase(),
-                                        lastName: this.state.lastName.toUpperCase(),
-                                        streetAddress: this.state.streetAddress.toUpperCase(),
-                                        apt: this.state.apt || null,
-                                        city: this.state.city.toUpperCase(),
-                                        province: this.state.province.toUpperCase(),
-                                        organization: 'NA',
-                                        lat: this.state.lat,
-                                        lng: this.state.lng,
-                                        phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
-                                        email: this.state.email,
-                                        status: 'submitted',
-                                        comments: this.state.comments || null,
-                                        donations: this.state.donations,
-                                        serviceDetails: this.state.selectedServiceDetails,
-                                        route: null,
-                                        createdBy: this.state.selectedEmployee.ID,
-                                        ccAddresses: this.props.userConfig.submittedEmails.submittedCCAddresses,
-                                        bccAddresses: this.props.userConfig.submittedEmails.submittedBCCAddresses,
-                                        subjectLine: this.props.userConfig.submittedEmails.submittedSubjectLine,
-                                        messageBody: this.props.userConfig.submittedEmails.submittedMessageBody
-                                    }
-                                }).then(response => {
-                                    this.handleClose()
-                                    this.showToast('Pickup Successfully Saved')
-                                    // send email
-                                    // TODO:  we should recalculate max pickups again
-                                }).catch(error => {
-                                    this.showToast('ERROR: Pickup not saved!')
-                                    this.setState({ submitDisabled: false })
-                                })
-                            })// end of setState
-                    } //end of if
-                }
-                else {
-                    this.showToast('Not a valid street address')
-                    this.setState({ submitDisabled: false })
-                }
-            }, (e) => {
-                alert(e);
-            });
-    }
-
-    showToast = (message) => {
-        AppToaster.show({ message: message });
-    }
-
-    validateForms = () => {
-        const phoneValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
-        if (this.state.selectedZipcode === '') {
-            this.showToast('Please select a zipcode')
+        handleEmployeeSelect = (employee, action) => {
+            switch (action.action) {
+                case 'select-option':
+                    this.setState({
+                        selectedEmployee: employee.value,
+                    });
+                    break;
+                case 'clear':
+                    this.setState({
+                        selectedEmployee: null,
+                    });
+                    break;
+            }
         }
-        else if (!this.state.selectedDate) {
-            this.showToast('Please select a pickup date')
-        }
-        else if (this.state.firstName === '' ||
-            this.state.lastName === '' ||
-            this.state.email === '' ||
-            this.state.phoneNumber === '' ||
-            this.state.streetAddress === '' ||
-            this.state.city === '' ||
-            this.state.province === ''
-        ) {
-            this.showToast('Please enter pickup and contact info')
-            return false;
-        }
-        else if (!EmailValidator.validate(this.state.email)) {
-            this.showToast('Enter a valid email address')
-            return false
-        }
-        else if (!phoneValidate.test(this.state.phoneNumber)) {
-            this.showToast('Enter a valid phone number')
-            return false
-        }
-        else if (Object.getOwnPropertyNames(this.state.donations).length === 0) {
-            this.showToast('You have not selected any donations')
-            return false
-        }
-        // If there are mandatory details AND if all checkboxes are selected
-        // return false
-        else if ((this.state.mandatoryDetails.length > 0)
-            && (this.state.mandatoryDetails.filter(detail => { return detail.checked === true }).length !== this.state.mandatoryDetails.length)) {
-            this.showToast('Customer must certify that all requirements are met')
-            return false
-        }
-        else if (this.state.selectedEmployee === null) {
-            this.showToast('Please select your employee signature')
-            return false
-        }
-        else {
-            return true;
-        }
-    }
 
-    render() {
-        return (
-            <CCIContainer>
-                <H4>Select The Pickup Zipcode</H4>
-                <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
-                    onChange={this.handleZipcodeSelect}
-                    selectedZipcode={this.state.selectedZipcode}
-                />
+        handleBlur = e => this.setState({ [e.target.name]: e.target.value })
+
+        handleCommentsChange = e => this.setState({ [e.target.name]: e.target.value })
+
+        renderPickupAddress = () => {
+            return (
                 <BlockContainer>
-                    <DatePicker disabledDays={this.state.disabledDays}
-                        onClick={this.handleDayClick}
-                        zipcode={this.state.selectedZipcode}
-                        selectedDate={this.state.selectedDate}
-                        isVisible={this.state.showDatePicker}
-                    />
-
+                    <H4>Pickup Address</H4>
+                    <SubBlockContainer >
+                        <ContactForms>
+                            <StreetAddressForm label='Street Address'>
+                                <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
+                            </StreetAddressForm>
+                            <AptForm label='Apt #'>
+                                <InputGroup name='apt' onBlur={this.handleBlur} autoComplete="new-password" />
+                            </AptForm>
+                        </ContactForms>
+                        <ContactForms>
+                            <NameForm label='City'>
+                                <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </NameForm>
+                            <StateForm label='State/Province'>
+                                <StateSelect onChange={this.handleStateSelect} />
+                            </StateForm>
+                        </ContactForms>
+                        <FormGroup label='Organization Name (Required If Not Residential)'>
+                            <InputGroup name='organization' onBlur={this.handleBlur} />
+                        </FormGroup>
+                    </SubBlockContainer>
+                    <H4>Contact Info</H4>
+                    <SubBlockContainer>
+                        <ContactForms>
+                            <NameForm label='First Name'>
+                                <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </NameForm>
+                            <FormGroup label='Last Name'>
+                                <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </FormGroup>
+                        </ContactForms>
+                        <ContactForms>
+                            <FormGroup label='Email'>
+                                <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </FormGroup>
+                            <PhoneForm label='Phone Number'>
+                                <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
+                            </PhoneForm>
+                        </ContactForms>
+                    </SubBlockContainer>
                 </BlockContainer>
-                <p>
-                    {this.state.selectedDate
-                        ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
-                        : ''}
-                </p>
-                {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
-                <div>
-                    <CategoryCheckboxes
-                        categories={this.state.categories}
-                        restrictions={this.props.userConfig.restrictions}
-                        donations={this.state.donations}
-                        onChange={this.handleCategoryCheckedChange}
-                        isVisible={this.state.showPickupDetails}
-                        handleQuantityChange={this.handleDonationQuantityChange}
+            )
+        }
+
+        handleDayClick = (date) => {
+            this.setState({
+                selectedDate: date,
+                showPickupDetails: true
+            })
+        }
+
+        getLatLng = () => {
+            const platform = new H.service.Platform({
+                'app_id': config.HERE_APP_ID,
+                'app_code': config.HERE_APP_CODE,
+                useHTTPS: true
+            });
+            const geocoder = platform.getGeocodingService();
+
+            let lat = ''
+            let lng = ''
+
+            //get the lat and lng from a geocoder call
+            geocoder.geocode({ searchText: `${this.state.streetAddress + this.state.selectedZipcode}` },
+                (result) => {
+                    if (result.Response.View[0]) {
+                        lat = result.Response.View[0].Result[0].Location.DisplayPosition.Latitude
+                        lng = result.Response.View[0].Result[0].Location.DisplayPosition.Longitude
+                        //after setting lat/lng in state, create the pickup and persist the data
+                        if (!(lng === '') && !(lat === '')) {
+                            this.setState({ lat: lat, lng: lng },
+                                () => {
+                                    API.post("sapo", "/pickups", {
+                                        body: {
+                                            zipcode: this.state.selectedZipcode,
+                                            pickupDate: this.state.selectedDate.toISOString(),
+                                            firstName: this.state.firstName.toUpperCase(),
+                                            lastName: this.state.lastName.toUpperCase(),
+                                            streetAddress: this.state.streetAddress.toUpperCase(),
+                                            apt: this.state.apt || null,
+                                            city: this.state.city.toUpperCase(),
+                                            province: this.state.province.toUpperCase(),
+                                            organization: 'NA',
+                                            lat: this.state.lat,
+                                            lng: this.state.lng,
+                                            phoneNumber: this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, ''),
+                                            email: this.state.email,
+                                            status: 'submitted',
+                                            comments: this.state.comments || null,
+                                            donations: this.state.donations,
+                                            serviceDetails: this.state.selectedServiceDetails,
+                                            route: null,
+                                            createdBy: this.state.selectedEmployee.ID,
+                                            ccAddresses: this.props.userConfig.submittedEmails.submittedCCAddresses,
+                                            bccAddresses: this.props.userConfig.submittedEmails.submittedBCCAddresses,
+                                            subjectLine: this.props.userConfig.submittedEmails.submittedSubjectLine,
+                                            messageBody: this.props.userConfig.submittedEmails.submittedMessageBody
+                                        }
+                                    }).then(response => {
+                                        this.handleClose()
+                                        this.showToast('Pickup Successfully Saved')
+                                        // send email
+                                        // TODO:  we should recalculate max pickups again
+                                    }).catch(error => {
+                                        this.showToast('ERROR: Pickup not saved!')
+                                        this.setState({ submitDisabled: false })
+                                    })
+                                })// end of setState
+                        } //end of if
+                    }
+                    else {
+                        this.showToast('Not a valid street address')
+                        this.setState({ submitDisabled: false })
+                    }
+                }, (e) => {
+                    alert(e);
+                });
+        }
+
+        showToast = (message) => {
+            AppToaster.show({ message: message });
+        }
+
+        validateForms = () => {
+            const phoneValidate = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+            if (this.state.selectedZipcode === '') {
+                this.showToast('Please select a zipcode')
+            }
+            else if (!this.state.selectedDate) {
+                this.showToast('Please select a pickup date')
+            }
+            else if (this.state.firstName === '' ||
+                this.state.lastName === '' ||
+                this.state.email === '' ||
+                this.state.phoneNumber === '' ||
+                this.state.streetAddress === '' ||
+                this.state.city === '' ||
+                this.state.province === ''
+            ) {
+                this.showToast('Please enter pickup and contact info')
+                return false;
+            }
+            else if (!EmailValidator.validate(this.state.email)) {
+                this.showToast('Enter a valid email address')
+                return false
+            }
+            else if (!phoneValidate.test(this.state.phoneNumber)) {
+                this.showToast('Enter a valid phone number')
+                return false
+            }
+            else if (Object.getOwnPropertyNames(this.state.donations).length === 0) {
+                this.showToast('You have not selected any donations')
+                return false
+            }
+            // If there are mandatory details AND if all checkboxes are selected
+            // return false
+            else if ((this.state.mandatoryDetails.length > 0)
+                && (this.state.mandatoryDetails.filter(detail => { return detail.checked === true }).length !== this.state.mandatoryDetails.length)) {
+                this.showToast('Customer must certify that all requirements are met')
+                return false
+            }
+            else if (this.state.selectedEmployee === null) {
+                this.showToast('Please select your employee signature')
+                return false
+            }
+            else {
+                return true;
+            }
+        }
+
+        render() {
+            return (
+                <CCIContainer>
+                    <H4>Select The Pickup Zipcode</H4>
+                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                        onChange={this.handleZipcodeSelect}
+                        selectedZipcode={this.state.selectedZipcode}
                     />
-                </div>
-                <div>
-                    <ServiceDetailCheckboxes
-                        serviceDetails={this.state.serviceDetails}
-                        onChange={this.handleServiceCheckedChange}
-                        isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
-                    />
-                </div>
-                {this.state.showPickupDetails ? (
+                    <BlockContainer>
+                        <DatePicker disabledDays={this.state.disabledDays}
+                            onClick={this.handleDayClick}
+                            zipcode={this.state.selectedZipcode}
+                            selectedDate={this.state.selectedDate}
+                            isVisible={this.state.showDatePicker}
+                        />
+
+                    </BlockContainer>
+                    <p>
+                        {this.state.selectedDate
+                            ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                            : ''}
+                    </p>
+                    {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
                     <div>
-                        <H4>Additional Comments</H4>
-                        <CommentsTextArea
-                            name='comments'
-                            large={false}
-                            intent={Intent.PRIMARY}
-                            onChange={this.handleCommentsChange}
-                            value={this.state.comments}
+                        <CategoryCheckboxes
+                            categories={this.state.categories}
+                            restrictions={this.props.userConfig.restrictions}
+                            donations={this.state.donations}
+                            onChange={this.handleCategorySelect}
+                            isVisible={this.state.showPickupDetails}
+                            handleQuantityChange={this.handleDonationQuantityChange}
                         />
                     </div>
-                ) : ''}
-                <div>
-                    <MandatoryCheckboxes
-                        mandatoryDetails={this.state.mandatoryDetails}
-                        onChange={this.handleMandatoryCheckedChange}
-                        // should not render if NO mandatory service details
-                        isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
-                    />
-                </div>
-                <div>
-                    {this.state.showPickupDetails ? (
-                        <EmployeeSelect employees={this.props.userConfig.employees}
-                            onChange={this.handleEmployeeSelect}
-                            selectedEmployee={this.state.selectedEmployee}
+                    <div>
+                        <ServiceDetailCheckboxes
+                            serviceDetails={this.state.serviceDetails}
+                            onChange={this.handleServiceCheckedChange}
+                            isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
                         />
+                    </div>
+                    {this.state.showPickupDetails ? (
+                        <div>
+                            <H4>Additional Comments</H4>
+                            <CommentsTextArea
+                                name='comments'
+                                large={false}
+                                intent={Intent.PRIMARY}
+                                onChange={this.handleCommentsChange}
+                                value={this.state.comments}
+                            />
+                        </div>
                     ) : ''}
-                </div>
-                <Button onClick={this.handleClose}>Cancel</Button>
-                <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
-            </CCIContainer>
-        )
+                    <div>
+                        <MandatoryCheckboxes
+                            mandatoryDetails={this.state.mandatoryDetails}
+                            onChange={this.handleMandatoryCheckedChange}
+                            // should not render if NO mandatory service details
+                            isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
+                        />
+                    </div>
+                    <div>
+                        {this.state.showPickupDetails ? (
+                            <EmployeeSelect employees={this.props.userConfig.employees}
+                                onChange={this.handleEmployeeSelect}
+                                selectedEmployee={this.state.selectedEmployee}
+                            />
+                        ) : ''}
+                    </div>
+                    <Button onClick={this.handleClose}>Cancel</Button>
+                    <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
+                </CCIContainer>
+            )
+        }
+
     }
 
-}
-
-const CCIContainer = styled.div`
+    const CCIContainer = styled.div`
     width: 25%;
 `
 
-const BlockContainer = styled.div`
+    const BlockContainer = styled.div`
     margin-top: 1em;
     margin-bottom: 1em;
 `;
 
-const SubBlockContainer = styled.div`
+    const SubBlockContainer = styled.div`
                 width: 350px;
                 margin: 10px;
                 margin-left: 20px;
             `
 
-const ContactForms = styled.div`
+    const ContactForms = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `
 
-const StreetAddressForm = styled(FormGroup)`
+    const StreetAddressForm = styled(FormGroup)`
             width: 275px;
         `
 
-const AptForm = styled(FormGroup)`
+    const AptForm = styled(FormGroup)`
             width: 50px;
         `
 
-const StateForm = styled(FormGroup)`
+    const StateForm = styled(FormGroup)`
             width: 100px;
         `
 
-const NameForm = styled(FormGroup)`
+    const NameForm = styled(FormGroup)`
             width: 150px;
         `
 
-const PhoneForm = styled(FormGroup)`
+    const PhoneForm = styled(FormGroup)`
             width: 125px;
         `
 
-const CommentsTextArea = styled(TextArea)`
+    const CommentsTextArea = styled(TextArea)`
             width: 400px;
         `
 
-const SelectContainer = styled.div`
+    const SelectContainer = styled.div`
                 width: 250px;
                 margin-top: 25px;
                 margin-bottom: 25px;

@@ -9,29 +9,37 @@ class CategoryCheckboxes extends React.Component {
         this.state = {
             isRestrictionsOpen: false,
             selectedDonatable: null,
-            cIndex: '',
-            dIndex: '',
+            selectedDonatables: [],
         }
     }
 
     handleDonatableSelect = (donatable, action) => {
         switch (action.action) {
             case 'select-option':
+                if (this.state.selectedDonatables.some(sd => (sd.label === donatable.label))) {
+                    break;
+                }
                 this.setState({
                     selectedDonatable: this.props.categories[donatable.cIndex].donatables[donatable.dIndex],
-                    cIndex: donatable.cIndex,
-                    dIndex: donatable.dIndex
+                    selectedDonatables: [...this.state.selectedDonatables, donatable]
                 });
                 this.props.onChange(donatable.cIndex, donatable.dIndex)
                 break;
             case 'clear':
                 this.setState({
                     selectedDonatable: null,
-                    cIndex: '',
-                    dIndex: '',
                 });
                 break;
         }
+    }
+
+    handleBlur = (cIndex, dIndex, name) => (e) => {
+        if (e.target.value === '0' || e.target.value === '') {
+            const filteredDonatables = this.state.selectedDonatables.filter(sd => (sd.value.name !== name))
+            console.log(filteredDonatables)
+            this.setState({ selectedDonatables: filteredDonatables })
+        }
+        this.props.handleQuantityChange(cIndex, dIndex)(e)
     }
 
     handleRestrictionsClick = () => {
@@ -39,7 +47,7 @@ class CategoryCheckboxes extends React.Component {
     }
 
     render() {
-        const { cIndex, dIndex, selectedDonatable } = this.state;
+        const { selectedDonatable, selectedDonatables } = this.state;
         if (this.props.isVisible) {
             return (
                 <BlockContainer>
@@ -58,31 +66,30 @@ class CategoryCheckboxes extends React.Component {
                         </Collapse>
                     </Restrictions>
                     <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
-                    {this.state.selectedDonatable != null? (
+                    {selectedDonatables.length !== 0 ? (
                         <SubBlockContainer>
-                            <CategoryContainer key={`Category${selectedDonatable.name}`}>
-                                {this.props.categories[cIndex].donatables[dIndex].checked ? (
-                                    <FormGroup label="Qty" inline={true}>
-                                        {this.props.categories[cIndex].donatables[dIndex].name}
-                                        <NumericInput
-                                            autoFocus
-                                            key={`NI${selectedDonatable.name}`}
-                                            name={this.state.selectedDonatable.name}
-                                            value={this.props.donations[this.state.selectedDonatable.name]}
-                                            onBlur={this.props.handleQuantityChange}
-                                            disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
-                                            buttonPosition='none'
-                                            style={{
-                                                width: '3em',
-                                                height: '2em',
-                                                padding: '1em',
-                                            }}
-                                        />
-                                    </FormGroup>
+                            {selectedDonatables.map(sd => {
+                                return (
+                                    <CategoryContainer key={`Category${sd.value.name}`}>
+                                        <FormGroup label={`${sd.value.name}`} inline={true}>
+                                            <NumericInput
+                                                autoFocus
+                                                key={`NI${sd.value.name}`}
+                                                name={sd.value.name}
+                                                value={this.props.donations[sd.value.name]}
+                                                onBlur={this.handleBlur(sd.cIndex, sd.dIndex, sd.value.name)}
+                                                // disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
+                                                buttonPosition='none'
+                                                style={{
+                                                    width: '3em',
+                                                    height: '2em',
+                                                    padding: '1em',
+                                                }}
+                                            />
+                                        </FormGroup>
+                                    </CategoryContainer>
                                 )
-                                    : (<div></div>)
-                                }
-                            </CategoryContainer>
+                            })}
                         </SubBlockContainer>
                     ) : (<div></div>)
                     }
@@ -118,6 +125,9 @@ const SubBlockContainer = styled.div`
     width: 100%;
     margin: 1em;
     margin-left: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 `;
 
 const Restrictions = styled.div`
