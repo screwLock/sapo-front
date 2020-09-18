@@ -254,7 +254,7 @@ class PickupCard extends React.Component {
                     <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
                     <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
                 </ActionRow>
-                <div onClick={this.onBackButtonClick}>Back</div>
+                <ActionColumn onClick={this.onBackButtonClick}><Icon icon='chevron-right' iconSize={25}/></ActionColumn>
             </>
 
         }
@@ -320,9 +320,12 @@ const ActionColumn = styled.button`
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
+      align-items: center;
       width: 10%;
       height: 100%;
 `
+
+
 
 const ActionRow = styled.div`
     display: flex;
