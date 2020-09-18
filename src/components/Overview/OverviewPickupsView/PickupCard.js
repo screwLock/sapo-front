@@ -10,8 +10,123 @@ class PickupCard extends React.Component {
             isStatusOpen: false,
             isRatingOpen: false,
             isActionsOpen: false,
+            isCancelCredentialsOpen: false,
+            isRejectCredentialsOpen: false,
+            cancelUser: '',
+            cancelPassword: '',
+            rejectUser: '',
+            rejectPassword: ''
         }
     }
+
+    /*
+    setIcon = (pickup) => {
+        if (pickup.status === 'submitted') {
+            return 'issue'
+        }
+        else if (pickup.status === 'confirmed') {
+            return 'tick'
+        }
+        else if (pickup.status === 'completed') {
+            return 'tick-circle'
+        }
+        else if (pickup.status === 'canceled') {
+            return 'disable'
+        }
+        else if (pickup.status === 'rejected') {
+            return 'delete'
+        }
+    }
+    
+        handleStatusChange = (pickup, status) => () => {
+        if (pickup == null) {
+            return false
+        }
+        else if (pickup.status === 'submitted') {
+            this.callAPI(
+                pickup,
+                'confirmed',
+                this.props.userConfig.confirmedEmails.confirmedCCAddresses,
+                this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
+                this.props.userConfig.confirmedEmails.confirmedSubjectLine,
+                this.props.userConfig.confirmedEmails.confirmedMessageBody
+            )
+        }
+        else if (pickup.status === 'completed') {
+            this.callAPI(
+                pickup,
+                'completed',
+                this.props.userConfig.completedEmails.completedCCAddresses,
+                this.props.userConfig.completedEmails.completedBCCAddresses,
+                this.props.userConfig.completedEmails.completedSubjectLine,
+                this.props.userConfig.completedEmails.completedMessageBody
+            )
+        }
+        else if (pickup.status === 'rejected') {
+            if (this.authenticateAdmin(this.state.rejectUser, this.state.rejectPassword)) {
+                this.callAPI(
+                    pickup,
+                    'rejected',
+                    this.props.userConfig.rejectedEmails.rejectedCCAddresses,
+                    this.props.userConfig.rejectedEmails.rejectedBCCAddresses,
+                    this.props.userConfig.rejectedEmails.rejectedSubjectLine,
+                    this.props.userConfig.rejectedEmails.rejectedMessageBody
+                )
+            }
+            else {
+                this.showToast('Incorrect admin credentials')
+            }
+        }
+        else if (pickup.status === 'canceled') {
+            if (this.authenticateAdmin(this.state.cancelUser, this.state.cancelPassword)) {
+                this.callAPI(
+                    pickup,
+                    'canceled',
+                    this.props.userConfig.canceledEmails.canceledCCAddresses,
+                    this.props.userConfig.canceledEmails.canceledBCCAddresses,
+                    this.props.userConfig.canceledEmails.canceledSubjectLine,
+                    this.props.userConfig.canceledEmails.canceledMessageBody
+                )
+            }
+            else {
+                this.showToast('Incorrect admin credentials')
+            }
+        }
+    }
+
+        authenticateAdmin = (user, pass) => {
+        let payload = this.props.payload
+        if ((user === payload['custom:adminUserName1'] && pass === payload['custom:adminPassword1']) ||
+            (user === payload['custom:adminUserName2'] && pass === payload['custom:adminPassword2']) ||
+            (user === payload['custom:adminUserName3'] && pass === payload['custom:adminPassword3']) ||
+            (user === payload['custom:adminUserName4'] && pass === payload['custom:adminPassword4']) ||
+            (user === payload['custom:adminUserName5'] && pass === payload['custom:adminPassword5'])
+        ) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+    callAPI = (pickup, newStatus = '', ccAddresses = [], bccAddresses = [], subjectLine = '', messageBody = '') => {
+        API.put("sapo", "/pickups", {
+            body: {
+                ...pickup,
+                status: newStatus,
+                ccAddresses: ccAddresses,
+                bccAddresses: bccAddresses,
+                subjectLine: subjectLine,
+                messageBody: messageBody,
+            }
+        }).then(response => {
+            this.props.updatePickups({ ...pickup, status: newStatus }, this.props.pickups, this.props.index)
+            this.showToast(`Pickup Updated to ${newStatus.toUpperCase()}`)
+        }).catch(error => {
+            this.showToast('ERROR: Pickup Not Updated!')
+        })
+    }
+    */
 
     componentDidMount() {
         this.props.changeIsDragDisabled(false)
@@ -101,7 +216,7 @@ class PickupCard extends React.Component {
                         <div>{pickup.lastName}, {pickup.firstName}</div>
                         <RatingButton onClick={this.onRatingButtonClick}>Rate This Pickup</RatingButton>
                     </PickupInfo>
-                    <ActionColumn onClick={this.onActionsButtonClick}> 
+                    <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
                         <div><Icon icon='envelope' /></div>
                         <div><Icon icon='geolocation' /></div>
@@ -112,7 +227,14 @@ class PickupCard extends React.Component {
                 <React.Fragment>
                     <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
                     <StatusButtonRow>
-                        <Button color='blue'>Confirm</Button>
+                        {pickup.status === 'submitted'
+                            ? (
+                                <Button color='blue'>Confirm</Button>
+                            ) :
+                            (
+                                <Button color='blue'>Complete</Button>
+                            )
+                        }
                         <Button color='red'>Cancel</Button>
                         <Button color='red'>Reject</Button>
                     </StatusButtonRow>
@@ -125,9 +247,9 @@ class PickupCard extends React.Component {
         } else if (this.state.isActionsOpen) {
             cardContent =
                 <ActionRow>
-                    <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50}/></a></div>
-                    <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50}/></a></div>
-                    <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50}/></a></div>
+                    <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50} /></a></div>
+                    <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
+                    <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
                     <div onClick={this.onBackButtonClick}>Back</div>
                 </ActionRow>
 

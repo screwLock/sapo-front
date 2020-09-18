@@ -109,7 +109,7 @@ class StatusDialog extends React.Component {
         }
     }
 
-    handleStatusChange = (pickup) => () => {
+    handleStatusChange = (pickup, status) => () => {
         if (pickup == null) {
             return false
         }
@@ -123,7 +123,7 @@ class StatusDialog extends React.Component {
                 this.props.userConfig.confirmedEmails.confirmedMessageBody
             )
         }
-        else {
+        else if (pickup.status === 'completed') {
             this.callAPI(
                 pickup,
                 'completed',
@@ -133,7 +133,36 @@ class StatusDialog extends React.Component {
                 this.props.userConfig.completedEmails.completedMessageBody
             )
         }
-
+        else if (pickup.status === 'rejected') {
+            if (this.authenticateAdmin(this.state.rejectUser, this.state.rejectPassword)) {
+                this.callAPI(
+                    pickup,
+                    'rejected',
+                    this.props.userConfig.rejectedEmails.rejectedCCAddresses,
+                    this.props.userConfig.rejectedEmails.rejectedBCCAddresses,
+                    this.props.userConfig.rejectedEmails.rejectedSubjectLine,
+                    this.props.userConfig.rejectedEmails.rejectedMessageBody
+                )
+            }
+            else {
+                this.showToast('Incorrect admin credentials')
+            }
+        }
+        else if (pickup.status === 'canceled') {
+            if (this.authenticateAdmin(this.state.cancelUser, this.state.cancelPassword)) {
+                this.callAPI(
+                    pickup,
+                    'canceled',
+                    this.props.userConfig.canceledEmails.canceledCCAddresses,
+                    this.props.userConfig.canceledEmails.canceledBCCAddresses,
+                    this.props.userConfig.canceledEmails.canceledSubjectLine,
+                    this.props.userConfig.canceledEmails.canceledMessageBody
+                )
+            }
+            else {
+                this.showToast('Incorrect admin credentials')
+            }
+        }
     }
 
     showToast = (message) => {
