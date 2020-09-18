@@ -218,6 +218,7 @@ class PickupCard extends React.Component {
                     </PickupInfo>
                     <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
+                        <div><Icon icon='mobile-phone'/></div>
                         <div><Icon icon='envelope' /></div>
                         <div><Icon icon='geolocation' /></div>
                     </ActionColumn>
@@ -246,12 +247,15 @@ class PickupCard extends React.Component {
                 </React.Fragment>
         } else if (this.state.isActionsOpen) {
             cardContent =
+            <>
                 <ActionRow>
                     <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50} /></a></div>
+                    <div><a href={`sms:+1${pickup.phoneNumber}`}><Icon icon='mobile-phone' iconSize={50} /></a></div>
                     <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
                     <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
-                    <div onClick={this.onBackButtonClick}>Back</div>
                 </ActionRow>
+                <div onClick={this.onBackButtonClick}>Back</div>
+            </>
 
         }
         return (
@@ -324,8 +328,9 @@ const ActionRow = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width: 80%;
-    height: 80%;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 `
 
 const StatusButtonRow = styled.div`
