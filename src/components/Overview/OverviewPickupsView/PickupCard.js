@@ -19,25 +19,24 @@ class PickupCard extends React.Component {
         }
     }
 
-    /*
-    setIcon = (pickup) => {
-        if (pickup.status === 'submitted') {
+    setIcon = (status) => {
+        if (status === 'submitted') {
             return 'issue'
         }
-        else if (pickup.status === 'confirmed') {
-            return 'tick'
+        else if (status === 'confirmed') {
+            return 'more'
         }
-        else if (pickup.status === 'completed') {
+        else if (status === 'completed') {
             return 'tick-circle'
         }
-        else if (pickup.status === 'canceled') {
+        else if (status === 'canceled') {
             return 'disable'
         }
-        else if (pickup.status === 'rejected') {
+        else if (status === 'rejected') {
             return 'delete'
         }
     }
-    
+    /*
         handleStatusChange = (pickup, status) => () => {
         if (pickup == null) {
             return false
@@ -210,7 +209,9 @@ class PickupCard extends React.Component {
         if (!this.state.isStatusOpen && !this.state.isRatingOpen && !this.state.isActionsOpen) {
             cardContent =
                 <React.Fragment>
-                    <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} >
+                            <StatusIcon><Icon icon={this.setIcon(pickup.status)} iconSize={30} /><IconFade /></StatusIcon>
+                        </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
@@ -218,7 +219,7 @@ class PickupCard extends React.Component {
                     </PickupInfo>
                     <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
-                        <div><Icon icon='mobile-phone'/></div>
+                        <div><Icon icon='mobile-phone' /></div>
                         <div><Icon icon='envelope' /></div>
                         <div><Icon icon='geolocation' /></div>
                     </ActionColumn>
@@ -247,15 +248,15 @@ class PickupCard extends React.Component {
                 </React.Fragment>
         } else if (this.state.isActionsOpen) {
             cardContent =
-            <>
-                <ActionRow>
-                    <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50} /></a></div>
-                    <div><a href={`sms:+1${pickup.phoneNumber}`}><Icon icon='mobile-phone' iconSize={50} /></a></div>
-                    <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
-                    <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
-                </ActionRow>
-                <ActionColumn onClick={this.onBackButtonClick}><Icon icon='chevron-right' iconSize={25}/></ActionColumn>
-            </>
+                <>
+                    <ActionRow>
+                        <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50} /></a></div>
+                        <div><a href={`sms:+1${pickup.phoneNumber}`}><Icon icon='mobile-phone' iconSize={50} /></a></div>
+                        <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
+                        <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
+                    </ActionRow>
+                    <ActionColumn onClick={this.onBackButtonClick}><Icon icon='chevron-right' iconSize={25} /></ActionColumn>
+                </>
 
         }
         return (
@@ -284,15 +285,42 @@ const Card = styled.div`
 `
 
 const OpenStatusButton = styled.div`
-    background-color: ${props => props.color1};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 10%;
     cursor: pointer;
-    border: none;
+    border-color: transparent;
     transition: background 250ms ease-in-out, 
     transform 150ms ease;
     :hover{
-        background-color: ${props => props.color2};
+        border-color: ${props => props.color2};
       }
+`
+
+const fadingKeyFrames = keyframes`
+    0% {width:0%}
+    25% {width:25%}
+    50% {width:50%}
+    75% {width: 75%}
+    100% {width:100%}
+`
+const IconFade = styled.div`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0%;
+    background: white;
+    animation: ${fadingKeyFrames} 2s ease-in infinite;
+    animation-direction: reverse;
+`
+
+const StatusIcon = styled.div`
+    position: relative;
+    width: 100%;
+    left: 25%;
 `
 
 const PickupInfoButton = styled.div`
@@ -316,7 +344,7 @@ const PickupInfo = styled.div`
     padding-left: 1em;
 `
 
-const ActionColumn = styled.button`
+const ActionColumn = styled.div`
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
