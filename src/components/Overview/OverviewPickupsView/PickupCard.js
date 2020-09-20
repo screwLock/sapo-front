@@ -210,7 +210,7 @@ class PickupCard extends React.Component {
             cardContent =
                 <React.Fragment>
                         <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} >
-                            <StatusIcon><Icon icon={this.setIcon(pickup.status)} iconSize={30} /><IconFade /></StatusIcon>
+                            <StatusIcon><Icon icon={this.setIcon(pickup.status)} iconSize={30} color={colors.confirmed.color1}/><IconFade /></StatusIcon>
                         </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
@@ -253,7 +253,7 @@ class PickupCard extends React.Component {
                         <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50} /></a></div>
                         <div><a href={`sms:+1${pickup.phoneNumber}`}><Icon icon='mobile-phone' iconSize={50} /></a></div>
                         <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
-                        <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
+                        <div><a href={`http://maps.google.com/?q=${pickup.streetAddress}+${pickup.zipcode}`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
                     </ActionRow>
                     <ActionColumn onClick={this.onBackButtonClick}><Icon icon='chevron-right' iconSize={25} /></ActionColumn>
                 </>
