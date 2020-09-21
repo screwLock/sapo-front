@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { CustomerCallIn } from '../CustomerCallIn/CustomerCallIn'
 
 class PickupContainer extends React.Component {
     constructor(props) {

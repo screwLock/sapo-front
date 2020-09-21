@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Intent, TextArea } from '@blueprintjs/core'
 import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'
-import { StateSelect } from './StateSelect'
+import StateSelect from './StateSelect'
 import EmployeeSelect from './EmployeeSelect'
 import { produce } from 'immer'
 import { addDays, addMonths } from 'date-fns'
@@ -46,8 +46,9 @@ export class CustomerCallIn extends React.Component {
             selectedDate: null,
             selectedZipcode: '',
             selectedEmployee: null,
+            showZipcodePicker: true,
             showDatePicker: false,
-            showPickupDetails: false,
+            stage: 0,
             submitDisabled: false,
         }
     }
@@ -101,12 +102,12 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
-    handleCategoryCheckedChange = (cIndex, dIndex) => (e) => {
-        // add or remove from the donations array
+    handleCategorySelect = (cIndex, dIndex) => {
+        // add to the donations array
         let donations = { ...this.state.donations }
         const name = this.state.categories[cIndex].donatables[dIndex].name
         if (donations.hasOwnProperty(name)) {
-            delete donations[name]
+            return;
         }
         else {
 
@@ -115,20 +116,31 @@ export class CustomerCallIn extends React.Component {
         // save the checkbox change and new array
         this.setState(
             produce(this.state, draft => {
-                draft.categories[cIndex].donatables[dIndex].checked = !draft.categories[cIndex].donatables[dIndex].checked
-                draft.donations = { ...donations }
+                draft.categories[cIndex].donatables[dIndex].checked = true,
+                    draft.donations = { ...donations }
             })
         )
     }
 
-    handleDonationQuantityChange = (e) => {
+    handleDonationQuantityChange = (cIndex, dIndex) => (e) => {
         let donations = { ...this.state.donations }
-        donations[e.target.name] = e.target.value
-        this.setState(
-            produce(this.state, draft => {
-                draft.donations = { ...donations }
-            })
-        )
+        if (e.target.value === '0' || e.target.value === '') {
+            delete donations[e.target.name]
+            this.setState(
+                produce(this.state, draft => {
+                    draft.donations = { ...donations },
+                        draft.categories[cIndex].donatables[dIndex].checked = false
+                })
+            )
+        }
+        else {
+            donations[e.target.name] = e.target.value
+            this.setState(
+                produce(this.state, draft => {
+                    draft.donations = { ...donations }
+                })
+            )
+        }
     }
 
     handleServiceCheckedChange = (sdIndex) => (e) => {
@@ -176,7 +188,7 @@ export class CustomerCallIn extends React.Component {
             lat: '',
             lng: '',
             showDatePicker: false,
-            showPickupDetails: false,
+            stage: 0,
             comments: '',
             donations: [],
             selectedServiceDetails: [],
@@ -189,7 +201,7 @@ export class CustomerCallIn extends React.Component {
             }),
             submitDisabled: false
         })
-        this.props.onClose()
+        this.props.changeView('dailyPickups')
     }
 
     handleSubmit = () => {
@@ -216,8 +228,8 @@ export class CustomerCallIn extends React.Component {
             case 'clear':
                 this.setState({
                     selectedZipcode: '',
+                    selectedDate: null,
                     showDatePicker: false,
-                    showPickupDetails: false
                 });
                 break;
         }
@@ -257,58 +269,16 @@ export class CustomerCallIn extends React.Component {
 
     handleCommentsChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    renderPickupAddress = () => {
-        return (
-            <BlockContainer>
-                <H4>Pickup Address</H4>
-                <SubBlockContainer >
-                    <ContactForms>
-                        <StreetAddressForm label='Street Address'>
-                            <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
-                        </StreetAddressForm>
-                        <AptForm label='Apt #'>
-                            <InputGroup name='apt' onBlur={this.handleBlur} autoComplete="new-password" />
-                        </AptForm>
-                    </ContactForms>
-                    <ContactForms>
-                        <NameForm label='City'>
-                            <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </NameForm>
-                        <StateForm label='State/Province'>
-                            <StateSelect onChange={this.handleStateSelect} />
-                        </StateForm>
-                    </ContactForms>
-                    <FormGroup label='Organization Name (Required If Not Residential)'>
-                        <InputGroup name='organization' onBlur={this.handleBlur} />
-                    </FormGroup>
-                </SubBlockContainer>
-                <H4>Contact Info</H4>
-                <SubBlockContainer>
-                    <ContactForms>
-                        <NameForm label='First Name'>
-                            <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </NameForm>
-                        <FormGroup label='Last Name'>
-                            <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </FormGroup>
-                    </ContactForms>
-                    <ContactForms>
-                        <FormGroup label='Email'>
-                            <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </FormGroup>
-                        <PhoneForm label='Phone Number'>
-                            <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
-                        </PhoneForm>
-                    </ContactForms>
-                </SubBlockContainer>
-            </BlockContainer>
-        )
+    handleStageChange = (stage) => (e) => {
+        this.setState({ stage })
     }
 
-    handleDayClick = (date) => {
+    handleDayClick = (date, modifiers = {}) => {
+        if (modifiers.disabled) {
+            return;
+        }
         this.setState({
-            selectedDate: date,
-            showPickupDetails: true
+            selectedDate: modifiers.selected ? undefined : date,
         })
     }
 
@@ -432,92 +402,133 @@ export class CustomerCallIn extends React.Component {
     }
 
     render() {
-        const userConfig = this.props.userConfig
-        // user needs to configure all the settings
-        if (userConfig.zipcodes == null ||
-            userConfig.categories == null ||
-            userConfig.serviceDetails == null ||
-            userConfig.restrictions == null ||
-            userConfig.maxPickups == null ||
-            userConfig.blackoutDates == null
-        ) {
-            return (
-                <React.Fragment>
-                    <DialogContainer>
-                        You need to setup the emails, zipcodes, max number of pickups, and categories
-                        before you can use the scheduling page!
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.props.onClose}>Cancel</Button>
-                        </div>
-                    </div>
-                </React.Fragment>
-            )
+        const { stage } = this.state;
+        const renderFooter = (stage) => {
+            if (stage === 0) {
+                return (
+                    <>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.handleStageChange(1)} disabled={this.state.selectedDate === null}>Next</Button>
+                    </>
+                )
+            }
+            else if (stage === 1) {
+                return (
+                    <>
+                        <Button onClick={this.handleStageChange(0)}>Back</Button>
+                        <Button onClick={this.handleStageChange(2)} disabled={this.state.submitDisabled}>Next</Button>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                    </>
+                )
+            }
+            else if (stage === 2) {
+                return (
+                    <>
+                        <Button onClick={this.handleStageChange(1)}>Back</Button>
+                        <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
+                        <Button onClick={this.handleClose}>Cancel</Button>
+                    </>
+                )
+            }
         }
-        // user needs to configure the emails
-        else if (userConfig.submittedEmails == null ||
-            userConfig.confirmedEmails == null ||
-            userConfig.completedEmails == null ||
-            userConfig.canceledEmails == null ||
-            userConfig.rejectedEmails == null
-        ) {
-            return (
-                <React.Fragment>
-                    <DialogContainer>
-                        You need to setup each of the email types to use the scheduling page!
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.props.onClose}>Cancel</Button>
-                        </div>
-                    </div>
-                </React.Fragment>
-            )
-        }
-        // Settings complete, Show the Scheduling Dialog
-        else {
-            return (
-                <React.Fragment>
-                    <DialogContainer>
-                        <H4>Select The Pickup Zipcode</H4>
-                        <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
-                            onChange={this.handleZipcodeSelect}
-                            selectedZipcode={this.state.selectedZipcode}
-                        />
-                        <BlockContainer>
-                            <DatePicker disabledDays={this.state.disabledDays}
-                                onClick={this.handleDayClick}
-                                zipcode={this.state.selectedZipcode}
-                                selectedDate={this.state.selectedDate}
-                                isVisible={this.state.showDatePicker}
-                            />
+        return (
+            <CCIContainer>
+                <Body>
+                    {stage === 0
+                        ? (
+                            <Cell>
+                                <H4>Select The Pickup Zipcode</H4>
+                                <ZipcodeBlock>
+                                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                                        onChange={this.handleZipcodeSelect}
+                                        selectedZipcode={this.state.selectedZipcode}
+                                    />
+                                </ZipcodeBlock>
+                                <BlockContainer>
+                                    <DatePicker disabledDays={this.state.disabledDays}
+                                        onClick={this.handleDayClick}
+                                        zipcode={this.state.selectedZipcode}
+                                        selectedDate={this.state.selectedDate}
+                                        isVisible={this.state.showDatePicker}
+                                    />
 
-                        </BlockContainer>
-                        <p>
-                            {this.state.selectedDate
-                                ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
-                                : ''}
-                        </p>
-                        {this.state.showPickupDetails ? this.renderPickupAddress() : ''}
-                        <div>
-                            <CategoryCheckboxes
-                                categories={this.state.categories}
-                                restrictions={this.props.userConfig.restrictions}
-                                donations={this.state.donations}
-                                onChange={this.handleCategoryCheckedChange}
-                                isVisible={this.state.showPickupDetails}
-                                handleQuantityChange={this.handleDonationQuantityChange}
-                            />
-                        </div>
-                        <div>
-                            <ServiceDetailCheckboxes
-                                serviceDetails={this.state.serviceDetails}
-                                onChange={this.handleServiceCheckedChange}
-                                isVisible={(this.state.showPickupDetails && this.state.serviceDetails.length > 0)}
-                            />
-                        </div>
-                        {this.state.showPickupDetails ? (
+                                </BlockContainer>
+                                <p>
+                                    {this.state.selectedDate
+                                        ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
+                                        : ''}
+                                </p>
+                            </Cell>
+                        )
+                        : ''
+                    }
+                    <Cell>
+                        {stage === 1 ?
+                            (
+                                <BlockContainer>
+                                    <H4>Pickup Address</H4>
+                                    <SubBlockContainer >
+                                        <ContactForms>
+                                            <StreetAddressForm label='Street Address'>
+                                                <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
+                                            </StreetAddressForm>
+                                            <AptForm label='Apt #'>
+                                                <InputGroup name='apt' onBlur={this.handleBlur} autoComplete="new-password" />
+                                            </AptForm>
+                                        </ContactForms>
+                                        <ContactForms>
+                                            <NameForm label='City'>
+                                                <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
+                                            </NameForm>
+                                            <StateForm label='State/Province'>
+                                                <StateSelect onChange={this.handleStateSelect} />
+                                            </StateForm>
+                                        </ContactForms>
+                                        <FormGroup label='Organization Name (Required If Not Residential)'>
+                                            <InputGroup name='organization' onBlur={this.handleBlur} />
+                                        </FormGroup>
+                                    </SubBlockContainer>
+                                    <H4>Contact Info</H4>
+                                    <SubBlockContainer>
+                                        <ContactForms>
+                                            <NameForm label='First Name'>
+                                                <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
+                                            </NameForm>
+                                            <FormGroup label='Last Name'>
+                                                <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
+                                            </FormGroup>
+                                        </ContactForms>
+                                        <ContactForms>
+                                            <FormGroup label='Email'>
+                                                <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
+                                            </FormGroup>
+                                            <PhoneForm label='Phone Number'>
+                                                <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
+                                            </PhoneForm>
+                                        </ContactForms>
+                                    </SubBlockContainer>
+                                </BlockContainer>
+                            )
+                            : ''}
+                    </Cell>
+                    {stage === 2 ? (
+                        <Cell>
+                            <div>
+                                <CategoryCheckboxes
+                                    categories={this.state.categories}
+                                    restrictions={this.props.userConfig.restrictions}
+                                    donations={this.state.donations}
+                                    onChange={this.handleCategorySelect}
+                                    handleQuantityChange={this.handleDonationQuantityChange}
+                                />
+                            </div>
+                            <div>
+                                <ServiceDetailCheckboxes
+                                    serviceDetails={this.state.serviceDetails}
+                                    onChange={this.handleServiceCheckedChange}
+                                    isVisible={(this.state.serviceDetails.length > 0)}
+                                />
+                            </div>
                             <div>
                                 <H4>Additional Comments</H4>
                                 <CommentsTextArea
@@ -528,15 +539,18 @@ export class CustomerCallIn extends React.Component {
                                     value={this.state.comments}
                                 />
                             </div>
-                        ) : ''}
-                        <div>
-                            <MandatoryCheckboxes
-                                mandatoryDetails={this.state.mandatoryDetails}
-                                onChange={this.handleMandatoryCheckedChange}
-                                // should not render if NO mandatory service details
-                                isVisible={(this.state.showPickupDetails && this.state.mandatoryDetails.length > 0)}
-                            />
-                        </div>
+                            <div>
+                                <MandatoryCheckboxes
+                                    mandatoryDetails={this.state.mandatoryDetails}
+                                    onChange={this.handleMandatoryCheckedChange}
+                                    // should not render if NO mandatory service details
+                                    isVisible={(this.state.mandatoryDetails.length > 0)}
+                                />
+                            </div>
+                        </Cell>
+                    )
+                        : ''}
+                    <Cell>
                         <div>
                             {this.state.showPickupDetails ? (
                                 <EmployeeSelect employees={this.props.userConfig.employees}
@@ -545,34 +559,42 @@ export class CustomerCallIn extends React.Component {
                                 />
                             ) : ''}
                         </div>
-                    </DialogContainer>
-                    <div className={Classes.DIALOG_FOOTER}>
-                        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                            <Button onClick={this.handleClose}>Cancel</Button>
-                            <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
-                        </div>
-                    </div>
-                </React.Fragment>
-            )
-        }
+                    </Cell>
+                </Body>
+                <Footer>
+                    {renderFooter(stage)}
+                </Footer>
+            </CCIContainer>
+        )
     }
-
 }
 
+const CCIContainer = styled.div`
+    width: 50%;
+`
+const Body = styled.div`
+    height: 95%;
+`
+const Cell = styled.div`
+`
+
+const Footer = styled.div`
+    height: 5%;
+`
+
 const BlockContainer = styled.div`
-                margin-top: 5px;
-                margin-bottom: 5px;
-            `;
+    margin-top: 1em;
+    margin-bottom: 1em;
+`;
+
+const ZipcodeBlock = styled.div`
+    width: 60%;
+`
 
 const SubBlockContainer = styled.div`
                 width: 350px;
                 margin: 10px;
                 margin-left: 20px;
-            `
-
-const DialogContainer = styled.div`
-                width: 400px;
-                margin: 20px;
             `
 
 const ContactForms = styled.div`

@@ -1,13 +1,44 @@
 import * as React from 'react'
-import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput} from '@blueprintjs/core'
+import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput } from '@blueprintjs/core'
 import styled from 'styled-components'
+import CategorySelect from './CategorySelect'
 
 class CategoryCheckboxes extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isRestrictionsOpen: false
+            isRestrictionsOpen: false,
+            selectedDonatable: null,
+            selectedDonatables: [],
         }
+    }
+
+    handleDonatableSelect = (donatable, action) => {
+        switch (action.action) {
+            case 'select-option':
+                if (this.state.selectedDonatables.some(sd => (sd.label === donatable.label))) {
+                    break;
+                }
+                this.setState({
+                    selectedDonatable: this.props.categories[donatable.cIndex].donatables[donatable.dIndex],
+                    selectedDonatables: [...this.state.selectedDonatables, donatable]
+                });
+                this.props.onChange(donatable.cIndex, donatable.dIndex)
+                break;
+            case 'clear':
+                this.setState({
+                    selectedDonatable: null,
+                });
+                break;
+        }
+    }
+
+    handleBlur = (cIndex, dIndex, name) => (e) => {
+        if (e.target.value === '0' || e.target.value === '') {
+            const filteredDonatables = this.state.selectedDonatables.filter(sd => (sd.value.name !== name))
+            this.setState({ selectedDonatables: filteredDonatables })
+        }
+        this.props.handleQuantityChange(cIndex, dIndex)(e)
     }
 
     handleRestrictionsClick = () => {
@@ -15,95 +46,81 @@ class CategoryCheckboxes extends React.Component {
     }
 
     render() {
-        if (this.props.isVisible) {
-            return (
-                <BlockContainer>
+        const { selectedDonatable, selectedDonatables } = this.state;
+        return (
+            <BlockContainer>
                 <H4>Select Donations
                         <Button onClick={this.handleRestrictionsClick}
-                            minimal={true}
-                        ><RText>*See Prohibited Items</RText></Button>
-                    </H4>
-                    <Restrictions>
-                        <Collapse isOpen={this.state.isRestrictionsOpen}>
-                            <Callout intent={Intent.WARNING} title='Prohibited Items'>
-                                {this.props.restrictions.map(restriction => {
-                                    return (<li key={restriction.name}>{restriction.name}</li>)
-                                })}
-                            </Callout>
-                        </Collapse>
-                    </Restrictions>
-                    {this.props.categories.map((category, cIndex) => {
-                        return (
-                            <React.Fragment key={category.name}>
-                                <H6>{category.name}</H6>
-                                <SubBlockContainer>
-                                    {category.donatables.map((donatable, dIndex) => {
-                                        return (
-                                            <CategoryContainer key={`Category${category.name+donatable.name}`}>
-                                                <Checkbox name={donatable.name}
-                                                    key={category.name + donatable.name}
-                                                    value={this.props.categories[cIndex].donatables[dIndex].checked}
-                                                    label={donatable.name}
-                                                    onChange={this.props.onChange(cIndex, dIndex)}
-                                                />
-                                                {this.props.categories[cIndex].donatables[dIndex].checked ? (
-                                                    <FormGroup label="Qty" inline={true}>
-                                                        <NumericInput
-                                                            autoFocus
-                                                            key={`NI${category.name + donatable.name}`}
-                                                            name={donatable.name}
-                                                            value={this.props.donations[donatable.name]}
-                                                            onBlur={this.props.handleQuantityChange}
-                                                            disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
-                                                            buttonPosition='none'
-                                                            style={{
-                                                                width: '40px',
-                                                                height: '25px',
-                                                                padding: '10px',
-                                                            }}
-                                                        />
-                                                    </FormGroup>
-                                                ) : ''
-                                                }
-                                            </CategoryContainer>
-                                        )
-                                    })}
-                                </SubBlockContainer>
-                            </React.Fragment>
-                        )
-                    })}
-                </BlockContainer>
-            )
-        }
-        else {
-            return ''
-        }
+                        minimal={true}
+                    ><RText>*See Prohibited Items</RText></Button>
+                </H4>
+                <Restrictions>
+                    <Collapse isOpen={this.state.isRestrictionsOpen}>
+                        <Callout intent={Intent.WARNING} title='Prohibited Items'>
+                            {this.props.restrictions.map(restriction => {
+                                return (<li key={restriction.name}>{restriction.name}</li>)
+                            })}
+                        </Callout>
+                    </Collapse>
+                </Restrictions>
+                <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
+                {selectedDonatables.length !== 0 ? (
+                    <SubBlockContainer>
+                        {selectedDonatables.map(sd => {
+                            return (
+                                <CategoryContainer key={`Category${sd.value.name}`}>
+                                    <FormGroup label={`${sd.value.name}`} inline={true}>
+                                        <NumericInput
+                                            autoFocus
+                                            key={`NI${sd.value.name}`}
+                                            name={sd.value.name}
+                                            value={this.props.donations[sd.value.name]}
+                                            onBlur={this.handleBlur(sd.cIndex, sd.dIndex, sd.value.name)}
+                                            // disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
+                                            buttonPosition='none'
+                                            style={{
+                                                width: '3em',
+                                                height: '2em',
+                                                padding: '1em',
+                                            }}
+                                        />
+                                    </FormGroup>
+                                </CategoryContainer>
+                            )
+                        })}
+                    </SubBlockContainer>
+                ) : (<div></div>)
+                }
+            </BlockContainer>
+        )
     }
 }
 
 
 const BlockContainer = styled.div`
-    margin-top: 5px;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    width: 100%;
 `;
 
 const CategoryContainer = styled.span`
     display: flex;
     justify-content: space-between;
-    height: 30px;
+    height: 3em;
 `
 
 const SubBlockContainer = styled.div`
-    width: 300px;
-    margin: 10px;
-    margin-left: 20px;
+    width: 100%;
+    margin: 1em;
+    margin-left: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 `;
 
 const Restrictions = styled.div`
-    margin-top: 15px;
-    margin-bottom: 15px;
-    margin-left: 25px;
+    width: 100%;
+    margin-bottom: 1em;
 `
 
 const RText = styled.sup`

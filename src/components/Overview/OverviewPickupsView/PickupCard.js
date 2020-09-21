@@ -10,8 +10,122 @@ class PickupCard extends React.Component {
             isStatusOpen: false,
             isRatingOpen: false,
             isActionsOpen: false,
+            isCancelCredentialsOpen: false,
+            isRejectCredentialsOpen: false,
+            cancelUser: '',
+            cancelPassword: '',
+            rejectUser: '',
+            rejectPassword: ''
         }
     }
+
+    setIcon = (status) => {
+        if (status === 'submitted') {
+            return 'issue'
+        }
+        else if (status === 'confirmed') {
+            return 'more'
+        }
+        else if (status === 'completed') {
+            return 'tick-circle'
+        }
+        else if (status === 'canceled') {
+            return 'disable'
+        }
+        else if (status === 'rejected') {
+            return 'delete'
+        }
+    }
+    /*
+        handleStatusChange = (pickup, status) => () => {
+        if (pickup == null) {
+            return false
+        }
+        else if (pickup.status === 'submitted') {
+            this.callAPI(
+                pickup,
+                'confirmed',
+                this.props.userConfig.confirmedEmails.confirmedCCAddresses,
+                this.props.userConfig.confirmedEmails.confirmedBCCAddresses,
+                this.props.userConfig.confirmedEmails.confirmedSubjectLine,
+                this.props.userConfig.confirmedEmails.confirmedMessageBody
+            )
+        }
+        else if (pickup.status === 'completed') {
+            this.callAPI(
+                pickup,
+                'completed',
+                this.props.userConfig.completedEmails.completedCCAddresses,
+                this.props.userConfig.completedEmails.completedBCCAddresses,
+                this.props.userConfig.completedEmails.completedSubjectLine,
+                this.props.userConfig.completedEmails.completedMessageBody
+            )
+        }
+        else if (pickup.status === 'rejected') {
+            if (this.authenticateAdmin(this.state.rejectUser, this.state.rejectPassword)) {
+                this.callAPI(
+                    pickup,
+                    'rejected',
+                    this.props.userConfig.rejectedEmails.rejectedCCAddresses,
+                    this.props.userConfig.rejectedEmails.rejectedBCCAddresses,
+                    this.props.userConfig.rejectedEmails.rejectedSubjectLine,
+                    this.props.userConfig.rejectedEmails.rejectedMessageBody
+                )
+            }
+            else {
+                this.showToast('Incorrect admin credentials')
+            }
+        }
+        else if (pickup.status === 'canceled') {
+            if (this.authenticateAdmin(this.state.cancelUser, this.state.cancelPassword)) {
+                this.callAPI(
+                    pickup,
+                    'canceled',
+                    this.props.userConfig.canceledEmails.canceledCCAddresses,
+                    this.props.userConfig.canceledEmails.canceledBCCAddresses,
+                    this.props.userConfig.canceledEmails.canceledSubjectLine,
+                    this.props.userConfig.canceledEmails.canceledMessageBody
+                )
+            }
+            else {
+                this.showToast('Incorrect admin credentials')
+            }
+        }
+    }
+
+        authenticateAdmin = (user, pass) => {
+        let payload = this.props.payload
+        if ((user === payload['custom:adminUserName1'] && pass === payload['custom:adminPassword1']) ||
+            (user === payload['custom:adminUserName2'] && pass === payload['custom:adminPassword2']) ||
+            (user === payload['custom:adminUserName3'] && pass === payload['custom:adminPassword3']) ||
+            (user === payload['custom:adminUserName4'] && pass === payload['custom:adminPassword4']) ||
+            (user === payload['custom:adminUserName5'] && pass === payload['custom:adminPassword5'])
+        ) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+    callAPI = (pickup, newStatus = '', ccAddresses = [], bccAddresses = [], subjectLine = '', messageBody = '') => {
+        API.put("sapo", "/pickups", {
+            body: {
+                ...pickup,
+                status: newStatus,
+                ccAddresses: ccAddresses,
+                bccAddresses: bccAddresses,
+                subjectLine: subjectLine,
+                messageBody: messageBody,
+            }
+        }).then(response => {
+            this.props.updatePickups({ ...pickup, status: newStatus }, this.props.pickups, this.props.index)
+            this.showToast(`Pickup Updated to ${newStatus.toUpperCase()}`)
+        }).catch(error => {
+            this.showToast('ERROR: Pickup Not Updated!')
+        })
+    }
+    */
 
     componentDidMount() {
         this.props.changeIsDragDisabled(false)
@@ -95,14 +209,17 @@ class PickupCard extends React.Component {
         if (!this.state.isStatusOpen && !this.state.isRatingOpen && !this.state.isActionsOpen) {
             cardContent =
                 <React.Fragment>
-                    <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} >
+                            <StatusIcon><Icon icon={this.setIcon(pickup.status)} iconSize={30} color={colors.confirmed.color1}/><IconFade /></StatusIcon>
+                        </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
                         <RatingButton onClick={this.onRatingButtonClick}>Rate This Pickup</RatingButton>
                     </PickupInfo>
-                    <ActionColumn onClick={this.onActionsButtonClick}> 
+                    <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
+                        <div><Icon icon='mobile-phone' /></div>
                         <div><Icon icon='envelope' /></div>
                         <div><Icon icon='geolocation' /></div>
                     </ActionColumn>
@@ -112,7 +229,14 @@ class PickupCard extends React.Component {
                 <React.Fragment>
                     <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
                     <StatusButtonRow>
-                        <Button color='blue'>Confirm</Button>
+                        {pickup.status === 'submitted'
+                            ? (
+                                <Button color='blue'>Confirm</Button>
+                            ) :
+                            (
+                                <Button color='blue'>Complete</Button>
+                            )
+                        }
                         <Button color='red'>Cancel</Button>
                         <Button color='red'>Reject</Button>
                     </StatusButtonRow>
@@ -124,12 +248,15 @@ class PickupCard extends React.Component {
                 </React.Fragment>
         } else if (this.state.isActionsOpen) {
             cardContent =
-                <ActionRow>
-                    <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50}/></a></div>
-                    <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50}/></a></div>
-                    <div><a href={`http://maps.google.com/?q=${pickup.lat},${pickup.lng}`} target="_blank"><Icon icon='geolocation' iconSize={50}/></a></div>
-                    <div onClick={this.onBackButtonClick}>Back</div>
-                </ActionRow>
+                <>
+                    <ActionRow>
+                        <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={50} /></a></div>
+                        <div><a href={`sms:+1${pickup.phoneNumber}`}><Icon icon='mobile-phone' iconSize={50} /></a></div>
+                        <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={50} /></a></div>
+                        <div><a href={`http://maps.google.com/?api=1&query=${pickup.lat},${pickup.lng}&zoom=18`} target="_blank"><Icon icon='geolocation' iconSize={50} /></a></div>
+                    </ActionRow>
+                    <ActionColumn onClick={this.onBackButtonClick}><Icon icon='chevron-right' iconSize={25} /></ActionColumn>
+                </>
 
         }
         return (
@@ -158,15 +285,42 @@ const Card = styled.div`
 `
 
 const OpenStatusButton = styled.div`
-    background-color: ${props => props.color1};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 10%;
     cursor: pointer;
-    border: none;
+    border-color: transparent;
     transition: background 250ms ease-in-out, 
     transform 150ms ease;
     :hover{
-        background-color: ${props => props.color2};
+        border-color: ${props => props.color2};
       }
+`
+
+const fadingKeyFrames = keyframes`
+    0% {width:0%}
+    25% {width:25%}
+    50% {width:50%}
+    75% {width: 75%}
+    100% {width:100%}
+`
+const IconFade = styled.div`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0%;
+    background: white;
+    animation: ${fadingKeyFrames} 2s ease-in infinite;
+    animation-direction: reverse;
+`
+
+const StatusIcon = styled.div`
+    position: relative;
+    width: 100%;
+    left: 25%;
 `
 
 const PickupInfoButton = styled.div`
@@ -190,20 +344,24 @@ const PickupInfo = styled.div`
     padding-left: 1em;
 `
 
-const ActionColumn = styled.button`
+const ActionColumn = styled.div`
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
+      align-items: center;
       width: 10%;
       height: 100%;
 `
+
+
 
 const ActionRow = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width: 80%;
-    height: 80%;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 `
 
 const StatusButtonRow = styled.div`

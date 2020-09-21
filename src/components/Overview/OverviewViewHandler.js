@@ -8,6 +8,13 @@ import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 class OverviewViewHandler extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            view: 'dailyPickups'
+        }
+    }
+
+    changeView = (view) => {
+        this.setState({ view: view})
     }
 
     getView = (view) => {
@@ -17,16 +24,23 @@ class OverviewViewHandler extends React.Component {
                     <Row>
                         <DatePickerFullScreen {...this.props} />
                         <PickupsContainer>
-                            <Pickups {...this.props} />
+                            <Pickups {...this.props} changeView={this.changeView}/>
                         </PickupsContainer>
                     </Row>
                 </Column>
             )
         }
-        if (view === 'customerCallIn') {
+        else if (view === 'customerCallIn') {
             return (
                 <Column>
-                    <CustomerCallIn {...this.props} />
+                    <CustomerCallIn {...this.props} changeView={this.changeView}/>
+                </Column>
+            )
+        }
+        else if (view === 'incompleteSetup') {
+            return (
+                <Column>
+                    <div>Setup Not Complete</div>
                 </Column>
             )
         }
@@ -35,7 +49,7 @@ class OverviewViewHandler extends React.Component {
 
     render() {
         return (
-            this.getView('customerCallIn')
+            this.getView(this.state.view)
         )
     }
 }
