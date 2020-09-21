@@ -141,7 +141,7 @@ class Pickups extends React.Component {
 const ListContainer = isDraggingOver =>
     isDraggingOver ?
         ({
-            background: 'blue',
+            background: '#F8F8F8',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

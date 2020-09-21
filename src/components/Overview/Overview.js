@@ -209,6 +209,7 @@ class Overview extends React.Component {
                 selectPickup={this.selectPickup}
                 selectedPickup={this.state.selectedPickup}
                 userConfig={this.props.userConfig}
+                handleRouteChange={this.handleRouteChange}
                 />
         )
     }

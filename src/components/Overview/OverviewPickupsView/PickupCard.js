@@ -15,7 +15,8 @@ class PickupCard extends React.Component {
             cancelUser: '',
             cancelPassword: '',
             rejectUser: '',
-            rejectPassword: ''
+            rejectPassword: '',
+            routeColor: '#d3d3d3'
         }
     }
 
@@ -179,6 +180,11 @@ class PickupCard extends React.Component {
         this.props.changeIsACardTabOpen(true)
     }
 
+    handleRouteClick = (pickup) => () => {
+        !pickup.inRoute? this.setState({ routeColor: '#f44546'}):this.setState({ routeColor: '#d3d3d3'})
+        this.props.handleRouteChange(pickup.index)
+    }
+
     render() {
         const { provided, innerRef, pickup } = this.props;
         const colors = {
@@ -215,7 +221,7 @@ class PickupCard extends React.Component {
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
-                        <RatingButton onClick={this.onRatingButtonClick}>Rate This Pickup</RatingButton>
+                        <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup)} color={this.state.routeColor}/></div>
                     </PickupInfo>
                     <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
@@ -321,6 +327,9 @@ const StatusIcon = styled.div`
     position: relative;
     width: 100%;
     left: 25%;
+`
+const MapIcon = styled(Icon)`
+      cursor: pointer;
 `
 
 const PickupInfoButton = styled.div`
