@@ -5,7 +5,6 @@ import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
 
-
 class Pickups extends React.Component {
     constructor(props) {
         super(props)

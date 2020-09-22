@@ -5,7 +5,7 @@ import DatePickerFullScreen from './OverviewPickupsView/DatePickerFullScreen'
 import styled from 'styled-components'
 import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 import EmbedMap from './Maps/EmbedMap'
-import { Spring, config, animated, Transition } from 'react-spring/renderprops';
+import { animated, Transition } from 'react-spring/renderprops';
 
 class OverviewViewHandler extends React.Component {
     constructor(props) {

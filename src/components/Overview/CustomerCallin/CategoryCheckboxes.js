@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput } from '@blueprintjs/core'
 import styled from 'styled-components'
 import CategorySelect from './CategorySelect'
+import { Spring, config, animated, Transition } from 'react-spring/renderprops';
 
 class CategoryCheckboxes extends React.Component {
     constructor(props) {
@@ -64,11 +65,14 @@ class CategoryCheckboxes extends React.Component {
                     </Collapse>
                 </Restrictions>
                 <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
-                {selectedDonatables.length !== 0 ? (
                     <SubBlockContainer>
-                        {selectedDonatables.map(sd => {
-                            return (
-                                <CategoryContainer key={`Category${sd.value.name}`}>
+                        <Transition
+                            items={selectedDonatables} keys={selectedDonatable => `NI${selectedDonatable.value.name}`}
+                            from={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}
+                            enter={{ opacity: 1, transform: 'translate3d(0,0px,0)' }}
+                            leave={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}>
+                            {sd => props =>
+                                <CategoryContainer key={`Category${sd.value.name}`} style={props}>
                                     <FormGroup label={`${sd.value.name}`} inline={true}>
                                         <NumericInput
                                             autoFocus
@@ -86,11 +90,9 @@ class CategoryCheckboxes extends React.Component {
                                         />
                                     </FormGroup>
                                 </CategoryContainer>
-                            )
-                        })}
+                            }
+                        </Transition>
                     </SubBlockContainer>
-                ) : (<div></div>)
-                }
             </BlockContainer>
         )
     }
