@@ -129,7 +129,6 @@ class PickupCard extends React.Component {
     */
 
     componentDidMount() {
-        this.props.changeIsDragDisabled(false)
         this.props.changeIsACardTabOpen(false)
     }
 
@@ -145,7 +144,6 @@ class PickupCard extends React.Component {
             return;
         }
         this.setState({ isStatusOpen: true, isRatingOpen: false, isActionsOpen: false })
-        this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
     }
 
@@ -154,13 +152,11 @@ class PickupCard extends React.Component {
             return;
         }
         this.setState({ isStatusOpen: false, isRatingOpen: false, isActionsOpen: true })
-        this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
     }
 
     onBackButtonClick = () => {
         this.setState({ isStatusOpen: false, isRatingOpen: false, isActionsOpen: false })
-        this.props.changeIsDragDisabled(false)
         this.props.changeIsACardTabOpen(false)
     }
 
@@ -176,7 +172,6 @@ class PickupCard extends React.Component {
             return;
         }
         this.setState({ isRatingOpen: true })
-        this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
     }
 

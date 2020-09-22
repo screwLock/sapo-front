@@ -9,7 +9,6 @@ class Pickups extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isDragDisabled: false,
             isACardTabOpen: false,
             isPickupInfoOpen: false,
             isCustomerCallInOpen: false,
@@ -47,9 +46,6 @@ class Pickups extends React.Component {
         return result;
     };
 
-    changeIsDragDisabled = (boolean) => {
-        this.setState({ isDragDisabled: boolean })
-    }
     changeIsACardTabOpen = (boolean) => {
         this.setState({ isACardTabOpen: boolean })
     }
@@ -68,7 +64,7 @@ class Pickups extends React.Component {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
                 return (
-                    <Draggable draggableId={pickup.pickupID} index={pickup.index} isDragDisabled={this.state.isDragDisabled}>
+                    <Draggable draggableId={pickup.pickupID} index={pickup.index}>
                         {(provided, snapshot) => (
                             <PickupCard pickup={pickup}
                                 isChecked={pickup.inRoute}
@@ -82,8 +78,6 @@ class Pickups extends React.Component {
                                 handleClick={this.props.handleClick}
                                 handleRouteChange={this.props.handleRouteChange}
                                 userConfig={this.props.userConfig}
-                                changeIsDragDisabled={this.changeIsDragDisabled}
-                                isDragDisabled={this.state.isDragDisabled}
                                 changeIsACardTabOpen={this.changeIsACardTabOpen}
                                 isACardTabOpen={this.state.isACardTabOpen}
                                 changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
