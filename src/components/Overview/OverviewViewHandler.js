@@ -32,7 +32,7 @@ class OverviewViewHandler extends React.Component {
                         <div style={{width: '50%'}}>
                         <Transition
                             items={this.state.showMap}
-                            from={{ opacity: 0, transform: 'translate3d(100%,0,0)' }}
+                            from={{  position: 'absolute', opacity: 0, transform: 'translate3d(100%,0,0)' }}
                             enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
                             leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
                             native
@@ -43,11 +43,11 @@ class OverviewViewHandler extends React.Component {
                                 showMap
                                     ? props => <animated.div
                                         key={0}
-                                        style={{ ...props, height: '100%'}}
+                                        style={{ ...props}}
                                     ><EmbedMap {...this.props} /></animated.div>
                                     : props => <animated.div
                                         key={1}
-                                        style={{ ...props, height: '100%' }}
+                                        style={{ ...props}}
                                     ><DatePickerFullScreen {...this.props} /></animated.div>
                             }
                         </Transition>
