@@ -4,17 +4,24 @@ import Pickups from './OverviewPickupsView/Pickups'
 import DatePickerFullScreen from './OverviewPickupsView/DatePickerFullScreen'
 import styled from 'styled-components'
 import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
+import EmbedMap from './Maps/EmbedMap'
+import { Spring, config, animated, Transition } from 'react-spring/renderprops';
 
 class OverviewViewHandler extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            view: 'dailyPickups'
+            view: 'dailyPickups',
+            showMap: false,
         }
     }
 
     changeView = (view) => {
-        this.setState({ view: view})
+        this.setState({ view: view })
+    }
+
+    showMap = () => {
+        this.setState({ showMap: !this.state.showMap })
     }
 
     getView = (view) => {
@@ -22,9 +29,31 @@ class OverviewViewHandler extends React.Component {
             return (
                 <Column>
                     <Row>
-                        <DatePickerFullScreen {...this.props} />
+                        <div style={{width: '50%'}}>
+                        <Transition
+                            items={this.state.showMap}
+                            from={{ opacity: 0, transform: 'translate3d(100%,0,0)' }}
+                            enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
+                            leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
+                            native
+                            reset
+                            unique
+                        >
+                            {showMap =>
+                                showMap
+                                    ? props => <animated.div
+                                        key={0}
+                                        style={{ ...props, height: '100%'}}
+                                    ><EmbedMap {...this.props} /></animated.div>
+                                    : props => <animated.div
+                                        key={1}
+                                        style={{ ...props, height: '100%' }}
+                                    ><DatePickerFullScreen {...this.props} /></animated.div>
+                            }
+                        </Transition>
+                        </div>
                         <PickupsContainer>
-                            <Pickups {...this.props} changeView={this.changeView}/>
+                            <Pickups {...this.props} changeView={this.changeView} showMap={this.showMap} />
                         </PickupsContainer>
                     </Row>
                 </Column>
@@ -33,7 +62,7 @@ class OverviewViewHandler extends React.Component {
         else if (view === 'customerCallIn') {
             return (
                 <Column>
-                    <CustomerCallIn {...this.props} changeView={this.changeView}/>
+                    <CustomerCallIn {...this.props} changeView={this.changeView} />
                 </Column>
             )
         }
@@ -54,6 +83,11 @@ class OverviewViewHandler extends React.Component {
     }
 }
 
+const DropDownRow = styled.div`
+    height: ${props => props.height}%;
+    overflow: hidden;
+`
+
 const PickupsContainer = styled.div`
     width: 50%;
 `
@@ -66,7 +100,7 @@ const Column = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
 `
 
 export default OverviewViewHandler;
