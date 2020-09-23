@@ -20,23 +20,6 @@ class PickupCard extends React.Component {
         }
     }
 
-    setIcon = (status) => {
-        if (status === 'submitted') {
-            return 'issue'
-        }
-        else if (status === 'confirmed') {
-            return 'more'
-        }
-        else if (status === 'completed') {
-            return 'tick-circle'
-        }
-        else if (status === 'canceled') {
-            return 'disable'
-        }
-        else if (status === 'rejected') {
-            return 'delete'
-        }
-    }
     /*
         handleStatusChange = (pickup, status) => () => {
         if (pickup == null) {
@@ -182,26 +165,31 @@ class PickupCard extends React.Component {
 
     render() {
         const { provided, innerRef, pickup } = this.props;
-        const colors = {
+        const buttonStyles = {
             confirmed: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'more'
             },
             completed: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'tick-circle'
             },
             canceled: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'disable',
             },
             rejected: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'delete',
             },
             submitted: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'issue'
             }
         }
 
@@ -210,8 +198,8 @@ class PickupCard extends React.Component {
         if (!this.state.isStatusOpen && !this.state.isRatingOpen && !this.state.isActionsOpen) {
             cardContent =
                 <React.Fragment>
-                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} >
-                            <StatusIcon><Icon icon={this.setIcon(pickup.status)} iconSize={30} color={colors.confirmed.color1}/><IconFade /></StatusIcon>
+                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color1} >
+                            <StatusIcon><Icon icon={buttonStyles[pickup.status].icon} iconSize={30} color={buttonStyles[pickup.status].color1}/><IconFade /></StatusIcon>
                         </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
@@ -228,18 +216,18 @@ class PickupCard extends React.Component {
         } else if (this.state.isStatusOpen) {
             cardContent =
                 <React.Fragment>
-                    <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                    <OpenStatusButton onClick={this.onBackButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color2} />
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
-                                <Button color='blue'>Confirm</Button>
+                                <Button color={buttonStyles['submitted'].color1}>Confirm</Button>
                             ) :
                             (
-                                <Button color='blue'>Complete</Button>
+                                <Button color={buttonStyles['completed'].color1}>Complete</Button>
                             )
                         }
-                        <Button color='red'>Cancel</Button>
-                        <Button color='red'>Reject</Button>
+                        <Button color={buttonStyles['canceled'].color1}>Cancel</Button>
+                        <Button color={buttonStyles['rejected'].color1}>Reject</Button>
                     </StatusButtonRow>
                 </React.Fragment>
         } else if (this.state.isRatingOpen) {
