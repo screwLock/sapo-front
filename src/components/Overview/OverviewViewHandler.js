@@ -35,7 +35,7 @@ class OverviewViewHandler extends React.Component {
                 items={this.state.view}
                 from={{ opacity: 0, transform: 'translate3d(100%,0,0)', }}
                 enter={{ opacity: 1, transform: 'translate3d(0%,0,0)',  }}
-                leave={{ opacity: 0, transform: 'translate3d(-500%,0,0)',position: 'absolute', overflow: 'hidden' }}
+                leave={{ opacity: 0, transform: 'translate3d(-100%,0,0)'}}
                 native
                 reset
                 unique
@@ -45,7 +45,7 @@ class OverviewViewHandler extends React.Component {
                         return (
                             props => <animated.div
                                 key={view}
-                                style={{ ...props }}
+                                style={{ ...props, position: 'absolute', width: '100%' }}
                             >
                                 <Column>
                                     <Row>
@@ -84,7 +84,7 @@ class OverviewViewHandler extends React.Component {
                         return (
                             props => <animated.div
                                 key={view}
-                                style={{ ...props }}
+                                style={{ ...props, position: 'absolute', width: '100%' }}
                             >
                                 <Column style={{ alignItems: 'center' }}>
                                     <CustomerCallIn {...this.props} changeView={this.changeView} />
@@ -96,7 +96,7 @@ class OverviewViewHandler extends React.Component {
                         return (
                             props => <animated.div
                                 key={view}
-                                style={{ ...props }}
+                                style={{ ...props, position: 'absolute', width: '100%' }}
                             >
                                 <Column>
                                     <div>Setup Not Complete</div>
