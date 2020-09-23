@@ -24,61 +24,99 @@ class OverviewViewHandler extends React.Component {
         this.setState({ showMap: !this.state.showMap })
     }
 
+    /**
+     * WE ARE USING A HACK TO PREVENT COMPONENT JERKING WITH POSITION ABSOLUTE ON LEAVE
+     * THIS SHOULD BE FIXED AT SOME POINT IN THE FUTURE!!!!!!!!!!
+     */
+
     getView = (view) => {
-        if (view === 'dailyPickups') {
-            return (
-                <Column>
-                    <Row>
-                        <div style={{ width: '50%' }}>
-                            <Transition
-                                items={this.state.showMap}
-                                from={{ position: 'absolute', opacity: 0, transform: 'translate3d(100%,0,0)' }}
-                                enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
-                                leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
-                                native
-                                reset
-                                unique
+        return (
+            <Transition
+                items={this.state.view}
+                from={{ opacity: 0, transform: 'translate3d(100%,0,0)', }}
+                enter={{ opacity: 1, transform: 'translate3d(0%,0,0)',  }}
+                leave={{ opacity: 0, transform: 'translate3d(-500%,0,0)',position: 'absolute', overflow: 'hidden' }}
+                native
+                reset
+                unique
+            >
+                {view => {
+                    if (view === 'dailyPickups') {
+                        return (
+                            props => <animated.div
+                                key={view}
+                                style={{ ...props }}
                             >
-                                {showMap =>
-                                    showMap
-                                        ? props => <animated.div
-                                            key={0}
-                                            style={{ ...props }}
-                                        ><EmbedMap {...this.props} /></animated.div>
-                                        : props => <animated.div
-                                            key={1}
-                                            style={{ ...props }}
-                                        ><DatePickerFullScreen {...this.props} /></animated.div>
-                                }
-                            </Transition>
-                        </div>
-                        <PickupsContainer>
-                            <Pickups {...this.props} changeView={this.changeView} showMap={this.showMap} />
-                        </PickupsContainer>
-                    </Row>
-                </Column>
-            )
-        }
-        else if (view === 'customerCallIn') {
-            return (
-                <Column style={{ alignItems: 'center' }}>
-                    <CustomerCallIn {...this.props} changeView={this.changeView} />
-                </Column>
-            )
-        }
-        else if (view === 'incompleteSetup') {
-            return (
-                <Column>
-                    <div>Setup Not Complete</div>
-                </Column>
-            )
-        }
+                                <Column>
+                                    <Row>
+                                        <div style={{ width: '50%', position:'relative'}}>
+                                            <Transition
+                                                items={this.state.showMap}
+                                                from={{  opacity: 0, transform: 'translate3d(100%,0,0)', position: 'absolute' }}
+                                                enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
+                                                leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
+                                                native
+                                                reset
+                                                unique
+                                            >
+                                                {showMap =>
+                                                    showMap
+                                                        ? props => <animated.div
+                                                            key={0}
+                                                            style={{ ...props }}
+                                                        ><EmbedMap {...this.props} /></animated.div>
+                                                        : props => <animated.div
+                                                            key={1}
+                                                            style={{ ...props }}
+                                                        ><DatePickerFullScreen {...this.props} /></animated.div>
+                                                }
+                                            </Transition>
+                                        </div>
+                                        <PickupsContainer>
+                                            <Pickups {...this.props} changeView={this.changeView} showMap={this.showMap} />
+                                        </PickupsContainer>
+                                    </Row>
+                                </Column>
+                            </animated.div>
+                        )
+                    }
+                    else if (view === 'customerCallIn') {
+                        return (
+                            props => <animated.div
+                                key={view}
+                                style={{ ...props }}
+                            >
+                                <Column style={{ alignItems: 'center' }}>
+                                    <CustomerCallIn {...this.props} changeView={this.changeView} />
+                                </Column>
+                            </animated.div>
+                        )
+                    }
+                    else if (view === 'incompleteSetup') {
+                        return (
+                            props => <animated.div
+                                key={view}
+                                style={{ ...props }}
+                            >
+                                <Column>
+                                    <div>Setup Not Complete</div>
+                                </Column>
+                            </animated.div>
+                        )
+                    }
+                }
+                }
+            </Transition>
+        )
     }
+
 
 
     render() {
         return (
-            this.getView(this.state.view)
+            <div>
+                {this.getView(this.state.view)}
+            </div>
         )
     }
 }
