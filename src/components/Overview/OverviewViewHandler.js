@@ -24,11 +24,6 @@ class OverviewViewHandler extends React.Component {
         this.setState({ showMap: !this.state.showMap })
     }
 
-    /**
-     * WE ARE USING A HACK TO PREVENT COMPONENT JERKING WITH POSITION ABSOLUTE ON LEAVE
-     * THIS SHOULD BE FIXED AT SOME POINT IN THE FUTURE!!!!!!!!!!
-     */
-
     getView = (view) => {
         return (
             <Transition
@@ -49,10 +44,10 @@ class OverviewViewHandler extends React.Component {
                             >
                                 <Column>
                                     <Row>
-                                        <div style={{ width: '50%', position:'relative'}}>
+                                        <div style={{ width: '50%'}}>
                                             <Transition
                                                 items={this.state.showMap}
-                                                from={{  opacity: 0, transform: 'translate3d(100%,0,0)', position: 'absolute' }}
+                                                from={{  opacity: 0, transform: 'translate3d(100%,0,0)',  }}
                                                 enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
                                                 leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
                                                 native
@@ -63,11 +58,11 @@ class OverviewViewHandler extends React.Component {
                                                     showMap
                                                         ? props => <animated.div
                                                             key={0}
-                                                            style={{ ...props }}
+                                                            style={{ ...props, position: 'absolute' }}
                                                         ><EmbedMap {...this.props} /></animated.div>
                                                         : props => <animated.div
                                                             key={1}
-                                                            style={{ ...props }}
+                                                            style={{ ...props, position: 'absolute' }}
                                                         ><DatePickerFullScreen {...this.props} /></animated.div>
                                                 }
                                             </Transition>
