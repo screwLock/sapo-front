@@ -29,28 +29,28 @@ class OverviewViewHandler extends React.Component {
             return (
                 <Column>
                     <Row>
-                        <div style={{width: '50%'}}>
-                        <Transition
-                            items={this.state.showMap}
-                            from={{  position: 'absolute', opacity: 0, transform: 'translate3d(100%,0,0)' }}
-                            enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
-                            leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
-                            native
-                            reset
-                            unique
-                        >
-                            {showMap =>
-                                showMap
-                                    ? props => <animated.div
-                                        key={0}
-                                        style={{ ...props}}
-                                    ><EmbedMap {...this.props} /></animated.div>
-                                    : props => <animated.div
-                                        key={1}
-                                        style={{ ...props}}
-                                    ><DatePickerFullScreen {...this.props} /></animated.div>
-                            }
-                        </Transition>
+                        <div style={{ width: '50%' }}>
+                            <Transition
+                                items={this.state.showMap}
+                                from={{ position: 'absolute', opacity: 0, transform: 'translate3d(100%,0,0)' }}
+                                enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
+                                leave={{ opacity: 0, transform: 'translate3d(-50%,0,0)' }}
+                                native
+                                reset
+                                unique
+                            >
+                                {showMap =>
+                                    showMap
+                                        ? props => <animated.div
+                                            key={0}
+                                            style={{ ...props }}
+                                        ><EmbedMap {...this.props} /></animated.div>
+                                        : props => <animated.div
+                                            key={1}
+                                            style={{ ...props }}
+                                        ><DatePickerFullScreen {...this.props} /></animated.div>
+                                }
+                            </Transition>
                         </div>
                         <PickupsContainer>
                             <Pickups {...this.props} changeView={this.changeView} showMap={this.showMap} />
@@ -61,7 +61,7 @@ class OverviewViewHandler extends React.Component {
         }
         else if (view === 'customerCallIn') {
             return (
-                <Column>
+                <Column style={{ alignItems: 'center' }}>
                     <CustomerCallIn {...this.props} changeView={this.changeView} />
                 </Column>
             )
