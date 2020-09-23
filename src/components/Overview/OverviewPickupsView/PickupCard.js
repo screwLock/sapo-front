@@ -184,7 +184,7 @@ class PickupCard extends React.Component {
             rejected: {
                 color1: '#187bcd',
                 color2: '#1167b1',
-                icon: 'delete',
+                icon: 'thumbs-down',
             },
             submitted: {
                 color1: '#187bcd',
