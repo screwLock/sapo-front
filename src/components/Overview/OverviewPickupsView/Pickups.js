@@ -1,22 +1,27 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
+import DND from './DND'
 
-class Pickups extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isACardTabOpen: false,
-            isPickupInfoOpen: false,
-            isCustomerCallInOpen: false,
-            isPickupContainerOpen: false,
-        }
+const Pickups = props => {
+    let pickupsInitialState = {
+        isACardTabOpen: false,
+        isPickupInfoOpen: false,
+        isCustomerCallInOpen: false,
+        isPickupContainerOpen: false,
     }
 
-    onDragEnd = result => {
+    const [isACardTabOpen, setIsACardTabOpen] = useState(false)
+    const [isPickupInfoOpen, setIsPickupInfoOpen] = useState(false)
+    const [isCustomerCallInOpen, setIsCustomerCallInOpen] = useState(false)
+    const [isPickupContainerOpen, setIsPickupContainerOpen] = useState(false)
+
+
+
+    const onDragEnd = result => {
         // dropped outside the list
         if (!result.destination) {
             return;
@@ -29,16 +34,16 @@ class Pickups extends React.Component {
             return;
         }
 
-        const pickups = this.reorder(
-            this.props.pickups,
+        const pickups = reorder(
+            props.pickups,
             result.source.index,
             result.destination.index
         );
 
-        this.props.onDragEnd(pickups);
+        props.onDragEnd(pickups);
     };
 
-    reorder = (list, startIndex, endIndex) => {
+    const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
@@ -46,25 +51,24 @@ class Pickups extends React.Component {
         return result;
     };
 
-    changeIsACardTabOpen = (boolean) => {
-        this.setState({ isACardTabOpen: boolean })
+    const changeIsACardTabOpen = (boolean) => {
+        setIsACardTabOpen(boolean)
     }
-    changeIsPickupInfoOpen = (boolean) => {
-        this.setState({ isPickupInfoOpen: boolean })
+    const changeIsPickupInfoOpen = (boolean) => {
+        setIsPickupInfoOpen(boolean)
     }
-    changeIsCustomerCallInOpen = (boolean) => {
-        this.setState({ isCustomerCallInOpen: boolean })
+    const changeIsCustomerCallInOpen = (boolean) => {
+        setIsCustomerCallInOpen(boolean)
+    }
+    const changeIsPickupContainerOpen = (boolean) => {
+        setIsPickupContainerOpen(boolean)
     }
 
-    changeIsPickupContainerOpen = (boolean) => {
-        this.setState({ isPickupContainerOpen: boolean })
-    }
-
-    renderCards = (pickups) => {
+    const renderCards = (pickups) => {
         if (pickups.length > 0) {
             return pickups.map((pickup, index) => {
                 return (
-                    <Draggable draggableId={pickup.pickupID} index={pickup.index}>
+                    <Draggable draggableId={pickup.pickupID} index={pickup.index} >
                         {(provided, snapshot) => (
                             <PickupCard pickup={pickup}
                                 isChecked={pickup.inRoute}
@@ -72,16 +76,16 @@ class Pickups extends React.Component {
                                 // setIndex={this.handleStatusIndexChange}
                                 //use pickups index, not datepickups index!
                                 index={pickup.index}
-                                routes={this.props.routes}
+                                routes={props.routes}
                                 innerRef={provided.innerRef}
                                 provided={provided}
-                                handleClick={this.props.handleClick}
-                                handleRouteChange={this.props.handleRouteChange}
-                                userConfig={this.props.userConfig}
-                                changeIsACardTabOpen={this.changeIsACardTabOpen}
-                                isACardTabOpen={this.state.isACardTabOpen}
-                                changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
-                                selectPickup={this.props.selectPickup(pickup)}
+                                handleClick={props.handleClick}
+                                handleRouteChange={props.handleRouteChange}
+                                userConfig={props.userConfig}
+                                changeIsACardTabOpen={changeIsACardTabOpen}
+                                isACardTabOpen={isACardTabOpen}
+                                changeIsPickupContainerOpen={changeIsPickupContainerOpen}
+                                selectPickup={props.selectPickup(pickup)}
                             />
                         )}
                     </Draggable>
@@ -89,47 +93,46 @@ class Pickups extends React.Component {
             });
         } else {
             return (
-                <div>No Pickups for {format(this.props.selectedDate, 'MM/DD/YYYY')}</div>
+                <div>No Pickups for {format(props.selectedDate, 'MM/DD/YYYY')}</div>
             )
         }
     }
 
-    render() {
-        const datePickups = this.props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.props.selectedDate))
-        const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
-        const selectedPickup = this.props.selectedPickup
-        return (
-            <React.Fragment>
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Droppable droppableId="dropabble" direction="vertical">
-                        {(provided, snapshot) => (
-                            <div ref={provided.innerRef}
-                                style={ListContainer(snapshot.isDraggingOver)}
-                                {...provided.droppableProps}
-                            >
-                                <h1>{format(this.props.selectedDate, 'dddd Do, YYYY')}</h1>
-                                <h5 onClick={() => { this.props.changeView('customerCallIn') }}>New Pickup</h5>
-                                <h5 onClick={() => { this.props.showMap(); this.props.createRoute() }}>See Route</h5>
-                                {
-                                    !this.state.isPickupContainerOpen
-                                        ? this.renderCards(datePickups)
-                                        :
-                                        (
-                                            <PickupContainer
-                                                pickup={selectedPickup}
-                                                changeIsPickupContainerOpen={this.changeIsPickupContainerOpen}
-                                                userConfig={this.props.userConfig}
-                                            />
-                                        )
-                                }
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-            </React.Fragment>
-        )
-    }
+    const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
+    const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
+    const selectedPickup = props.selectedPickup
+    return (
+        <React.Fragment>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="dropabble" direction="vertical">
+                    {(provided, snapshot) => (
+                        <div ref={provided.innerRef}
+                            style={ListContainer(snapshot.isDraggingOver)}
+                            {...provided.droppableProps}
+                        >
+                            <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
+                            <h5 onClick={() => { props.changeView('customerCallIn') }}>New Pickup</h5>
+                            <h5 onClick={() => { props.showMap(); props.createRoute() }}>See Route</h5>
+                            {
+                                !isPickupContainerOpen
+                                    ? renderCards(datePickups)
+                                    :
+                                    (
+                                        <PickupContainer
+                                            pickup={selectedPickup}
+                                            changeIsPickupContainerOpen={changeIsPickupContainerOpen}
+                                            userConfig={props.userConfig}
+                                        />
+                                    )
+                            }
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
+            <DND />
+        </React.Fragment>
+    )
 }
 
 const ListContainer = isDraggingOver =>

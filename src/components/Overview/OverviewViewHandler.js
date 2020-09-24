@@ -44,7 +44,7 @@ class OverviewViewHandler extends React.Component {
                             >
                                 <Column>
                                     <Row>
-                                        <div style={{ width: '50%'}}>
+                                        <div style={{ width: '50%',}}>
                                             <Transition
                                                 items={this.state.showMap}
                                                 from={{  opacity: 0, transform: 'translate3d(100%,0,0)',  }}
