@@ -4,7 +4,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
-import DND from './DND'
 
 const Pickups = props => {
     let pickupsInitialState = {
@@ -130,7 +129,6 @@ const Pickups = props => {
                     )}
                 </Droppable>
             </DragDropContext>
-            <DND />
         </React.Fragment>
     )
 }
