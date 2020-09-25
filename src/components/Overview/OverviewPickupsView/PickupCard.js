@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import { Icon } from '@blueprintjs/core'
+import SpringButton from './SpringButton'
 
 class PickupCard extends React.Component {
     constructor(props) {
@@ -220,14 +221,14 @@ class PickupCard extends React.Component {
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
-                                <Button color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25}/></Button>
+                                <SpringButton color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25}/></SpringButton>
                             ) :
                             (
-                                <Button color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25}/></Button>
+                                <SpringButton color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25}/></SpringButton>
                             )
                         }
-                        <Button color={buttonStyles['canceled'].color1}><Icon icon={buttonStyles['canceled'].icon} iconSize={25}/></Button>
-                        <Button color={buttonStyles['rejected'].color1}><Icon icon={buttonStyles['rejected'].icon} iconSize={25}/></Button>
+                        <SpringButton color={buttonStyles['canceled'].color1}><Icon icon={buttonStyles['canceled'].icon} iconSize={25}/></SpringButton>
+                        <SpringButton color={buttonStyles['rejected'].color1}><Icon icon={buttonStyles['rejected'].icon} iconSize={25}/></SpringButton>
                     </StatusButtonRow>
                 </React.Fragment>
         } else if (this.state.isRatingOpen) {
@@ -362,18 +363,6 @@ const StatusButtonRow = styled.div`
     justify-content: space-evenly;
     width: 100%;
     height: 100%;
-`
-
-const Button = styled.button`
-    background-color: ${props => props.color};;
-    color: white;
-    border-width: 0.05em; 
-    border-color: ${props => props.color};
-    border-radius: 0.2em;
-    border-style: solid;
-    height: 75%;
-    align-self: center;
-    width: 20%;
 `
 
 export default PickupCard
