@@ -2,7 +2,8 @@ import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import { Icon } from '@blueprintjs/core'
-import SpringButton from './SpringButton'
+import SpringButton from './Status/SpringButton'
+import StatusIcon from './Status/StatusIcon'
 
 class PickupCard extends React.Component {
     constructor(props) {
@@ -178,17 +179,17 @@ class PickupCard extends React.Component {
                 icon: 'tick-circle'
             },
             canceled: {
-                color1: '#187bcd',
+                color1: '#FA212F',
                 color2: '#1167b1',
                 icon: 'disable',
             },
             rejected: {
-                color1: '#187bcd',
+                color1: '#E76450',
                 color2: '#1167b1',
                 icon: 'thumbs-down',
             },
             submitted: {
-                color1: '#187bcd',
+                color1: '#EBEBEB',
                 color2: '#1167b1',
                 icon: 'issue'
             }
@@ -200,7 +201,7 @@ class PickupCard extends React.Component {
             cardContent =
                 <React.Fragment>
                         <OpenStatusButton onClick={this.onStatusButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color1} >
-                            <StatusIcon><Icon icon={buttonStyles[pickup.status].icon} iconSize={30} color={buttonStyles[pickup.status].color1}/><IconFade /></StatusIcon>
+                            <StyledIcon><StatusIcon status={pickup.status}><Icon icon={buttonStyles[pickup.status].icon} iconSize={30} color={buttonStyles[pickup.status].color1}/></StatusIcon></StyledIcon>
                         </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
@@ -307,7 +308,7 @@ const IconFade = styled.div`
     animation-direction: reverse;
 `
 
-const StatusIcon = styled.div`
+const StyledIcon = styled.div`
     position: relative;
     width: 100%;
     left: 25%;

@@ -1,24 +1,9 @@
 import React, { useState } from "react";
 import { Spring, animated } from 'react-spring/renderprops';
-import useLongPress from './LongPress/useLongPress'
 
-const SpringButton = (props) => {
+const StatusIcon = (props) => {
     const [pressed, setPressed] = useState(false);
-    const onLongPress = () => {
-        setPressed(true)
-        console.log('longpress is triggered');
-    };
 
-    const onClick = () => {
-        setPressed(false)
-        console.log('click is triggered')
-    }
-
-    const defaultOptions = {
-        shouldPreventDefault: true,
-        delay: 500,
-    };
-    const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
     return (
         <Spring native 
                 from={{ 
@@ -35,16 +20,15 @@ const SpringButton = (props) => {
                     }}>
             {({ scale, backgroundColor, strokeWidth, color }) => (
                 <animated.rect strokeWidth={strokeWidth}
-                    {...longPressEvent}
                     style={{
                         backgroundColor: backgroundColor,
                         color: color,
                         // borderWidth: '0.05em', 
                         borderColor: props.color,
                         borderRadius: '0.2em',
-                        height: '75%',
+                        height: '100%',
                         alignSelf: 'center',
-                        width: '20%',
+                        width: '100%',
                         transform: scale.interpolate(scale => `scale(${scale})`),
                         display: 'flex',
                         alignItems: 'center',
@@ -58,4 +42,4 @@ const SpringButton = (props) => {
     );
 }
 
-export default SpringButton
+export default StatusIcon
