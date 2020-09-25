@@ -1,45 +1,39 @@
 import React, { useState } from "react";
-import { Spring, animated } from 'react-spring/renderprops';
+import { Keyframes, animated } from 'react-spring/renderprops'
+
+const Container = Keyframes.Spring(async next => {
+    while (true) {
+        await next({
+            from: { radians: 0 },
+            to: { radians: 2 * Math.PI },
+        })
+    }
+}
+)
+
+
+const Confirmed = ({radians}) => {
+    return (
+        <animated.div style={{
+            transform: radians.interpolate(r => `translate3d(0, ${15 * Math.sin(r + (2 * Math.PI) / 1.6)}px, 0)`)
+        }}
+        >
+            <h1>...</h1>
+        </animated.div>
+    )
+}
 
 const StatusIcon = (props) => {
-    const [pressed, setPressed] = useState(false);
-
     return (
-        <Spring native 
-                from={{ 
-                    scale: 1, 
-                    strokeWidth: 0,
-                    backgroundColor: props.color,
-                    color: 'white'
-                    }} 
-                to={{ 
-                    scale: pressed ? 1.2 : 1.0,
-                    strokeWidth: pressed ? 0 : 100,
-                    backgroundColor: pressed? 'white' : props.color,
-                    color: pressed? props.color : 'white'            
-                    }}>
-            {({ scale, backgroundColor, strokeWidth, color }) => (
-                <animated.rect strokeWidth={strokeWidth}
-                    style={{
-                        backgroundColor: backgroundColor,
-                        color: color,
-                        // borderWidth: '0.05em', 
-                        borderColor: props.color,
-                        borderRadius: '0.2em',
-                        height: '100%',
-                        alignSelf: 'center',
-                        width: '100%',
-                        transform: scale.interpolate(scale => `scale(${scale})`),
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}
-                >
-                    {props.children}
-                </animated.rect>
-            )}
-        </Spring>
-    );
+        <Container
+            reset
+            native
+            //impl={TimingAnimation}
+            config={{ duration: 2000 /*, easing: Easing.linear*/ }}>
+            {Confirmed}
+        </Container>
+    )
+
 }
 
 export default StatusIcon
