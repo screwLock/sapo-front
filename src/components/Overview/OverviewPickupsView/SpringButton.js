@@ -23,30 +23,36 @@ const SpringButton = (props) => {
         <Spring native 
                 from={{ 
                     scale: 1, 
-                    backgroundColor: 'red', 
+                    strokeWidth: 0,
+                    backgroundColor: props.color,
+                    color: 'white'
                     }} 
                 to={{ 
-                    scale: pressed ? 0.8 : 1.0,
-                    backgroundColor: pressed ? 'blue' : 'red',   
+                    scale: pressed ? 1.2 : 1.0,
+                    strokeWidth: pressed ? 0 : 100,
+                    backgroundColor: pressed? 'white' : props.color,
+                    color: pressed? props.color : 'white'            
                     }}>
-            {({ scale, backgroundColor }) => (
-                <animated.button
+            {({ scale, backgroundColor, strokeWidth, color }) => (
+                <animated.rect strokeWidth={strokeWidth}
                     {...longPressEvent}
                     style={{
                         backgroundColor: backgroundColor,
-                        color: 'white',
-                        borderWidth: '0.05em', 
+                        color: color,
+                        // borderWidth: '0.05em', 
                         borderColor: props.color,
                         borderRadius: '0.2em',
-                        borderStyle: 'solid',
                         height: '75%',
                         alignSelf: 'center',
                         width: '20%',
                         transform: scale.interpolate(scale => `scale(${scale})`),
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                     }}
                 >
                     {props.children}
-                </animated.button>
+                </animated.rect>
             )}
         </Spring>
     );
