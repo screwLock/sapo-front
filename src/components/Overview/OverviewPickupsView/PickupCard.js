@@ -220,14 +220,14 @@ class PickupCard extends React.Component {
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
-                                <Button color={buttonStyles['submitted'].color1}>Confirm</Button>
+                                <Button color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25}/></Button>
                             ) :
                             (
-                                <Button color={buttonStyles['completed'].color1}>Complete</Button>
+                                <Button color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25}/></Button>
                             )
                         }
-                        <Button color={buttonStyles['canceled'].color1}>Cancel</Button>
-                        <Button color={buttonStyles['rejected'].color1}>Reject</Button>
+                        <Button color={buttonStyles['canceled'].color1}><Icon icon={buttonStyles['canceled'].icon} iconSize={25}/></Button>
+                        <Button color={buttonStyles['rejected'].color1}><Icon icon={buttonStyles['rejected'].icon} iconSize={25}/></Button>
                     </StatusButtonRow>
                 </React.Fragment>
         } else if (this.state.isRatingOpen) {
