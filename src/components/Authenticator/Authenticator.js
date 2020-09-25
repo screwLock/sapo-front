@@ -23,6 +23,7 @@ class Authenticator extends React.Component {
 
     handleLogout = async event => {
         await Auth.signOut();
+        // localStorage.clear();
         this.onAuthStateChange(false, null);
     }
 

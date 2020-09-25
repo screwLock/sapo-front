@@ -1,5 +1,5 @@
 import * as React from 'react'
-import styled, {keyframes} from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Button, FormGroup, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Link, withRouter } from "react-router-dom";
@@ -28,12 +28,20 @@ class SignIn extends React.Component {
 
     onSignIn = async () => {
         this.setState({ loading: true });
+        /*
+        const loggedInUser = localStorage.getItem("user");
+        if (loggedInUser) {
+          const foundUser = JSON.parse(loggedInUser);
+          setUser(foundUser);
+        }
+        */
         try {
             const data = await Auth.signIn(this.state.email, this.state.password);
             // console.log(`onSignIn::Response#1: ${JSON.stringify(data, null, 2)}`);
             if (data.signInUserSession === null) {
                 this.setState({ user: data, loading: false, modalShowing: true });
             } else {
+                //  localStorage.setItem('user', response.data)
                 this.props.onAuthStateChange(true, data);
                 this.props.history.push('/')
             }
@@ -44,10 +52,10 @@ class SignIn extends React.Component {
     }
 
     handleSignIn = () => {
-        if(this.validateForms() === false) {
-            this.setState({error: 'Please Enter a Username and Password'})
+        if (this.validateForms() === false) {
+            this.setState({ error: 'Please Enter a Username and Password' })
         }
-        else{
+        else {
             this.onSignIn();
         }
     }
