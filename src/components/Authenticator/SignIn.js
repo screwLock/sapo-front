@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components'
 import { Button, FormGroup, InputGroup } from "@blueprintjs/core"
 import { Auth } from "aws-amplify"
 import { Link, withRouter } from "react-router-dom";
+import Logo from './Logo'
 
 class SignIn extends React.Component {
     static defaultProps = {
@@ -80,7 +81,7 @@ class SignIn extends React.Component {
         return (
             <Container>
                 <FormContainer>
-                    <Logo>SAPO</Logo>
+                    <StyledLogo><Logo /></StyledLogo>
                     <FormGroup
                         label="Email"
                         labelFor="text-input"
@@ -112,15 +113,6 @@ class SignIn extends React.Component {
     }
 }
 
-const fadeIn = keyframes`
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-`
-
 const Container = styled.div`
     overflow: hidden;
     position: absolute;
@@ -137,14 +129,14 @@ const FormContainer = styled.div`
     width: 350px;
 `;
 
-const Logo = styled.div`
+const StyledLogo = styled.div`
     font-size:50px;
     font-weight: bold;
     text-align: center;
     padding: 20px 20px 0;
     margin:0;
-    animation: ${fadeIn} 1s ease-in;
-    opacity: 1;
+    display: inline-flex;
+    justify-content: center;
 `;
 
 const ButtonRow = styled.div`
