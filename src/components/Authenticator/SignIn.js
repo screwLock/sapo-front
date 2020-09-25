@@ -28,13 +28,6 @@ class SignIn extends React.Component {
 
     onSignIn = async () => {
         this.setState({ loading: true });
-        /*
-        const loggedInUser = localStorage.getItem("user");
-        if (loggedInUser) {
-          const foundUser = JSON.parse(loggedInUser);
-          setUser(foundUser);
-        }
-        */
         try {
             const data = await Auth.signIn(this.state.email, this.state.password);
             // console.log(`onSignIn::Response#1: ${JSON.stringify(data, null, 2)}`);
