@@ -21,12 +21,19 @@ const SpringButton = (props) => {
     const longPressEvent = useLongPress(onLongPress, onClick, defaultOptions);
     return (
         <Spring native 
-                from={{ scale: 1 }} 
-                to={{ scale: pressed ? 0.8 : 1.0 }}>
-            {({ scale }) => (
+                from={{ 
+                    scale: 1, 
+                    backgroundColor: 'red', 
+                    }} 
+                to={{ 
+                    scale: pressed ? 0.8 : 1.0,
+                    backgroundColor: pressed ? 'blue' : 'red',   
+                    }}>
+            {({ scale, backgroundColor }) => (
                 <animated.button
                     {...longPressEvent}
                     style={{
+                        backgroundColor: backgroundColor,
                         color: 'white',
                         borderWidth: '0.05em', 
                         borderColor: props.color,
@@ -35,7 +42,7 @@ const SpringButton = (props) => {
                         height: '75%',
                         alignSelf: 'center',
                         width: '20%',
-                        transform: scale.interpolate(scale => `scale(${scale})`)
+                        transform: scale.interpolate(scale => `scale(${scale})`),
                     }}
                 >
                     {props.children}
