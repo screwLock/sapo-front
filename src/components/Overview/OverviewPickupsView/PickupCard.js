@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import { Icon } from '@blueprintjs/core'
+import SpringButton from './SpringButton'
 
 class PickupCard extends React.Component {
     constructor(props) {
@@ -15,27 +16,11 @@ class PickupCard extends React.Component {
             cancelUser: '',
             cancelPassword: '',
             rejectUser: '',
-            rejectPassword: ''
+            rejectPassword: '',
+            routeColor: '#d3d3d3'
         }
     }
 
-    setIcon = (status) => {
-        if (status === 'submitted') {
-            return 'issue'
-        }
-        else if (status === 'confirmed') {
-            return 'more'
-        }
-        else if (status === 'completed') {
-            return 'tick-circle'
-        }
-        else if (status === 'canceled') {
-            return 'disable'
-        }
-        else if (status === 'rejected') {
-            return 'delete'
-        }
-    }
     /*
         handleStatusChange = (pickup, status) => () => {
         if (pickup == null) {
@@ -128,7 +113,6 @@ class PickupCard extends React.Component {
     */
 
     componentDidMount() {
-        this.props.changeIsDragDisabled(false)
         this.props.changeIsACardTabOpen(false)
     }
 
@@ -144,7 +128,6 @@ class PickupCard extends React.Component {
             return;
         }
         this.setState({ isStatusOpen: true, isRatingOpen: false, isActionsOpen: false })
-        this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
     }
 
@@ -153,13 +136,11 @@ class PickupCard extends React.Component {
             return;
         }
         this.setState({ isStatusOpen: false, isRatingOpen: false, isActionsOpen: true })
-        this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
     }
 
     onBackButtonClick = () => {
         this.setState({ isStatusOpen: false, isRatingOpen: false, isActionsOpen: false })
-        this.props.changeIsDragDisabled(false)
         this.props.changeIsACardTabOpen(false)
     }
 
@@ -175,32 +156,41 @@ class PickupCard extends React.Component {
             return;
         }
         this.setState({ isRatingOpen: true })
-        this.props.changeIsDragDisabled(true)
         this.props.changeIsACardTabOpen(true)
+    }
+
+    handleRouteClick = (pickup) => () => {
+        !pickup.inRoute? this.setState({ routeColor: '#f44546'}):this.setState({ routeColor: '#d3d3d3'})
+        this.props.handleRouteChange(pickup.index)
     }
 
     render() {
         const { provided, innerRef, pickup } = this.props;
-        const colors = {
+        const buttonStyles = {
             confirmed: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'more'
             },
             completed: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'tick-circle'
             },
             canceled: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'disable',
             },
             rejected: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'thumbs-down',
             },
             submitted: {
                 color1: '#187bcd',
-                color2: '#1167b1'
+                color2: '#1167b1',
+                icon: 'issue'
             }
         }
 
@@ -209,13 +199,13 @@ class PickupCard extends React.Component {
         if (!this.state.isStatusOpen && !this.state.isRatingOpen && !this.state.isActionsOpen) {
             cardContent =
                 <React.Fragment>
-                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} >
-                            <StatusIcon><Icon icon={this.setIcon(pickup.status)} iconSize={30} color={colors.confirmed.color1}/><IconFade /></StatusIcon>
+                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color1} >
+                            <StatusIcon><Icon icon={buttonStyles[pickup.status].icon} iconSize={30} color={buttonStyles[pickup.status].color1}/><IconFade /></StatusIcon>
                         </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
-                        <RatingButton onClick={this.onRatingButtonClick}>Rate This Pickup</RatingButton>
+                        <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup)} color={this.state.routeColor}/></div>
                     </PickupInfo>
                     <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
@@ -227,18 +217,18 @@ class PickupCard extends React.Component {
         } else if (this.state.isStatusOpen) {
             cardContent =
                 <React.Fragment>
-                    <OpenStatusButton onClick={this.onBackButtonClick} color1={colors[pickup.status].color1} color2={colors[pickup.status].color2} />
+                    <OpenStatusButton onClick={this.onBackButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color2} />
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
-                                <Button color='blue'>Confirm</Button>
+                                <SpringButton color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25}/></SpringButton>
                             ) :
                             (
-                                <Button color='blue'>Complete</Button>
+                                <SpringButton color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25}/></SpringButton>
                             )
                         }
-                        <Button color='red'>Cancel</Button>
-                        <Button color='red'>Reject</Button>
+                        <SpringButton color={buttonStyles['canceled'].color1}><Icon icon={buttonStyles['canceled'].icon} iconSize={25}/></SpringButton>
+                        <SpringButton color={buttonStyles['rejected'].color1}><Icon icon={buttonStyles['rejected'].icon} iconSize={25}/></SpringButton>
                     </StatusButtonRow>
                 </React.Fragment>
         } else if (this.state.isRatingOpen) {
@@ -322,6 +312,9 @@ const StatusIcon = styled.div`
     width: 100%;
     left: 25%;
 `
+const MapIcon = styled(Icon)`
+      cursor: pointer;
+`
 
 const PickupInfoButton = styled.div`
       cursor: pointer;
@@ -370,18 +363,6 @@ const StatusButtonRow = styled.div`
     justify-content: space-evenly;
     width: 100%;
     height: 100%;
-`
-
-const Button = styled.button`
-    background-color: ${props => props.color};;
-    color: white;
-    border-width: 0.05em; 
-    border-color: ${props => props.color};
-    border-radius: 0.2em;
-    border-style: solid;
-    height: 75%;
-    align-self: center;
-    width: 20%;
 `
 
 export default PickupCard

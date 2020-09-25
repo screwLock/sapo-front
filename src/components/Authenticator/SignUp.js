@@ -6,6 +6,7 @@ import { Redirect, withRouter } from "react-router-dom"
 import * as EmailValidator from 'email-validator'
 import Terms from './Terms'
 import { postalCodeValidator } from '../Zipcodes/postalCodeValidator'
+import Logo from './Logo'
 
 class SignUp extends React.Component {
     static defaultProps = {
@@ -233,7 +234,7 @@ class SignUp extends React.Component {
                 <Container>
                     {/*this.state.error !== null && errorComponent*/}
                     <FormContainer>
-                        <Logo>SAPO</Logo>
+                        <StyledLogo><Logo mass={10}/></StyledLogo>
                         <FormGroup
                             label="First Name"
                             labelFor="text-input"
@@ -357,15 +358,6 @@ class SignUp extends React.Component {
     }
 }
 
-const fadeIn = keyframes`
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-`;
-
 const Container = styled.div`
     width: 100%;
     height: 100%;
@@ -382,14 +374,14 @@ const FormContainer = styled.div`
     margin-bottom: 50px;
 `;
 
-const Logo = styled.div`
+const StyledLogo = styled.div`
     font-size:50px;
     font-weight: bold;
     text-align: center;
     padding: 20px 20px 0;
     margin:0;
-    animation: ${fadeIn} 1s ease-in;
-    opacity: 1;
+    display: inline-flex;
+    justify-content: center;
 `;
 
 const TitleRow = styled.div`

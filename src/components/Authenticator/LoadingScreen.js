@@ -1,22 +1,13 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components'
+import Logo from './Logo'
 
 const LoadingScreen = (props) => {
 
-    return <StyledLoadingScreen>SAPO</StyledLoadingScreen>
+    return <StyledLoadingScreen>
+        <Logo mass={50}/>
+    </StyledLoadingScreen>
 }
-
-const blinking = keyframes`
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0
-    }
-    100% {
-        opacity: 1;
-    }
-`
 
 const StyledLoadingScreen = styled.div`
     display: flex;
@@ -25,8 +16,6 @@ const StyledLoadingScreen = styled.div`
     height: 100vh;
     font-size: 500%;
     font-weight: bold;
-    animation: ${blinking} 2s ease-in-out infinite;
-    opacity: 1;
 `
 
 

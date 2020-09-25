@@ -21,8 +21,21 @@ class Authenticator extends React.Component {
         };
     }
 
+    /**
+     * componentDidMount(){
+        const loggedInUser = localStorage.getItem("user");
+        if (loggedInUser) {
+          const foundUser = JSON.parse(loggedInUser);
+          this.setState({ authState: true, authData: loggedInUser});
+        }
+     * }
+     * 
+     * 
+    */
+
     handleLogout = async event => {
         await Auth.signOut();
+        // localStorage.clear();
         this.onAuthStateChange(false, null);
     }
 

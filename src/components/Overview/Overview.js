@@ -25,7 +25,6 @@ class Overview extends React.Component {
             unconfirmedDates: [],
             user: {},
             src: '',
-            newRoute: false,
             search: ''
         }
     }
@@ -120,30 +119,30 @@ class Overview extends React.Component {
         this.setState({ pickups: newPickups })
     }
 
-    updateNewRoute = (isNewRoute) => {
+    createRoute = () => {
         const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate));
         const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
         let src = '';
         const origin = [this.state.user.lat, this.state.user.lng];
         let destination = '&destination='
         // pickups is empty, show the client's location on the place url
-        if (routePickups.length === 0 && isNewRoute === true) {
+        if (routePickups.length === 0) {
             src = `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAP_KEY}&q=${origin}`
         }
         // only one pickup, use no waypoints in the direction url
-        else if (routePickups.length === 1 && isNewRoute === true) {
+        else if (routePickups.length === 1) {
             destination = `${destination}${routePickups[0].lat},${routePickups[0].lng}`
             src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${destination}`
         }
         // pickups === 2, one waypoint and no pipes
-        else if (routePickups.length === 2 && isNewRoute === true) {
+        else if (routePickups.length === 2) {
             destination = `${destination}${routePickups[routePickups.length - 1].lat},${routePickups[routePickups.length - 1].lng}`
             let waypoints = '&waypoints=';
             waypoints = `${waypoints}${routePickups[0].lat},${routePickups[0].lng}`
             src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${waypoints}${destination}`
         }
         // pickups > 2, all but last waypoint have pipes
-        else if (routePickups.length > 2 && isNewRoute === true) {
+        else if (routePickups.length > 2) {
             destination = `${destination}${routePickups[routePickups.length - 1].lat},${routePickups[routePickups.length - 1].lng}`
             // waypointPickups is the actual waypoints we will use
             let waypointPickups = [...routePickups];
@@ -209,6 +208,9 @@ class Overview extends React.Component {
                 selectPickup={this.selectPickup}
                 selectedPickup={this.state.selectedPickup}
                 userConfig={this.props.userConfig}
+                handleRouteChange={this.handleRouteChange}
+                createRoute={this.createRoute}
+                src={this.state.src}
                 />
         )
     }
