@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { Icon } from '@blueprintjs/core'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
@@ -110,8 +111,11 @@ const Pickups = props => {
                             {...provided.droppableProps}
                         >
                             <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
-                            <h5 onClick={() => { props.changeView('customerCallIn') }}>New Pickup</h5>
-                            <h5 onClick={() => { props.showMap(); props.createRoute() }}>See Route</h5>
+                            <ButtonRow>
+                                <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25}/>
+                                <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25}/>
+                                <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25}/>
+                            </ButtonRow>
                             {
                                 !isPickupContainerOpen
                                     ? renderCards(datePickups)
@@ -166,5 +170,16 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     // styles we need to apply on draggables
     ...draggableStyle,
 });
+
+const ButtonRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50%;
+`
+
+const ButtonIcon = styled(Icon)`
+    cursor: pointer;
+`
 
 export default Pickups

@@ -20,8 +20,8 @@ class OverviewViewHandler extends React.Component {
         this.setState({ view: view })
     }
 
-    showMap = () => {
-        this.setState({ showMap: !this.state.showMap })
+    showMap = (boolean) => {
+        this.setState({ showMap: boolean })
     }
 
     getView = (view) => {
