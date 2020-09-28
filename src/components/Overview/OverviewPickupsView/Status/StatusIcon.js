@@ -20,11 +20,17 @@ const StatusIcon = (props) => {
             config={{ duration: 2000 /*, easing: Easing.linear*/ }}
         >
             {styles => 
+                (props.status === 'submitted' || props.status === 'confirmed')?
                 (
                     <animated.div style={{
                         transform: styles.radians.interpolate(r => `translate3d(0, ${15 * Math.sin(r + (2 * Math.PI) / 1.6)}px, 0)`)
                     }}
                     >
+                        {props.children}
+                    </animated.div>
+                )
+                : (
+                    <animated.div>
                         {props.children}
                     </animated.div>
                 )

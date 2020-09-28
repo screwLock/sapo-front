@@ -171,7 +171,7 @@ class PickupCard extends React.Component {
             confirmed: {
                 color1: '#187bcd',
                 color2: '#1167b1',
-                icon: 'more'
+                icon: 'thumbs-up'
             },
             completed: {
                 color1: '#187bcd',
@@ -189,7 +189,7 @@ class PickupCard extends React.Component {
                 icon: 'thumbs-down',
             },
             submitted: {
-                color1: '#EBEBEB',
+                color1: '#FA212F',
                 color2: '#1167b1',
                 icon: 'issue'
             }
