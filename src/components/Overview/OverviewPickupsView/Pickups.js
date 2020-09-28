@@ -12,12 +12,14 @@ const Pickups = props => {
         isPickupInfoOpen: false,
         isCustomerCallInOpen: false,
         isPickupContainerOpen: false,
+        isSendDirectionsOpen: false
     }
 
     const [isACardTabOpen, setIsACardTabOpen] = useState(false)
     const [isPickupInfoOpen, setIsPickupInfoOpen] = useState(false)
     const [isCustomerCallInOpen, setIsCustomerCallInOpen] = useState(false)
     const [isPickupContainerOpen, setIsPickupContainerOpen] = useState(false)
+    const [isSendDirectionsOpen, setIsSendDirectionsOpen] = useState(false)
 
 
 
@@ -116,12 +118,18 @@ const Pickups = props => {
                                 <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25}/>
                                 {routePickups.length > 0?
                                 (
-                                    <ButtonIcon onClick={() => { props.createRoute() }} icon='map' iconSize={25}/>
+                                    <ButtonIcon onClick={() => { setIsSendDirectionsOpen(!isSendDirectionsOpen)} } icon='map' iconSize={25}/>
                                 ):
                                 ''
                                 }
                                 <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25}/>
                             </ButtonRow>
+                            {isSendDirectionsOpen ?
+                            (
+                                <div>Fuck</div>
+                            ):
+                            ''
+                            }
                             {
                                 !isPickupContainerOpen
                                     ? renderCards(datePickups)
