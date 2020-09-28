@@ -350,6 +350,7 @@ const ActionColumn = styled.div`
       align-items: center;
       width: 10%;
       height: 100%;
+      cursor: pointer;
 `
 
 
