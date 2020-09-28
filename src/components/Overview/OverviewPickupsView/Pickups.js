@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
+import EmployeeSelect from '../CustomerCallIn/EmployeeSelect'
 
 const Pickups = props => {
     let pickupsInitialState = {
@@ -12,7 +13,8 @@ const Pickups = props => {
         isPickupInfoOpen: false,
         isCustomerCallInOpen: false,
         isPickupContainerOpen: false,
-        isSendDirectionsOpen: false
+        isSendDirectionsOpen: false,
+        selectedDriver: null
     }
 
     const [isACardTabOpen, setIsACardTabOpen] = useState(false)
@@ -20,6 +22,7 @@ const Pickups = props => {
     const [isCustomerCallInOpen, setIsCustomerCallInOpen] = useState(false)
     const [isPickupContainerOpen, setIsPickupContainerOpen] = useState(false)
     const [isSendDirectionsOpen, setIsSendDirectionsOpen] = useState(false)
+    const [selectedDriver, setSelectedDriver] = useState(null)
 
 
 
@@ -52,6 +55,17 @@ const Pickups = props => {
 
         return result;
     };
+
+    const handleEmployeeSelect = (employee, action) => {
+        switch (action.action) {
+            case 'select-option':
+                setSelectedDriver(employee.value);
+                break;
+            case 'clear':
+                setSelectedDriver(null)
+                break;
+        }
+    }
 
     const changeIsACardTabOpen = (boolean) => {
         setIsACardTabOpen(boolean)
@@ -114,21 +128,34 @@ const Pickups = props => {
                         >
                             <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
                             <ButtonRow>
-                                <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25}/>
-                                <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25}/>
-                                {routePickups.length > 0?
-                                (
-                                    <ButtonIcon onClick={() => { setIsSendDirectionsOpen(!isSendDirectionsOpen)} } icon='map' iconSize={25}/>
-                                ):
-                                ''
+                                <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} />
+                                <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25} />
+                                {routePickups.length > 0 ?
+                                    (
+                                        <ButtonIcon onClick={() => { setIsSendDirectionsOpen(!isSendDirectionsOpen) }} icon='map' iconSize={25} />
+                                    ) :
+                                    ''
                                 }
-                                <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25}/>
+                                <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25} />
                             </ButtonRow>
-                            {isSendDirectionsOpen ?
-                            (
-                                <div>Fuck</div>
-                            ):
-                            ''
+                            {(routePickups.length > 0 && isSendDirectionsOpen) ?
+                                (
+                                    <SendDirectionsContainer>
+                                        <EmployeeSelect
+                                            employees={props.userConfig.employees}
+                                            onChange={handleEmployeeSelect}
+                                            selectedEmployee={selectedDriver}
+                                        />
+                                        {selectedDriver?
+                                            (
+                                                <div>{selectedDriver.email}</div>
+                                            ) : (
+                                                <div>No Driver</div>
+                                            )
+                                        }
+                                    </SendDirectionsContainer>
+                                ) :
+                                ''
                             }
                             {
                                 !isPickupContainerOpen
@@ -194,6 +221,11 @@ const ButtonRow = styled.div`
 
 const ButtonIcon = styled(Icon)`
     cursor: pointer;
+`
+
+const SendDirectionsContainer = styled.div`
+    margin: 1em;
+    width: 50%;
 `
 
 export default Pickups
