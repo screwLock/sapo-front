@@ -18,7 +18,6 @@ class PickupCard extends React.Component {
             cancelPassword: '',
             rejectUser: '',
             rejectPassword: '',
-            routeColor: '#d3d3d3'
         }
     }
 
@@ -160,9 +159,8 @@ class PickupCard extends React.Component {
         this.props.changeIsACardTabOpen(true)
     }
 
-    handleRouteClick = (pickup) => () => {
-        !pickup.inRoute? this.setState({ routeColor: '#f44546'}):this.setState({ routeColor: '#d3d3d3'})
-        this.props.handleRouteChange(pickup.index)
+    handleRouteClick = (index) => () => {
+        this.props.handleRouteChange(index)
     }
 
     render() {
@@ -200,13 +198,20 @@ class PickupCard extends React.Component {
         if (!this.state.isStatusOpen && !this.state.isRatingOpen && !this.state.isActionsOpen) {
             cardContent =
                 <React.Fragment>
-                        <OpenStatusButton onClick={this.onStatusButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color1} >
-                            <StyledIcon><StatusIcon status={pickup.status}><Icon icon={buttonStyles[pickup.status].icon} iconSize={30} color={buttonStyles[pickup.status].color1}/></StatusIcon></StyledIcon>
-                        </OpenStatusButton>
+                    <OpenStatusButton onClick={this.onStatusButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color1} >
+                        <StyledIcon><StatusIcon status={pickup.status}><Icon icon={buttonStyles[pickup.status].icon} iconSize={30} color={buttonStyles[pickup.status].color1} /></StatusIcon></StyledIcon>
+                    </OpenStatusButton>
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
-                        <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup)} color={this.state.routeColor}/></div>
+                        {pickup.inRoute
+                            ? (
+                                <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup.index)} color='#f44546' /></div>
+                            )
+                            : (
+                                <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup.index)} color='#d3d3d3' /></div>
+                            )
+                        }
                     </PickupInfo>
                     <ActionColumn onClick={this.onActionsButtonClick}>
                         <div><Icon icon='phone' /></div>
@@ -222,14 +227,14 @@ class PickupCard extends React.Component {
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
-                                <SpringButton color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25}/></SpringButton>
+                                <SpringButton color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25} /></SpringButton>
                             ) :
                             (
-                                <SpringButton color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25}/></SpringButton>
+                                <SpringButton color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25} /></SpringButton>
                             )
                         }
-                        <SpringButton color={buttonStyles['canceled'].color1}><Icon icon={buttonStyles['canceled'].icon} iconSize={25}/></SpringButton>
-                        <SpringButton color={buttonStyles['rejected'].color1}><Icon icon={buttonStyles['rejected'].icon} iconSize={25}/></SpringButton>
+                        <SpringButton color={buttonStyles['canceled'].color1}><Icon icon={buttonStyles['canceled'].icon} iconSize={25} /></SpringButton>
+                        <SpringButton color={buttonStyles['rejected'].color1}><Icon icon={buttonStyles['rejected'].icon} iconSize={25} /></SpringButton>
                     </StatusButtonRow>
                 </React.Fragment>
         } else if (this.state.isRatingOpen) {
