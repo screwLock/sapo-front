@@ -11,26 +11,24 @@ const Container = Keyframes.Spring(async next => {
 }
 )
 
-
-const Confirmed = ({radians}) => {
-    return (
-        <animated.div style={{
-            transform: radians.interpolate(r => `translate3d(0, ${15 * Math.sin(r + (2 * Math.PI) / 1.6)}px, 0)`)
-        }}
-        >
-            <h1>...</h1>
-        </animated.div>
-    )
-}
-
 const StatusIcon = (props) => {
     return (
         <Container
             reset
             native
             //impl={TimingAnimation}
-            config={{ duration: 2000 /*, easing: Easing.linear*/ }}>
-            {Confirmed}
+            config={{ duration: 2000 /*, easing: Easing.linear*/ }}
+        >
+            {styles => 
+                (
+                    <animated.div style={{
+                        transform: styles.radians.interpolate(r => `translate3d(0, ${15 * Math.sin(r + (2 * Math.PI) / 1.6)}px, 0)`)
+                    }}
+                    >
+                        {props.children}
+                    </animated.div>
+                )
+            }
         </Container>
     )
 
