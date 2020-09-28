@@ -114,6 +114,12 @@ const Pickups = props => {
                             <ButtonRow>
                                 <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25}/>
                                 <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25}/>
+                                {routePickups.length > 0?
+                                (
+                                    <ButtonIcon onClick={() => { props.createRoute() }} icon='map' iconSize={25}/>
+                                ):
+                                ''
+                                }
                                 <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25}/>
                             </ButtonRow>
                             {
