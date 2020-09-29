@@ -98,6 +98,7 @@ const Pickups = props => {
                                 //use pickups index, not datepickups index!
                                 index={pickup.index}
                                 routes={props.routes}
+                                selectedDriver={selectedDriver}
                                 innerRef={provided.innerRef}
                                 provided={provided}
                                 handleClick={props.handleClick}
@@ -137,11 +138,10 @@ const Pickups = props => {
                             <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
                             <ButtonRow>
                                 <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} />
-                                <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25} />
-                                <ButtonIcon onClick={() => { changeIsSendDirectionsOpen(!isSendDirectionsOpen); }} icon='map' iconSize={25} disabled={!(routePickups.length > 0) }/>
-                                <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25} />
+                                <ButtonIcon onClick={() => { if(datePickups.length > 0) {props.showMap(true); changeIsSendDirectionsOpen(true);} else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0) }/>
+                                <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false);}} icon='calendar' iconSize={25} />
                             </ButtonRow>
-                            {(routePickups.length > 0 && isSendDirectionsOpen) ?
+                            {(isSendDirectionsOpen) ?
                                 (
                                     <SendDirectionsContainer>
                                         <EmployeeSelect

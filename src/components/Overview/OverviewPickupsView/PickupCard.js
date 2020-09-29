@@ -204,13 +204,15 @@ class PickupCard extends React.Component {
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
-                        {pickup.inRoute
-                            ? (
-                                <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup.index)} color='#f44546' /></div>
-                            )
-                            : (
-                                <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup.index)} color='#d3d3d3' /></div>
-                            )
+                        {this.props.selectedDriver ?
+                            pickup.inRoute
+                                ? (
+                                    <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup.index, this.props.selectedDriver)} color='#f44546' /></div>
+                                )
+                                : (
+                                    <div><MapIcon icon='map-marker' iconSize={25} onClick={(this.handleRouteClick(pickup.index, null))} color='#d3d3d3' /></div>
+                                )
+                            : ''
                         }
                     </PickupInfo>
                     <ActionColumn onClick={this.onActionsButtonClick}>
