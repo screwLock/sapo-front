@@ -67,6 +67,11 @@ const Pickups = props => {
         }
     }
 
+    const changeIsSendDirectionsOpen = (boolean) => {
+        setIsSendDirectionsOpen(boolean)
+        setSelectedDriver(null)
+    }
+
     const changeIsACardTabOpen = (boolean) => {
         setIsACardTabOpen(boolean)
     }
@@ -114,8 +119,11 @@ const Pickups = props => {
         }
     }
 
+    // need to sort datePickups by driver then index
+    // data.sort(function (x, y) { return x.count - y.count || x.year - y.year; });
     const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
     const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
+    console.log(routePickups)
     const selectedPickup = props.selectedPickup
     return (
         <React.Fragment>
@@ -130,12 +138,7 @@ const Pickups = props => {
                             <ButtonRow>
                                 <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} />
                                 <ButtonIcon onClick={() => { props.showMap(true); props.createRoute() }} icon='path-search' iconSize={25} />
-                                {routePickups.length > 0 ?
-                                    (
-                                        <ButtonIcon onClick={() => { setIsSendDirectionsOpen(!isSendDirectionsOpen) }} icon='map' iconSize={25} />
-                                    ) :
-                                    ''
-                                }
+                                <ButtonIcon onClick={() => { changeIsSendDirectionsOpen(!isSendDirectionsOpen); }} icon='map' iconSize={25} disabled={!(routePickups.length > 0) }/>
                                 <ButtonIcon onClick={() => { props.showMap(false) }} icon='calendar' iconSize={25} />
                             </ButtonRow>
                             {(routePickups.length > 0 && isSendDirectionsOpen) ?
@@ -146,11 +149,15 @@ const Pickups = props => {
                                             onChange={handleEmployeeSelect}
                                             selectedEmployee={selectedDriver}
                                         />
-                                        {selectedDriver?
+                                        {selectedDriver ?
                                             (
-                                                <div>{selectedDriver.email}</div>
+                                                <>
+                                                <span><a href={`mailto:${selectedDriver.email}`}><Icon icon='envelope' iconSize={25} /></a></span>
+                                                </>
                                             ) : (
-                                                <div>No Driver</div>
+                                                <span>No Driver Selected</span>
+                                                // onSubmit, send pickups in route with index of routePickups
+                                                // need pickupID, 'driver', routeIndex === index in routePickups
                                             )
                                         }
                                     </SendDirectionsContainer>
@@ -221,10 +228,11 @@ const ButtonRow = styled.div`
 
 const ButtonIcon = styled(Icon)`
     cursor: pointer;
+    color: ${props => props.disabled ? '#d3d3d3': 'black'};
 `
 
 const SendDirectionsContainer = styled.div`
-    margin: 1em;
+    margin: 1.5em;
     width: 50%;
 `
 
