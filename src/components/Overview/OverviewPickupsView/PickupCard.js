@@ -159,8 +159,9 @@ class PickupCard extends React.Component {
         this.props.changeIsACardTabOpen(true)
     }
 
-    handleRouteClick = (index) => () => {
-        this.props.handleRouteChange(index)
+    handleRouteClick = (index, driver) => {
+        this.props.handleRouteChange(index, driver)
+        console.log(driver)
     }
 
     render() {
@@ -204,13 +205,19 @@ class PickupCard extends React.Component {
                     <PickupInfo>
                         <PickupInfoButton onClick={this.onPickupInfoClick}>{pickup.streetAddress} {pickup.zipcode}</PickupInfoButton>
                         <div>{pickup.lastName}, {pickup.firstName}</div>
+                        {pickup.inRoute
+                            ? (
+                                <div>Driver: {pickup.inRoute.lastName}, {pickup.inRoute.firstName}</div>
+                            )
+                            : ''
+                        }
                         {this.props.selectedDriver ?
                             pickup.inRoute
                                 ? (
-                                    <div><MapIcon icon='map-marker' iconSize={25} onClick={this.handleRouteClick(pickup.index, this.props.selectedDriver)} color='#f44546' /></div>
+                                    <div><MapIcon icon='map-marker' iconSize={25} onClick={() => this.handleRouteClick(pickup.index, null)} color='#f44546' /></div>
                                 )
                                 : (
-                                    <div><MapIcon icon='map-marker' iconSize={25} onClick={(this.handleRouteClick(pickup.index, null))} color='#d3d3d3' /></div>
+                                    <div><MapIcon icon='map-marker' iconSize={25} onClick={()  => this.handleRouteClick(pickup.index, this.props.selectedDriver)} color='#d3d3d3' /></div>
                                 )
                             : ''
                         }
