@@ -14,7 +14,6 @@ const Pickups = props => {
         isCustomerCallInOpen: false,
         isPickupContainerOpen: false,
         isSendDirectionsOpen: false,
-        selectedDriver: null
     }
 
     const [isACardTabOpen, setIsACardTabOpen] = useState(false)
@@ -22,7 +21,6 @@ const Pickups = props => {
     const [isCustomerCallInOpen, setIsCustomerCallInOpen] = useState(false)
     const [isPickupContainerOpen, setIsPickupContainerOpen] = useState(false)
     const [isSendDirectionsOpen, setIsSendDirectionsOpen] = useState(false)
-    const [selectedDriver, setSelectedDriver] = useState(null)
 
 
 
@@ -59,17 +57,17 @@ const Pickups = props => {
     const handleEmployeeSelect = (employee, action) => {
         switch (action.action) {
             case 'select-option':
-                setSelectedDriver(employee.value);
+                props.setSelectedDriver(employee.value);
                 break;
             case 'clear':
-                setSelectedDriver(null)
+                props.setSelectedDriver(null)
                 break;
         }
     }
 
     const changeIsSendDirectionsOpen = (boolean) => {
         setIsSendDirectionsOpen(boolean)
-        setSelectedDriver(null)
+        props.setSelectedDriver(null)
     }
 
     const changeIsACardTabOpen = (boolean) => {
@@ -98,7 +96,7 @@ const Pickups = props => {
                                 //use pickups index, not datepickups index!
                                 index={pickup.index}
                                 routes={props.routes}
-                                selectedDriver={selectedDriver}
+                                selectedDriver={props.selectedDriver}
                                 innerRef={provided.innerRef}
                                 provided={provided}
                                 handleClick={props.handleClick}
@@ -147,12 +145,13 @@ const Pickups = props => {
                                         <EmployeeSelect
                                             employees={props.userConfig.employees}
                                             onChange={handleEmployeeSelect}
-                                            selectedEmployee={selectedDriver}
+                                            selectedEmployee={props.selectedDriver}
                                         />
-                                        {selectedDriver ?
+                                        {props.selectedDriver ?
                                             (
                                                 <>
-                                                <span><a href={`mailto:${selectedDriver.email}`}><Icon icon='envelope' iconSize={25} /></a></span>
+                                                <span><a href={`mailto:${props.selectedDriver.email}`}><Icon icon='envelope' iconSize={25} /></a></span>
+                                                <span><Icon onClick={props.createRoute} icon='map-create' iconSize={25} /></span>
                                                 </>
                                             ) : (
                                                 <span>No Driver Selected</span>

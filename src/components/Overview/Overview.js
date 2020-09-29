@@ -21,6 +21,7 @@ class Overview extends React.Component {
             pickups: [],
             selectedPickup: null,
             selectedDate: new Date(),
+            selectedDriver: null,
             selectedMonth: getMonth(new Date()),
             unconfirmedDates: [],
             user: {},
@@ -121,7 +122,7 @@ class Overview extends React.Component {
 
     createRoute = () => {
         const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate));
-        const routePickups = datePickups.filter(pickup => pickup.inRoute === true);
+        const routePickups = datePickups.filter(pickup => pickup.inRoute === this.state.selectedDriver);
         let src = '';
         const origin = [this.state.user.lat, this.state.user.lng];
         let destination = '&destination='
@@ -197,6 +198,10 @@ class Overview extends React.Component {
         this.setState({ selectedDate: date })
     }
 
+    setSelectedDriver = (driver) => {
+        this.setState({ selectedDriver: driver })
+    }
+
 
     render() {
         return (
@@ -207,6 +212,8 @@ class Overview extends React.Component {
                 handleMonthChange={this.handleMonthChange}
                 selectPickup={this.selectPickup}
                 selectedPickup={this.state.selectedPickup}
+                selectedDriver={this.state.selectedDriver}
+                setSelectedDriver={this.setSelectedDriver}
                 userConfig={this.props.userConfig}
                 handleRouteChange={this.handleRouteChange}
                 createRoute={this.createRoute}
