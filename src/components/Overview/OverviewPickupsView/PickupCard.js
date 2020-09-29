@@ -232,7 +232,7 @@ class PickupCard extends React.Component {
         } else if (this.state.isStatusOpen) {
             cardContent =
                 <React.Fragment>
-                    <OpenStatusButton onClick={this.onBackButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color2} />
+                    <OpenStatusButton onClick={this.onBackButtonClick} color1={buttonStyles[pickup.status].color1} color2={buttonStyles[pickup.status].color2}><Icon icon='chevron-left' iconSize={25} /></OpenStatusButton>
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
