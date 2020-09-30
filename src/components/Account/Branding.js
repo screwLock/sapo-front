@@ -5,15 +5,27 @@ import { Button, FileInput, FormGroup, H6, InputGroup, Intent } from "@blueprint
 const Branding = (props) => {
 
     const [text, setText] = useState('Choose PNG...')
+    const [errorText, setErrorText] = useState('')
     const [selectedPNG, setSelectedPNG] = useState(null)
 
     // On file select (from the pop up) 
     const onFileChange = event => {
-
+        let logo = event.target.files[0]
+        if(logo.size > 1000000){
+            setErrorText('PNG should not exceed a megabyte')
+            return
+        }
+        else if (logo.type !== 'image/png'){
+            setErrorText('File should be a PNG')
+            return
+        }
         // Update the state 
-        setSelectedPNG(event.target.files[0])
+        setSelectedPNG(logo)
 
     };
+
+    // upload file to s3
+    // save url in userconfig
 
     return (
         <>
@@ -21,8 +33,13 @@ const Branding = (props) => {
             <H6>We recommend using a logo with a maximum height of 100px</H6>
             <FileInput text={text} onInputChange={onFileChange}/>
             <H6>{selectedPNG? selectedPNG.name: ''}</H6>
+            <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
+
+const ErrorText = styled.div`
+    color: red;
+`
 
 export default Branding
