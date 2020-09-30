@@ -4,7 +4,7 @@ import { Button, FileInput, FormGroup, H6, InputGroup, Intent } from "@blueprint
 
 const Branding = (props) => {
 
-    const [text, setText] = useState('Choose PNG...')
+    const [text, setText] = useState('Choose PNG or JPEG/JPG...')
     const [errorText, setErrorText] = useState('')
     const [selectedPNG, setSelectedPNG] = useState(null)
 
@@ -12,11 +12,12 @@ const Branding = (props) => {
     const onFileChange = event => {
         let logo = event.target.files[0]
         if(logo.size > 1000000){
-            setErrorText('PNG should not exceed a megabyte')
+            setErrorText('Image should not exceed a megabyte')
             return
         }
-        else if (logo.type !== 'image/png'){
-            setErrorText('File should be a PNG')
+        else if (logo.type !== 'image/png' && logo.type !== 'image/jpeg' && logo.type !== 'image/jpg'){
+            setErrorText('Image should be a PNG or a JPEG/JPG')
+            console.log(logo.type)
             return
         }
         // Update the state 
