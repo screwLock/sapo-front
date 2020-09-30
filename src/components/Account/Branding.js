@@ -20,6 +20,7 @@ const Branding = (props) => {
             return
         }
         // Update the state 
+        setErrorText('')
         setSelectedPNG(logo)
 
     };
