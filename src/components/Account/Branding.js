@@ -7,7 +7,7 @@ const Branding = (props) => {
 
     const [text, setText] = useState('Choose PNG or JPEG/JPG...')
     const [errorText, setErrorText] = useState('')
-    const [selectedPNG, setSelectedPNG] = useState(null)
+    const [selectedLogo, setSelectedLogo] = useState(null)
     const [loading, setLoading] = useState(false)
 
     // On file select (from the pop up) 
@@ -27,17 +27,17 @@ const Branding = (props) => {
         }
         // Update the state 
         setErrorText('')
-        setSelectedPNG(logo)
+        setSelectedLogo(logo)
 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const filename = logo.name
+        const filename = selectedLogo.name
         try {
-            const stored = await Storage.vault.put(filename, file, {
-                contentType: file.type,
+            const stored = await Storage.vault.put(filename, selectedLogo, {
+                contentType: selectedLogo.type,
               });
             // key is located in stored.key if it's needed
             setLoading(false)
@@ -55,8 +55,8 @@ const Branding = (props) => {
             <H6>Upload Your Logo and Header</H6>
             <H6>We recommend using a logo with a maximum height of 100px</H6>
             <StyledInput text={text} onInputChange={onFileChange} />
-            <FileName>{selectedPNG ? selectedPNG.name : ''}</FileName>
-            <Button disabled={!selectedPNG} loading={loading} text='Submit' onClick={handleSubmit} />
+            <FileName>{selectedLogo ? selectedLogo.name : ''}</FileName>
+            <Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
