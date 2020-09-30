@@ -1,23 +1,28 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Button, FileInput, FormGroup, H6, InputGroup, Intent } from "@blueprintjs/core"
+import { Storage } from "aws-amplify";
 
 const Branding = (props) => {
 
     const [text, setText] = useState('Choose PNG or JPEG/JPG...')
     const [errorText, setErrorText] = useState('')
     const [selectedPNG, setSelectedPNG] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     // On file select (from the pop up) 
     const onFileChange = event => {
         let logo = event.target.files[0]
-        if(logo.size > 1000000){
+        // Image upload was canceled
+        if (!logo) {
+            return
+        }
+        if (logo.size > 1000000) {
             setErrorText('Image should not exceed a megabyte')
             return
         }
-        else if (logo.type !== 'image/png' && logo.type !== 'image/jpeg' && logo.type !== 'image/jpg'){
+        else if (logo.type !== 'image/png' && logo.type !== 'image/jpeg' && logo.type !== 'image/jpg') {
             setErrorText('Image should be a PNG or a JPEG/JPG')
-            console.log(logo.type)
             return
         }
         // Update the state 
@@ -26,19 +31,44 @@ const Branding = (props) => {
 
     };
 
-    // upload file to s3
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const filename = logo.name
+        try {
+            const stored = await Storage.vault.put(filename, file, {
+                contentType: file.type,
+              });
+            // key is located in stored.key if it's needed
+            setLoading(false)
+        } catch (e) {
+            // onError(e);
+            setLoading(false);
+        }
+    }
+
+    // upload file to s3 call it /{bucketName}/{userID}/logos/logo1
     // save url in userconfig
 
     return (
         <>
             <H6>Upload Your Logo and Header</H6>
             <H6>We recommend using a logo with a maximum height of 100px</H6>
-            <FileInput text={text} onInputChange={onFileChange}/>
-            <H6>{selectedPNG? selectedPNG.name: ''}</H6>
+            <StyledInput text={text} onInputChange={onFileChange} />
+            <FileName>{selectedPNG ? selectedPNG.name : ''}</FileName>
+            <Button disabled={!selectedPNG} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
+
+const StyledInput = styled(FileInput)`
+    margin: 1.5em;
+`
+
+const FileName = styled.div`
+    color: blue;
+`
 
 const ErrorText = styled.div`
     color: red;
