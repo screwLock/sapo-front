@@ -570,7 +570,6 @@ export class CustomerCallIn extends React.Component {
 }
 
 const CCIContainer = styled.div`
-    width: 50%;
 `
 const Body = styled.div`
     height: 95%;

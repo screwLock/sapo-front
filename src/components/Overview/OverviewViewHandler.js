@@ -81,7 +81,9 @@ class OverviewViewHandler extends React.Component {
                                 key={view}
                                 style={{ ...props, position: 'absolute', width: '100%' }}
                             >
-                                <Column>
+                                <Column
+                                    style={{ width: '40%'}}
+                                >
                                     <CustomerCallIn {...this.props} changeView={this.changeView} />
                                 </Column>
                             </animated.div>
