@@ -65,7 +65,9 @@ class CategoryCheckboxes extends React.Component {
                         </Callout>
                     </Collapse>
                 </Restrictions>
-                <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
+                <SelectBlock>
+                    <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
+                </SelectBlock>
                 <SubBlockContainer>
                     <Transition
                         items={selectedDonatables} keys={selectedDonatable => `NI${selectedDonatable.value.name}`}
@@ -118,6 +120,10 @@ const SubBlockContainer = styled.div`
     flex-direction: column;
     align-items: flex-start;
 `;
+
+const SelectBlock = styled.div`
+    width: 60%;
+`
 
 const Restrictions = styled.div`
     width: 100%;

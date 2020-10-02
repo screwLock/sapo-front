@@ -590,6 +590,7 @@ const Footer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 75%
 `
 
 const BlockContainer = styled.div`
@@ -634,7 +635,7 @@ const PhoneForm = styled(FormGroup)`
         `
 
 const CommentsTextArea = styled(TextArea)`
-            width: 400px;
+            width: 75%;
         `
 
 const SelectContainer = styled.div`
