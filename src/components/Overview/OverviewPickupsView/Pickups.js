@@ -106,6 +106,7 @@ const Pickups = props => {
                                 isACardTabOpen={isACardTabOpen}
                                 changeIsPickupContainerOpen={changeIsPickupContainerOpen}
                                 selectPickup={props.selectPickup(pickup)}
+                                updatePickups={this.updatePickups}
                             />
                         )}
                     </Draggable>
