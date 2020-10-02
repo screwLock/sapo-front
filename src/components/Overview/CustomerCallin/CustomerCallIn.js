@@ -424,8 +424,8 @@ export class CustomerCallIn extends React.Component {
                 return (
                     <>
                         <Button onClick={this.handleStageChange(0)}>Back</Button>
-                        <Button onClick={this.handleStageChange(2)} disabled={this.state.submitDisabled}>Next</Button>
                         <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.handleStageChange(2)} disabled={this.state.submitDisabled}>Next</Button>
                     </>
                 )
             }
@@ -433,8 +433,8 @@ export class CustomerCallIn extends React.Component {
                 return (
                     <>
                         <Button onClick={this.handleStageChange(1)}>Back</Button>
-                        <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
                         <Button onClick={this.handleClose}>Cancel</Button>
+                        <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
                     </>
                 )
             }
@@ -587,6 +587,9 @@ const Cell = styled.div`
 
 const Footer = styled.div`
     height: 5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 `
 
 const BlockContainer = styled.div`
