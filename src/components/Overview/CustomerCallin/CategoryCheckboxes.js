@@ -74,7 +74,7 @@ class CategoryCheckboxes extends React.Component {
                         leave={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}>
                         {sd => props =>
                             <CategoryContainer key={`Category${sd.value.name}`} style={props}>
-                                <FormGroup label={`${sd.value.name}`} inline={true}>
+                                {`${sd.value.name}`}
                                     {this.props.donations[sd.value.name] === 1?
                                     <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, 'x')}
                                         icon='delete'
@@ -84,10 +84,10 @@ class CategoryCheckboxes extends React.Component {
                                         icon='minus'
                                     />
                                     }
+                                    <span>  {this.props.donations[sd.value.name]}  </span>
                                     <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name,'+')}
                                         icon='add'
                                     />
-                                </FormGroup>
                             </CategoryContainer>
                         }
                     </Transition>
