@@ -6,12 +6,13 @@ const SpringButton = (props) => {
     const [pressed, setPressed] = useState(false);
     const onLongPress = () => {
         setPressed(true)
-        console.log('longpress is triggered');
+        props.onClick()
+        // console.log('longpress is triggered');
     };
 
     const onClick = () => {
         setPressed(false)
-        console.log('click is triggered')
+        // console.log('click is triggered')
     }
 
     const defaultOptions = {
