@@ -122,10 +122,10 @@ export class CustomerCallIn extends React.Component {
         )
     }
 
-    handleDonationQuantityChange = (cIndex, dIndex) => (e) => {
+    handleDonationQuantityChange = (cIndex, dIndex, name, value) => {
         let donations = { ...this.state.donations }
-        if (e.target.value === '0' || e.target.value === '') {
-            delete donations[e.target.name]
+        if (value === 'x') {
+            delete donations[name]
             this.setState(
                 produce(this.state, draft => {
                     draft.donations = { ...donations },
@@ -133,8 +133,16 @@ export class CustomerCallIn extends React.Component {
                 })
             )
         }
-        else {
-            donations[e.target.name] = e.target.value
+        else if (value === '-') {
+            donations[name] = donations[name] - 1
+            this.setState(
+                produce(this.state, draft => {
+                    draft.donations = { ...donations }
+                })
+            )
+        }
+        else if (value === '+') {
+            donations[name] = donations[name] + 1
             this.setState(
                 produce(this.state, draft => {
                     draft.donations = { ...donations }

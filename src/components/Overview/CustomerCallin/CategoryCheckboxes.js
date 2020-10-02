@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Intent, NumericInput } from '@blueprintjs/core'
+import { Button, Callout, Checkbox, Collapse, FormGroup, H4, H6, Icon, Intent, NumericInput } from '@blueprintjs/core'
 import styled from 'styled-components'
 import CategorySelect from './CategorySelect'
 import { Spring, config, animated, Transition } from 'react-spring/renderprops';
@@ -34,12 +34,13 @@ class CategoryCheckboxes extends React.Component {
         }
     }
 
-    handleBlur = (cIndex, dIndex, name) => (e) => {
-        if (e.target.value === '0' || e.target.value === '') {
+    handleQuantityChange = (cIndex, dIndex, name, value) => {
+        console.log(value)
+        if (value === 'x') {
             const filteredDonatables = this.state.selectedDonatables.filter(sd => (sd.value.name !== name))
             this.setState({ selectedDonatables: filteredDonatables })
         }
-        this.props.handleQuantityChange(cIndex, dIndex)(e)
+        this.props.handleQuantityChange(cIndex, dIndex, name, value)
     }
 
     handleRestrictionsClick = () => {
@@ -65,34 +66,32 @@ class CategoryCheckboxes extends React.Component {
                     </Collapse>
                 </Restrictions>
                 <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
-                    <SubBlockContainer>
-                        <Transition
-                            items={selectedDonatables} keys={selectedDonatable => `NI${selectedDonatable.value.name}`}
-                            from={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}
-                            enter={{ opacity: 1, transform: 'translate3d(0,0px,0)' }}
-                            leave={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}>
-                            {sd => props =>
-                                <CategoryContainer key={`Category${sd.value.name}`} style={props}>
-                                    <FormGroup label={`${sd.value.name}`} inline={true}>
-                                        <NumericInput
-                                            autoFocus
-                                            key={`NI${sd.value.name}`}
-                                            name={sd.value.name}
-                                            value={this.props.donations[sd.value.name]}
-                                            onBlur={this.handleBlur(sd.cIndex, sd.dIndex, sd.value.name)}
-                                            // disabled={!this.props.categories[cIndex].donatables[dIndex].checked}
-                                            buttonPosition='none'
-                                            style={{
-                                                width: '3em',
-                                                height: '2em',
-                                                padding: '1em',
-                                            }}
-                                        />
-                                    </FormGroup>
-                                </CategoryContainer>
-                            }
-                        </Transition>
-                    </SubBlockContainer>
+                <SubBlockContainer>
+                    <Transition
+                        items={selectedDonatables} keys={selectedDonatable => `NI${selectedDonatable.value.name}`}
+                        from={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}
+                        enter={{ opacity: 1, transform: 'translate3d(0,0px,0)' }}
+                        leave={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}>
+                        {sd => props =>
+                            <CategoryContainer key={`Category${sd.value.name}`} style={props}>
+                                <FormGroup label={`${sd.value.name}`} inline={true}>
+                                    {this.props.donations[sd.value.name] === 1?
+                                    <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, 'x')}
+                                        icon='delete'
+                                    />
+                                    :
+                                    <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, '-')}
+                                        icon='minus'
+                                    />
+                                    }
+                                    <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name,'+')}
+                                        icon='add'
+                                    />
+                                </FormGroup>
+                            </CategoryContainer>
+                        }
+                    </Transition>
+                </SubBlockContainer>
             </BlockContainer>
         )
     }
@@ -117,7 +116,7 @@ const SubBlockContainer = styled.div`
     margin-left: 1em;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
 `;
 
 const Restrictions = styled.div`
