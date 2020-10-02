@@ -236,7 +236,7 @@ class PickupCard extends React.Component {
                     <StatusButtonRow>
                         {pickup.status === 'submitted'
                             ? (
-                                <SpringButton color={buttonStyles['submitted'].color1}><Icon icon={buttonStyles['submitted'].icon} iconSize={25} /></SpringButton>
+                                <SpringButton color={buttonStyles['submitted'].color2}><Icon icon={buttonStyles['submitted'].icon} iconSize={25} /></SpringButton>
                             ) :
                             (
                                 <SpringButton color={buttonStyles['completed'].color1}><Icon icon={buttonStyles['completed'].icon} iconSize={25} /></SpringButton>
