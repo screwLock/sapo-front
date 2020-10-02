@@ -277,7 +277,7 @@ export class CustomerCallIn extends React.Component {
 
     handleCommentsChange = e => this.setState({ [e.target.name]: e.target.value })
 
-    handleStageChange = (stage) => (e) => {
+    handleStageChange = (stage) => {
         this.setState({ stage })
     }
 
@@ -370,6 +370,9 @@ export class CustomerCallIn extends React.Component {
         else if (!this.state.selectedDate) {
             this.showToast('Please select a pickup date')
         }
+        else if (this.state.stage === 0) {
+            this.handleStageChange(1)
+        }
         else if (this.state.firstName === '' ||
             this.state.lastName === '' ||
             this.state.email === '' ||
@@ -388,6 +391,9 @@ export class CustomerCallIn extends React.Component {
         else if (!phoneValidate.test(this.state.phoneNumber)) {
             this.showToast('Enter a valid phone number')
             return false
+        }
+        else if (this.state.stage === 1) {
+            this.handleStageChange(2)
         }
         else if (Object.getOwnPropertyNames(this.state.donations).length === 0) {
             this.showToast('You have not selected any donations')
@@ -416,23 +422,23 @@ export class CustomerCallIn extends React.Component {
                 return (
                     <>
                         <Button onClick={this.handleClose}>Cancel</Button>
-                        <Button onClick={this.handleStageChange(1)} disabled={this.state.selectedDate === null}>Next</Button>
+                        <Button onClick={this.validateForms} disabled={this.state.selectedDate === null}>Next</Button>
                     </>
                 )
             }
             else if (stage === 1) {
                 return (
                     <>
-                        <Button onClick={this.handleStageChange(0)}>Back</Button>
+                        <Button onClick={() => this.handleStageChange(0)}>Back</Button>
                         <Button onClick={this.handleClose}>Cancel</Button>
-                        <Button onClick={this.handleStageChange(2)} disabled={this.state.submitDisabled}>Next</Button>
+                        <Button onClick={this.validateForms} disabled={this.state.submitDisabled}>Next</Button>
                     </>
                 )
             }
             else if (stage === 2) {
                 return (
                     <>
-                        <Button onClick={this.handleStageChange(1)}>Back</Button>
+                        <Button onClick={() => this.handleStageChange(1)}>Back</Button>
                         <Button onClick={this.handleClose}>Cancel</Button>
                         <Button onClick={this.handleSubmit} disabled={this.state.submitDisabled}>Submit</Button>
                     </>
@@ -520,54 +526,52 @@ export class CustomerCallIn extends React.Component {
                             : ''}
                     </Cell>
                     {stage === 2 ? (
-                        <Cell>
-                            <div>
-                                <CategoryCheckboxes
-                                    categories={this.state.categories}
-                                    restrictions={this.props.userConfig.restrictions}
-                                    donations={this.state.donations}
-                                    onChange={this.handleCategorySelect}
-                                    handleQuantityChange={this.handleDonationQuantityChange}
-                                />
-                            </div>
-                            <div>
-                                <ServiceDetailCheckboxes
-                                    serviceDetails={this.state.serviceDetails}
-                                    onChange={this.handleServiceCheckedChange}
-                                    isVisible={(this.state.serviceDetails.length > 0)}
-                                />
-                            </div>
-                            <div>
-                                <H4>Additional Comments</H4>
-                                <CommentsTextArea
-                                    name='comments'
-                                    large={false}
-                                    intent={Intent.PRIMARY}
-                                    onChange={this.handleCommentsChange}
-                                    value={this.state.comments}
-                                />
-                            </div>
-                            <div>
-                                <MandatoryCheckboxes
-                                    mandatoryDetails={this.state.mandatoryDetails}
-                                    onChange={this.handleMandatoryCheckedChange}
-                                    // should not render if NO mandatory service details
-                                    isVisible={(this.state.mandatoryDetails.length > 0)}
-                                />
-                            </div>
-                        </Cell>
-                    )
-                        : ''}
-                    <Cell>
-                        <div>
-                            {this.state.showPickupDetails ? (
+                        <>
+                            <Cell>
+                                <div>
+                                    <CategoryCheckboxes
+                                        categories={this.state.categories}
+                                        restrictions={this.props.userConfig.restrictions}
+                                        donations={this.state.donations}
+                                        onChange={this.handleCategorySelect}
+                                        handleQuantityChange={this.handleDonationQuantityChange}
+                                    />
+                                </div>
+                                <div>
+                                    <ServiceDetailCheckboxes
+                                        serviceDetails={this.state.serviceDetails}
+                                        onChange={this.handleServiceCheckedChange}
+                                        isVisible={(this.state.serviceDetails.length > 0)}
+                                    />
+                                </div>
+                                <div>
+                                    <H4>Additional Comments</H4>
+                                    <CommentsTextArea
+                                        name='comments'
+                                        large={false}
+                                        intent={Intent.PRIMARY}
+                                        onChange={this.handleCommentsChange}
+                                        value={this.state.comments}
+                                    />
+                                </div>
+                                <div>
+                                    <MandatoryCheckboxes
+                                        mandatoryDetails={this.state.mandatoryDetails}
+                                        onChange={this.handleMandatoryCheckedChange}
+                                        // should not render if NO mandatory service details
+                                        isVisible={(this.state.mandatoryDetails.length > 0)}
+                                    />
+                                </div>
+                            </Cell>
+                            <Cell>
                                 <EmployeeSelect employees={this.props.userConfig.employees}
                                     onChange={this.handleEmployeeSelect}
                                     selectedEmployee={this.state.selectedEmployee}
                                 />
-                            ) : ''}
-                        </div>
-                    </Cell>
+                            </Cell>
+                        </>
+                    )
+                        : ''}
                 </Body>
                 <Footer>
                     {renderFooter(stage)}

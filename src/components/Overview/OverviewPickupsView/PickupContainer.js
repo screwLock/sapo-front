@@ -32,7 +32,22 @@ class PickupContainer extends React.Component {
     }
 
     render() {
-        const pickup = this.props.pickup
+        const {pickup, userConfig} = this.props
+        let createdBy, employee;
+        //need to cover old submissions before createdBy was persisted
+        if(pickup.createdBy == null){
+            createdBy = 'N/A'
+        }
+        else if(pickup.createdBy === 'Donor'){
+            createdBy = 'Donor'
+        }
+        else {
+            //TODO:  Add employee contact info
+            employee = userConfig.employees.find(employee => {
+                return employee.ID = pickup.createdBy
+            })
+            createdBy = `${employee.lastName}, ${employee.firstName}`
+        }
         return (
             <div
                 ref={this.setWrapperRef}
@@ -61,7 +76,7 @@ class PickupContainer extends React.Component {
                         }</ul>
                     </div>
                     <div>Comments: {pickup.comments ? `${pickup.comments}` : 'None'}</div>
-                    <div>Submitted By: {pickup.createdBy}</div>
+                    <div>Submitted By: {createdBy}</div>
                 </React.Fragment>
             </div>
         )
