@@ -110,7 +110,7 @@ class Overview extends React.Component {
         }).then(result => {
             // make sure we add an inRoute attribute for the directions API
             // also an index for changing this inRoute attribute in the Overview Cards
-            this.setState({ pickups: result.map((pickup, index) => { return { ...pickup, inRoute: null, index: index } }) })
+            this.setState({ pickups: result.map((pickup, index) => { return { ...pickup, inRoute: pickup.inRoute || null, index: index } }) })
         });
     }
 

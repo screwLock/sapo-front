@@ -6,6 +6,8 @@ import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
 import EmployeeSelect from '../CustomerCallIn/EmployeeSelect'
+import { API } from "aws-amplify"
+import { AppToaster } from '../../Toaster'
 
 const Pickups = props => {
     let pickupsInitialState = {
@@ -23,6 +25,20 @@ const Pickups = props => {
     const [isSendDirectionsOpen, setIsSendDirectionsOpen] = useState(false)
 
 
+    const showToast = (message) => {
+        AppToaster.show({ message: message });
+    }
+
+    const callAPI = (pickups) => {
+        API.put("sapo", "/routing", {
+            body: pickups
+        }).then(response => {
+            showToast(`Route Saved`)
+        }).catch(error => {
+            showToast('ERROR: Pickup Not Updated!')
+            console.log(error)
+        })
+    }
 
     const onDragEnd = result => {
         // dropped outside the list
@@ -123,8 +139,7 @@ const Pickups = props => {
     // need to sort datePickups by driver then index
     // data.sort(function (x, y) { return x.count - y.count || x.year - y.year; });
     const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
-    const routePickups = datePickups.filter(pickup => pickup.inRoute === true)
-    console.log(routePickups)
+    const routePickups = datePickups.filter(pickup => pickup.inRoute === props.selectedDriver);
     const selectedPickup = props.selectedPickup
     return (
         <React.Fragment>
@@ -153,7 +168,7 @@ const Pickups = props => {
                                             (
                                                 <>
                                                 <span><a href={`mailto:${props.selectedDriver.email}`}><Icon icon='envelope' iconSize={25} /></a></span>
-                                                <span><Icon onClick={props.createRoute} icon='map-create' iconSize={25} /></span>
+                                                <span><Icon onClick={() => {props.createRoute(); callAPI(routePickups); console.log(routePickups)}} icon='map-create' iconSize={25} /></span>
                                                 </>
                                             ) : (
                                                 <span>No Driver Selected</span>
