@@ -122,7 +122,7 @@ class Overview extends React.Component {
 
     createRoute = () => {
         const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate));
-        const routePickups = datePickups.filter(pickup => pickup.inRoute === this.state.selectedDriver);
+        const routePickups = this.state.selectedDriver? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === this.state.selectedDriver.lastName): null
         let src = '';
         const origin = [this.state.user.lat, this.state.user.lng];
         let destination = '&destination='

@@ -137,9 +137,17 @@ const Pickups = props => {
     }
 
     // need to sort datePickups by driver then index
-    // data.sort(function (x, y) { return x.count - y.count || x.year - y.year; });
+    // using email because its required and should be unique
+    // should probably only be used on component mount
+    const sort = (x,y) => {
+        if(x.inRoute === null) return -1;
+        else if (y.inRoute === null) return 1
+        else {
+            return x.inRoute.lastName - y.inRoute.lastName
+        }
+    }
     const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
-    const routePickups = datePickups.filter(pickup => pickup.inRoute === props.selectedDriver);
+    const routePickups = props.selectedDriver? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName): null
     const selectedPickup = props.selectedPickup
     return (
         <React.Fragment>
