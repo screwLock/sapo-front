@@ -170,7 +170,6 @@ class PickupCard extends React.Component {
 
     handleRouteClick = (index, driver) => {
         this.props.handleRouteChange(index, driver)
-        console.log(driver)
     }
 
     render() {

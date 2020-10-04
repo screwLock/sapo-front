@@ -146,8 +146,15 @@ const Pickups = props => {
             return x.inRoute.lastName - y.inRoute.lastName
         }
     }
+
+    // if there is a routeOrdinal that is non null,
+    // and inRoute is null,
+    // that means the inRoute was unset.
+    // we should send these null
+
     const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
     const routePickups = props.selectedDriver? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName): null
+    const uncheckedPickups = datePickups.filter((pickup) => ((pickup.inRoute == null) && (pickup.routeOrdinal != null)))
     const selectedPickup = props.selectedPickup
     return (
         <React.Fragment>
@@ -176,7 +183,8 @@ const Pickups = props => {
                                             (
                                                 <>
                                                 <span><a href={`mailto:${props.selectedDriver.email}`}><Icon icon='envelope' iconSize={25} /></a></span>
-                                                <span><Icon onClick={() => {props.createRoute(); callAPI(routePickups); console.log(routePickups)}} icon='map-create' iconSize={25} /></span>
+                                                <span><Icon onClick={() => {props.createRoute()}} icon='map-create' iconSize={25} /></span>
+                                                <span><Icon onClick={() => {callAPI([...uncheckedPickups,...routePickups])}} icon='upload' iconSize={25} /></span>
                                                 </>
                                             ) : (
                                                 <span>No Driver Selected</span>
