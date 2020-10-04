@@ -139,8 +139,8 @@ const Pickups = props => {
     // need to sort datePickups by driver then index
     // using email because its required and should be unique
     // should probably only be used on component mount
-    const sort = (x,y) => {
-        if(x.inRoute === null) return -1;
+    const sort = (x, y) => {
+        if (x.inRoute === null) return -1;
         else if (y.inRoute === null) return 1
         else {
             return x.inRoute.lastName - y.inRoute.lastName
@@ -153,7 +153,7 @@ const Pickups = props => {
     // we should send these null
 
     const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
-    const routePickups = props.selectedDriver? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName): null
+    const routePickups = props.selectedDriver ? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName) : null
     const uncheckedPickups = datePickups.filter((pickup) => ((pickup.inRoute == null) && (pickup.routeOrdinal != null)))
     const selectedPickup = props.selectedPickup
     return (
@@ -168,8 +168,8 @@ const Pickups = props => {
                             <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
                             <ButtonRow>
                                 <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} />
-                                <ButtonIcon onClick={() => { if(datePickups.length > 0) {props.showMap(true); changeIsSendDirectionsOpen(true);} else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0) }/>
-                                <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false);}} icon='calendar' iconSize={25} />
+                                <ButtonIcon onClick={() => { if (datePickups.length > 0) { props.showMap(true); changeIsSendDirectionsOpen(true); } else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0)} />
+                                <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false); }} icon='calendar' iconSize={25} />
                             </ButtonRow>
                             {(isSendDirectionsOpen) ?
                                 (
@@ -181,13 +181,15 @@ const Pickups = props => {
                                         />
                                         {props.selectedDriver ?
                                             (
-                                                <>
-                                                <span><a href={`mailto:${props.selectedDriver.email}`}><Icon icon='envelope' iconSize={25} /></a></span>
-                                                <span><Icon onClick={() => {props.createRoute()}} icon='map-create' iconSize={25} /></span>
-                                                <span><Icon onClick={() => {callAPI([...uncheckedPickups,...routePickups])}} icon='upload' iconSize={25} /></span>
-                                                </>
+                                                <SpanRow>
+                                                    <span><a href={`mailto:${props.selectedDriver.email}`}><ButtonIcon icon='envelope' iconSize={25} /></a></span>
+                                                    <span><ButtonIcon onClick={() => { props.createRoute() }} icon='map-create' iconSize={25} /></span>
+                                                    <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='upload' iconSize={25} /></span>
+                                                </SpanRow>
                                             ) : (
-                                                <span>No Driver Selected</span>
+                                                <SpanRow>
+                                                    <span>No Driver Selected</span>
+                                                </SpanRow>
                                                 // onSubmit, send pickups in route with index of routePickups
                                                 // need pickupID, 'driver', routeIndex === index in routePickups
                                             )
@@ -258,9 +260,17 @@ const ButtonRow = styled.div`
     width: 50%;
 `
 
+const SpanRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1.0em;
+`
+
 const ButtonIcon = styled(Icon)`
     cursor: pointer;
-    color: ${props => props.disabled ? '#d3d3d3': 'black'};
+    color: ${props => props.disabled ? '#d3d3d3' : 'black'};
 `
 
 const SendDirectionsContainer = styled.div`
