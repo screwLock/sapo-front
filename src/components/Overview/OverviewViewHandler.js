@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 import EmbedMap from './Maps/EmbedMap'
 import { animated, Transition } from 'react-spring/renderprops';
+import device from '../../device'
 
 class OverviewViewHandler extends React.Component {
     constructor(props) {

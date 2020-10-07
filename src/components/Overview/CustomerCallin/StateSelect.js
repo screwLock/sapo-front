@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Select, { components } from 'react-select';
 import SimpleBar from 'simplebar-react';
-import 'C:/Users/helml/Desktop/sapo-front/node_modules/simplebar-react/dist/simplebar.min.css';
+import '../../../../node_modules/simplebar-react/dist/simplebar.min.css';
 
 
 // create abbreviations for the states and provinces

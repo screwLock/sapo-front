@@ -33,6 +33,8 @@ const Pickups = props => {
         API.put("sapo", "/routing", {
             body: pickups
         }).then(response => {
+            // ??? updateRoutes
+            // also look up ordinal prop on pickup cards
             showToast(`Route Saved`)
         }).catch(error => {
             showToast('ERROR: Pickup Not Updated!')
