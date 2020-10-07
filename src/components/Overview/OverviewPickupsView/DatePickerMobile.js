@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import DayPickerInput from 'react-day-picker';
+import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css'
-import { keyframes } from "styled-components"
 import { getDate, getMonth, isSameDay } from "date-fns"
 import dayStyles, { unconfirmedSelected } from './datePickerStyles/dayStyles'
 import datePickerMobileStyles from './datePickerStyles/datePickerMobileStyles'
@@ -101,39 +100,42 @@ class DatePickerMobile extends Component {
             onNextClick,
             className,
             localeUtils,
-          }) => {
+        }) => {
             const styleLeft = {
-              float: 'left',
+                float: 'left',
             };
             const styleRight = {
-              float: 'right',
+                float: 'right',
             };
             return (
-              <div className={className}>
-                <button style={styleLeft} onClick={() => onPreviousClick()}>
-                ←
+                <div className={className}>
+                    <button style={styleLeft} onClick={() => onPreviousClick()}>
+                        ←
                 </button>
-                <button style={styleRight} onClick={() => onNextClick()}>
-                →
+                    <button style={styleRight} onClick={() => onNextClick()}>
+                        →
                 </button>
-              </div>
+                </div>
             );
-          }
-
+        }
 
         return (
-            <div>
-                <style>{dayStyles + datePickerMobileStyles}</style>
-                <DayPickerInput
-                    modifiers={modifiers}
-                    modifiersStyles={modifiersStyles}
-                    onDayClick={this.handleDayClick}
-                    onMonthChange={this.props.handleMonthChange}
-                    selectedDays={this.props.selectedDate}
-                    weekdayElement={<Weekday />}
-                />
-            </div>
-        );
+            this.props.showMobileDatePicker
+                ? (
+                    <div>
+                        <style>{dayStyles + datePickerMobileStyles}</style>
+                        <DayPicker
+                            modifiers={modifiers}
+                            modifiersStyles={modifiersStyles}
+                            onDayClick={this.handleDayClick}
+                            onMonthChange={this.props.handleMonthChange}
+                            selectedDays={this.props.selectedDate}
+                            weekdayElement={<Weekday />}
+                        />
+                    </div>
+                ) :
+                ''
+        )
     }
 }
 

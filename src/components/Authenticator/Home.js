@@ -3,7 +3,6 @@ import { Grid, Cell } from "styled-css-grid"
 import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
-import MobileHeader from '../Header/MobileHeader'
 import Main from '../Main'
 import Unpaid from './Unpaid/Unpaid'
 import LoadingScreen from './LoadingScreen'
@@ -181,27 +180,12 @@ class Home extends React.Component {
                     </Grid>
                 </Desktop>
                 <Mobile>
-                    <Grid
-                        columns={"150px 1fr 50px"}
-                        rows={"70px 1fr 45px"}
-                        areas={[
-                            "header header  header",
-                            "content content content",
-                            "footer footer  footer"
-                        ]}
-                    >
-                        <Cell area="header">
-                            <MobileHeader {...this.props}/>
-                        </Cell>
-                        <Cell area="content">
-                            <Main {...this.props}
-                                getUserConfig={this.getUserConfig}
-                                updateUserConfig={this.updateUserConfig}
-                                userConfig={this.state.userConfig}
-                                updateCustomerInfo={this.updateCustomerInfo}
-                            />
-                        </Cell>
-                    </Grid>
+                    <Main {...this.props}
+                        getUserConfig={this.getUserConfig}
+                        updateUserConfig={this.updateUserConfig}
+                        userConfig={this.state.userConfig}
+                        updateCustomerInfo={this.updateCustomerInfo}
+                    />
                 </Mobile>
             </>
         )
