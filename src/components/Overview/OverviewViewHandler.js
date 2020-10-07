@@ -7,6 +7,7 @@ import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 import EmbedMap from './Maps/EmbedMap'
 import { animated, Transition } from 'react-spring/renderprops'
 import { Mobile, Desktop } from '../devices'
+import { Icon } from '@blueprintjs/core'
 
 
 class OverviewViewHandler extends React.Component {
@@ -25,6 +26,10 @@ class OverviewViewHandler extends React.Component {
 
     showMap = (boolean) => {
         this.setState({ showMap: boolean })
+    }
+
+    showMobileDatePicker = () => {
+        this.setState({ showMobileDatePicker: !this.state.showMobileDatePicker})
     }
 
     getView = (view) => {
@@ -126,12 +131,40 @@ class OverviewViewHandler extends React.Component {
                                 key={view}
                                 style={{ ...props, position: 'absolute', width: '100%' }}
                             >
-                                <Column>
-                                    <DatePickerMobile {...this.props} showMobileDatePicker={this.state.showMobileDatepicker}/>
+                                <MobileContainer>
+                                    <MobileHeader>
+                                        <HeaderItem />
+                                        <HeaderItem>
+                                            <CalendarIcon icon='calendar' iconSize={30} onClick={this.showMobileDatePicker} color='white'/>
+                                        </HeaderItem>
+                                        <HeaderItem>
+                                            <LogoutIcon icon='log-out' iconSize={25} onClick={this.props.handleLogout} color='white' />
+                                        </HeaderItem>
+                                    </MobileHeader>
+                                    <Transition
+                                        items={this.state.showMobileDatePicker}
+                                        from={{ opacity: 0, transform: 'translate3d(0,-50%,0)', }}
+                                        enter={{ opacity: 1, transform: 'translate3d(0%,0,0)' }}
+                                        leave={{ opacity: 0, transform: 'translate3d(0,0,0)' }}
+                                        native
+                                        reset
+                                        unique
+                                    >
+                                        {showMobileDatePicker =>
+                                            showMobileDatePicker
+                                                ? props => <animated.div
+                                                    key={0}
+                                                    style={{ ...props}}
+                                                >
+                                                    <DatePickerMobile {...this.props} showMobileDatePicker={this.state.showMobileDatePicker} />
+                                                </animated.div>
+                                                : ''
+                                        }
+                                    </Transition>
                                     <MobilePickupsContainer>
                                         <Pickups {...this.props} changeView={this.changeView} showMap={this.showMap} />
                                     </MobilePickupsContainer>
-                                </Column>
+                                </MobileContainer>
                             </animated.div>
                         )
                     }
@@ -194,6 +227,36 @@ const PickupsContainer = styled.div`
 
 const MobilePickupsContainer = styled.div`
     width: 100%;
+`
+
+const MobileContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+`
+
+const MobileHeader = styled.div`
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    height: 5em;
+    width: 100%;
+`
+const HeaderItem = styled.div`
+    flex-basis: 100%;
+`
+const CalendarIcon = styled(Icon)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+`
+const LogoutIcon = styled(Icon)`
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
 `
 
 const Column = styled.div`

@@ -1,6 +1,7 @@
 const datePickerMobileStyles = `
 .DayPicker {
     display: inline-block;
+    font-size: 1.25rem;
   }
 
 .DayPicker-Day {

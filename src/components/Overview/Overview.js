@@ -219,6 +219,7 @@ class Overview extends React.Component {
                 createRoute={this.createRoute}
                 src={this.state.src}
                 updatePickups={this.updatePickups}
+                handleLogout={this.props.handleLogout}
                 />
         )
     }
