@@ -8,6 +8,7 @@ import Unpaid from './Unpaid/Unpaid'
 import LoadingScreen from './LoadingScreen'
 import { AppToaster } from '../Toaster'
 import { API } from "aws-amplify"
+import { Mobile, Desktop } from '../devices'
 
 class Home extends React.Component {
     static defaultProps = {
@@ -152,31 +153,53 @@ class Home extends React.Component {
 
     renderNonAdmin = () => {
         return (
-            <div>
-                <Grid
-                    columns={"150px 1fr 50px"}
-                    rows={"70px 1fr 45px"}
-                    areas={[
-                        "header header  header",
-                        "content content content",
-                        "footer footer  footer"
-                    ]}
-                >
-                    <Cell area="header">
-                        <Header {...this.props}
-                            onAdminLogin={this.handleAdminLogin}
-                        />
-                    </Cell>
-                    <Cell area="content">
-                        <Main {...this.props}
-                            getUserConfig={this.getUserConfig}
-                            updateUserConfig={this.updateUserConfig}
-                            userConfig={this.state.userConfig}
-                            updateCustomerInfo={this.updateCustomerInfo}
-                        />
-                    </Cell>
-                </Grid>
-            </div>
+            <>
+                <Desktop>
+                    <Grid
+                        columns={"150px 1fr 50px"}
+                        rows={"70px 1fr 45px"}
+                        areas={[
+                            "header header  header",
+                            "content content content",
+                            "footer footer  footer"
+                        ]}
+                    >
+                        <Cell area="header">
+                            <Header {...this.props}
+                                onAdminLogin={this.handleAdminLogin}
+                            />
+                        </Cell>
+                        <Cell area="content">
+                            <Main {...this.props}
+                                getUserConfig={this.getUserConfig}
+                                updateUserConfig={this.updateUserConfig}
+                                userConfig={this.state.userConfig}
+                                updateCustomerInfo={this.updateCustomerInfo}
+                            />
+                        </Cell>
+                    </Grid>
+                </Desktop>
+                <Mobile>
+                    <Grid
+                        columns={"150px 1fr 50px"}
+                        rows={"70px 1fr 45px"}
+                        areas={[
+                            "header header  header",
+                            "content content content",
+                            "footer footer  footer"
+                        ]}
+                    >
+                        <Cell area="content">
+                            <Main {...this.props}
+                                getUserConfig={this.getUserConfig}
+                                updateUserConfig={this.updateUserConfig}
+                                userConfig={this.state.userConfig}
+                                updateCustomerInfo={this.updateCustomerInfo}
+                            />
+                        </Cell>
+                    </Grid>
+                </Mobile>
+            </>
         )
     }
 
