@@ -2,6 +2,7 @@ import * as React from 'react'
 import Header from './OverviewPickupsView/Header'
 import Pickups from './OverviewPickupsView/Pickups'
 import DatePickerFullScreen from './OverviewPickupsView/DatePickerFullScreen'
+import DatePickerMobile from './OverviewPickupsView/DatePickerMobile'
 import styled from 'styled-components'
 import { CustomerCallIn } from './CustomerCallIn/CustomerCallIn'
 import EmbedMap from './Maps/EmbedMap'
@@ -129,7 +130,7 @@ class OverviewViewHandler extends React.Component {
                                     <div style={{ width: '100%', }}>
                                                 {this.state.showMap
                                                     ? <EmbedMap {...this.props} />
-                                                    : <DatePickerFullScreen {...this.props} />
+                                                    : <DatePickerMobile {...this.props} />
                                                 }
                                     </div>
                                     <MobilePickupsContainer>

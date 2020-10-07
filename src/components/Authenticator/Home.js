@@ -3,6 +3,7 @@ import { Grid, Cell } from "styled-css-grid"
 import { withRouter } from 'react-router-dom'
 import NavBar from '../Navbar/NavBar'
 import Header from '../Header/Header'
+import MobileHeader from '../Header/MobileHeader'
 import Main from '../Main'
 import Unpaid from './Unpaid/Unpaid'
 import LoadingScreen from './LoadingScreen'
@@ -189,6 +190,9 @@ class Home extends React.Component {
                             "footer footer  footer"
                         ]}
                     >
+                        <Cell area="header">
+                            <MobileHeader {...this.props}/>
+                        </Cell>
                         <Cell area="content">
                             <Main {...this.props}
                                 getUserConfig={this.getUserConfig}
