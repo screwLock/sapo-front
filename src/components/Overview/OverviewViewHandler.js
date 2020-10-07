@@ -134,10 +134,10 @@ class OverviewViewHandler extends React.Component {
                                 <MobileContainer>
                                     <MobileHeader>
                                         <HeaderItem />
-                                        <HeaderItem>
+                                        <HeaderItem align='center'>
                                             <CalendarIcon icon='calendar' iconSize={30} onClick={this.showMobileDatePicker} color='white'/>
                                         </HeaderItem>
-                                        <HeaderItem>
+                                        <HeaderItem align='flex-end'>
                                             <LogoutIcon icon='log-out' iconSize={25} onClick={this.props.handleLogout} color='white' />
                                         </HeaderItem>
                                     </MobileHeader>
@@ -245,18 +245,14 @@ const MobileHeader = styled.div`
 `
 const HeaderItem = styled.div`
     flex-basis: 100%;
-`
-const CalendarIcon = styled(Icon)`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-`
-const LogoutIcon = styled(Icon)`
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    justify-content: ${props => props.align}
+    align-items: center;
+`
+const CalendarIcon = styled(Icon)`
+`
+const LogoutIcon = styled(Icon)`
 `
 
 const Column = styled.div`
