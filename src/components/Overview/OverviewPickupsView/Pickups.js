@@ -52,9 +52,9 @@ const Pickups = props => {
                     user: props.user
                 }
             }).then(response => {
-                this.showToast('Successfully Saved!')
+                showToast('Successfully Saved!')
             }).catch(error => {
-                this.showToast(`Save Failed`)
+                showToast(`Save Failed`)
             })
         }
         else {
