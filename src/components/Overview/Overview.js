@@ -47,7 +47,7 @@ class Overview extends React.Component {
                     lat: parseFloat(latlng[0]),
                     lng: parseFloat(latlng[1]),
                 },
-                src: `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAP_KEY}&q=${parseFloat(latlng[0])},${parseFloat(latlng[1])}`
+                src: `https://www.google.com/maps/embed/v1/place?key=${config.GOOGLE_MAP_KEY}&q=${this.props.authData.attributes.address.replaceAll('@', ',').replaceAll(' ', '+')}`
             }
             ))
             await this.getPickupsByMonth(this.state.selectedMonth)
@@ -121,10 +121,11 @@ class Overview extends React.Component {
     }
 
     createRoute = () => {
+        const origin = this.props.authData.attributes.address.replaceAll('@', ',').replaceAll(' ', '+')
         const datePickups = this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate));
         const routePickups = this.state.selectedDriver? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === this.state.selectedDriver.lastName): null
         let src = '';
-        const origin = [this.state.user.lat, this.state.user.lng];
+        //const origin = [this.state.user.lat, this.state.user.lng];
         let destination = '&destination='
         // pickups is empty, show the client's location on the place url
         if (routePickups.length === 0) {
