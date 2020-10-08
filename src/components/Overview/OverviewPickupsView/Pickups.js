@@ -43,7 +43,7 @@ const Pickups = props => {
     }
 
     const sendEmailDirections = () => {
-        const driver = this.props.selectedDriver
+        const driver = props.selectedDriver
         if(Object.entries(driver).length !== 0){
             API.post("sapo", '/routing', {
                 body: {
