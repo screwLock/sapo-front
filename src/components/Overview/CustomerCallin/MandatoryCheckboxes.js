@@ -19,6 +19,7 @@ class MandatoryCheckboxes extends React.PureComponent {
                                     value={this.props.mandatoryDetails[mdIndex].checked}
                                     onChange={this.props.onChange(mdIndex)}
                                     key={detail.name}
+                                    checked={this.props.mandatoryDetails[mdIndex].checked}
                                 />
                             )
                         })}

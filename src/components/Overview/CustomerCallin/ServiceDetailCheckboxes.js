@@ -19,6 +19,7 @@ class ServiceDetailCheckboxes extends React.Component {
                                     value={this.props.serviceDetails[sdIndex].checked}
                                     onChange={this.props.onChange(sdIndex)}
                                     key={detail.name}
+                                    checked={this.props.serviceDetails[sdIndex].checked}
                                 />
                             )
                         })}

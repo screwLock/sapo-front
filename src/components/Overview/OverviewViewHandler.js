@@ -87,9 +87,7 @@ class OverviewViewHandler extends React.Component {
                                 key={view}
                                 style={{ ...props, position: 'absolute', width: '100%' }}
                             >
-                                <Column
-                                    style={{ width: '40%' }}
-                                >
+                                <Column>
                                     <CustomerCallIn {...this.props} changeView={this.changeView} />
                                 </Column>
                             </animated.div>
@@ -174,9 +172,7 @@ class OverviewViewHandler extends React.Component {
                                 key={view}
                                 style={{ ...props, position: 'absolute', width: '100%' }}
                             >
-                                <Column
-                                    style={{ width: '40%' }}
-                                >
+                                <Column>
                                     <CustomerCallIn {...this.props} changeView={this.changeView} />
                                 </Column>
                             </animated.div>

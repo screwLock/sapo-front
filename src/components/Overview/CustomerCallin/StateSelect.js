@@ -122,6 +122,7 @@ class StateSelect extends React.Component {
     render() {
         return(
             <Select
+                value={{ value: this.props.selectedProvince, label: this.props.selectedProvince }}
                 options={groupedOptions}
                 formatGroupLabel={formatGroupLabel}
                 onChange={this.props.onChange}

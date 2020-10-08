@@ -9,38 +9,21 @@ class CategoryCheckboxes extends React.Component {
         super(props)
         this.state = {
             isRestrictionsOpen: false,
-            selectedDonatable: null,
-            selectedDonatables: [],
         }
     }
 
     handleDonatableSelect = (donatable, action) => {
         switch (action.action) {
             case 'select-option':
-                if (this.state.selectedDonatables.some(sd => (sd.label === donatable.label))) {
+                if (this.props.selectedDonatables.some(sd => (sd.label === donatable.label))) {
                     break;
                 }
-                this.setState({
-                    selectedDonatable: this.props.categories[donatable.cIndex].donatables[donatable.dIndex],
-                    selectedDonatables: [...this.state.selectedDonatables, donatable]
-                });
-                this.props.onChange(donatable.cIndex, donatable.dIndex)
+                this.props.onChange(donatable.cIndex, donatable.dIndex, donatable)
                 break;
             case 'clear':
-                this.setState({
-                    selectedDonatable: null,
-                });
+                this.props.handleSelectedDonatableChange(null)
                 break;
         }
-    }
-
-    handleQuantityChange = (cIndex, dIndex, name, value) => {
-        console.log(value)
-        if (value === 'x') {
-            const filteredDonatables = this.state.selectedDonatables.filter(sd => (sd.value.name !== name))
-            this.setState({ selectedDonatables: filteredDonatables })
-        }
-        this.props.handleQuantityChange(cIndex, dIndex, name, value)
     }
 
     handleRestrictionsClick = () => {
@@ -48,7 +31,7 @@ class CategoryCheckboxes extends React.Component {
     }
 
     render() {
-        const { selectedDonatable, selectedDonatables } = this.state;
+        const { selectedDonatable, selectedDonatables } = this.props;
         return (
             <BlockContainer>
                 <H4>Select Donations
@@ -66,30 +49,34 @@ class CategoryCheckboxes extends React.Component {
                     </Collapse>
                 </Restrictions>
                 <SelectBlock>
-                    <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={this.state.selectedDonatable} />
+                    <CategorySelect onChange={this.handleDonatableSelect} categories={this.props.categories} selectedDonatable={selectedDonatable} />
                 </SelectBlock>
                 <SubBlockContainer>
                     <Transition
-                        items={selectedDonatables} keys={selectedDonatable => `NI${selectedDonatable.value.name}`}
+                        items={selectedDonatables} keys={selectedD => `NI${selectedD.value.name}`}
                         from={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}
                         enter={{ opacity: 1, transform: 'translate3d(0,0px,0)' }}
                         leave={{ opacity: 0, transform: 'translate3d(0,-20%,0)' }}>
                         {sd => props =>
                             <CategoryContainer key={`Category${sd.value.name}`} style={props}>
-                                {`${sd.value.name}`}
-                                    {this.props.donations[sd.value.name] === 1?
-                                    <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, 'x')}
-                                        icon='delete'
-                                    />
-                                    :
-                                    <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, '-')}
-                                        icon='minus'
-                                    />
+                                <CategoryName>
+                                    {`${sd.value.name}`}
+                                </CategoryName>
+                                <CategoryControls>
+                                    {this.props.donations[sd.value.name] < 2 ?
+                                        <Icon onClick={() => this.props.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, 'x')}
+                                            icon='delete'
+                                        />
+                                        :
+                                        <Icon onClick={() => this.props.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, '-')}
+                                            icon='minus'
+                                        />
                                     }
                                     <span>  {this.props.donations[sd.value.name]}  </span>
-                                    <Icon onClick={() => this.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name,'+')}
+                                    <Icon onClick={() => this.props.handleQuantityChange(sd.cIndex, sd.dIndex, sd.value.name, '+')}
                                         icon='add'
                                     />
+                                </CategoryControls>
                             </CategoryContainer>
                         }
                     </Transition>
@@ -110,6 +97,18 @@ const CategoryContainer = styled.span`
     display: flex;
     justify-content: space-between;
     height: 3em;
+    width: 100%;
+`
+
+const CategoryName = styled.span`
+    width: 50%;
+`
+const CategoryControls = styled.span`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50%;
+
 `
 
 const SubBlockContainer = styled.div`
@@ -122,7 +121,7 @@ const SubBlockContainer = styled.div`
 `;
 
 const SelectBlock = styled.div`
-    width: 60%;
+    width: 100%;
 `
 
 const Restrictions = styled.div`

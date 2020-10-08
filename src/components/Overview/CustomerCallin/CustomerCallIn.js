@@ -16,6 +16,7 @@ import { AppToaster } from '../../Toaster'
 import * as EmailValidator from 'email-validator'
 import { API } from "aws-amplify"
 import config from '../../../config'
+import device from '../../devices'
 import 'here-js-api/scripts/mapsjs-core'
 import 'here-js-api/scripts/mapsjs-service'
 
@@ -38,6 +39,8 @@ export class CustomerCallIn extends React.Component {
             serviceDetails: [],
             mandatoryDetails: [],
             selectedServiceDetails: [],
+            selectedDonatables: [],
+            selectedDonatable: null,
             donations: {},
             disabledDays: [],
             lat: '',
@@ -45,7 +48,6 @@ export class CustomerCallIn extends React.Component {
             pickupID: '',
             selectedDate: null,
             selectedZipcode: '',
-            selectedEmployee: null,
             showZipcodePicker: true,
             showDatePicker: false,
             stage: 0,
@@ -102,7 +104,7 @@ export class CustomerCallIn extends React.Component {
         })
     }
 
-    handleCategorySelect = (cIndex, dIndex) => {
+    handleCategorySelect = (cIndex, dIndex, donatable) => {
         // add to the donations array
         let donations = { ...this.state.donations }
         const name = this.state.categories[cIndex].donatables[dIndex].name
@@ -117,7 +119,9 @@ export class CustomerCallIn extends React.Component {
         this.setState(
             produce(this.state, draft => {
                 draft.categories[cIndex].donatables[dIndex].checked = true,
-                    draft.donations = { ...donations }
+                    draft.donations = { ...donations },
+                    draft.selectedDonatables = [...this.state.selectedDonatables, donatable],
+                    draft.selectedDonatable = this.state.categories[donatable.cIndex].donatables[donatable.dIndex]
             })
         )
     }
@@ -125,15 +129,18 @@ export class CustomerCallIn extends React.Component {
     handleDonationQuantityChange = (cIndex, dIndex, name, value) => {
         let donations = { ...this.state.donations }
         if (value === 'x') {
-            delete donations[name]
+            const { [name]: deletedValue,...newDonations} = donations
+            const filteredDonatables = this.state.selectedDonatables.filter(sd => (sd.value.name !== name))
             this.setState(
                 produce(this.state, draft => {
-                    draft.donations = { ...donations },
-                        draft.categories[cIndex].donatables[dIndex].checked = false
+                    draft.donations = { ...newDonations },
+                        draft.categories[cIndex].donatables[dIndex].checked = false,
+                        draft.selectedDonatables = [ ...filteredDonatables ]
                 })
             )
         }
-        else if (value === '-') {
+        // we need to check for donations[name] > 1 if user clicks really quickly...
+        else if ((value === '-') && (donations[name] > 1)) {
             donations[name] = donations[name] - 1
             this.setState(
                 produce(this.state, draft => {
@@ -258,22 +265,7 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
-    handleEmployeeSelect = (employee, action) => {
-        switch (action.action) {
-            case 'select-option':
-                this.setState({
-                    selectedEmployee: employee.value,
-                });
-                break;
-            case 'clear':
-                this.setState({
-                    selectedEmployee: null,
-                });
-                break;
-        }
-    }
-
-    handleBlur = e => this.setState({ [e.target.name]: e.target.value })
+    handleInputChange = e => this.setState({ [e.target.name]: e.target.value })
 
     handleCommentsChange = e => this.setState({ [e.target.name]: e.target.value })
 
@@ -450,10 +442,10 @@ export class CustomerCallIn extends React.Component {
                 <Body>
                     {stage === 0
                         ? (
-                            <Cell>
+                            <>
                                 <H4>Select The Pickup Zipcode</H4>
                                 <ZipcodeBlock>
-                                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes}
+                                    <ZipcodeSelect zipcodes={this.props.userConfig.zipcodes.sort((a, b) => { return a.zipcode - b.zipcode })}
                                         onChange={this.handleZipcodeSelect}
                                         selectedZipcode={this.state.selectedZipcode}
                                     />
@@ -472,104 +464,98 @@ export class CustomerCallIn extends React.Component {
                                         ? `Selected Pickup Date: ${this.state.selectedDate.toLocaleDateString()}`
                                         : ''}
                                 </p>
-                            </Cell>
+                            </>
                         )
                         : ''
                     }
-                    <Cell>
+                    <>
                         {stage === 1 ?
                             (
                                 <BlockContainer>
                                     <H4>Pickup Address</H4>
-                                    <SubBlockContainer >
-                                        <ContactForms>
-                                            <StreetAddressForm label='Street Address'>
-                                                <InputGroup name='streetAddress' onBlur={this.handleBlur} autoComplete="new-street-address" />
-                                            </StreetAddressForm>
-                                            <AptForm label='Apt #'>
-                                                <InputGroup name='apt' onBlur={this.handleBlur} autoComplete="new-password" />
-                                            </AptForm>
-                                        </ContactForms>
-                                        <ContactForms>
-                                            <NameForm label='City'>
-                                                <InputGroup name='city' autoComplete='new-password' onBlur={this.handleBlur} />
-                                            </NameForm>
-                                            <StateForm label='State/Province'>
-                                                <StateSelect onChange={this.handleStateSelect} />
-                                            </StateForm>
-                                        </ContactForms>
+                                    <ContactForms>
+                                        <StreetAddressForm label='Street Address'>
+                                            <InputGroup name='streetAddress' onChange={this.handleInputChange} autoComplete="new-street-address" value={this.state.streetAddress} />
+                                        </StreetAddressForm>
+                                        <AptForm label='Apt #'>
+                                            <InputGroup name='apt' onChange={this.handleInputChange} autoComplete="new-password" value={this.state.apt} />
+                                        </AptForm>
+                                    </ContactForms>
+                                    <ContactForms>
+                                        <CityForm label='City'>
+                                            <InputGroup name='city' autoComplete='new-password' onChange={this.handleInputChange} value={this.state.city} />
+                                        </CityForm>
+                                        <StateForm label='State/Province'>
+                                            <StateSelect onChange={this.handleStateSelect} selectedProvince={this.state.province} />
+                                        </StateForm>
+                                    </ContactForms>
+                                    <ContactForms>
                                         <FormGroup label='Organization Name (Required If Not Residential)'>
-                                            <InputGroup name='organization' onBlur={this.handleBlur} />
+                                            <InputGroup name='organization' onChange={this.handleInputChange} value={this.state.organization} />
                                         </FormGroup>
-                                    </SubBlockContainer>
+                                    </ContactForms>
                                     <H4>Contact Info</H4>
-                                    <SubBlockContainer>
-                                        <ContactForms>
-                                            <NameForm label='First Name'>
-                                                <InputGroup name='firstName' autoComplete='new-password' onBlur={this.handleBlur} />
-                                            </NameForm>
-                                            <FormGroup label='Last Name'>
-                                                <InputGroup name='lastName' autoComplete='new-password' onBlur={this.handleBlur} />
-                                            </FormGroup>
-                                        </ContactForms>
-                                        <ContactForms>
-                                            <FormGroup label='Email'>
-                                                <InputGroup name='email' autoComplete='new-password' onBlur={this.handleBlur} />
-                                            </FormGroup>
-                                            <PhoneForm label='Phone Number'>
-                                                <InputGroup name='phoneNumber' autoComplete='new-password' onBlur={this.handleBlur} />
-                                            </PhoneForm>
-                                        </ContactForms>
-                                    </SubBlockContainer>
+                                    <ContactForms>
+                                        <NameForm label='First Name'>
+                                            <InputGroup name='firstName' autoComplete='new-password' onChange={this.handleInputChange} value={this.state.firstName} />
+                                        </NameForm>
+                                        <NameForm label='Last Name'>
+                                            <InputGroup name='lastName' autoComplete='new-password' onChange={this.handleInputChange} value={this.state.lastName} />
+                                        </NameForm>
+                                    </ContactForms>
+                                    <ContactForms>
+                                        <EmailForm label='Email'>
+                                            <InputGroup name='email' autoComplete='new-password' onChange={this.handleInputChange} value={this.state.email} />
+                                        </EmailForm>
+                                        <PhoneForm label='Phone Number'>
+                                            <InputGroup name='phoneNumber' autoComplete='new-password' onChange={this.handleInputChange} value={this.state.phoneNumber} />
+                                        </PhoneForm>
+                                    </ContactForms>
                                 </BlockContainer>
                             )
                             : ''}
-                    </Cell>
+                    </>
                     {stage === 2 ? (
-                        <>
-                            <Cell>
-                                <div>
-                                    <CategoryCheckboxes
-                                        categories={this.state.categories}
-                                        restrictions={this.props.userConfig.restrictions}
-                                        donations={this.state.donations}
-                                        onChange={this.handleCategorySelect}
-                                        handleQuantityChange={this.handleDonationQuantityChange}
-                                    />
-                                </div>
-                                <div>
-                                    <ServiceDetailCheckboxes
-                                        serviceDetails={this.state.serviceDetails}
-                                        onChange={this.handleServiceCheckedChange}
-                                        isVisible={(this.state.serviceDetails.length > 0)}
-                                    />
-                                </div>
-                                <div>
-                                    <H4>Additional Comments</H4>
-                                    <CommentsTextArea
-                                        name='comments'
-                                        large={false}
-                                        intent={Intent.PRIMARY}
-                                        onChange={this.handleCommentsChange}
-                                        value={this.state.comments}
-                                    />
-                                </div>
-                                <div>
-                                    <MandatoryCheckboxes
-                                        mandatoryDetails={this.state.mandatoryDetails}
-                                        onChange={this.handleMandatoryCheckedChange}
-                                        // should not render if NO mandatory service details
-                                        isVisible={(this.state.mandatoryDetails.length > 0)}
-                                    />
-                                </div>
-                            </Cell>
-                            <Cell>
-                                <EmployeeSelect employees={this.props.userConfig.employees}
-                                    onChange={this.handleEmployeeSelect}
-                                    selectedEmployee={this.state.selectedEmployee}
+                        <BlockContainer>
+                            <CategoryBlock>
+                                <CategoryCheckboxes
+                                    categories={this.state.categories}
+                                    restrictions={this.props.userConfig.restrictions}
+                                    selectedDonatable={this.state.selectedDonatable}
+                                    selectedDonatables={this.state.selectedDonatables}
+                                    donations={this.state.donations}
+                                    onChange={this.handleCategorySelect}
+                                    handleQuantityChange={this.handleDonationQuantityChange}
+                                    handleSelectedDonatableChange={this.handleSelectedDonatableChange}
+                                    handleSelectedDonatablesChange={this.handleSelectedDonatablesChange}
                                 />
-                            </Cell>
-                        </>
+                            </CategoryBlock>
+                            <div>
+                                <ServiceDetailCheckboxes
+                                    serviceDetails={this.state.serviceDetails}
+                                    onChange={this.handleServiceCheckedChange}
+                                    isVisible={(this.state.serviceDetails.length > 0)}
+                                />
+                            </div>
+                            <div>
+                                <H4>Additional Comments</H4>
+                                <CommentsTextArea
+                                    name='comments'
+                                    large={false}
+                                    intent={Intent.PRIMARY}
+                                    onChange={this.handleCommentsChange}
+                                    value={this.state.comments}
+                                />
+                            </div>
+                            <div>
+                                <MandatoryCheckboxes
+                                    mandatoryDetails={this.state.mandatoryDetails}
+                                    onChange={this.handleMandatoryCheckedChange}
+                                    // should not render if NO mandatory service details
+                                    isVisible={(this.state.mandatoryDetails.length > 0)}
+                                />
+                            </div>
+                        </BlockContainer>
                     )
                         : ''}
                 </Body>
@@ -582,11 +568,27 @@ export class CustomerCallIn extends React.Component {
 }
 
 const CCIContainer = styled.div`
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 1%;
+    @media ${device.mobileS}
+    {
+        max-width: 300px;    
+    }
+
+    @media ${device.tablet}
+    {
+        max-width: 680px;
+    }
+
+    @media ${device.laptop}
+    {
+        max-width: 1040px;
+    }
 `
 const Body = styled.div`
     height: 95%;
-`
-const Cell = styled.div`
+    width: 100%;
 `
 
 const Footer = styled.div`
@@ -594,7 +596,20 @@ const Footer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 75%
+    @media ${device.mobileS}
+    {
+        width: 90%;    
+    }
+
+    @media ${device.tablet}
+    {
+        width: 60%;
+    }
+
+    @media ${device.laptop}
+    {
+        width: 33%;
+    }
 `
 
 const BlockContainer = styled.div`
@@ -603,49 +618,100 @@ const BlockContainer = styled.div`
 `;
 
 const ZipcodeBlock = styled.div`
-    width: 60%;
-`
+    @media ${device.mobileS}
+    {
+        width: 90%;    
+    }
 
-const SubBlockContainer = styled.div`
-                width: 350px;
-                margin: 10px;
-                margin-left: 20px;
-            `
+    @media ${device.tablet}
+    {
+        width: 50%;
+    }
+
+    @media ${device.laptop}
+    {
+        width: 35%;
+    }
+`
 
 const ContactForms = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    @media ${device.mobileS}
+    {
+        width: 90%;    
+    }
+
+    @media ${device.tablet}
+    {
+        width: 60%;
+    }
+
+    @media ${device.laptop}
+    {
+        width: 33%;
+    }
 `
 
 const StreetAddressForm = styled(FormGroup)`
-            width: 275px;
-        `
+    width: 75%
+`
 
 const AptForm = styled(FormGroup)`
-            width: 50px;
-        `
+    width: 15%;
+`
+
+const CityForm = styled(FormGroup)`
+    width: 50%;
+`
 
 const StateForm = styled(FormGroup)`
-            width: 100px;
-        `
+    width: 35%;
+`
 
 const NameForm = styled(FormGroup)`
-            width: 150px;
-        `
+    width: 40%;
+`
 
 const PhoneForm = styled(FormGroup)`
-            width: 125px;
-        `
+    width: 35%;
+`
+
+const EmailForm = styled(FormGroup)`
+    width: 55%;
+`
 
 const CommentsTextArea = styled(TextArea)`
-            width: 75%;
-        `
+    @media ${device.mobileS}
+    {
+        width: 90%;    
+    }
 
-const SelectContainer = styled.div`
-                width: 250px;
-                margin-top: 25px;
-                margin-bottom: 25px;
-                margin-left: 20px;
-            `
+    @media ${device.tablet}
+    {
+        width: 60%;
+    }
 
+    @media ${device.laptop}
+    {
+        width: 33%;
+    }
+`
+
+const CategoryBlock = styled.div`
+    @media ${device.mobileS}
+    {
+        width: 90%;    
+    }
+
+    @media ${device.tablet}
+    {
+        width: 50%;
+    }
+
+    @media ${device.laptop}
+    {
+        width: 35%;
+    }
+`
