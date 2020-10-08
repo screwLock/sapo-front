@@ -48,8 +48,8 @@ const Pickups = props => {
             API.post("sapo", '/routing', {
                 body: {
                     email: driver.email,
-                    pickups: this.props.pickups,
-                    user: this.props.user
+                    pickups: props.pickups,
+                    user: props.user
                 }
             }).then(response => {
                 this.showToast('Successfully Saved!')
