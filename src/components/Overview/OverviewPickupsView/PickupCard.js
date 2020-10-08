@@ -6,6 +6,7 @@ import SpringButton from './Status/SpringButton'
 import StatusIcon from './Status/StatusIcon'
 import { API } from "aws-amplify"
 import { AppToaster } from '../../Toaster'
+import { Mobile, Desktop } from '../../devices'
 
 class PickupCard extends React.Component {
     constructor(props) {
@@ -273,13 +274,28 @@ class PickupCard extends React.Component {
 
         }
         return (
-            <Card
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                innerRef={this.setRef}
-            >
-                {cardContent}
-            </Card>
+            <>
+                <Desktop>
+                    <Card
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        innerRef={this.setRef}
+                        device='desktop'
+                    >
+                        {cardContent}
+                    </Card>
+                </Desktop>
+                <Mobile>
+                    <Card
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        innerRef={this.setRef}
+                        device='mobile'
+                    >
+                        {cardContent}
+                    </Card>
+                </Mobile>
+            </>
         )
     }
 }
@@ -288,7 +304,7 @@ const Card = styled.div`
     display: flex;
     flex-direction: row;
     background-color: transparent;
-    width: 80%;
+    width: ${props => props.device === 'desktop'? '80%': '100%'}
     height: 7em;
     margin: 1em;
     border-width: 0.05em; 
