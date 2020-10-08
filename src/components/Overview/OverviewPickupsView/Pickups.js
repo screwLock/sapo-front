@@ -42,6 +42,27 @@ const Pickups = props => {
         })
     }
 
+    const sendEmailDirections = () => {
+        const driver = this.props.selectedDriver
+        if(Object.entries(driver).length !== 0){
+            API.post("sapo", '/routing', {
+                body: {
+                    email: driver.email,
+                    pickups: this.props.pickups,
+                    user: this.props.user
+                }
+            }).then(response => {
+                this.showToast('Successfully Saved!')
+            }).catch(error => {
+                this.showToast(`Save Failed`)
+            })
+        }
+        else {
+            // this should probably be removed
+            this.showToast('You need to select a driver to send routes to')
+        }
+    }
+
     const onDragEnd = result => {
         // dropped outside the list
         if (!result.destination) {
@@ -184,7 +205,7 @@ const Pickups = props => {
                                         {props.selectedDriver ?
                                             (
                                                 <SpanRow>
-                                                    <span><a href={`mailto:${props.selectedDriver.email}`}><ButtonIcon icon='envelope' iconSize={25} /></a></span>
+                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={sendEmailDirections(props.selectedDriver)}/></span>
                                                     <span><ButtonIcon onClick={() => { props.createRoute() }} icon='map-create' iconSize={25} /></span>
                                                     <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='upload' iconSize={25} /></span>
                                                 </SpanRow>
