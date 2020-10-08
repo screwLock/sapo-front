@@ -205,7 +205,7 @@ const Pickups = props => {
                                         {props.selectedDriver ?
                                             (
                                                 <SpanRow>
-                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={sendEmailDirections(props.selectedDriver)}/></span>
+                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections(props.selectedDriver)}/></span>
                                                     <span><ButtonIcon onClick={() => { props.createRoute() }} icon='map-create' iconSize={25} /></span>
                                                     <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='upload' iconSize={25} /></span>
                                                 </SpanRow>
