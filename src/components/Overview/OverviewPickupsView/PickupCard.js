@@ -266,7 +266,7 @@ class PickupCard extends React.Component {
                         <div><a href={`tel:+1${pickup.phoneNumber}`}><Icon icon='phone' iconSize={35} /></a></div>
                         <div><a href={`sms:+1${pickup.phoneNumber}`}><Icon icon='mobile-phone' iconSize={35} /></a></div>
                         <div><a href={`mailto:${pickup.email}`}><Icon icon='envelope' iconSize={35} /></a></div>
-                        <div><a href={`http://maps.google.com/?api=1&query=${pickup.lat},${pickup.lng}&zoom=18`} target="_blank"><Icon icon='geolocation' iconSize={35} /></a></div>
+                        <div><a href={`http://google.com/maps/dir/?api=1&destination=${pickup.lat},${pickup.lng}&zoom=18`} target="_blank"><Icon icon='geolocation' iconSize={35} /></a></div>
                     </ActionRow>
                     <ActionColumn onClick={this.onBackButtonClick}><Icon icon='chevron-right' iconSize={25} /></ActionColumn>
                 </>
