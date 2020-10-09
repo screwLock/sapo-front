@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Button, FormGroup, InputGroup, Intent, H5, H6 } from '@blueprintjs/core'
 import StateSelect from '../Overview/CustomerCallIn/StateSelect'
 import { API } from "aws-amplify"
-import { AppToaster } from '../../Toaster'
+import { AppToaster } from '../Toaster'
 
 class Address extends React.Component {
     constructor(props) {
@@ -49,10 +49,10 @@ class Address extends React.Component {
                     }
                 }).then(response => {
                     this.setState({ isProcessing: false})
-                    showToast('Successfully Saved!')
+                    this.showToast('Successfully Saved!')
                 }).catch(error => {
                     this.setState({ isProcessing: false})
-                    showToast(`Save Failed`)
+                    this.showToast(`Save Failed`)
                 })
             }
         )
