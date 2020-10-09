@@ -43,7 +43,7 @@ class Address extends React.Component {
     handleSubmit = () => {
         this.setState({ isProcessing: true },
             () => {
-                API.post("sapo", '/routing', {
+                API.post("sapo", '/account', {
                     body: {
                         address: `${this.state.streetAddress}@${this.state.city}@${this.state.province}@${this.state.zipcode}`
                     }
