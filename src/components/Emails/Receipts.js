@@ -6,22 +6,53 @@ import SignaturePad from 'react-signature-canvas'
 
 const Receipts = (props) => {
 
-    const [text, setText] = useState('Choose PNG or JPEG/JPG...')
     const [errorText, setErrorText] = useState('')
     const [trimmedDataURL, setTrimmedDataURL] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [title, setTitle] = useState('')
+    const [representative, setRepresentative]  = useState('')
 
     const sigPad = useRef({});
     const clear = () => {
-      sigPad.current.clear()
+        sigPad.current.clear()
+        setTrimmedDataURL(null)
     }
     const save = () => {
-      setTrimmedDataURL(sigPad.getTrimmedCanvas()
-        .toDataURL('image/png'))
+        setTrimmedDataURL(sigPad.current.getTrimmedCanvas()
+            .toDataURL('image/png'))
+    }
+
+    const handleInputChange = (e) => {
+        if(e.target.name === 'title'){
+            setTitle(e.target.value)
+        }
+        else if(e.target.name === 'representative'){
+            setRepresentative(e.target.value)
+        }
+    }
+
+    const validateForms = () => {
+        if(trimmedDataURL === null){
+            setErrorText('You need to create a digital signature')
+            return false
+        }
+        else if(title === ''){
+            setErrorText('You need to provide a title')
+            return false
+        }
+        else if(representative === ''){
+            setErrorText('You need to provide a representative name')
+            return false
+        }
+        else {
+            setErrorText('')
+            return true
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(!validateForms()) return false;
         setLoading(true);
         try {
             // key is located in stored.key if it's needed
@@ -37,15 +68,36 @@ const Receipts = (props) => {
 
     return (
         <>
-            <H6>Create a Signature</H6>
+            <H6>Create A Representative Signature For Your Tax Receipts</H6>
             <PadContainer>
-                <SignaturePad 
-                    canvasProps={{width: '300px', height: '150px'}}
-                    ref={sigPad} 
+                <SignaturePad
+                    canvasProps={{ width: '300px', height: '150px' }}
+                    ref={sigPad}
+                    onEnd={save}
                 />
             </PadContainer>
-            <Button onClick={clear} text='Clear' /><Button onClick={save} text='Save' />
-            <Button disabled={true} loading={loading} text='Submit' onClick={handleSubmit} />
+            <Button onClick={clear} text='Clear' />
+            <FormContainer>
+                <FormGroup
+                    label={`Representative Title`}
+                >
+                    <InputGroup name='title'
+                        type="text"
+                        onChange={handleInputChange}
+                        value={title}
+                    />
+                </FormGroup>
+                <FormGroup
+                    label={`Representative Name`}
+                >
+                    <InputGroup name='representative'
+                        type="text"
+                        onChange={handleInputChange}
+                        value={representative}
+                    />
+                </FormGroup>
+            </FormContainer>
+            <Button loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
@@ -56,7 +108,12 @@ const PadContainer = styled.div`
 `
 
 const ErrorText = styled.div`
+    margin: 1em;
     color: red;
+`
+const FormContainer = styled.div`
+    width: 300px;
+    margin: 1em;
 `
 
 export default Receipts
