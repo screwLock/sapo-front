@@ -26,7 +26,7 @@ class EIN extends React.Component {
             () => {
                 API.post("sapo", '/account', {
                     body: {
-                        attribute: 'ein',
+                        attribute: 'custom:ein',
                         value: this.state.ein
                     }
                 }).then(response => {
