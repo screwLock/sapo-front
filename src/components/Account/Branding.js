@@ -34,7 +34,7 @@ const Branding = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const filename = `/branding/${selectedLogo.name}`
+        const filename = `/branding/logo`
         try {
             const stored = await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
