@@ -10,7 +10,7 @@ const Receipts = (props) => {
     const [trimmedDataURL, setTrimmedDataURL] = useState(null)
     const [loading, setLoading] = useState(false)
     const [title, setTitle] = useState('')
-    const [representative, setRepresentative]  = useState('')
+    const [representative, setRepresentative] = useState('')
 
     const sigPad = useRef({});
     const clear = () => {
@@ -23,24 +23,24 @@ const Receipts = (props) => {
     }
 
     const handleInputChange = (e) => {
-        if(e.target.name === 'title'){
+        if (e.target.name === 'title') {
             setTitle(e.target.value)
         }
-        else if(e.target.name === 'representative'){
+        else if (e.target.name === 'representative') {
             setRepresentative(e.target.value)
         }
     }
 
     const validateForms = () => {
-        if(trimmedDataURL === null){
+        if (trimmedDataURL === null) {
             setErrorText('You need to create a digital signature')
             return false
         }
-        else if(title === ''){
+        else if (title === '') {
             setErrorText('You need to provide a title')
             return false
         }
-        else if(representative === ''){
+        else if (representative === '') {
             setErrorText('You need to provide a representative name')
             return false
         }
@@ -52,25 +52,27 @@ const Receipts = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(!validateForms()) return false;
+        if (!validateForms()) return false;
         setLoading(true);
         try {
             await this.props.updateUserConfig('receipts', {
-                signature: trimmedDataURL,
                 title: title,
                 representative: representative,
             },
                 {
                     receipts: {
-                        signature: trimmedDataURL,
                         title: title,
                         representative: representative,
                     }
                 }
             )
+            const stored = await Storage.put('receipts/signature', trimmedDataURL, {
+                contentType: selectedLogo.type,
+                level: 'private'
+            });
             setLoading(false)
         } catch (e) {
-            // onError(e);
+            setErrorText('Save Failed')
             setLoading(false);
         }
     }
@@ -81,6 +83,14 @@ const Receipts = (props) => {
     return (
         <>
             <H6>Create A Representative Signature For Your Tax Receipts</H6>
+            {props.userConfig.receipts ?
+                <div>
+                    <H6>Current Representative: {props.userConfig.receipts.representative}</H6>
+                    <H6>Current Title: {props.userConfig.receipts.title}</H6>
+                    <H6>Current Signature: </H6>
+                </div>
+                : ''
+            }
             <PadContainer>
                 <SignaturePad
                     canvasProps={{ width: '300px', height: '150px' }}
