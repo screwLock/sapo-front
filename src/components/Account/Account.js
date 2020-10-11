@@ -5,6 +5,7 @@ import Billing from './Billing'
 import Admin from './Admin'
 import Branding from './Branding'
 import Address from './Address'
+import EIN from './EIN'
 
 class Account extends React.Component {
     constructor(props) {
@@ -27,6 +28,7 @@ class Account extends React.Component {
                     <Tab id='admin' title="Admin" panel={<Admin {...this.props}/>}/>
                     <Tab id='branding' title="Branding" panel={<Branding {...this.props}/>}/>
                     <Tab id='address' title="Address" panel={<Address {...this.props}/>}/>
+                    <Tab id='ein' title="EIN" panel={<EIN {...this.props}/>}/>
                 </Tabs>
             </Container>
 

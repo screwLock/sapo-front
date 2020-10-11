@@ -46,7 +46,8 @@ class Address extends React.Component {
             () => {
                 API.post("sapo", '/account', {
                     body: {
-                        address: newAddress
+                        attribute: 'address',
+                        value: newAddress
                     }
                 }).then(response => {
                     this.props.updateUserAttributes('address', newAddress )
