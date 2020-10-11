@@ -55,7 +55,7 @@ const Receipts = (props) => {
         if (!validateForms()) return false;
         setLoading(true);
         try {
-            await this.props.updateUserConfig('receipts', {
+            await props.updateUserConfig('receipts', {
                 title: title,
                 representative: representative,
             },
@@ -67,12 +67,13 @@ const Receipts = (props) => {
                 }
             )
             const stored = await Storage.put('receipts/signature', trimmedDataURL, {
-                contentType: selectedLogo.type,
+                contentType: 'image/jpeg',
                 level: 'private'
             });
             setLoading(false)
         } catch (e) {
             setErrorText('Save Failed')
+            console.log(e)
             setLoading(false);
         }
     }
