@@ -38,6 +38,7 @@ const Branding = (props) => {
         try {
             const stored = await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
+                level: 'private'
               });
             // key is located in stored.key if it's needed
             setLoading(false)
