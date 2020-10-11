@@ -31,9 +31,12 @@ class Home extends React.Component {
             error: null,
             username: this.props.authData.username || '',
             password: this.props.authData.password || '',
-            user: null,
             userConfig: null,
-            isAdminLoggedIn: false
+            isAdminLoggedIn: false,
+            userAttributes: {
+                address: this.props.authData.signInUserSession.idToken.payload['address'].formatted || '',
+                ein: this.props.authData.signInUserSession.idToken.payload['custom:ein'] || ''
+            }
         };
     }
 
@@ -111,6 +114,17 @@ class Home extends React.Component {
         })
     }
 
+    // If we change cognito attributes, we need a way to show that client side
+    updateUserAttributes = (key, update) => {
+        this.setState(prevState => ({
+            userAttributes: {
+                ...prevState.userAttributes,
+                [key]: update
+            }
+        })
+        )
+    }
+
     handleAdminLogin = () => {
         this.setState({ isAdminLoggedIn: !this.state.isAdminLoggedIn })
     }
@@ -141,6 +155,8 @@ class Home extends React.Component {
                         updateUserConfig={this.updateUserConfig}
                         userConfig={this.state.userConfig}
                         updateCustomerInfo={this.updateCustomerInfo}
+                        userAttributes={this.state.userAttributes}
+                        updateUserAttributes={this.updateUserAttributes}
                         membership={this.state.membership}
                         nextStatement={this.state.nextStatement}
                         last4={this.state.last4}

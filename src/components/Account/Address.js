@@ -41,13 +41,15 @@ class Address extends React.Component {
     }
 
     handleSubmit = () => {
+        let newAddress = `${this.state.streetAddress}@${this.state.city}@${this.state.province}@${this.state.zipcode}`
         this.setState({ isProcessing: true },
             () => {
                 API.post("sapo", '/account', {
                     body: {
-                        address: `${this.state.streetAddress}@${this.state.city}@${this.state.province}@${this.state.zipcode}`
+                        address: newAddress
                     }
                 }).then(response => {
+                    this.props.updateUserAttributes('address', newAddress )
                     this.setState({ isProcessing: false})
                     this.showToast('Successfully Saved!')
                 }).catch(error => {
@@ -59,7 +61,7 @@ class Address extends React.Component {
     }
 
     render() {
-        const address = this.props.authData.attributes.address.split('@')
+        const address = this.props.userAttributes.address.split('@')
         return (
             <>
                 <H5>Change Your Physical Address</H5>
