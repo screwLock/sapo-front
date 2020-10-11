@@ -1,10 +1,8 @@
 const dev = {
-  /*    
-        s3: {
-        REGION: "YOUR_S3_UPLOADS_BUCKET_REGION",
-        BUCKET: "YOUR_S3_UPLOADS_BUCKET_NAME"
-      },
-  */
+  s3: {
+    REGION: "YOUR_S3_UPLOADS_BUCKET_REGION",
+    BUCKET: "YOUR_S3_UPLOADS_BUCKET_NAME"
+  },
   apiGateway: {
     REGION: "us-east-1",
     URL: "https://1vz50gsavh.execute-api.us-east-1.amazonaws.com/prod"
@@ -22,12 +20,10 @@ const dev = {
 };
 
 const prod = {
-  /*    
-        s3: {
-        REGION: "YOUR_S3_UPLOADS_BUCKET_REGION",
-        BUCKET: "YOUR_S3_UPLOADS_BUCKET_NAME"
-      },
-  */
+  s3: {
+    REGION: "us-east-1",
+    BUCKET: "sapo-prod-uploads"
+  },
   apiGateway: {
     REGION: "us-east-1",
     URL: "https://1vz50gsavh.execute-api.us-east-1.amazonaws.com/prod"

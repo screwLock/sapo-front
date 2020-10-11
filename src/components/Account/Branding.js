@@ -34,13 +34,14 @@ const Branding = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const filename = selectedLogo.name
+        const filename = `/branding/${selectedLogo.name}`
         try {
-            const stored = await Storage.vault.put(filename, selectedLogo, {
+            const stored = await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
               });
             // key is located in stored.key if it's needed
             setLoading(false)
+            console.log(stored)
         } catch (e) {
             // onError(e);
             setLoading(false);

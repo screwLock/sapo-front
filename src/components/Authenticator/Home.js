@@ -35,7 +35,8 @@ class Home extends React.Component {
             isAdminLoggedIn: false,
             userAttributes: {
                 address: this.props.authData.signInUserSession.idToken.payload['address'].formatted || '',
-                ein: this.props.authData.signInUserSession.idToken.payload['custom:ein'] || ''
+                ein: this.props.authData.signInUserSession.idToken.payload['custom:ein'] || '',
+                id: this.props.authData.username
             }
         };
     }
