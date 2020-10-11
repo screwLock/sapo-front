@@ -38,17 +38,22 @@ const Receipts = (props) => {
     return (
         <>
             <H6>Create a Signature</H6>
-            <div>
+            <PadContainer>
                 <SignaturePad 
-                    canvasProps={{width: 500, height: 200}}
+                    canvasProps={{width: '300px', height: '150px'}}
                     ref={sigPad} 
                 />
-            </div>
+            </PadContainer>
+            <Button onClick={clear} text='Clear' /><Button onClick={save} text='Save' />
             <Button disabled={true} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
+
+const PadContainer = styled.div`
+    margin: 1em;
+`
 
 const ErrorText = styled.div`
     color: red;
