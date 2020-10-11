@@ -55,7 +55,19 @@ const Receipts = (props) => {
         if(!validateForms()) return false;
         setLoading(true);
         try {
-            // key is located in stored.key if it's needed
+            await this.props.updateUserConfig('receipts', {
+                signature: trimmedDataURL,
+                title: title,
+                representative: representative,
+            },
+                {
+                    receipts: {
+                        signature: trimmedDataURL,
+                        title: title,
+                        representative: representative,
+                    }
+                }
+            )
             setLoading(false)
         } catch (e) {
             // onError(e);
