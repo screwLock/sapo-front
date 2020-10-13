@@ -44,7 +44,7 @@ class PickupContainer extends React.Component {
         else {
             //TODO:  Add employee contact info
             employee = userConfig.employees.find(employee => {
-                return employee.ID === pickup.createdBy
+                return employee.employeeID === pickup.createdBy
             })
             createdBy = `${employee.lastName}, ${employee.firstName}`
         }

@@ -41,6 +41,7 @@ export class CustomerCallIn extends React.Component {
             selectedServiceDetails: [],
             selectedDonatables: [],
             selectedDonatable: null,
+            selectedEmployee: null,
             donations: {},
             disabledDays: [],
             lat: '',
@@ -250,6 +251,21 @@ export class CustomerCallIn extends React.Component {
         }
     }
 
+    handleEmployeeSelect = (employee, action) => {
+        switch (action.action) {
+            case 'select-option':
+                this.setState({
+                    selectedEmployee: employee.value,
+                });
+                break;
+            case 'clear':
+                this.setState({
+                    selectedEmployee: null,
+                });
+                break;
+        }
+    }
+
     handleStateSelect = (st, action) => {
         switch (action.action) {
             case 'select-option':
@@ -323,7 +339,7 @@ export class CustomerCallIn extends React.Component {
                                         donations: this.state.donations,
                                         serviceDetails: this.state.selectedServiceDetails,
                                         route: null,
-                                        createdBy: this.state.selectedEmployee.ID,
+                                        createdBy: this.state.selectedEmployee.employeeID,
                                         ccAddresses: this.props.userConfig.submittedEmails.submittedCCAddresses,
                                         bccAddresses: this.props.userConfig.submittedEmails.submittedBCCAddresses,
                                         subjectLine: this.props.userConfig.submittedEmails.submittedSubjectLine,
@@ -555,6 +571,13 @@ export class CustomerCallIn extends React.Component {
                                     isVisible={(this.state.mandatoryDetails.length > 0)}
                                 />
                             </div>
+                            <EmployeeBlock>
+                                <EmployeeSelect
+                                    selectedEmployee={this.state.selectedEmployee}
+                                    employees={this.props.userConfig.employees}
+                                    onChange={this.handleEmployeeSelect}
+                                />
+                            </EmployeeBlock>
                         </BlockContainer>
                     )
                         : ''}
@@ -700,6 +723,23 @@ const CommentsTextArea = styled(TextArea)`
 `
 
 const CategoryBlock = styled.div`
+    @media ${device.mobileS}
+    {
+        width: 90%;    
+    }
+
+    @media ${device.tablet}
+    {
+        width: 50%;
+    }
+
+    @media ${device.laptop}
+    {
+        width: 35%;
+    }
+`
+
+const EmployeeBlock = styled.div`
     @media ${device.mobileS}
     {
         width: 90%;    

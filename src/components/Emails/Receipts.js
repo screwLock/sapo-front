@@ -67,7 +67,7 @@ const Receipts = (props) => {
                 }
             )
             const stored = await Storage.put('receipts/signature', trimmedDataURL, {
-                contentType: 'image/jpeg',
+                contentType: 'image/png',
                 level: 'private'
             });
             setLoading(false)
