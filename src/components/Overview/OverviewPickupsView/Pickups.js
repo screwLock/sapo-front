@@ -44,15 +44,17 @@ const Pickups = props => {
 
     const sendEmailDirections = () => {
         const driver = props.selectedDriver
-        if(Object.entries(driver).length !== 0){
+        const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
+        const routePickups = props.selectedDriver ? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName) : null
+        if (Object.entries(driver).length !== 0) {
             API.post("sapo", '/routing', {
                 body: {
                     email: driver.email,
-                    pickups: props.pickups,
+                    pickups: routePickups,
                     user: props.user
                 }
             }).then(response => {
-                showToast('Successfully Saved!')
+                showToast('Successfully Sent!')
             }).catch(error => {
                 showToast(`Save Failed`)
             })
@@ -205,7 +207,7 @@ const Pickups = props => {
                                         {props.selectedDriver ?
                                             (
                                                 <SpanRow>
-                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections(props.selectedDriver)}/></span>
+                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections()} /></span>
                                                     <span><ButtonIcon onClick={() => { props.createRoute() }} icon='eye-open' iconSize={25} /></span>
                                                     <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='floppy-disk' iconSize={25} /></span>
                                                 </SpanRow>
