@@ -58,18 +58,16 @@ const Receipts = (props) => {
             await props.updateUserConfig('receipts', {
                 title: title,
                 representative: representative,
+                signature: trimmedDataURL
             },
                 {
                     receipts: {
                         title: title,
                         representative: representative,
+                        signature: trimmedDataURL,
                     }
                 }
             )
-            const stored = await Storage.put('receipts/signature', trimmedDataURL, {
-                contentType: 'image/png',
-                level: 'private'
-            });
             setLoading(false)
         } catch (e) {
             setErrorText('Save Failed')
@@ -88,7 +86,9 @@ const Receipts = (props) => {
                 <div>
                     <H6>Current Representative: {props.userConfig.receipts.representative}</H6>
                     <H6>Current Title: {props.userConfig.receipts.title}</H6>
-                    <H6>Current Signature: </H6>
+                    <H6>Current Signature:</H6>
+                    <img src={props.userConfig.receipts.signature} />
+                    <Underline />
                 </div>
                 : ''
             }
@@ -137,6 +137,11 @@ const ErrorText = styled.div`
 const FormContainer = styled.div`
     width: 300px;
     margin: 1em;
+`
+
+const Underline = styled.div`
+    margin-top: 1em;
+    border-bottom: 3px solid #aaa;
 `
 
 export default Receipts
