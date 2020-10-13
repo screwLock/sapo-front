@@ -46,7 +46,8 @@ class PickupCard extends React.Component {
                 this.props.userConfig.completedEmails.completedCCAddresses,
                 this.props.userConfig.completedEmails.completedBCCAddresses,
                 this.props.userConfig.completedEmails.completedSubjectLine,
-                this.props.userConfig.completedEmails.completedMessageBody
+                this.props.userConfig.completedEmails.completedMessageBody,
+                this.props.userConfig.receipts
             )
         }
         else if (newStatus === 'rejected') {
@@ -99,7 +100,7 @@ class PickupCard extends React.Component {
         return true
     }
 
-    callAPI = (pickup, newStatus = '', ccAddresses = [], bccAddresses = [], subjectLine = '', messageBody = '') => {
+    callAPI = (pickup, newStatus = '', ccAddresses = [], bccAddresses = [], subjectLine = '', messageBody = '', receipts = null) => {
         API.put("sapo", "/pickups", {
             body: {
                 ...pickup,
@@ -108,6 +109,7 @@ class PickupCard extends React.Component {
                 bccAddresses: bccAddresses,
                 subjectLine: subjectLine,
                 messageBody: messageBody,
+                receipts: receipts
             }
         }).then(response => {
             this.props.updatePickups({ ...pickup, status: newStatus }, this.props.pickups, this.props.index)
