@@ -221,6 +221,7 @@ class Overview extends React.Component {
                 src={this.state.src}
                 updatePickups={this.updatePickups}
                 handleLogout={this.props.handleLogout}
+                userAttributes={this.props.userAttributes}
                 />
         )
     }

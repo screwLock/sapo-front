@@ -44,14 +44,18 @@ const Pickups = props => {
 
     const sendEmailDirections = () => {
         const driver = props.selectedDriver
+        // we need to find waypoints here because of lack of replaceAll() in backend...
         const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
         const routePickups = props.selectedDriver ? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName) : null
+        if(routePickups.length < 1) return false
+        let waypoints = '&waypoints=' + routePickups.map(pickup => `${pickup.streetAddress.replaceAll(' ','+')},${pickup.city},${pickup.zipcode}|`);
         if (Object.entries(driver).length !== 0) {
             API.post("sapo", '/routing', {
                 body: {
                     email: driver.email,
                     pickups: routePickups,
-                    user: props.user
+                    user: props.userAttributes.address.replaceAll('@', ',').replaceAll(' ', '+'),
+                    waypoints: waypoints
                 }
             }).then(response => {
                 showToast('Successfully Sent!')

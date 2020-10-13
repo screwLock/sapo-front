@@ -192,6 +192,7 @@ class Home extends React.Component {
                                 updateUserConfig={this.updateUserConfig}
                                 userConfig={this.state.userConfig}
                                 updateCustomerInfo={this.updateCustomerInfo}
+                                userAttributes={this.state.userAttributes}
                             />
                         </Cell>
                     </Grid>
@@ -202,6 +203,7 @@ class Home extends React.Component {
                         updateUserConfig={this.updateUserConfig}
                         userConfig={this.state.userConfig}
                         updateCustomerInfo={this.updateCustomerInfo}
+                        userAttributes={this.state.userAttributes}
                     />
                 </Mobile>
             </>
