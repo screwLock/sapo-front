@@ -54,6 +54,7 @@ const Branding = (props) => {
 
     return (
         <>
+            <img src={`https://sapo-prod-uploads.s3.amazonaws.com/private/us-east-1%3A8d7ab38f-da40-48a9-8f7a-ccae5237a560/branding/logo`} />
             <H6>Upload Your Logo and Header</H6>
             <H6>We recommend using a logo with a maximum height of 100px</H6>
             <StyledInput text={text} onInputChange={onFileChange} />
