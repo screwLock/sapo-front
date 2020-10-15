@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Button, FileInput, FormGroup, H6, InputGroup, Intent } from "@blueprintjs/core"
 import { Storage } from "aws-amplify";
@@ -34,11 +34,10 @@ const Branding = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const filename = `branding/logo`
+        const filename = `${props.userAttributes.id}/branding/logo`
         try {
             const stored = await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
-                level: 'private'
               });
             // key is located in stored.key if it's needed
             setLoading(false)
@@ -54,11 +53,16 @@ const Branding = (props) => {
 
     return (
         <>
-            <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/private/us-east-1%3A8d7ab38f-da40-48a9-8f7a-ccae5237a560/branding/logo`} />
-            <H6>Upload Your Logo and Header</H6>
-            <H6>We recommend using a logo with a maximum height of 100px</H6>
+            { props.userAttributes.id
+                ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
+                : ''
+            }
+            <H6>Upload Your Logo</H6>
             <StyledInput text={text} onInputChange={onFileChange} />
             <FileName>{selectedLogo ? selectedLogo.name : ''}</FileName>
+            <Preview>
+                <img src={selectedLogo? URL.createObjectURL(selectedLogo): null} />
+            </Preview>
             <Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
@@ -66,6 +70,10 @@ const Branding = (props) => {
 }
 
 const StyledLogo = styled.img`
+    margin: 1.5em;
+`
+
+const Preview = styled.div`
     margin: 1.5em;
 `
 
