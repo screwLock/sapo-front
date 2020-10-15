@@ -38,7 +38,7 @@ const Branding = (props) => {
         try {
             const stored = await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
-              });
+            });
             // key is located in stored.key if it's needed
             setLoading(false)
             console.log(stored)
@@ -53,24 +53,37 @@ const Branding = (props) => {
 
     return (
         <>
-            { props.userAttributes.id
+            {props.userAttributes.id
                 ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
                 : ''
             }
             <H6>Upload Your Logo</H6>
             <StyledInput text={text} onInputChange={onFileChange} />
             <FileName>{selectedLogo ? selectedLogo.name : ''}</FileName>
-            <Preview>
-                <img src={selectedLogo? URL.createObjectURL(selectedLogo): null} />
-            </Preview>
-            <Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
+            {selectedLogo
+                ? (
+                    <Preview>
+                        <StyledPreview src={selectedLogo ? URL.createObjectURL(selectedLogo) : null} />
+                    </Preview>
+                )
+                : ''
+            }
+                < Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
 
 const StyledLogo = styled.img`
-    margin: 1.5em;
+    margin-left: 1.5em;
+    margin-bottom: 1.5em;
+    width: 150px;
+    height: 150px;
+`
+
+const StyledPreview = styled.img`
+    width: 150px;
+    height: 150px;
 `
 
 const Preview = styled.div`
