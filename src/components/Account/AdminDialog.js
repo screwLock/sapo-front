@@ -16,16 +16,20 @@ class AdminDialog extends React.Component {
         AppToaster.show({ message: message });
     }
 
+    // attributes to change:
+    // custom:adminUserName1
+    // custom:adminPassword1
+    // this.props.admins = { admin: this.state.admin1, pass: this.state.admin1pass }
     handleSubmit = () => {
         this.setState({ isProcessing: true },
             () => {
-                API.post("sapo", '/admin', {
+                API.post("sapo", '/account', {
                     body: {
-                        attribute: 'custom:ein',
-                        value: this.state.ein
+                        isAdmin: true,
+                        adminUserName1: this.props.admins[0].admin,
+                        adminPassword1: this.props.admins[0].pass
                     }
                 }).then(response => {
-                    this.props.updateUserAttributes('ein', this.state.ein)
                     this.setState({ isProcessing: false })
                     this.showToast('Successfully Saved!')
                 }).catch(error => {

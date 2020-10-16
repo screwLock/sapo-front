@@ -84,7 +84,10 @@ class Admin extends React.Component {
     }
 
     render() {
-        const membership = 'standard'
+        //  TODO Possibly... 
+        //  Maybe at somepoint when we use more than one admin,
+        //  'membership' should be retrieved from Cognito props...
+        const membership = 'basic'
 
         return (
             <React.Fragment>
