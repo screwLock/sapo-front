@@ -31,7 +31,7 @@ class AdminDialog extends React.Component {
                     }
                 }).then(response => {
                     this.setState({ isProcessing: false })
-                    this.showToast('Successfully Saved!')
+                    this.showToast('Successfully Saved!  You must logout to use new admin credentials')
                 }).catch(error => {
                     this.setState({ isProcessing: false })
                     this.showToast(`Save Failed`)
