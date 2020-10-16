@@ -55,7 +55,7 @@ class AdminLogin extends React.Component {
                     >
                         <InputGroup name="password" type='password' onChange={this.handleChange} />
                     </FormGroup>
-                    <ForgotPassword>Forgot Your Password?</ForgotPassword>
+                    {/*<ForgotPassword>Forgot Your Password?</ForgotPassword>*/}
                 </DialogContainer>
                 <div className={Classes.DIALOG_FOOTER}>
                     <div className={Classes.DIALOG_FOOTER_ACTIONS}>
