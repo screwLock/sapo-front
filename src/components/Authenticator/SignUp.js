@@ -37,9 +37,6 @@ class SignUp extends React.Component {
             ein: '',
             password: '',
             confirmPassword: '',
-            adminUserName: '',
-            adminPassword: '',
-            adminConfirmPassword: '',
             access: 'admin',
             isTermsChecked: false,
             isTermsOpen: false,
@@ -146,8 +143,7 @@ class SignUp extends React.Component {
             this.state.streetAddress.length === 0 ||
             this.state.city.length === 0 ||
             this.state.state.length === 0 ||
-            this.state.zipcode.length === 0 ||
-            this.state.adminUserName.length === 0
+            this.state.zipcode.length === 0
         ) {
             this.setState({ error: 'Required fields are missing' })
             return false
@@ -174,26 +170,6 @@ class SignUp extends React.Component {
         }
         else if (!passwordTest.test(this.state.password)) {
             this.setState({ error: 'Your password does not meet the requirements' })
-            return false
-        }
-        else if (this.state.adminUserName === this.state.email) {
-            this.setState({ error: 'Admin username should not be the login email' })
-            return false
-        }
-        else if (!EmailValidator.validate(this.state.adminUserName)) {
-            this.setState({ error: 'Enter a valid admin email address' })
-            return false
-        }
-        else if (this.state.adminPassword.length <= 0) {
-            this.setState({ error: 'Pleae enter an admin password' })
-            return false
-        }
-        else if (this.state.adminConfirmPassword.length <= 0) {
-            this.setState({ error: 'Please confirm your admin password' })
-            return false
-        }
-        else if (this.state.adminPassword !== this.state.adminConfirmPassword) {
-            this.setState({ error: 'Your admin passwords do not match' })
             return false
         }
         else if (!this.state.isTermsChecked) {
@@ -311,26 +287,6 @@ class SignUp extends React.Component {
                             labelFor="text-input"
                         >
                             <InputGroup name="confirmPassword" onChange={this.handleChange} type='password' />
-                        </FormGroup>
-                        <TitleRow>Administrative Login</TitleRow>
-                        <FormGroup
-                            label="Admin Email"
-                            labelFor="text-input"
-                            helperText="This email will be used for administrative login and can NOT be the same as the sign-in email"
-                        >
-                            <InputGroup name="adminUserName" onChange={this.handleChange} />
-                        </FormGroup>
-                        <FormGroup
-                            label="Admin Password"
-                            labelFor="text-input"
-                        >
-                            <InputGroup name="adminPassword" onChange={this.handleChange} type='password' />
-                        </FormGroup>
-                        <FormGroup
-                            label="Confirm Admin Password"
-                            labelFor="text-input"
-                        >
-                            <InputGroup name="adminConfirmPassword" onChange={this.handleChange} type='password' />
                         </FormGroup>
                         <CheckboxContainer>I accept the
                             <a onClick={this.handleTermsOpen}> SAPO terms of service.</a>
