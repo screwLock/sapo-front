@@ -116,6 +116,7 @@ class Employees extends React.Component {
           employees={this.state.employees}
           isEmployeeOpen={this.state.isEmployeeOpen}
           handleEmployeeOpen={this.handleEmployeeOpen}
+          userAttributes={this.props.userAttributes}
         />
         <EditEmployee editEmployee={this.editEmployee}
           employees={this.state.employees}
