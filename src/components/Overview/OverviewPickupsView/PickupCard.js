@@ -109,7 +109,8 @@ class PickupCard extends React.Component {
                 bccAddresses: bccAddresses,
                 subjectLine: subjectLine,
                 messageBody: messageBody,
-                receipts: receipts
+                receipts: receipts,
+                id: this.props.userAttributes.id
             }
         }).then(response => {
             this.props.updatePickups({ ...pickup, status: newStatus }, this.props.pickups, this.props.index)

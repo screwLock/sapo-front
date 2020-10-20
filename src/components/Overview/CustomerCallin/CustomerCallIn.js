@@ -321,6 +321,7 @@ export class CustomerCallIn extends React.Component {
                             () => {
                                 API.post("sapo", "/pickups", {
                                     body: {
+                                        id: this.props.userAttributes.id,
                                         zipcode: this.state.selectedZipcode,
                                         pickupDate: this.state.selectedDate.toISOString(),
                                         firstName: this.state.firstName.toUpperCase(),

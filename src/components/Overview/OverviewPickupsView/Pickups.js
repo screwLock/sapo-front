@@ -153,6 +153,7 @@ const Pickups = props => {
                                 selectPickup={props.selectPickup(pickup)}
                                 updatePickups={props.updatePickups}
                                 pickups={props.pickups}
+                                userAttributes={props.userAttributes}
                             />
                         )}
                     </Draggable>
