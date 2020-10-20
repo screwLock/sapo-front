@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, Classes, Dialog, FormGroup, InputGroup, Intent } from "@blueprintjs/core"
 import styled from 'styled-components'
-import { AppToaster } from '../Toaster'
+import { AppToaster } from '../../Toaster'
 
 class AdminLogin extends React.Component {
     constructor(props) {

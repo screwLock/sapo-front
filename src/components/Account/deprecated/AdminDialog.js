@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Button, Classes, Intent, Dialog } from "@blueprintjs/core"
 import { API } from "aws-amplify"
-import { AppToaster } from '../Toaster'
+import { AppToaster } from '../../Toaster'
 
 class AdminDialog extends React.Component {
     constructor(props) {

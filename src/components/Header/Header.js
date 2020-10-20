@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Grid, Cell } from "styled-css-grid";
 import styled from 'styled-components'
 import HeaderAccount from './HeaderAccount'
-import AdminLogin from './AdminLogin'
 import { withRouter } from 'react-router'
 
 class Header extends React.Component {
@@ -10,20 +9,6 @@ class Header extends React.Component {
         super(props)
         this.state = {
             isAdminOpen: false,
-        }
-    }
-
-    handleOpen = () => {
-        if(this.props.isAdminLoggedIn){
-            // Logging out
-            this.props.onAdminLogin()
-            this.setState({isAdminOpen: false})
-            //Redirect back to overview page
-            this.props.history.push('/')
-        }
-        else{
-            // Bring up Login Dialog or close
-            this.setState({isAdminOpen: !this.state.isAdminOpen})
         }
     }
 
@@ -35,15 +20,9 @@ class Header extends React.Component {
         const props = {...this.props}
         return (
             <Header1>
-                <AdminLogin
-                    isOpen={this.state.isAdminOpen}
-                    onOpen={this.handleOpen}
-                    onClose={this.handleClose}
-                    {...props}
-                />
                 <Grid columns={12}>
                     <Cell width={7}>SAPO</Cell>
-                    <Cell width={5}><HeaderAccount {...props} handleAdminOpen={this.handleOpen}/></Cell>
+                    <Cell width={5}><HeaderAccount {...props}/></Cell>
                 </Grid>
             </Header1>
         );

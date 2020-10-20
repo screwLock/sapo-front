@@ -35,12 +35,12 @@ class Overview extends React.Component {
             return;
         }
 
-        else if (this.props.authData.signInUserSession.idToken.payload['custom:LatLng'] == null) {
+        else if (this.props.userAttributes['latLng'] == null) {
             this.showToast('You need to use a valid address for pickups.  You can change your address in the Account tab in the Admin dashboard.')
             return;
         }
-        else if (this.props.authData.signInUserSession.idToken.payload['custom:LatLng'] !== '@') {
-            let latlng = this.props.authData.signInUserSession.idToken.payload['custom:LatLng'].split('@')
+        else if (this.props.userAttributes['latLng'] !== '@') {
+            let latlng = this.props.userAttributes['latLng'].split('@')
             this.setState(prevState => ({
                 user: {
                     ...prevState.user,
@@ -65,7 +65,7 @@ class Overview extends React.Component {
 
                 let lat = ''
                 let lng = ''
-                let address = this.props.authData.signInUserSession.idToken.payload.address.formatted.split('@')
+                let address = this.props.userAttributes.address.formatted.split('@')
 
                 //get the lat and lng from a geocoder call
                 geocoder.geocode({ searchText: `${address[0] + address[3]}` },
@@ -105,7 +105,8 @@ class Overview extends React.Component {
         return API.get("sapo", "/pickups", {
             'queryStringParameters': {
                 'startDate': startDate,
-                'endDate': endDate
+                'endDate': endDate,
+                'id': this.props.userAttributes.id
             }
         }).then(result => {
             // make sure we add an inRoute attribute for the directions API

@@ -24,6 +24,7 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            accountHolder: null,
             authData: this.props.authData,
             authState: this.props.authState,
             modalShowing: false,
@@ -32,12 +33,8 @@ class Home extends React.Component {
             username: this.props.authData.username || '',
             password: this.props.authData.password || '',
             userConfig: null,
-            isAdminLoggedIn: false,
-            userAttributes: {
-                address: this.props.authData.signInUserSession.idToken.payload['address'].formatted || '',
-                ein: this.props.authData.signInUserSession.idToken.payload['custom:ein'] || '',
-                id: this.props.authData.username
-            }
+            isAdminLoggedIn: this.props.authData.signInUserSession.idToken.payload['custom:createdAt'] !== 'source' ? true : false,
+            userAttributes: {},
         };
     }
 
@@ -52,6 +49,7 @@ class Home extends React.Component {
          */
         do {
             try {
+                const accountHolder = await this.getAccountHolder();
                 const userConfig = await this.getUserConfig();
                 const customerInfo = await this.getCustomerInfo();
                 this.setState({
@@ -72,17 +70,73 @@ class Home extends React.Component {
         // this.setState({ isLoading: false });
     }
 
+    getAccountHolder = async () => {
+        const authData = this.props.authData
+        if (authData.attributes['custom:createdAt'] !== 'source') {
+            this.setState(prevState => ({
+                ...prevState,
+                userAttributes: {
+                    address: authData.attributes['address'] || '',
+                    ein: authData.attributes['custom:ein'] || '',
+                    id: authData.username,
+                    org: authData.attributes['name'] || '',
+                    latLng: authData.attributes['custom:LatLng']
+                }
+            })
+            )
+            return null
+        }
+        else {
+            try {
+                const accountHolder = await API.get("sapo", '/users/employees/source', {
+                    'queryStringParameters': {
+                        username: this.props.authData.attributes.name
+                    }
+                })
+                this.setState(prevState => ({
+                    ...prevState,
+                    accountHolder: accountHolder,
+                    userAttributes: {
+                        address: accountHolder.UserAttributes.find(attribute => attribute.Name === 'address').Value || '',
+                        ein: accountHolder.UserAttributes.find(attribute => attribute.Name === 'custom:ein').Value || '',
+                        id: accountHolder.Username,
+                        org: accountHolder.UserAttributes.find(attribute => attribute.Name === 'name').Value || '',
+                        latLng: accountHolder.UserAttributes.find(attribute => attribute.Name === 'custom:LatLng').Value || '',
+                    }
+                })
+                )
+            }
+            catch (e) {
+                console.log(e)
+            }
+        }
+    }
+
     getUserConfig = () => {
-        return API.get("sapo", '/users');
+        return API.get("sapo", '/users', {
+            'queryStringParameters': {
+                username: this.state.userAttributes.id
+            }
+        })
     }
 
     getCustomerInfo = () => {
-        return API.get("sapo", '/billing', {
-            'queryStringParameters': {
-                'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
-                'email': this.props.authData.signInUserSession.idToken.payload.email
-            }
-        });
+        if (this.props.authData.attributes['custom:createdAt'] !== 'source') {
+            return API.get("sapo", '/billing', {
+                'queryStringParameters': {
+                    'customerId': this.props.authData.signInUserSession.idToken.payload['custom:stripeID'],
+                    'email': this.props.authData.signInUserSession.idToken.payload.email
+                }
+            })
+        }
+        else {
+            return API.get("sapo", '/billing', {
+                'queryStringParameters': {
+                    'customerId': this.state.accountHolder.UserAttributes.find(attribute => attribute.Name === 'custom:stripeID').Value,
+                    'email': this.state.accountHolder.UserAttributes.find(attribute => attribute.Name === 'email').Value
+                }
+            })
+        }
     }
 
     updateCustomerInfo = async () => {
@@ -143,8 +197,7 @@ class Home extends React.Component {
             >
                 <Cell area="header">
                     <Header {...this.props}
-                        onAdminLogin={this.handleAdminLogin}
-                        isAdminLoggedIn={this.state.isAdminLoggedIn}
+                        userAttributes={this.state.userAttributes}
                     />
                 </Cell>
                 <Cell area="menu">
@@ -183,7 +236,7 @@ class Home extends React.Component {
                     >
                         <Cell area="header">
                             <Header {...this.props}
-                                onAdminLogin={this.handleAdminLogin}
+                                userAttributes={this.state.userAttributes}
                             />
                         </Cell>
                         <Cell area="content">

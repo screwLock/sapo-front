@@ -2,7 +2,6 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { H3, Tab, Tabs } from '@blueprintjs/core'
 import Billing from './Billing'
-import Admin from './Admin'
 import Branding from './Branding'
 import Address from './Address'
 import EIN from './EIN'
@@ -25,7 +24,6 @@ class Account extends React.Component {
                 <H3>Manage Account Info</H3>
                 <Tabs id="TabsAdmin" onChange={this.handleTabChange} selectedTabId={this.state.activeTabId}>
                     <Tab id="billing" title="Billing" panel={<Billing {...this.props}/>} />
-                    <Tab id='admin' title="Admin" panel={<Admin {...this.props}/>}/>
                     <Tab id='branding' title="Branding" panel={<Branding {...this.props}/>}/>
                     <Tab id='address' title="Address" panel={<Address {...this.props}/>}/>
                     <Tab id='ein' title="EIN" panel={<EIN {...this.props}/>}/>
