@@ -187,37 +187,50 @@ class Home extends React.Component {
 
     renderAdmin = () => {
         return (
-            <Grid
-                columns={"150px 1fr 50px"}
-                rows={"70px 1fr 45px"}
-                areas={[
-                    "header header  header",
-                    "menu   content content",
-                    "footer footer  footer"
-                ]}
-            >
-                <Cell area="header">
-                    <Header {...this.props}
-                        userAttributes={this.state.userAttributes}
-                    />
-                </Cell>
-                <Cell area="menu">
-                    <NavBar {...this.props} />
-                </Cell>
-                <Cell area="content">
+            <>
+                <Desktop>
+                    <Grid
+                        columns={"150px 1fr 50px"}
+                        rows={"70px 1fr 45px"}
+                        areas={[
+                            "header header  header",
+                            "menu   content content",
+                            "footer footer  footer"
+                        ]}
+                    >
+                        <Cell area="header">
+                            <Header {...this.props}
+                                userAttributes={this.state.userAttributes}
+                            />
+                        </Cell>
+                        <Cell area="menu">
+                            <NavBar {...this.props} />
+                        </Cell>
+                        <Cell area="content">
+                            <Main {...this.props}
+                                getUserConfig={this.getUserConfig}
+                                updateUserConfig={this.updateUserConfig}
+                                userConfig={this.state.userConfig}
+                                updateCustomerInfo={this.updateCustomerInfo}
+                                userAttributes={this.state.userAttributes}
+                                updateUserAttributes={this.updateUserAttributes}
+                                membership={this.state.membership}
+                                nextStatement={this.state.nextStatement}
+                                last4={this.state.last4}
+                            />
+                        </Cell>
+                    </Grid>
+                </Desktop>
+                <Mobile>
                     <Main {...this.props}
                         getUserConfig={this.getUserConfig}
                         updateUserConfig={this.updateUserConfig}
                         userConfig={this.state.userConfig}
                         updateCustomerInfo={this.updateCustomerInfo}
                         userAttributes={this.state.userAttributes}
-                        updateUserAttributes={this.updateUserAttributes}
-                        membership={this.state.membership}
-                        nextStatement={this.state.nextStatement}
-                        last4={this.state.last4}
                     />
-                </Cell>
-            </Grid>
+                </Mobile>
+            </>
         )
 
     }
