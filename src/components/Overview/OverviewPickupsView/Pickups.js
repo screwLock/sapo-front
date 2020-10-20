@@ -31,7 +31,10 @@ const Pickups = props => {
 
     const callAPI = (pickups) => {
         API.put("sapo", "/routing", {
-            body: pickups
+            body: {
+                pickups: pickups,
+                id: props.userAttributes.id
+            }
         }).then(response => {
             // ??? updateRoutes
             // also look up ordinal prop on pickup cards
