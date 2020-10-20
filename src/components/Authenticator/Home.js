@@ -159,7 +159,8 @@ class Home extends React.Component {
         API.post("sapo", "/users", {
             body: {
                 update: update,
-                key: key
+                key: key,
+                id: this.state.userAttributes.id
             }
         }).then(response => {
             this.showToast('Successfully Saved!')
