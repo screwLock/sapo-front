@@ -80,9 +80,9 @@ class Employees extends React.Component {
     // delete employee from cognito
     this.setState({ isProcessing: true },
       () => {
-        API.delete("sapo", '/users/employees', {
+        API.del("sapo", '/users/employees', {
           body: {
-            username: 'example'
+            username: employees[i].ID
           }
         }).then(response => {
           this.setState({ isProcessing: false })
@@ -91,7 +91,6 @@ class Employees extends React.Component {
           this.setState({
             employees: employees
           }, async () => this.saveEmployees())
-          this.props.handleEmployeeOpen();
         }).catch(error => {
           this.setState({ isProcessing: false })
           this.showToast(`Save Failed`)
