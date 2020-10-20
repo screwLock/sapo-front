@@ -6,6 +6,7 @@ import { Button, H3, Intent } from '@blueprintjs/core';
 import { AppToaster } from '../Toaster'
 import { produce } from 'immer'
 import EmployeesTable from './EmployeesTables'
+import { API } from "aws-amplify"
 
 class Employees extends React.Component {
   constructor(props) {
@@ -35,7 +36,7 @@ class Employees extends React.Component {
   }
 
   saveEmployees = () => {
-    this.props.updateUserConfig('employees', this.state.employees, {employees: this.state.employees})
+    this.props.updateUserConfig('employees', this.state.employees, { employees: this.state.employees })
   }
 
   editEmployee = (edit) => {
@@ -44,9 +45,9 @@ class Employees extends React.Component {
     //update in database
     employees[index] = edit;
     this.setState({
-        employees: employees
+      employees: employees
     }, async () => await this.saveEmployees())
-}
+  }
 
   componentDidMount = async () => {
     if (!this.props.authState) {
@@ -76,11 +77,26 @@ class Employees extends React.Component {
 
   handleDeleteEmployees = (i) => {
     let employees = [...this.state.employees]
-    //delete from database
-    employees.splice(i, 1)
-    this.setState({
-      employees: employees
-    }, async () => this.saveEmployees())
+    // delete employee from cognito
+    this.setState({ isProcessing: true },
+      () => {
+        API.delete("sapo", '/users/employees', {
+          body: {
+            username: 'example'
+          }
+        }).then(response => {
+          this.setState({ isProcessing: false })
+          //delete from database
+          employees.splice(i, 1)
+          this.setState({
+            employees: employees
+          }, async () => this.saveEmployees())
+          this.props.handleEmployeeOpen();
+        }).catch(error => {
+          this.setState({ isProcessing: false })
+          this.showToast(`Save Failed`)
+        })
+      })
   }
 
   handleEmployeeOpen = () => {
@@ -126,7 +142,7 @@ class Employees extends React.Component {
           getEditEmployee={this.getEditEmployee}
           key={this.state.editEmployee.email}
         />
-        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} editEmployee={this.handleEditEmployeeOpen}/>
+        <EmployeesTable data={this.state.employees} delete={this.handleDeleteEmployees} editEmployee={this.handleEditEmployeeOpen} />
       </Container>
     );
   }

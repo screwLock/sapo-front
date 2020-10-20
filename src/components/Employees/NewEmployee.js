@@ -38,12 +38,12 @@ class NewEmployee extends React.Component {
                         phoneNumber: `+${this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, '')}`,
                         employeeID: this.state.employeeID || 'NA',
                         access: this.state.access,
-                        ID: Date.now() + Math.random().toString(36).substr(2, 9),
                         address: this.props.userAttributes.address,
                         password: this.state.password,
                     }
                 }).then(response => {
                     this.setState({ isProcessing: false })
+                    console.log(response)
                     // persist the employee object
                     this.props.addEmployee({
                         firstName: this.state.firstName,
@@ -52,7 +52,7 @@ class NewEmployee extends React.Component {
                         phoneNumber: `+${this.state.phoneNumber.replace(/[^A-Za-z0-9]/g, '')}`,
                         employeeID: this.state.employeeID || null,
                         access: this.state.access,
-                        ID: Date.now() + Math.random().toString(36).substr(2, 9)
+                        ID: response.UserSub
                     });
                     // reset the dialog inputs
                     this.setState({
