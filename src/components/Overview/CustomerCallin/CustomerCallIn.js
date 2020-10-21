@@ -93,7 +93,8 @@ export class CustomerCallIn extends React.Component {
         return API.get("sapo", "/maxedDays", {
             'queryStringParameters': {
                 'startDate': startDate.toISOString(),
-                'endDate': endDate.toISOString()
+                'endDate': endDate.toISOString(),
+                'id': this.props.userAttributes.id
             }
         }).then(result => {
             return result
