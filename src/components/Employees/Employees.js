@@ -28,6 +28,11 @@ class Employees extends React.Component {
   }
 
   addEmployee = (employee) => {
+    // Determine the amount of employees the user can have
+    // based on their payment plan
+    // Basic:  no additional employees
+    // Standard: three addditional employees
+    // Premium: five additional employees
     this.setState(
       produce(draft => {
         draft.employees.push(employee)
