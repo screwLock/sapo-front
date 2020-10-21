@@ -41,11 +41,15 @@ class PickupContainer extends React.Component {
         else if(pickup.createdBy === 'DONOR'){
             createdBy = 'DONOR'
         }
-        else {
+        else{
             //TODO:  Add employee contact info
             employee = userConfig.employees.find(employee => {
                 return employee.employeeID === pickup.createdBy
             })
+            // need to check if employee is not found
+            if(employee == null){
+                createdBy = 'N/A'
+            }
             createdBy = `${employee.lastName}, ${employee.firstName}`
         }
         return (
