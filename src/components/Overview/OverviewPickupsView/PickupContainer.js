@@ -32,25 +32,26 @@ class PickupContainer extends React.Component {
     }
 
     render() {
-        const {pickup, userConfig} = this.props
+        const { pickup, userConfig } = this.props
         let createdBy, employee;
         //need to cover old submissions before createdBy was persisted
-        if(pickup.createdBy == null){
+        if (pickup.createdBy == null) {
             createdBy = 'N/A'
         }
-        else if(pickup.createdBy === 'DONOR'){
+        else if (pickup.createdBy === 'DONOR') {
             createdBy = 'DONOR'
         }
-        else{
+        else {
             //TODO:  Add employee contact info
             employee = userConfig.employees.find(employee => {
                 return employee.employeeID === pickup.createdBy
             })
             // need to check if employee is not found
-            if(employee == null){
+            if (employee == null) {
                 createdBy = 'N/A'
+            } else {
+                createdBy = `${employee.lastName}, ${employee.firstName}`
             }
-            createdBy = `${employee.lastName}, ${employee.firstName}`
         }
         return (
             <div
