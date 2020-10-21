@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Select, {components} from 'react-select'
 import SimpleBar from 'simplebar-react';
-import '../../../../node_modules/simplebar-react/dist/simplebar.min.css';
+import '../../../../../node_modules/simplebar-react/dist/simplebar.min.css';
 
 // Input needs to be outside of the render method to prevent 
 // rerender of HOC components everytime input value changes

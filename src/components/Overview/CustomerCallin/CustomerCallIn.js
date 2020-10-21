@@ -4,7 +4,6 @@ import { Button, Classes, Elevation, Dialog, FormGroup, H4, H6, InputGroup, Inte
 import getDisabledDates from './getDisabledDates'
 import styled from 'styled-components'
 import StateSelect from './StateSelect'
-import EmployeeSelect from './EmployeeSelect'
 import { produce } from 'immer'
 import { addDays, addMonths } from 'date-fns'
 import CategoryCheckboxes from './CategoryCheckboxes'
@@ -41,7 +40,6 @@ export class CustomerCallIn extends React.Component {
             selectedServiceDetails: [],
             selectedDonatables: [],
             selectedDonatable: null,
-            selectedEmployee: null,
             donations: {},
             disabledDays: [],
             lat: '',
@@ -199,7 +197,6 @@ export class CustomerCallIn extends React.Component {
             phoneNumber: '',
             email: '',
             selectedZipcode: '',
-            selectedEmployee: null,
             selectedDate: null,
             lat: '',
             lng: '',
@@ -246,21 +243,6 @@ export class CustomerCallIn extends React.Component {
                     selectedZipcode: '',
                     selectedDate: null,
                     showDatePicker: false,
-                });
-                break;
-        }
-    }
-
-    handleEmployeeSelect = (employee, action) => {
-        switch (action.action) {
-            case 'select-option':
-                this.setState({
-                    selectedEmployee: employee.value,
-                });
-                break;
-            case 'clear':
-                this.setState({
-                    selectedEmployee: null,
                 });
                 break;
         }
@@ -340,7 +322,7 @@ export class CustomerCallIn extends React.Component {
                                         donations: this.state.donations,
                                         serviceDetails: this.state.selectedServiceDetails,
                                         route: null,
-                                        createdBy: this.state.selectedEmployee.employeeID,
+                                        createdBy: this.props.userAttributes.currentAuthenticatedUser,
                                         ccAddresses: this.props.userConfig.submittedEmails.submittedCCAddresses,
                                         bccAddresses: this.props.userConfig.submittedEmails.submittedBCCAddresses,
                                         subjectLine: this.props.userConfig.submittedEmails.submittedSubjectLine,
@@ -413,10 +395,6 @@ export class CustomerCallIn extends React.Component {
         else if ((this.state.mandatoryDetails.length > 0)
             && (this.state.mandatoryDetails.filter(detail => { return detail.checked === true }).length !== this.state.mandatoryDetails.length)) {
             this.showToast('Customer must certify that all requirements are met')
-            return false
-        }
-        else if (this.state.selectedEmployee === null) {
-            this.showToast('Please select your employee signature')
             return false
         }
         else {
@@ -572,13 +550,6 @@ export class CustomerCallIn extends React.Component {
                                     isVisible={(this.state.mandatoryDetails.length > 0)}
                                 />
                             </div>
-                            <EmployeeBlock>
-                                <EmployeeSelect
-                                    selectedEmployee={this.state.selectedEmployee}
-                                    employees={this.props.userConfig.employees}
-                                    onChange={this.handleEmployeeSelect}
-                                />
-                            </EmployeeBlock>
                         </BlockContainer>
                     )
                         : ''}
@@ -724,23 +695,6 @@ const CommentsTextArea = styled(TextArea)`
 `
 
 const CategoryBlock = styled.div`
-    @media ${device.mobileS}
-    {
-        width: 90%;    
-    }
-
-    @media ${device.tablet}
-    {
-        width: 50%;
-    }
-
-    @media ${device.laptop}
-    {
-        width: 35%;
-    }
-`
-
-const EmployeeBlock = styled.div`
     @media ${device.mobileS}
     {
         width: 90%;    

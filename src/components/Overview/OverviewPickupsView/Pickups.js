@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
-import EmployeeSelect from '../CustomerCallIn/EmployeeSelect'
+import EmployeeSelect from '../CustomerCallIn/deprecated/EmployeeSelect'
 import { API } from "aws-amplify"
 import { AppToaster } from '../../Toaster'
 
@@ -240,6 +240,7 @@ const Pickups = props => {
                                             pickup={selectedPickup}
                                             changeIsPickupContainerOpen={changeIsPickupContainerOpen}
                                             userConfig={props.userConfig}
+                                            userAttributes={props.userAttributes}
                                         />
                                     )
                             }
