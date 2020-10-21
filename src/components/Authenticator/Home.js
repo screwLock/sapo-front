@@ -78,9 +78,10 @@ class Home extends React.Component {
                 userAttributes: {
                     address: authData.attributes['address'] || '',
                     ein: authData.attributes['custom:ein'] || '',
-                    id: authData.username,
+                    id: authData.username || '',
                     org: authData.attributes['name'] || '',
-                    latLng: authData.attributes['custom:LatLng']
+                    latLng: authData.attributes['custom:LatLng'],
+                    currentAuthenticatedUser: authData.username || ''
                 }
             })
             )
@@ -102,6 +103,7 @@ class Home extends React.Component {
                         id: accountHolder.Username,
                         org: accountHolder.UserAttributes.find(attribute => attribute.Name === 'name').Value || '',
                         latLng: accountHolder.UserAttributes.find(attribute => attribute.Name === 'custom:LatLng').Value || '',
+                        currentAuthenticatedUser: authData.username || ''
                     }
                 })
                 )
