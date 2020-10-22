@@ -49,7 +49,7 @@ class Home extends React.Component {
          */
         do {
             try {
-                const accountHolder = await this.getAccountHolder();
+                await this.getAccountHolder();
                 const userConfig = await this.getUserConfig();
                 const customerInfo = await this.getCustomerInfo();
                 this.setState({

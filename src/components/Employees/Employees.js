@@ -33,11 +33,26 @@ class Employees extends React.Component {
     // Basic:  no additional employees
     // Standard: three addditional employees
     // Premium: five additional employees
-    this.setState(
-      produce(draft => {
-        draft.employees.push(employee)
-      }), async () => await this.saveEmployees()
-    )
+    if (this.props.membership === 'SAPO Basic') {
+      this.showToast('You must upgrade your plan to add employees')
+      return false
+    }
+    else if (this.props.membership === 'SAPO Standard' && this.state.employees.length >= 3) {
+      this.showToast('You must upgrade your plan for additional employees')
+      return false
+    }
+    else if (this.props.membership === 'SAPO Premium' && this.state.employees.length >= 5) {
+      this.showToast('You must upgrade your plan for additional employees')
+      return false
+    }
+    else {
+      this.setState(
+        produce(draft => {
+          draft.employees.push(employee)
+        }),
+        async () => await this.saveEmployees()
+      )
+    }
   }
 
   saveEmployees = () => {
