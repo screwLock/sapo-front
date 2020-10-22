@@ -212,7 +212,7 @@ const Pickups = props => {
                                             onChange={handleEmployeeSelect}
                                             selectedEmployee={props.selectedDriver}
                                         />
-                                        {props.selectedDriver ?
+                                        {props.selectedDriver && routePickups.length > 0 ?
                                             (
                                                 <SpanRow>
                                                     <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections()} /></span>
@@ -221,7 +221,7 @@ const Pickups = props => {
                                                 </SpanRow>
                                             ) : (
                                                 <SpanRow>
-                                                    <span>No Driver Selected</span>
+                                                    <span>{props.selectedDriver == null? 'No Driver Selected': `No Scheduled Pickups for ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}`}</span>
                                                 </SpanRow>
                                                 // onSubmit, send pickups in route with index of routePickups
                                                 // need pickupID, 'driver', routeIndex === index in routePickups
