@@ -229,7 +229,7 @@ const Pickups = props => {
                                         }
                                     </SendDirectionsContainer>
                                 ) :
-                                ''
+                                '' /*We should add sort functionality right here */
                             }
                             {
                                 !isPickupContainerOpen

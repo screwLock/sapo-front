@@ -129,26 +129,28 @@ class Overview extends React.Component {
         }
         // only one pickup, use no waypoints in the direction url
         else if (routePickups.length === 1) {
-            destination = `${destination}${routePickups[0].lat},${routePickups[0].lng}`
+            destination = `${destination}${routePickups[0].streetAddress},${routePickups[0].zipcode}`
             src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${destination}`
         }
         // pickups === 2, one waypoint and no pipes
         else if (routePickups.length === 2) {
-            destination = `${destination}${routePickups[routePickups.length - 1].lat},${routePickups[routePickups.length - 1].lng}`
+            destination = `${destination}${routePickups[routePickups.length - 1].streetAddress},${routePickups[routePickups.length - 1].zipcode}`
             let waypoints = '&waypoints=';
-            waypoints = `${waypoints}${routePickups[0].lat},${routePickups[0].lng}`
+            waypoints = `${waypoints}${routePickups[0].streetAddress},${routePickups[0].zipcode}`
             src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${waypoints}${destination}`
         }
         // pickups > 2, all but last waypoint have pipes
         else if (routePickups.length > 2) {
-            destination = `${destination}${routePickups[routePickups.length - 1].lat},${routePickups[routePickups.length - 1].lng}`
-            // waypointPickups is the actual waypoints we will use
+            destination = `${destination}${routePickups[routePickups.length - 1].streetAddress},${routePickups[routePickups.length - 1].zipcode}`
+            // waypointPickups is the actual waypoints we will use (all stops except origin or destination)
             let waypointPickups = [...routePickups];
+            // The first element is the destination, so we will remove that.
             waypointPickups.splice(waypointPickups.length - 1);
-            waypointPickups.splice(waypointPickups.length - 2);
-            let waypoints = '&waypoints=' + waypointPickups.map(pickup => `${pickup.lat},${pickup.lng}|`);
+            // we don't want a pipe on the last waypoint, so we will also remove that
+            waypointPickups.splice(waypointPickups.length - 1);
+            let waypoints = '&waypoints=' + waypointPickups.map(pickup => `${pickup.streetAddress},${pickup.zipcode}|`);
             //no pipe on the last waypoint
-            waypoints = `${waypoints}${routePickups[routePickups.length - 2].lat},${routePickups[routePickups.length - 2].lng}`
+            waypoints = `${waypoints}${routePickups[routePickups.length - 2].streetAddress},${routePickups[routePickups.length - 2].zipcode}`
             src = `https://www.google.com/maps/embed/v1/directions?key=${config.GOOGLE_MAP_KEY}&origin=${origin}${waypoints}${destination}`
         }
 
