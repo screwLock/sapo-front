@@ -14,6 +14,7 @@ class Overview extends React.Component {
         super(props)
         this.state = {
             pickups: [],
+            datePickups: [],
             selectedPickup: null,
             selectedDate: new Date(),
             selectedDriver: null,
@@ -106,7 +107,12 @@ class Overview extends React.Component {
         }).then(result => {
             // make sure we add an inRoute attribute for the directions API
             // also an index for changing this inRoute attribute in the Overview Cards
-            this.setState({ pickups: result.map((pickup, index) => { return { ...pickup, inRoute: pickup.inRoute || null, index: index } }) })
+            const pickups = result.map((pickup, index) => { return { ...pickup, inRoute: pickup.inRoute || null, index: index } })
+            const datePickups = pickups.filter((pickup) => isSameDay(pickup.pickupDate, this.state.selectedDate))
+            this.setState({
+                pickups: result.map((pickup, index) => { return { ...pickup, inRoute: pickup.inRoute || null, index: index } }),
+                datePickups: datePickups
+            })
         });
     }
 
@@ -190,11 +196,12 @@ class Overview extends React.Component {
             })
     }
 
-    // for the datepicker ondayclick handler
-    // unconfirmed pickups should be shown based
-    // on the month of the selected day
+    // TODO: we should also create the datePickups here based on the date change
     selectDate = (date) => {
-        this.setState({ selectedDate: date })
+        this.setState({ 
+            selectedDate: date,
+            datePickups: this.state.pickups.filter((pickup) => isSameDay(pickup.pickupDate, date))
+        })
     }
 
     setSelectedDriver = (driver) => {

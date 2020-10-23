@@ -48,10 +48,10 @@ const Pickups = props => {
     const sendEmailDirections = () => {
         const driver = props.selectedDriver
         // we need to find waypoints here because of lack of replaceAll() in backend...
-        const datePickups = props.pickups.filter((pickup) => isSameDay(pickup.pickupDate, props.selectedDate))
+        const datePickups = props.datePickups
         const routePickups = props.selectedDriver ? datePickups.filter(pickup => pickup.inRoute).filter(pickup => pickup.inRoute.lastName === props.selectedDriver.lastName) : null
-        if(routePickups.length < 1) return false
-        let waypoints = '&waypoints=' + routePickups.map(pickup => `${pickup.streetAddress.replaceAll(' ','+')},${pickup.city},${pickup.zipcode}|`);
+        if (routePickups.length < 1) return false
+        let waypoints = '&waypoints=' + routePickups.map(pickup => `${pickup.streetAddress.replaceAll(' ', '+')},${pickup.city},${pickup.zipcode}|`);
         if (Object.entries(driver).length !== 0) {
             API.post("sapo", '/routing', {
                 body: {
@@ -200,9 +200,9 @@ const Pickups = props => {
                         >
                             <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
                             <ButtonRow>
-                                <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} />
-                                <ButtonIcon onClick={() => { if (datePickups.length > 0) { props.showMap(true); changeIsSendDirectionsOpen(true); } else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0)} />
-                                <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false); }} icon='calendar' iconSize={25} />
+                                <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} htmlTitle='Create A New Pickup'/>
+                                <ButtonIcon onClick={() => { if (datePickups.length > 0) { props.showMap(true); changeIsSendDirectionsOpen(true); } else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0)} htmlTitle='Routing'/>
+                                <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false); }} icon='calendar' iconSize={25} htmlTitle='Scheduling'/>
                             </ButtonRow>
                             {(isSendDirectionsOpen) ?
                                 (
@@ -215,13 +215,13 @@ const Pickups = props => {
                                         {props.selectedDriver && routePickups.length > 0 ?
                                             (
                                                 <SpanRow>
-                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections()} /></span>
-                                                    <span><ButtonIcon onClick={() => { props.createRoute() }} icon='eye-open' iconSize={25} /></span>
-                                                    <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='floppy-disk' iconSize={25} /></span>
+                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections()} htmlTitle={`Email ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`} /></span>
+                                                    <span><ButtonIcon onClick={() => { props.createRoute() }} icon='eye-open' iconSize={25} htmlTitle={`Preview ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`}/></span>
+                                                    <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='floppy-disk' iconSize={25} htmlTitle={`Save ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`}/></span>
                                                 </SpanRow>
                                             ) : (
                                                 <SpanRow>
-                                                    <span>{props.selectedDriver == null? 'No Driver Selected': `No Scheduled Pickups for ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}`}</span>
+                                                    <span>{props.selectedDriver == null ? 'No Driver Selected' : `No Scheduled Pickups for ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}`}</span>
                                                 </SpanRow>
                                                 // onSubmit, send pickups in route with index of routePickups
                                                 // need pickupID, 'driver', routeIndex === index in routePickups
@@ -229,7 +229,11 @@ const Pickups = props => {
                                         }
                                     </SendDirectionsContainer>
                                 ) :
-                                '' /*We should add sort functionality right here */
+                                <SendDirectionsContainer>
+                                    <SpanRow>
+                                        <span><ButtonIcon icon='sort' iconSize={25} onClick={() => console.log('sort')} />Status</span>
+                                    </SpanRow>
+                                </SendDirectionsContainer>
                             }
                             {
                                 !isPickupContainerOpen
