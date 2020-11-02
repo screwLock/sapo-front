@@ -93,7 +93,10 @@ class Overview extends React.Component {
         }
     }
 
-    getPickupsByMonth = (currentMonth) => {
+    // added sort parameter to account for different sort types
+    // sorting by status will be done on the backend by default
+
+    getPickupsByMonth = (currentMonth, sort = null) => {
         let currentYear = getYear(new Date())
         let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0, 10)
         let startDate = new Date(currentYear, currentMonth - 1, 1).toISOString().substr(0, 10)
@@ -101,7 +104,8 @@ class Overview extends React.Component {
             'queryStringParameters': {
                 'startDate': startDate,
                 'endDate': endDate,
-                'id': this.props.userAttributes.id
+                'id': this.props.userAttributes.id,
+                'sort': sort,
             }
         }).then(result => {
             // make sure we add an inRoute attribute for the directions API
@@ -202,7 +206,7 @@ class Overview extends React.Component {
         this.setState({ selectedDriver: driver })
     }
 
-
+    // if pickups === null, show a loading screen symbol
     render() {
         return (
             <OverviewViewHandler 
