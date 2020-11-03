@@ -1,7 +1,9 @@
 import { useMediaQuery } from 'react-responsive'
- 
+
+// in this app, we'll let desktop begin where tablet would begin.
+// IOW, instead of minWidth: 992, minWidth will be 768.
 export const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 })
+  const isDesktop = useMediaQuery({ minWidth: 768 })
   return isDesktop ? children : null
 }
 export const Tablet = ({ children }) => {

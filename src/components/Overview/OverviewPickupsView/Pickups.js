@@ -228,12 +228,7 @@ const Pickups = props => {
                                             )
                                         }
                                     </SendDirectionsContainer>
-                                ) :
-                                <SendDirectionsContainer>
-                                    <SpanRow>
-                                        <span><ButtonIcon icon='sort' iconSize={25} onClick={() => console.log('sort')} />Status</span>
-                                    </SpanRow>
-                                </SendDirectionsContainer>
+                                ) : ''
                             }
                             {
                                 !isPickupContainerOpen
