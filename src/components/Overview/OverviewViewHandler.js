@@ -51,7 +51,7 @@ class OverviewViewHandler extends React.Component {
                                 style={{ ...props, position: 'absolute', width: '100%' }}
                             >
                                 <Row>
-                                    <div style={{ width: '50%', }}>
+                                    <CalendarContainer style={{ width: '50%', }}>
                                         <Transition
                                             items={this.state.showMap}
                                             from={{ opacity: 0, transform: 'translate3d(100%,0,0)', }}
@@ -73,7 +73,7 @@ class OverviewViewHandler extends React.Component {
                                                     ><DatePickerFullScreen {...this.props} /></animated.div>
                                             }
                                         </Transition>
-                                    </div>
+                                    </CalendarContainer>
                                     <PickupsContainer>
                                         <Pickups {...this.props} changeView={this.changeView} showMap={this.showMap} />
                                     </PickupsContainer>
@@ -200,14 +200,14 @@ class OverviewViewHandler extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <Desktop>
                     {this.getView(this.state.view)}
                 </Desktop>
                 <Mobile>
                     {this.getMobileView(this.state.view)}
                 </Mobile>
-            </div>
+            </>
         )
     }
 }
@@ -217,6 +217,9 @@ const DropDownRow = styled.div`
     overflow: hidden;
 `
 
+const CalendarContainer = styled.div`
+    width: 100%;
+`
 const PickupsContainer = styled.div`
     width: 50%;
 `
@@ -260,7 +263,8 @@ const Column = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    min-width: 500px;
+    max-width: 1100px;
 `
 
 export default OverviewViewHandler;
