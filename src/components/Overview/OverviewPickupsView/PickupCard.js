@@ -307,7 +307,7 @@ const Card = styled.div`
     display: flex;
     flex-direction: row;
     background-color: transparent;
-    width: ${props => props.device === 'desktop'? '80%': '100%'}
+    width: ${props => props.device === 'desktop'? '90%': '100%'}
     height: 7em;
     margin: 1em;
     border-width: 0.05em; 
