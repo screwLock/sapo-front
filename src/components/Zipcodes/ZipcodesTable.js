@@ -12,7 +12,6 @@ class ZipcodesTable extends React.Component {
         {
             Header: 'Zipcode',
             accessor: 'zipcode',
-            width: 200
         }, {
             Header: 'Weekdays',
             accessor: 'weekdays',
@@ -24,7 +23,6 @@ class ZipcodesTable extends React.Component {
                     />
                 )
             },
-            width: 500
         },
         {
             Header: 'Actions',
