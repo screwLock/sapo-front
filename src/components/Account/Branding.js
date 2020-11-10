@@ -65,11 +65,12 @@ const Branding = (props) => {
                 ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
                 : ''
             }
-            {props.userAttributes.brandColor
-                ? <div style={{ color: props.userAttributes.brandColor }}></div>
+            {props.userConfig.brandColor
+                ? <StyledUnderline color={props.userConfig.brandColor} />
                 : ''
             }
-            <H6>Upload Your Logo</H6>
+
+            <StyledH6>Upload Your Logo</StyledH6>
             <StyledInput text={text} onInputChange={onFileChange} />
             <FileName>{selectedLogo ? selectedLogo.name : ''}</FileName>
             {selectedLogo
@@ -80,19 +81,30 @@ const Branding = (props) => {
                 )
                 : ''
             }
-            <H6>Choose Your Brand Color</H6>
-            <BlockPicker color={selectedColor} onChangeComplete={setSelectedColor} />
-            <Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
+            <StyledH6>Choose Your Brand Color</StyledH6>
+            <BlockPicker color={selectedColor} onChangeComplete={handleChangeComplete} />
+            <SubmitButton disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
+
+const StyledH6 = styled(H6)`
+    margin: 1.5em;
+`
 
 const StyledLogo = styled.img`
     margin-left: 1.5em;
     margin-bottom: 1.5em;
     width: 150px;
     height: 150px;
+`
+
+const StyledUnderline = styled.hr`
+    height: 3;
+    border: none;
+    background-color: ${props => props.color};
+    width: 450px;
 `
 
 const StyledPreview = styled.img`
@@ -111,9 +123,12 @@ const StyledInput = styled(FileInput)`
 const FileName = styled.div`
     color: blue;
 `
-
+const SubmitButton = styled(Button)`
+    margin-top: 20px;
+`
 const ErrorText = styled.div`
     color: red;
+    margin-top: 10px;
 `
 
 export default Branding
