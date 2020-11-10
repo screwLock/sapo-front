@@ -65,7 +65,7 @@ class OverviewViewHandler extends React.Component {
                                                 showMap
                                                     ? props => <animated.div
                                                         key={0}
-                                                        style={{ ...props, position: 'absolute' }}
+                                                        style={{ ...props, position: 'absolute' , zIndex: 1}}
                                                     ><EmbedMap {...this.props} /></animated.div>
                                                     : props => <animated.div
                                                         key={1}
@@ -222,10 +222,11 @@ const DropDownRow = styled.div`
 
 const CalendarContainer = styled.div`
     width: 50%;
-    margin-right: 5em;
+    margin-right: 2.5em;
 `
 const PickupsContainer = styled.div`
     width: 50%;
+    margin-left: 2.5em;
 `
 
 const MobilePickupsContainer = styled.div`
@@ -267,8 +268,9 @@ const Column = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     min-width: 550px;
-    max-width: 1100px;
+    max-width: 1250px;
 `
 
 export default OverviewViewHandler;
