@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Button, FileInput, FormGroup, H6, InputGroup, Intent } from "@blueprintjs/core"
-import { Storage } from "aws-amplify";
+import { Storage } from "aws-amplify"
+import { BlockPicker } from 'react-color'
 
 const Branding = (props) => {
 
@@ -9,6 +10,7 @@ const Branding = (props) => {
     const [errorText, setErrorText] = useState('')
     const [selectedLogo, setSelectedLogo] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [selectedColor, setSelectedColor] = useState('#d9e3f0')
 
     // On file select (from the pop up) 
     const onFileChange = event => {
@@ -31,15 +33,21 @@ const Branding = (props) => {
 
     };
 
+    const handleChangeComplete = (color) => {
+        setSelectedColor(color.hex)
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         const filename = `${props.userAttributes.id}/branding/logo`
         try {
+            // upload logo to s3 bucket
+            // key is located in stored.key if it's needed
             const stored = await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
             });
-            // key is located in stored.key if it's needed
+            // add the color to userConfig
             setLoading(false)
             console.log(stored)
         } catch (e) {
@@ -57,6 +65,10 @@ const Branding = (props) => {
                 ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
                 : ''
             }
+            {props.userAttributes.brandColor
+                ? <div style={{ color: props.userAttributes.brandColor }}></div>
+                : ''
+            }
             <H6>Upload Your Logo</H6>
             <StyledInput text={text} onInputChange={onFileChange} />
             <FileName>{selectedLogo ? selectedLogo.name : ''}</FileName>
@@ -68,7 +80,9 @@ const Branding = (props) => {
                 )
                 : ''
             }
-                < Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
+            <H6>Choose Your Brand Color</H6>
+            <BlockPicker color={selectedColor} onChangeComplete={setSelectedColor} />
+            <Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
