@@ -29,7 +29,7 @@ class OverviewViewHandler extends React.Component {
     }
 
     showMobileDatePicker = () => {
-        this.setState({ showMobileDatePicker: !this.state.showMobileDatePicker})
+        this.setState({ showMobileDatePicker: !this.state.showMobileDatePicker })
     }
 
     getView = (view) => {
@@ -51,7 +51,7 @@ class OverviewViewHandler extends React.Component {
                                 style={{ ...props, position: 'absolute', width: '100%' }}
                             >
                                 <Row>
-                                    <CalendarContainer style={{ width: '50%', }}>
+                                    <CalendarContainer>
                                         <Transition
                                             items={this.state.showMap}
                                             from={{ opacity: 0, transform: 'translate3d(100%,0,0)', }}
@@ -133,7 +133,7 @@ class OverviewViewHandler extends React.Component {
                                     <MobileHeader>
                                         <HeaderItem />
                                         <HeaderItem align='center'>
-                                            <CalendarIcon icon='calendar' iconSize={30} onClick={this.showMobileDatePicker} color='white'/>
+                                            <CalendarIcon icon='calendar' iconSize={30} onClick={this.showMobileDatePicker} color='white' />
                                         </HeaderItem>
                                         <HeaderItem align='flex-end'>
                                             <LogoutIcon icon='log-out' iconSize={25} onClick={this.props.handleLogout} color='white' />
@@ -152,7 +152,7 @@ class OverviewViewHandler extends React.Component {
                                             showMobileDatePicker
                                                 ? props => <animated.div
                                                     key={0}
-                                                    style={{ ...props}}
+                                                    style={{ ...props }}
                                                 >
                                                     <DatePickerMobile {...this.props} showMobileDatePicker={this.state.showMobileDatePicker} />
                                                 </animated.div>
@@ -202,7 +202,10 @@ class OverviewViewHandler extends React.Component {
         return (
             <>
                 <Desktop>
-                    {this.getView(this.state.view)}
+                    {/* this is kind of hacky, but the only way to deal with the extra 150px added and to remove the overflowX scroll */}
+                    <div style={{ width: 'calc(100%-150px)', position: 'relative' }}>
+                        {this.getView(this.state.view)}
+                    </div>
                 </Desktop>
                 <Mobile>
                     {this.getMobileView(this.state.view)}
@@ -218,7 +221,8 @@ const DropDownRow = styled.div`
 `
 
 const CalendarContainer = styled.div`
-    width: 100%;
+    width: 50%;
+    margin-right: 5em;
 `
 const PickupsContainer = styled.div`
     width: 50%;
@@ -263,7 +267,7 @@ const Column = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: row;
-    min-width: 500px;
+    min-width: 550px;
     max-width: 1100px;
 `
 
