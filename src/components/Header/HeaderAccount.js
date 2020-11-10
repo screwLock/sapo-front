@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Button, Menu, MenuDivider, MenuItem, Popover } from "@blueprintjs/core";
+import { Button, Menu, MenuItem, Popover } from "@blueprintjs/core";
 
 class HeaderAccount extends React.Component {
 
@@ -11,7 +11,6 @@ class HeaderAccount extends React.Component {
         <Popover position='bottom'>
           <Button minimal={true} large={true} icon="people" text={org} style={{ fontWeight: 'bold' }} />
           <Menu>
-            <MenuDivider />
             <MenuItem text="Logout" onClick={this.props.handleLogout}></MenuItem>
           </Menu>
         </Popover>

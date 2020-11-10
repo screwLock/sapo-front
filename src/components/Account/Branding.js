@@ -10,7 +10,7 @@ const Branding = (props) => {
     const [errorText, setErrorText] = useState('')
     const [selectedLogo, setSelectedLogo] = useState(null)
     const [loading, setLoading] = useState(false)
-    const [selectedColor, setSelectedColor] = useState('#d9e3f0')
+    const [selectedColor, setSelectedColor] = useState(null)
 
     // On file select (from the pop up) 
     const onFileChange = event => {
@@ -37,27 +37,54 @@ const Branding = (props) => {
         setSelectedColor(color.hex)
     };
 
-    const handleSubmit = async (e) => {
+    const handleLogoSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         const filename = `${props.userAttributes.id}/branding/logo`
         try {
             // upload logo to s3 bucket
             // key is located in stored.key if it's needed
-            const stored = await Storage.put(filename, selectedLogo, {
+            await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
             });
             // add the color to userConfig
+            await props.updateUserConfig('branding', {
+                color: selectedColor
+            },
+                {
+                    branding: {
+                        color: selectedColor
+                    }
+                }
+            )
             setLoading(false)
-            console.log(stored)
         } catch (e) {
             // onError(e);
             setLoading(false);
         }
     }
 
-    // upload file to s3 call it /{bucketName}/{userID}/logos/logo1
-    // save url in userconfig
+    const handleColorSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            // add the color to userConfig
+            await props.updateUserConfig('branding', {
+                color: selectedColor
+            },
+                {
+                    branding: {
+                        color: selectedColor
+                    }
+                }
+            )
+            setLoading(false)
+        } catch (e) {
+            // onError(e);
+            setLoading(false);
+        }
+    }
+
 
     return (
         <>
@@ -65,8 +92,8 @@ const Branding = (props) => {
                 ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
                 : ''
             }
-            {props.userConfig.brandColor
-                ? <StyledUnderline color={props.userConfig.brandColor} />
+            {props.userConfig.branding
+                ? <StyledUnderline color={props.userConfig.branding.color} />
                 : ''
             }
 
@@ -81,16 +108,17 @@ const Branding = (props) => {
                 )
                 : ''
             }
+            <SubmitButton disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleLogoSubmit} />
             <StyledH6>Choose Your Brand Color</StyledH6>
-            <BlockPicker color={selectedColor} onChangeComplete={handleChangeComplete} />
-            <SubmitButton disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleSubmit} />
+            <BlockPicker color={selectedColor || '#000'} onChangeComplete={handleChangeComplete} />
+            <SubmitButton disabled={!selectedColor} loading={loading} text='Submit' onClick={handleColorSubmit} />
             <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
 
 const StyledH6 = styled(H6)`
-    margin: 1.5em;
+    margin: 20px;
 `
 
 const StyledLogo = styled.img`
