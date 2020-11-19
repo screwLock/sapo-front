@@ -47,16 +47,6 @@ const Branding = (props) => {
             await Storage.put(filename, selectedLogo, {
                 contentType: selectedLogo.type,
             });
-            // add the color to userConfig
-            await props.updateUserConfig('branding', {
-                color: selectedColor
-            },
-                {
-                    branding: {
-                        color: selectedColor
-                    }
-                }
-            )
             setLoading(false)
         } catch (e) {
             // onError(e);
@@ -70,11 +60,11 @@ const Branding = (props) => {
         try {
             // add the color to userConfig
             await props.updateUserConfig('branding', {
-                color: selectedColor
+                color1: selectedColor
             },
                 {
                     branding: {
-                        color: selectedColor
+                        color1: selectedColor
                     }
                 }
             )
@@ -92,10 +82,6 @@ const Branding = (props) => {
                 ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
                 : ''
             }
-            {props.userConfig.branding
-                ? <StyledUnderline color={props.userConfig.branding.color} />
-                : ''
-            }
 
             <StyledH6>Upload Your Logo</StyledH6>
             <StyledInput text={text} onInputChange={onFileChange} />
@@ -108,17 +94,18 @@ const Branding = (props) => {
                 )
                 : ''
             }
-            <SubmitButton disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleLogoSubmit} />
+            <SubmitButton><Button disabled={!selectedLogo} loading={loading} text='Submit' onClick={handleLogoSubmit} /></SubmitButton>
             <StyledH6>Choose Your Brand Color</StyledH6>
             <BlockPicker color={selectedColor || '#000'} onChangeComplete={handleChangeComplete} />
-            <SubmitButton disabled={!selectedColor} loading={loading} text='Submit' onClick={handleColorSubmit} />
+            <SubmitButton><Button disabled={!selectedColor} loading={loading} text='Submit' onClick={handleColorSubmit} /></SubmitButton>
             <ErrorText>{errorText}</ErrorText>
         </>
     )
 }
 
 const StyledH6 = styled(H6)`
-    margin: 20px;
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
 `
 
 const StyledLogo = styled.img`
@@ -126,13 +113,6 @@ const StyledLogo = styled.img`
     margin-bottom: 1.5em;
     width: 150px;
     height: 150px;
-`
-
-const StyledUnderline = styled.hr`
-    height: 3;
-    border: none;
-    background-color: ${props => props.color};
-    width: 450px;
 `
 
 const StyledPreview = styled.img`
@@ -145,14 +125,16 @@ const Preview = styled.div`
 `
 
 const StyledInput = styled(FileInput)`
-    margin: 1.5em;
+    margin-top: 1rem;
+    margin-left: 1.5rem;
 `
 
 const FileName = styled.div`
     color: blue;
 `
-const SubmitButton = styled(Button)`
-    margin-top: 20px;
+const SubmitButton = styled.div`
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 `
 const ErrorText = styled.div`
     color: red;
