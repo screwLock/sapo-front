@@ -8,6 +8,7 @@ export interface ICategory {
     name: string;
     donatables: IDonatable[];
     minAmount?: number;
+    uploadRequirements?: string;
 }
 
 const CATEGORY_NAMES: string[] = [

@@ -13,7 +13,7 @@ class NewCategory extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
         this.state = {
-            selectedCategory: { name: 'Select A Category', donatables: [] } as Categories.ICategory,
+            selectedCategory: { name: 'Select A Category', donatables: [], uploadRequirements: 'none' } as Categories.ICategory,
             selectedDonatable: { name: 'Select A Donatable' } as Donatables.IDonatable,
             categoryName: '',
             categoryDonatables: [],
@@ -22,6 +22,7 @@ class NewCategory extends React.Component<any, any> {
             radioDonatable: 'one',
             showDonatables: false,
             donatableName: '',
+            uploadRequirements: 'none',
             canSave: false
         };
     }
@@ -103,7 +104,7 @@ class NewCategory extends React.Component<any, any> {
             return (
                 <React.Fragment>
                     <BlockContainer>
-                        <H5>Now Add Donatables to {this.state.categoryName}</H5>
+                        <H5>Now Add Donatables to '{this.state.categoryName}'</H5>
                         <RadioGroup
                             inline={true}
                             onChange={this.handleRadioDonatableChange}
@@ -113,6 +114,18 @@ class NewCategory extends React.Component<any, any> {
                             <Radio inline={true} label="Create A Custom Donatable" value='two' />
                         </RadioGroup>
                         {this.renderRadioDonatableChoice()}
+                    </BlockContainer>
+                    <BlockContainer>
+                        <H5>Does '{`${this.state.selectedCategory? this.state.selectedCategory.name: ''}`}' Require Photo Uploads?</H5>
+                        <RadioGroup
+                            inline={false}
+                            onChange={this.handleRadioDonatableChange}
+                            selectedValue={this.state.radioDonatable}
+                        >
+                            <Radio label="No Photos Required" value='' />
+                            <Radio label="One Photo Required" value='one' />
+                            <Radio label="Front And Back Photos Required" value='two' />
+                        </RadioGroup>
                     </BlockContainer>
                 </React.Fragment>
             )
@@ -201,6 +214,15 @@ class NewCategory extends React.Component<any, any> {
 
     protected handleDonatableValueChange = (donatable: Donatables.IDonatable) => {
         this.setState(produce(draft => { draft.selectedDonatable = donatable, draft.donatableName = donatable.name })
+        )
+    }
+
+    protected handleUploadRequirementsChange = (category: Categories.ICategory) => {
+        this.setState(produce(draft => {
+            draft.selectedCategory = category,
+                draft.showDonatables = true,
+                draft.categoryName = category.name
+        })
         )
     }
 

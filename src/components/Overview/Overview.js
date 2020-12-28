@@ -2,7 +2,7 @@
 import * as React from 'react'
 import OverviewViewHandler from './OverviewViewHandler'
 import produce from 'immer';
-import { getMonth, getYear, lastDayOfMonth, isSameDay } from 'date-fns'
+import { addMonths, subMonths, getMonth, getYear, lastDayOfMonth, startOfMonth,isSameDay } from 'date-fns'
 import { API, Auth } from "aws-amplify"
 import { AppToaster } from '../Toaster'
 import config from '../../config'
@@ -17,7 +17,7 @@ class Overview extends React.Component {
             selectedPickup: null,
             selectedDate: new Date(),
             selectedDriver: null,
-            selectedMonth: getMonth(new Date()),
+            selectedMonth: new Date(),
             unconfirmedDates: [],
             user: {},
             src: '',
@@ -97,9 +97,8 @@ class Overview extends React.Component {
     // sorting by status will be done on the backend by default
 
     getPickupsByMonth = (currentMonth, sort = null) => {
-        let currentYear = getYear(new Date())
-        let endDate = lastDayOfMonth(new Date(currentYear, currentMonth + 1)).toISOString().substr(0, 10)
-        let startDate = new Date(currentYear, currentMonth - 1, 1).toISOString().substr(0, 10)
+        let endDate = lastDayOfMonth(addMonths(currentMonth, 1)).toISOString().substr(0, 10)
+        let startDate = startOfMonth(subMonths(currentMonth, 1)).toISOString().substr(0, 10)
         return API.get("sapo", "/pickups", {
             'queryStringParameters': {
                 'startDate': startDate,
@@ -190,9 +189,9 @@ class Overview extends React.Component {
 
     // we also need to get the pickups for the selected month
     handleMonthChange = (month) => {
-        this.setState({ selectedMonth: getMonth(month) },
+        this.setState({ selectedMonth: month },
             () => {
-                this.getPickupsByMonth(getMonth(month))
+                this.getPickupsByMonth(month)
             })
     }
 
@@ -210,7 +209,8 @@ class Overview extends React.Component {
     render() {
         return (
             <OverviewViewHandler 
-                {...this.state} 
+                {...this.state}
+                selectedMonth={getMonth(this.state.selectedMonth)} 
                 handleClick={this.selectDate}
                 onDragEnd={this.onDragEnd}
                 handleMonthChange={this.handleMonthChange}
