@@ -195,11 +195,15 @@ const Pickups = props => {
     return (
         <>
             <>
-            <PhotoViewer 
-                isOpen={isPhotoViewerOpen}
-                onClose={isPhotoViewerOpen}
-                openPhotos={setIsPhotoViewerOpen}
-            />
+                {selectedPickup ?
+                    <PhotoViewer
+                        isOpen={isPhotoViewerOpen}
+                        onClose={isPhotoViewerOpen}
+                        openPhotos={setIsPhotoViewerOpen}
+                        pickup={selectedPickup}
+                    />
+                    : ''
+                }
             </>
             <React.Fragment>
                 <DragDropContext onDragEnd={onDragEnd}>

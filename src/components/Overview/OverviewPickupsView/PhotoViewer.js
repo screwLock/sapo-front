@@ -10,6 +10,7 @@ const PhotoViewer = (props) => {
             canOutsideClickClose={true}
             isOpen={props.isOpen}
             onClose={() => props.openPhotos(false)}
+            title={`Photos For Pickup ${props.pickup.streetAddress}`}
         >
 
         </Dialog>

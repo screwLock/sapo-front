@@ -54,7 +54,7 @@ class PickupContainer extends React.Component {
                 })
                     }</ul>
                 </div>
-                <div onClick={() => this.props.openPhotos(true)}>asdfaf</div>
+                <div><PhotoViewerButton onClick={() => this.props.openPhotos(true)}>View Photos</PhotoViewerButton></div>
                 <div>Comments: {pickup.comments ? `${pickup.comments}` : 'None'}</div>
                 <div>Submitted By: {createdBy}</div>
             </Container>
@@ -80,6 +80,11 @@ const CloseIcon = styled.div`
     flex-direction: row;
     justify-content: flex-start;
     cursor: pointer;
+`
+
+const PhotoViewerButton = styled.div`
+    cursor: pointer;
+
 `
 
 export default PickupContainer
