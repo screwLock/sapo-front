@@ -7,6 +7,8 @@ import Zipcodes from './Zipcodes/Zipcodes';
 import Employees from './Employees/Employees';
 import Categories from './Categories/Categories'
 import Emails from './Emails/Emails'
+import Photos from './Photos/Photos'
+import Branding from './Branding/Branding'
 import Account from './Account/Account'
 
 class Main extends Component {
@@ -33,6 +35,12 @@ class Main extends Component {
           />
           <Route exact path='/emails'
                  render = {() => <Emails {...this.props} />}
+          />
+          <Route exact path='/branding'
+                 render = {() => <Branding {...this.props} />}
+          />
+          <Route exact path='/photos'
+                 render = {() => <Photos {...this.props} />}
           />
           <Route exact path='/account'
                  render = {() => <Account {...this.props} />}

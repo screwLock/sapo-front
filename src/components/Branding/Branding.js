@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Button, FileInput, FormGroup, H6, InputGroup, Intent } from "@blueprintjs/core"
+import { Button, FileInput, FormGroup, H3, H6, InputGroup, Intent } from "@blueprintjs/core"
 import { Storage } from "aws-amplify"
 import { BlockPicker } from 'react-color'
 
@@ -77,7 +77,8 @@ const Branding = (props) => {
 
 
     return (
-        <>
+        <Container>
+            <H3>Manage Your Branding</H3>
             {props.userAttributes.id
                 ? <StyledLogo src={`https://sapo-prod-uploads.s3.amazonaws.com/public/${props.userAttributes.id}/branding/logo`} />
                 : ''
@@ -99,9 +100,13 @@ const Branding = (props) => {
             <BlockPicker color={selectedColor || '#000'} onChangeComplete={handleChangeComplete} />
             <SubmitButton><Button disabled={!selectedColor} loading={loading} text='Submit' onClick={handleColorSubmit} /></SubmitButton>
             <ErrorText>{errorText}</ErrorText>
-        </>
+        </Container>
     )
 }
+
+const Container = styled.div`
+  margin: 25px;
+`
 
 const StyledH6 = styled(H6)`
     margin-top: 0.75rem;

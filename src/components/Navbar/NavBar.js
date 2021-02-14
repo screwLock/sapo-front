@@ -16,6 +16,8 @@ class NavBar extends Component {
           <li><StyledNavLink to='/employees' activeClassName="selected">Employees</StyledNavLink></li>
           <li><StyledNavLink to='/categories' activeClassName="selected">Categories</StyledNavLink></li>
           <li><StyledNavLink to='/emails' activeClassName="selected">Emails</StyledNavLink></li>
+          <li><StyledNavLink to='/branding' activeClassName="selected">Branding</StyledNavLink></li>
+          <li><StyledNavLink to='/photos' activeClassName="selected">Photos</StyledNavLink></li>
           <li><StyledNavLink to='/account' activeClassName="selected">Account</StyledNavLink></li>
         </ul>
       </nav>

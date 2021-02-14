@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Button, Checkbox, H5, Radio, RadioGroup } from '@blueprintjs/core'
+import { Button, Checkbox, H3, H5, Radio, RadioGroup } from '@blueprintjs/core'
 
 const Photos = (props) => {
 
@@ -41,7 +41,8 @@ const Photos = (props) => {
     }
 
     return (
-        <>
+        <Container>
+            <H3>Manage The Photos of Pickup Donations</H3>
             <H5>Configure How You Require Photos for Pickup Requests</H5>
             {props.membership !== 'SAPO Premium'
                 ? (
@@ -68,9 +69,13 @@ const Photos = (props) => {
                     </>
                 )
             }
-        </>
+        </Container>
     )
 }
+
+const Container = styled.div`
+  margin: 25px;
+`
 
 const SubmitButton = styled.div`
     margin-top: 1rem;
