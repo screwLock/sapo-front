@@ -31,7 +31,7 @@ class PickupContainer extends React.Component {
         }
         return (
             <Container>
-                <CloseIcon onClick={() => this.props.changeIsPickupContainerOpen(false)}><Icon icon='chevron-left' iconSize={25} /></CloseIcon>
+                <CloseIcon onClick={() => this.props.changeIsPickupContainerOpen(false)}><Icon icon='cross' iconSize={25} /></CloseIcon>
                 <h3>{pickup.lastName}, {pickup.firstName}</h3>
                 <h3>{pickup.streetAddress}, {pickup.zipcode}</h3>
                 <h5>{pickup.phoneNumber}</h5>
@@ -65,8 +65,9 @@ class PickupContainer extends React.Component {
 const Container = styled.div`
     border-width: 0.05em; 
     border-color: lightgrey;
-    border-radius: 0.5em 0.5em 0.5em 0.5em;
     border-style: solid;
+    border-right: 0;
+    border-bottom: 0;
     width: 80%;
     padding-left: 1.5em;
     padding-bottom: 1.5em;

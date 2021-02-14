@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Grid, Cell } from "styled-css-grid";
 import styled from 'styled-components'
 import HeaderAccount from './HeaderAccount'
+import Notifications from './Notifications'
 import { withRouter } from 'react-router'
 
 class Header extends React.Component {
@@ -21,7 +22,8 @@ class Header extends React.Component {
         return (
             <Header1>
                 <Grid columns={12}>
-                    <Cell width={7}>SAPO</Cell>
+                    <Cell width={6}>SAPO</Cell>
+                    <Cell width={1}><Notifications {...props}/></Cell>
                     <Cell width={5}><HeaderAccount {...props}/></Cell>
                 </Grid>
             </Header1>
