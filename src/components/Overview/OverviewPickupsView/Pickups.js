@@ -6,6 +6,7 @@ import { format, isSameDay } from 'date-fns'
 import PickupCard from './PickupCard'
 import PickupContainer from './PickupContainer'
 import EmployeeSelect from '../CustomerCallIn/deprecated/EmployeeSelect'
+import PhotoViewer from './PhotoViewer'
 import { API } from "aws-amplify"
 import { AppToaster } from '../../Toaster'
 
@@ -16,6 +17,7 @@ const Pickups = props => {
         isCustomerCallInOpen: false,
         isPickupContainerOpen: false,
         isSendDirectionsOpen: false,
+        isPhotoViewerOpen: false
     }
 
     const [isACardTabOpen, setIsACardTabOpen] = useState(false)
@@ -23,6 +25,7 @@ const Pickups = props => {
     const [isCustomerCallInOpen, setIsCustomerCallInOpen] = useState(false)
     const [isPickupContainerOpen, setIsPickupContainerOpen] = useState(false)
     const [isSendDirectionsOpen, setIsSendDirectionsOpen] = useState(false)
+    const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false)
 
 
     const showToast = (message) => {
@@ -190,65 +193,75 @@ const Pickups = props => {
     const uncheckedPickups = datePickups.filter((pickup) => ((pickup.inRoute == null) && (pickup.routeOrdinal != null)))
     const selectedPickup = props.selectedPickup
     return (
-        <React.Fragment>
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="dropabble" direction="vertical">
-                    {(provided, snapshot) => (
-                        <div ref={provided.innerRef}
-                            style={ListContainer(snapshot.isDraggingOver)}
-                            {...provided.droppableProps}
-                        >
-                            <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
-                            <ButtonRow>
-                                <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} htmlTitle='Create A New Pickup'/>
-                                <ButtonIcon onClick={() => { if (datePickups.length > 0) { props.showMap(true); changeIsSendDirectionsOpen(true); } else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0)} htmlTitle='Routing'/>
-                                <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false); }} icon='calendar' iconSize={25} htmlTitle='Scheduling'/>
-                            </ButtonRow>
-                            {(isSendDirectionsOpen) ?
-                                (
-                                    <SendDirectionsContainer>
-                                        <EmployeeSelect
-                                            employees={props.userConfig.employees}
-                                            onChange={handleEmployeeSelect}
-                                            selectedEmployee={props.selectedDriver}
-                                        />
-                                        {props.selectedDriver && routePickups.length > 0 ?
-                                            (
-                                                <SpanRow>
-                                                    <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections()} htmlTitle={`Email ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`} /></span>
-                                                    <span><ButtonIcon onClick={() => { props.createRoute() }} icon='eye-open' iconSize={25} htmlTitle={`Preview ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`}/></span>
-                                                    <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='floppy-disk' iconSize={25} htmlTitle={`Save ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`}/></span>
-                                                </SpanRow>
-                                            ) : (
-                                                <SpanRow>
-                                                    <span>{props.selectedDriver == null ? 'No Driver Selected' : `No Scheduled Pickups for ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}`}</span>
-                                                </SpanRow>
-                                                // onSubmit, send pickups in route with index of routePickups
-                                                // need pickupID, 'driver', routeIndex === index in routePickups
-                                            )
-                                        }
-                                    </SendDirectionsContainer>
-                                ) : ''
-                            }
-                            {
-                                !isPickupContainerOpen
-                                    ? renderCards(datePickups)
-                                    :
+        <>
+            <>
+            <PhotoViewer 
+                isOpen={isPhotoViewerOpen}
+                onClose={isPhotoViewerOpen}
+                openPhotos={setIsPhotoViewerOpen}
+            />
+            </>
+            <React.Fragment>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="dropabble" direction="vertical">
+                        {(provided, snapshot) => (
+                            <div ref={provided.innerRef}
+                                style={ListContainer(snapshot.isDraggingOver)}
+                                {...provided.droppableProps}
+                            >
+                                <h1>{format(props.selectedDate, 'dddd Do, YYYY')}</h1>
+                                <ButtonRow>
+                                    <ButtonIcon onClick={() => { props.changeView('customerCallIn') }} icon='add' iconSize={25} htmlTitle='Create A New Pickup' />
+                                    <ButtonIcon onClick={() => { if (datePickups.length > 0) { props.showMap(true); changeIsSendDirectionsOpen(true); } else return; }} icon='path-search' iconSize={25} disabled={!(datePickups.length > 0)} htmlTitle='Routing' />
+                                    <ButtonIcon onClick={() => { props.showMap(false); changeIsSendDirectionsOpen(false); }} icon='calendar' iconSize={25} htmlTitle='Scheduling' />
+                                </ButtonRow>
+                                {(isSendDirectionsOpen) ?
                                     (
-                                        <PickupContainer
-                                            pickup={selectedPickup}
-                                            changeIsPickupContainerOpen={changeIsPickupContainerOpen}
-                                            userConfig={props.userConfig}
-                                            userAttributes={props.userAttributes}
-                                        />
-                                    )
-                            }
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-        </React.Fragment>
+                                        <SendDirectionsContainer>
+                                            <EmployeeSelect
+                                                employees={props.userConfig.employees}
+                                                onChange={handleEmployeeSelect}
+                                                selectedEmployee={props.selectedDriver}
+                                            />
+                                            {props.selectedDriver && routePickups.length > 0 ?
+                                                (
+                                                    <SpanRow>
+                                                        <span><ButtonIcon icon='envelope' iconSize={25} onClick={() => sendEmailDirections()} htmlTitle={`Email ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`} /></span>
+                                                        <span><ButtonIcon onClick={() => { props.createRoute() }} icon='eye-open' iconSize={25} htmlTitle={`Preview ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`} /></span>
+                                                        <span><ButtonIcon onClick={() => { callAPI([...uncheckedPickups, ...routePickups]) }} icon='floppy-disk' iconSize={25} htmlTitle={`Save ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}'s Route`} /></span>
+                                                    </SpanRow>
+                                                ) : (
+                                                    <SpanRow>
+                                                        <span>{props.selectedDriver == null ? 'No Driver Selected' : `No Scheduled Pickups for ${props.selectedDriver.firstName} ${props.selectedDriver.lastName}`}</span>
+                                                    </SpanRow>
+                                                    // onSubmit, send pickups in route with index of routePickups
+                                                    // need pickupID, 'driver', routeIndex === index in routePickups
+                                                )
+                                            }
+                                        </SendDirectionsContainer>
+                                    ) : ''
+                                }
+                                {
+                                    !isPickupContainerOpen
+                                        ? renderCards(datePickups)
+                                        :
+                                        (
+                                            <PickupContainer
+                                                pickup={selectedPickup}
+                                                changeIsPickupContainerOpen={changeIsPickupContainerOpen}
+                                                userConfig={props.userConfig}
+                                                userAttributes={props.userAttributes}
+                                                openPhotos={setIsPhotoViewerOpen}
+                                            />
+                                        )
+                                }
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            </React.Fragment>
+        </>
     )
 }
 

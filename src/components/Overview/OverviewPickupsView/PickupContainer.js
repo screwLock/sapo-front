@@ -54,6 +54,7 @@ class PickupContainer extends React.Component {
                 })
                     }</ul>
                 </div>
+                <div onClick={() => this.props.openPhotos(true)}>asdfaf</div>
                 <div>Comments: {pickup.comments ? `${pickup.comments}` : 'None'}</div>
                 <div>Submitted By: {createdBy}</div>
             </Container>
