@@ -54,7 +54,7 @@ const Photos = (props) => {
                         </div>
                         <div>
                             <RadioGroup
-                                label="Meal Choice"
+                                label="Select the Amount Of Photos To Allow"
                                 onChange={handlePhotoAmountsChange}
                                 selectedValue={photosAmount}
                             >
