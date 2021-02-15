@@ -5,9 +5,10 @@ import { Button, Checkbox, H3, H5, Radio, RadioGroup } from '@blueprintjs/core'
 const Photos = (props) => {
 
     const [loading, setLoading] = useState(false)
-    const [isPhotosEnabled, setIsPhotosEnabled] = useState(false)
+    const [isPhotosEnabled, setIsPhotosEnabled] = useState(props.userConfig.photos? props.userConfig.photos.isPhotosEnabled:false)
     const [errorText, setErrorText] = useState('')
-    const [photosAmount, setPhotosAmount] = useState('one')
+    const [photosAmount, setPhotosAmount] = useState(props.userConfig.photos? props.userConfig.photos.photosAmount:'one')
+    const [isMandatory, setIsMandatory] = useState(props.userConfig.photos? props.userConfig.photos.isMandatory:false)
 
     const handlePhotosSubmit = async (e) => {
         e.preventDefault();
@@ -16,12 +17,14 @@ const Photos = (props) => {
             // add the color to userConfig
             await props.updateUserConfig('photos', {
                 photosEnabled: isPhotosEnabled,
-                photosAmount: photosAmount
+                photosAmount: photosAmount,
+                isMandatory: isMandatory
             },
                 {
                     photos: {
                         photosEnabled: false,
-                        photosAmount: photosAmount
+                        photosAmount: photosAmount,
+                        isMandatory: isMandatory
                     }
                 }
             )
@@ -30,14 +33,6 @@ const Photos = (props) => {
             // onError(e);
             setLoading(false);
         }
-    }
-
-    const handleIsPhotosEnabledClick = () => {
-        setIsPhotosEnabled(!isPhotosEnabled)
-    }
-
-    const handlePhotoAmountsChange = (e) => {
-        setPhotosAmount(e.target.value)
     }
 
     return (
@@ -51,12 +46,15 @@ const Photos = (props) => {
                 : (
                     <>
                         <div>
-                            <Checkbox checked={isPhotosEnabled} label="Enable Photo Uploads" onChange={handleIsPhotosEnabledClick} />
+                            <Checkbox checked={isPhotosEnabled} label="Enable Photo Uploads" onChange={() => setIsPhotosEnabled(!isPhotosEnabled)} />
+                        </div>
+                        <div>
+                            <Checkbox checked={isMandatory} label="Make Photos Mandatory For Pickups" onChange={() => setIsMandatory(!isMandatory)} />
                         </div>
                         <div>
                             <RadioGroup
                                 label="Select the Amount Of Photos To Allow"
-                                onChange={handlePhotoAmountsChange}
+                                onChange={(e) => setPhotosAmount(e.target.value)}
                                 selectedValue={photosAmount}
                             >
                                 <Radio label="One" value="one" />
