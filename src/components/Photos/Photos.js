@@ -7,7 +7,7 @@ const Photos = (props) => {
     const [loading, setLoading] = useState(false)
     const [isPhotosEnabled, setIsPhotosEnabled] = useState(props.userConfig.photos? props.userConfig.photos.isPhotosEnabled:false)
     const [errorText, setErrorText] = useState('')
-    const [photosAmount, setPhotosAmount] = useState(props.userConfig.photos? props.userConfig.photos.photosAmount:'one')
+    const [photosAmount, setPhotosAmount] = useState(props.userConfig.photos? props.userConfig.photos.photosAmount: 1)
     const [isMandatory, setIsMandatory] = useState(props.userConfig.photos? props.userConfig.photos.isMandatory:false)
 
     const handlePhotosSubmit = async (e) => {
@@ -16,13 +16,13 @@ const Photos = (props) => {
         try {
             // add the color to userConfig
             await props.updateUserConfig('photos', {
-                photosEnabled: isPhotosEnabled,
+                isPhotosEnabled: isPhotosEnabled,
                 photosAmount: photosAmount,
                 isMandatory: isMandatory
             },
                 {
                     photos: {
-                        photosEnabled: false,
+                        isPhotosEnabled: false,
                         photosAmount: photosAmount,
                         isMandatory: isMandatory
                     }
@@ -54,12 +54,12 @@ const Photos = (props) => {
                         <div>
                             <RadioGroup
                                 label="Select the Amount Of Photos To Allow"
-                                onChange={(e) => setPhotosAmount(e.target.value)}
-                                selectedValue={photosAmount}
+                                onChange={(e) => setPhotosAmount(parseInt(e.target.value))}
+                                selectedValue={photosAmount.toString()}
                             >
-                                <Radio label="One" value="one" />
-                                <Radio label="Two" value="two" />
-                                <Radio label="Three" value="three" />
+                                <Radio label="One" value={'1'} />
+                                <Radio label="Two" value={'2'} />
+                                <Radio label="Three" value={'3'} />
                             </RadioGroup>
                         </div>
                         <SubmitButton><Button loading={loading} text='Submit' onClick={handlePhotosSubmit} /></SubmitButton>
