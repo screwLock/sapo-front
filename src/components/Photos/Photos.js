@@ -48,6 +48,7 @@ const Photos = (props) => {
                         <div>
                             <Checkbox checked={isPhotosEnabled} label="Enable Photo Uploads" onChange={() => setIsPhotosEnabled(!isPhotosEnabled)} />
                         </div>
+                        {/*
                         <div>
                             <Checkbox checked={isMandatory} label="Make Photos Mandatory For Pickups" onChange={() => setIsMandatory(!isMandatory)} />
                         </div>
@@ -62,6 +63,7 @@ const Photos = (props) => {
                                 <Radio label="Three" value={'3'} />
                             </RadioGroup>
                         </div>
+                        */}
                         <SubmitButton><Button loading={loading} text='Submit' onClick={handlePhotosSubmit} /></SubmitButton>
                         <ErrorText>{errorText}</ErrorText>
                     </>

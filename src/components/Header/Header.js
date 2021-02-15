@@ -22,8 +22,10 @@ class Header extends React.Component {
         return (
             <Header1>
                 <Grid columns={12}>
-                    <Cell width={6}>SAPO</Cell>
+                    <Cell width={7}>SAPO</Cell>
+                    {/*
                     <Cell width={1}><Notifications {...props}/></Cell>
+                    */}
                     <Cell width={5}><HeaderAccount {...props}/></Cell>
                 </Grid>
             </Header1>
